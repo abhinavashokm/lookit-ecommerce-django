@@ -1,97 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Verify OTP - LookIt</title>
-<style>
-  /* make sizing predictable so padding doesn't cause overflow */
-  *, *::before, *::after { box-sizing: border-box; }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Verify OTP - LookIt</title>
+  <style>
+    /* make sizing predictable so padding doesn't cause overflow */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
 
-  body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f7f7;
-    margin: 0;
-    /* center vertically & horizontally */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: 20px; /* small outer breathing space on very small devices */
-  }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      /* center vertically & horizontally */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+      /* small outer breathing space on very small devices */
+    }
 
-  .otp-card {
-    background: #ffffff;
-    width: 100%;            /* fluid */
-    max-width: 370px;       /* same visual width as before on larger screens */
-    padding: 28px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    margin: 0 auto;         /* keeps it centered and gives horizontal gap on small screens */
-  }
+    .otp-card {
+      background: #ffffff;
+      width: 100%;
+      /* fluid */
+      max-width: 370px;
+      /* same visual width as before on larger screens */
+      padding: 28px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      margin: 0 auto;
+      /* keeps it centered and gives horizontal gap on small screens */
+    }
 
-  .title {
-    font-size: 23px;
-    font-weight: 700;
-    text-align: center;
-    color: #B55E8A;
-    margin-bottom: 15px;
-  }
+    .title {
+      font-size: 23px;
+      font-weight: 700;
+      text-align: center;
+      color: #B55E8A;
+      margin-bottom: 15px;
+    }
 
-  .subtitle {
-    text-align: center;
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 20px;
-  }
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
 
-  .form-group { margin-bottom: 16px; }
+    .form-group {
+      margin-bottom: 16px;
+    }
 
-  /* full-width fields that won't overflow */
-  input[type="text"],
-  input[type="tel"],
-  input[type="password"],
-  input[type="email"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 15px;
-    display: block;
-  }
+    /* full-width fields that won't overflow */
+    input[type="text"],
+    input[type="tel"],
+    input[type="password"],
+    input[type="email"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      display: block;
+    }
 
-  .verify-btn {
-    width: 100%;
-    background-color: #B55E8A;
-    border: none;
-    color: white;
-    padding: 12px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 6px;
-  }
-  .verify-btn:hover { background-color: #a5537e; }
+    .verify-btn {
+      width: 100%;
+      background-color: #B55E8A;
+      border: none;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
 
-  .resend-section {
-    text-align: center;
-    margin-top: 14px;
-    font-size: 14px;
-  }
-  .resend-section a { color: #B55E8A; text-decoration: none; font-weight: bold; }
-  .resend-section a:hover { text-decoration: underline; }
+    .verify-btn:hover {
+      background-color: #a5537e;
+    }
 
-  .back-link { text-align: center; margin-top: 12px; font-size: 14px; }
-  .back-link a { color: #555; text-decoration: none; }
-  .back-link a:hover { text-decoration: underline; }
+    .resend-section {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 14px;
+    }
 
-  /* Ensure extra horizontal breathing on small devices */
-  @media (max-width: 420px) {
-    body { padding: 28px; }          /* a bit more outer gap */
-    .otp-card { padding: 20px; }     /* slightly reduce inner padding to fit */
-  }
-</style>
+    .resend-section a {
+      color: #B55E8A;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .resend-section a:hover {
+      text-decoration: underline;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .back-link a {
+      color: #555;
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    /* Ensure extra horizontal breathing on small devices */
+    @media (max-width: 420px) {
+      body {
+        padding: 28px;
+      }
+
+      /* a bit more outer gap */
+      .otp-card {
+        padding: 20px;
+      }
+
+      /* slightly reduce inner padding to fit */
+    }
+
+    .back-link {
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #555;
+      /* subtle professional grey */
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+      /* clean hover */
+    }
+
+
+    .error-box {
+      background: #ffe6e6;
+      color: #b30000;
+      border: 1px solid #ffcccc;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 0.95rem;
+    }
+
+    /* jQuery validation error styling */
+    label.error {
+      color: red;
+      font-weight: normal;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+  </style>
 </head>
+
 <body>
 
   <div class="otp-card" role="region" aria-labelledby="otp-title">
@@ -99,10 +176,18 @@
 
     <p class="subtitle">Enter the 6-digit OTP sent to your email address.</p>
 
-    <form>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="error-box">
+      {{message}}
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <form method="post" id="otp_form">
+      {% csrf_token %}
       <div class="form-group">
-        <!-- keep maxlength and pattern if you want numeric-only -->
-        <input type="text" inputmode="numeric" pattern="\d{6}" maxlength="6" placeholder="Enter OTP" required>
+        <input type="text" name="otp" placeholder="Enter OTP" required>
       </div>
 
       <button type="submit" class="verify-btn">Verify OTP</button>
@@ -113,9 +198,58 @@
     </div>
 
     <div class="back-link">
-      <a href="/signup/">← Back to Signup</a>
+      <a class="back-link" href="{% url 'user-signup' %}">Back to sign in</a>
+
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+
+      $("#otp_form").validate({
+        rules: {
+          otp: {
+            required: true,
+            digits: true,
+            minlength: 6,
+            maxlength: 6
+          }
+        },
+        messages: {
+          otp: {
+            required: "Please enter the OTP",
+            digits: "OTP can contain only numbers",
+            minlength: "OTP must be 6 digits",
+            maxlength: "OTP must be 6 digits"
+          }
+        },
+        onkeyup: true,
+        errorClass: "error",
+        errorElement: "label",
+        errorPlacement: function (error, element) {
+          error.insertAfter(element);
+        }
+      });
+    });
+  </script>
+
+
+  <!--autohide error messages after 3 seconds-->
+  <script>
+    setTimeout(function () {
+      const alerts = document.querySelectorAll('.error-box');
+      alerts.forEach(alert => {
+        alert.style.transition = "opacity 0.8s";
+        alert.style.opacity = "0";
+        setTimeout(() => alert.remove(), 800);
+      });
+    }, 3000);
+  </script>
+
 </body>
+
 </html>

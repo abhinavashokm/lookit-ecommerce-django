@@ -7,6 +7,12 @@
 </head>
 <body>
     Home
+    <ul>
+        <li>Name: {{user.full_name}}</li>
+        <li>Email: {{user.email}}</li>
+        <li>Referral Code: {{user.referral_code}}</li>
+        <li>Created at: {{user.date_joined}}</li>
+    </ul>
     <a href="{% url 'user-logout' %}">Logout</a>
 </body>
 </html>
