@@ -148,12 +148,13 @@
   <div class="login-container">
     <h2>Login to Lookit</h2>
 
-    <form>
+    <form method="post">
+      {% csrf_token %}
       <div class="form-group">
-        <input type="email" placeholder="Email" required>
+        <input type="email" name="email" placeholder="Email" required>
       </div>
       <div class="form-group">
-        <input type="password" placeholder="Password" required>
+        <input type="password" name="password" placeholder="Password" required>
       </div>
 
       <div class="links">

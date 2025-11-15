@@ -146,18 +146,19 @@
   <div class="signup-container">
     <h2>Ready to See Differently? <br>Join <span>LookIt</span>.</h2>
 
-    <form action="{%url 'signup-otp' %}">
+    <form method="post">
+        {% csrf_token %}
       <div class="form-group">
-        <input type="text" placeholder="Full Name" required>
+        <input type="text" name="full_name" placeholder="Full Name" required>
       </div>
       <div class="form-group">
-        <input type="email" placeholder="Email Address" required>
+        <input type="email" name="email" placeholder="Email Address" required>
       </div>
       <div class="form-group">
-        <input type="text" placeholder="Referral Code (Optional)">
+        <input type="text" name="referral_code" placeholder="Referral Code (Optional)">
       </div>
       <div class="form-group">
-        <input type="password" placeholder="Password" required>
+        <input type="password" name="password" placeholder="Password" required>
       </div>
       <div class="form-group">
         <input type="password" placeholder="Confirm Password" required>
