@@ -72,8 +72,3 @@ def otp_verification(request):
 def user_logout(request):
     logout(request)
     return redirect('user-login')
-
-def reset_password(request):
-    if request.method == 'POST':
-        email = request.POST.get('email').strip().lower()
-    return render(request, "user/forgot_password/reset_password.html")

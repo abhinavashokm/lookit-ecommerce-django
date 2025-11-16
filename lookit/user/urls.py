@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from .views import user_login, signup, otp_verification, user_logout, reset_password
+from .views import user_login, signup, otp_verification, user_logout
 
 urlpatterns = [
     path("", user_login, name="user-login"),
@@ -9,11 +9,13 @@ urlpatterns = [
     path("logout/", user_logout, name="user-logout"),
     
     # password reset paths
+    #1.enter email and button for sent link
     path(
         'forgot-password/',
         auth_views.PasswordResetView.as_view(template_name="user/auth/forgot_password.html"),
-        name="forgot-password",
+        name="password-reset",
     ),
+    #2.link sent, check your mail message
     path(
         'password-reset-sent/',
         auth_views.PasswordResetDoneView.as_view(
@@ -21,13 +23,15 @@ urlpatterns = [
         ),
         name="password_reset_done",
     ),
+    #3. user click link. django check if it valid. show a form to enter new password
     path(
         'reset/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
-            template_name="user/auth/reset_password_form.html"
+            template_name="user/auth/reset_password_form.html",
         ),
         name="password_reset_confirm",
     ),
+    #4. show password reset complete message
     path(
         'reset-complete/',
         auth_views.PasswordResetCompleteView.as_view(
