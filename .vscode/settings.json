@@ -1,5 +1,0 @@
-{
-    "pylint.args": [
-        "--disable=no-value-for-parameter"
-    ]
-}
