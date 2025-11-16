@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .models import User
 from django.contrib import messages
-from .utils import generate_otp, get_referral_code, send_otp_email
+from .utils import generate_otp, generate_referral_code, send_otp_email
 
 
 def user_login(request):
@@ -51,17 +51,19 @@ def otp_verification(request):
     if request.method == "POST":
         otp_entered = request.POST.get('otp')
         otp_sent = request.session.get('otp')
+        raw_password = request.session['signup_data'].get('password')
         if otp_entered == otp_sent:
             print(request.session['signup_data'].get('email'))
             new_user = User.objects.create_user(
                 email=request.session['signup_data'].get('email'),
-                password=request.session['signup_data'].get('password'),
+                password=raw_password,
                 full_name=request.session['signup_data'].get('full_name'),
                 referred_by=request.session['signup_data'].get('referral_code'),
-                referral_code=get_referral_code(),
+                referral_code=generate_referral_code(),
             )
             new_user.save()
-            login(request, new_user)
+            auth_user = authenticate(request, email=new_user.email, password = raw_password)
+            login(request, auth_user)
             return redirect('index')
         else:
             messages.error(request, "Incorrect OTP. Please try again.")

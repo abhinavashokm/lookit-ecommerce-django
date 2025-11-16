@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
+from .utils import generate_referral_code
 
 #Creating custom user manager
 class UserManager(BaseUserManager):
@@ -37,12 +38,12 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=150, blank=True)
 
     
-    full_name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100, blank=True)
     phone = models.CharField(max_length=15, null=True, blank=True )
     gender = models.CharField(max_length=10, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
 
-    referral_code = models.CharField(max_length=50 ,unique=True)
+    referral_code = models.CharField(max_length=50 ,unique=True, blank=True)
     referred_by = models.CharField(max_length=50, null=True, blank=True)
     referral_reward = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
@@ -57,6 +58,15 @@ class User(AbstractUser):
     
     #set custom user manager, becuase we are using email for authentication
     objects = UserManager()
+    
+    def save(self, *args, **kwargs):
+        if not self.referral_code:
+            self.referral_code = generate_referral_code()
+        if not self.full_name:
+            self.full_name = f"{self.first_name} {self.last_name}".strip()
+        super().save(*args, **kwargs)
+        
+    
     
     def __str__(self):
         return self.email

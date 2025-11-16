@@ -1,6 +1,7 @@
 from random import randint
 from django.core.mail import send_mail
 from django.conf import settings
+import uuid
 
 
 def generate_otp():
@@ -18,5 +19,5 @@ def send_otp_email(email, otp):
     send_mail(subject, message, from_email, recipient_list)
 
 
-def get_referral_code():
-    return str(randint(000000, 999999))
+def generate_referral_code():
+    return uuid.uuid4().hex[:10]
