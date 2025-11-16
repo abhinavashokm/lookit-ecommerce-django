@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 
-# Create your views here.
+
 def home(request):
     user = request.user
-    if(user.is_authenticated):
+    if user.is_authenticated:
+        if user.is_staff:
+            return redirect('admin-dashboard')
         return render(request, "core/index.html",{user:user})
-    else:
-        return redirect('user-login')
+        
+    return redirect('user-login')

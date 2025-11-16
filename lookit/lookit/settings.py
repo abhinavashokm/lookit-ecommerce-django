@@ -24,6 +24,8 @@ ALLOWED_HOSTS = []
 # Set default user model
 AUTH_USER_MODEL = 'user.User'
 
+# GOOGLE RELATED THINGS ------------
+
 # added for continue with google
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
@@ -43,9 +45,10 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_uid',
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
+    # BLOCK ADMIN BEFORE CREATING SESSION
+    'user.pipeline.block_admin_google_login',
     # ⚠️ If email exist connect with existing account
     'user.pipeline.link_to_existing_user',
-
     'social_core.pipeline.user.get_username',
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
@@ -56,7 +59,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 SOCIAL_AUTH_ASSOCIATE_BY_EMAIL = True
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
-
+# END GOOGLE RELATED THINGS ---------
 
 # For sending email to user
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
