@@ -1,0 +1,213 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'product/admin/css/list.css' %}">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Product Management</h1>
+        <div class="header-actions">
+            <button class="btn btn-view-types">View Types</button>
+            <button class="btn btn-add-product">+ Add Product</button>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="filters-section">
+        <div class="search-container">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Search products" id="searchInput">
+            </div>
+            <button class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
+                <span>🔽</span>
+                <span>Filters</span>
+            </button>
+        </div>
+        <div class="filters-container" id="filtersContainer">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <select id="categoryFilter">
+                        <option value="">Category</option>
+                        <option value="t-shirts">T-shirts</option>
+                        <option value="hoodies">Hoodies</option>
+                        <option value="sweatshirts">Sweatshirts</option>
+                        <option value="tank-tops">Tank Tops</option>
+                    </select>
+                    <span class="filter-arrow">▼</span>
+                </div>
+                <div class="filter-group">
+                    <select id="typeFilter">
+                        <option value="">Type</option>
+                        <option value="men">Men</option>
+                        <option value="women">Women</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                    <span class="filter-arrow">▼</span>
+                </div>
+                <div class="filter-group">
+                    <select id="stockFilter">
+                        <option value="">Stock Status</option>
+                        <option value="in-stock">In Stock</option>
+                        <option value="low-stock">Low Stock</option>
+                        <option value="out-of-stock">Out of Stock</option>
+                    </select>
+                    <span class="filter-arrow">▼</span>
+                </div>
+                <div class="filter-group">
+                    <select id="priceFilter">
+                        <option value="">Price Range</option>
+                        <option value="0-20">$0 - $20</option>
+                        <option value="20-35">$20 - $35</option>
+                        <option value="35-50">$35 - $50</option>
+                        <option value="50+">$50+</option>
+                    </select>
+                    <span class="filter-arrow">▼</span>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-apply">Apply Filter</button>
+                <button class="btn btn-reset">Reset Filter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Product Image</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="product-image" style="background: #f3e5ab;">👕</div>
+                    </td>
+                    <td class="product-name">Classic Cotton Tee</td>
+                    <td class="product-price">$20</td>
+                    <td class="product-stock">150</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>
+                        <div class="actions-dropdown">
+                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="viewVariants(1)">👁️ View Variants</button>
+                                <button class="dropdown-item" onclick="deactivateProduct(1)">⏸️ Deactivate</button>
+                                <button class="dropdown-item" onclick="editProduct(1)">✏️ Edit</button>
+                                <button class="dropdown-item delete" onclick="deleteProduct(1)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="product-image" style="background: #c8e6c9;">👕</div>
+                    </td>
+                    <td class="product-name">Cozy Fleece Hoodie</td>
+                    <td class="product-price">$45</td>
+                    <td class="product-stock">80</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>
+                        <div class="actions-dropdown">
+                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="viewVariants(2)">👁️ View Variants</button>
+                                <button class="dropdown-item" onclick="deactivateProduct(2)">⏸️ Deactivate</button>
+                                <button class="dropdown-item" onclick="editProduct(2)">✏️ Edit</button>
+                                <button class="dropdown-item delete" onclick="deleteProduct(2)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="product-image" style="background: #f3e5ab;">👕</div>
+                    </td>
+                    <td class="product-name">Relaxed Fit Sweatshirt</td>
+                    <td class="product-price">$35</td>
+                    <td class="product-stock">120</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>
+                        <div class="actions-dropdown">
+                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="viewVariants(3)">👁️ View Variants</button>
+                                <button class="dropdown-item" onclick="deactivateProduct(3)">⏸️ Deactivate</button>
+                                <button class="dropdown-item" onclick="editProduct(3)">✏️ Edit</button>
+                                <button class="dropdown-item delete" onclick="deleteProduct(3)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="product-image" style="background: #f3e5ab;">👕</div>
+                    </td>
+                    <td class="product-name">Performance Tank Top</td>
+                    <td class="product-price">$18</td>
+                    <td class="product-stock">200</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>
+                        <div class="actions-dropdown">
+                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="viewVariants(4)">👁️ View Variants</button>
+                                <button class="dropdown-item" onclick="deactivateProduct(4)">⏸️ Deactivate</button>
+                                <button class="dropdown-item" onclick="editProduct(4)">✏️ Edit</button>
+                                <button class="dropdown-item delete" onclick="deleteProduct(4)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="product-image" style="background: #bbdefb;">👕</div>
+                    </td>
+                    <td class="product-name">Thermal Long Sleeve</td>
+                    <td class="product-price">$28</td>
+                    <td class="product-stock">90</td>
+                    <td><span class="status-badge status-inactive">Inactive</span></td>
+                    <td>
+                        <div class="actions-dropdown">
+                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
+                            <div class="dropdown-menu">
+                                <button class="dropdown-item" onclick="viewVariants(5)">👁️ View Variants</button>
+                                <button class="dropdown-item" onclick="deactivateProduct(5)">⏸️ Deactivate</button>
+                                <button class="dropdown-item" onclick="editProduct(5)">✏️ Edit</button>
+                                <button class="dropdown-item delete" onclick="deleteProduct(5)">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-btn" disabled>‹</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">›</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'product/admin/js/list.js' %}"></script>
+{% endblock %}

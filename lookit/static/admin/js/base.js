@@ -19,6 +19,7 @@ menuToggle.addEventListener('click', () => {
     }
 });
 
+
 // Close sidebar on mobile when clicking outside
 document.addEventListener('click', (e) => {
     if (window.innerWidth <= 768) {
@@ -41,9 +42,6 @@ window.addEventListener('resize', () => {
 // Navigation menu active state
 document.querySelectorAll('.nav-menu a').forEach(link => {
     link.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelectorAll('.nav-menu a').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
 
         // Close sidebar on mobile after clicking
         if (window.innerWidth <= 768) {

@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     "core",
     "staff",
     'social_django',
+    "product",
 ]
 
 MIDDLEWARE = [

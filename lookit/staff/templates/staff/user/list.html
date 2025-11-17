@@ -1,0 +1,154 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'staff/user/css/list.css' %}">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">User Management</h1>
+        <div class="header-actions">
+            <button class="btn btn-export">Export CSV</button>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="filters-section">
+        <div class="search-container">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text" placeholder="Search by Name, Email, or Phone" id="searchInput">
+            </div>
+            <button class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
+                <span>🔽</span>
+                <span>Filters</span>
+            </button>
+        </div>
+        <div class="filters-container" id="filtersContainer">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <select id="statusFilter">
+                        <option value="">Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                        <option value="blocked">Blocked</option>
+                    </select>
+                    <span class="filter-arrow">▼</span>
+                </div>
+                <div class="filter-group">
+                    <select id="dateFilter">
+                        <option value="">Registration Date</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                    <span class="filter-arrow">▼</span>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-apply">Apply Filters</button>
+                <button class="btn btn-reset">Reset Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Profile</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Orders</th>
+                    <th>Joined Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="profile-picture">SC</div>
+                    </td>
+                    <td class="user-name">Sophia Carter</td>
+                    <td class="user-email">sophia.carter@email.com</td>
+                    <td class="user-phone">(555) 987-6543</td>
+                    <td class="user-orders">12</td>
+                    <td class="user-date">2023-08-15</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><button class="btn-view" onclick="viewUser(1)">View</button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="profile-picture">EW</div>
+                    </td>
+                    <td class="user-name">Ethan Walker</td>
+                    <td class="user-email">ethan.walker@email.com</td>
+                    <td class="user-phone">(555) 234-5678</td>
+                    <td class="user-orders">8</td>
+                    <td class="user-date">2023-11-20</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><button class="btn-view" onclick="viewUser(2)">View</button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="profile-picture">AH</div>
+                    </td>
+                    <td class="user-name">Ava Harper</td>
+                    <td class="user-email">ava.harper@email.com</td>
+                    <td class="user-phone">(555) 876-5432</td>
+                    <td class="user-orders">5</td>
+                    <td class="user-date">2024-01-10</td>
+                    <td><span class="status-badge status-inactive">Inactive</span></td>
+                    <td><button class="btn-view" onclick="viewUser(3)">View</button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="profile-picture">LF</div>
+                    </td>
+                    <td class="user-name">Liam Foster</td>
+                    <td class="user-email">liam.foster@email.com</td>
+                    <td class="user-phone">(555) 345-6789</td>
+                    <td class="user-orders">15</td>
+                    <td class="user-date">2023-07-05</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td><button class="btn-view" onclick="viewUser(4)">View</button></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="profile-picture">CR</div>
+                    </td>
+                    <td class="user-name">Chloe Reed</td>
+                    <td class="user-email">chloe.reed@email.com</td>
+                    <td class="user-phone">(555) 456-7890</td>
+                    <td class="user-orders">3</td>
+                    <td class="user-date">2024-03-22</td>
+                    <td><span class="status-badge status-blocked">Blocked</span></td>
+                    <td><button class="btn-view" onclick="viewUser(5)">View</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-btn" disabled>‹</button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">›</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'staff/user/js/list.js' %}"></script>
+{% endblock %}

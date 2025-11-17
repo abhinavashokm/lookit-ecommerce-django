@@ -1,14 +1,19 @@
-        <aside class="sidebar" id="sidebar">
-            <ul class="nav-menu">
-                <li><a href="#" class="active"><span class="icon">📊</span><span>Dashboard</span></a></li>
-                <li><a href="#"><span class="icon">📦</span><span>Product Management</span></a></li>
-                <li><a href="#"><span class="icon">🛒</span><span>Order Management</span></a></li>
-                <li><a href="#"><span class="icon">👥</span><span>User Management</span></a></li>
-                <li><a href="#"><span class="icon">📈</span><span>Analytics</span></a></li>
-                <li><a href="#"><span class="icon">🎫</span><span>Coupons</span></a></li>
-                <li><a href="#"><span class="icon">🖼️</span><span>Banner</span></a></li>
-                <li><a href="#"><span class="icon">🎁</span><span>Offers</span></a></li>
-                <li><a href="#"><span class="icon">↩️</span><span>Return Management</span></a></li>
-                <li><a href="#"><span class="icon">⚙️</span><span>Settings</span></a></li>
-            </ul>
-        </aside>
+<aside class="sidebar" id="sidebar">
+    <ul class="nav-menu">
+        <li><a href="{% url 'admin-dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'admin-dashboard' %}active{% endif %}"><span
+                    class="icon">📊</span><span>Dashboard</span></a></li>
+        <li><a href="{% url 'admin-list' %}"
+                class="{% if request.resolver_match.url_name == 'admin-list' %}active{% endif %}"><span
+                    class="icon">📦</span><span>Product Management</span></a></li>
+        <li><a href="{% url 'admin-user' %}" class="{% if request.resolver_match.url_name == 'admin-user' %}active{% endif %}"><span
+                    class="icon">👥</span><span>User Management</span></a></li>
+        <li><a href="#"><span class="icon">🛒</span><span>Order Management</span></a></li>
+        <li><a href="#"><span class="icon">📈</span><span>Analytics</span></a></li>
+        <li><a href="#"><span class="icon">🎫</span><span>Coupons</span></a></li>
+        <li><a href="#"><span class="icon">🖼️</span><span>Banner</span></a></li>
+        <li><a href="#"><span class="icon">🎁</span><span>Offers</span></a></li>
+        <li><a href="#"><span class="icon">↩️</span><span>Return Management</span></a></li>
+        <li><a href="#"><span class="icon">⚙️</span><span>Settings</span></a></li>
+    </ul>
+</aside>

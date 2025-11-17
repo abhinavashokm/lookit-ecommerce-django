@@ -40,6 +40,9 @@ def admin_login(request):
 def admin_dashboard(request):
     return render(request, "staff/dashboard.html")
 
+def admin_user_management(request):
+    return render(request, "staff/user/list.html")
+
 
 def admin_logout(request):
     logout(request)

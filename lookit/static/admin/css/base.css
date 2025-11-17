@@ -288,6 +288,7 @@ body {
     .navbar-search {
         display: none;
     }
+    
 
     .dashboard-header {
         flex-direction: column;
