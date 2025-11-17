@@ -85,6 +85,7 @@
         }
 
         .navbar-user {
+            position: relative;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -101,6 +102,58 @@
             justify-content: center;
             color: white;
             font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        .navbar-user:hover .user-avatar {
+            transform: scale(1.05);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .user-dropdown.show {
+            display: block;
+        }
+
+        .user-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            color: #1f2937;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .user-dropdown-item:hover {
+            background: #f3f4f6;
+        }
+
+        .user-dropdown-item.logout {
+            color: #ef4444;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .user-dropdown-item.logout:hover {
+            background: #fef2f2;
         }
 
         /* Sidebar */
@@ -189,21 +242,6 @@
             background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
             color: white;
             box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
-        }
-
-        .nav-menu .logout {
-            color: #ef4444;
-            margin-top: 10px;
-        }
-
-        .nav-menu .logout:hover {
-            background-color: #fef2f2;
-            color: #dc2626;
-        }
-
-        .nav-menu .logout.active {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
         }
 
         /* Main Content */
@@ -674,9 +712,23 @@
         </div>
         <div class="navbar-right">
             <input type="text" class="navbar-search" placeholder="Search...">
-            <div class="navbar-user">
+            <div class="navbar-user" id="navbarUser" onclick="toggleUserDropdown(event)">
                 <div class="user-avatar">A</div>
                 <span>Admin</span>
+                <div class="user-dropdown" id="userDropdown">
+                    <button class="user-dropdown-item" onclick="viewProfile()">
+                        <span>👤</span>
+                        <span>View Profile</span>
+                    </button>
+                    <button class="user-dropdown-item" onclick="openSettings()">
+                        <span>⚙️</span>
+                        <span>Settings</span>
+                    </button>
+                    <button class="user-dropdown-item logout" onclick="logout()">
+                        <span>🚪</span>
+                        <span>Logout</span>
+                    </button>
+                </div>
             </div>
         </div>
     </nav>
@@ -695,7 +747,6 @@
                 <li><a href="#"><span class="icon">🎁</span><span>Offers</span></a></li>
                 <li><a href="#"><span class="icon">↩️</span><span>Return Management</span></a></li>
                 <li><a href="#"><span class="icon">⚙️</span><span>Settings</span></a></li>
-                <li><a href="#" class="logout"><span class="icon">🚪</span><span>Logout</span></a></li>
             </ul>
         </aside>
 
@@ -1010,6 +1061,41 @@
                 }, index * 100);
             });
         });
+
+        // User dropdown toggle
+        function toggleUserDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('userDropdown');
+            const userElement = document.getElementById('navbarUser');
+            if (!userElement.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // User dropdown functions
+        function viewProfile() {
+            alert('View Profile');
+            document.getElementById('userDropdown').classList.remove('show');
+        }
+
+        function openSettings() {
+            alert('Open Settings');
+            document.getElementById('userDropdown').classList.remove('show');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                alert('Logging out...');
+                // Add actual logout logic here
+            }
+            document.getElementById('userDropdown').classList.remove('show');
+        }
     </script>
 </body>
 </html>
