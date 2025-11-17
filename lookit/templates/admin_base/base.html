@@ -9,6 +9,10 @@
     <!--Global CSS-->
     <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
 
+    <!--Components CSS-->
+    <link rel="stylesheet" href="{% static 'admin/css/components/sidebar.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/components/navbar.css' %}">
+
     <!-- Page-specific CSS -->
     {% block styles %}{% endblock %}
 
@@ -26,8 +30,10 @@
         {% block content %}{% endblock %}
     </div>
     
-    <!--Global JS-->
-    <script src="{% static 'admin/js/base.js' %}"></script>
+
+    <!--Component JS-->
+    <script src="{% static 'admin/js/components/sidebar.js' %}"></script>
+    <script src="{% static 'admin/js/components/navbar.js' %}"></script>
 
 
     <!-- Page-specific JS -->

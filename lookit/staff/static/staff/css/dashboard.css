@@ -1,4 +1,3 @@
-/* Main Content */
 .main-content {
     flex: 1;
     overflow-y: auto;
@@ -35,6 +34,52 @@
     grid-template-rows: repeat(2, auto);
     gap: 20px;
     margin-bottom: 30px;
+}
+
+.kpi-card.hidden-mobile {
+    display: block;
+}
+
+.kpi-toggle-container {
+    display: none;
+    text-align: center;
+    margin: 20px 0 30px 0;
+}
+
+.kpi-toggle-btn {
+    padding: 12px 24px;
+    background: white;
+    color: #6366f1;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.kpi-toggle-btn:hover {
+    background: #f3f4f6;
+    border-color: #6366f1;
+    color: #4f46e5;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.kpi-toggle-btn:active {
+    transform: scale(0.98);
+}
+
+.kpi-toggle-btn span:first-child {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.kpi-toggle-btn.active span:first-child {
+    transform: rotate(180deg);
 }
 
 .kpi-card {
@@ -378,4 +423,71 @@ td {
 .status-delivered {
     background: #d1fae5;
     color: #065f46;
+}
+
+/* Main Content Responsive */
+@media (max-width: 1200px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, auto);
+    }
+}
+
+@media (max-width: 1024px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding-top: 60px;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(4, auto);
+        gap: 15px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+    }
+
+    .kpi-card.hidden-mobile {
+        display: none;
+    }
+
+    .kpi-card.hidden-mobile.show {
+        display: block;
+    }
+
+    .kpi-toggle-container {
+        display: block;
+    }
+
+    .main-content {
+        padding: 15px;
+    }
+
+    .card {
+        padding: 15px;
+    }
 }
