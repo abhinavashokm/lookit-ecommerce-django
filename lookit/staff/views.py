@@ -38,7 +38,7 @@ def admin_login(request):
 
 @admin_required
 def admin_dashboard(request):
-    return render(request, "staff/home.html")
+    return render(request, "staff/dashboard.html")
 
 
 def admin_logout(request):
