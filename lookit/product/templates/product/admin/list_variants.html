@@ -1,0 +1,192 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'product/admin/css/list_variants.css' %}">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Back Link -->
+    <a href="product_management.html" class="back-link">
+        <span>←</span>
+        <span>Back to Products</span>
+    </a>
+
+    <!-- Product Header -->
+    <div class="product-header">
+        <div class="product-info">
+            <span class="product-status">Active</span>
+            <h1 class="product-name">Classic Cotton Tee</h1>
+            <div class="product-details">
+                Price: $20 | Total Stock: 150
+            </div>
+        </div>
+        <div class="product-image">
+            <img src="https://via.placeholder.com/150x150/f3f4f6/9ca3af?text=T-Shirt" alt="Classic Cotton Tee">
+        </div>
+    </div>
+
+    <!-- Variants Section -->
+    <div class="variants-section">
+        <div class="section-header">
+            <h2 class="section-title">Product Variants</h2>
+            <button class="btn-add-variant" onclick="addVariant()">Add Variant</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="variants-table">
+                <thead>
+                    <tr>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="default-variant">
+                        <td>
+                            <div class="color-cell">
+                                <div class="color-swatch" style="background-color: #ffffff; border-color: #d1d5db;">
+                                </div>
+                                <span class="color-name">White</span>
+                                <span class="default-badge">Default</span>
+                            </div>
+                        </td>
+                        <td>Small</td>
+                        <td>
+                            <div class="stock-control">
+                                <button class="stock-btn" onclick="updateStock(1, -1)">−</button>
+                                <span class="stock-value" id="stock-1">100</span>
+                                <button class="stock-btn" onclick="updateStock(1, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td class="actions-cell">
+                            <button class="actions-btn" onclick="toggleActionsDropdown(event, 1)">⋯</button>
+                            <div class="actions-dropdown" id="actions-1">
+                                <button class="actions-dropdown-item" onclick="setDefault(1)">
+                                    <span>⭐</span>
+                                    <span>Set Default</span>
+                                </button>
+                                <button class="actions-dropdown-item" onclick="editVariant(1)">
+                                    <span>✏️</span>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="actions-dropdown-item" onclick="deactivateVariant(1)">
+                                    <span>⏸️</span>
+                                    <span>Deactivate</span>
+                                </button>
+                                <button class="actions-dropdown-item delete" onclick="deleteVariant(1)">
+                                    <span>🗑️</span>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="color-cell">
+                                <div class="color-swatch" style="background-color: #d4a574;"></div>
+                                <span class="color-name">Beige</span>
+                            </div>
+                        </td>
+                        <td>Medium</td>
+                        <td>
+                            <div class="stock-control">
+                                <button class="stock-btn" onclick="updateStock(2, -1)">−</button>
+                                <span class="stock-value" id="stock-2">50</span>
+                                <button class="stock-btn" onclick="updateStock(2, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-active">Active</span>
+                        </td>
+                        <td class="actions-cell">
+                            <button class="actions-btn" onclick="toggleActionsDropdown(event, 2)">⋯</button>
+                            <div class="actions-dropdown" id="actions-2">
+                                <button class="actions-dropdown-item" onclick="setDefault(2)">
+                                    <span>⭐</span>
+                                    <span>Set Default</span>
+                                </button>
+                                <button class="actions-dropdown-item" onclick="editVariant(2)">
+                                    <span>✏️</span>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="actions-dropdown-item" onclick="deactivateVariant(2)">
+                                    <span>⏸️</span>
+                                    <span>Deactivate</span>
+                                </button>
+                                <button class="actions-dropdown-item delete" onclick="deleteVariant(2)">
+                                    <span>🗑️</span>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="color-cell">
+                                <div class="color-swatch" style="background-color: #166534;"></div>
+                                <span class="color-name">Green</span>
+                            </div>
+                        </td>
+                        <td>Large</td>
+                        <td>
+                            <div class="stock-control">
+                                <button class="stock-btn" onclick="updateStock(3, -1)">−</button>
+                                <span class="stock-value" id="stock-3">0</span>
+                                <button class="stock-btn" onclick="updateStock(3, 1)">+</button>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-inactive">Inactive</span>
+                        </td>
+                        <td class="actions-cell">
+                            <button class="actions-btn" onclick="toggleActionsDropdown(event, 3)">⋯</button>
+                            <div class="actions-dropdown" id="actions-3">
+                                <button class="actions-dropdown-item" onclick="setDefault(3)">
+                                    <span>⭐</span>
+                                    <span>Set Default</span>
+                                </button>
+                                <button class="actions-dropdown-item" onclick="editVariant(3)">
+                                    <span>✏️</span>
+                                    <span>Edit</span>
+                                </button>
+                                <button class="actions-dropdown-item" onclick="deactivateVariant(3)">
+                                    <span>⏸️</span>
+                                    <span>Deactivate</span>
+                                </button>
+                                <button class="actions-dropdown-item delete" onclick="deleteVariant(3)">
+                                    <span>🗑️</span>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <button class="pagination-btn" disabled onclick="changePage('prev')">‹</button>
+            <button class="pagination-btn active" onclick="changePage(1)">1</button>
+            <button class="pagination-btn" onclick="changePage(2)">2</button>
+            <button class="pagination-btn" onclick="changePage(3)">3</button>
+            <button class="pagination-btn" onclick="changePage(4)">4</button>
+            <button class="pagination-btn" onclick="changePage(5)">5</button>
+            <button class="pagination-btn" onclick="changePage('next')">›</button>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'product/admin/js/list_variants.js' %}"></script>
+{% endblock %}

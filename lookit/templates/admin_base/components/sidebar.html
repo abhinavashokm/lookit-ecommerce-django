@@ -3,8 +3,8 @@
         <li><a href="{% url 'admin-dashboard' %}"
                 class="{% if request.resolver_match.url_name == 'admin-dashboard' %}active{% endif %}"><span
                     class="icon">📊</span><span>Dashboard</span></a></li>
-        <li><a href="{% url 'admin-list' %}"
-                class="{% if request.resolver_match.url_name == 'admin-list' %}active{% endif %}"><span
+        <li><a href="{% url 'admin-list-products' %}"
+                class="{% if request.resolver_match.url_name == 'admin-list-products' %}active{% endif %}"><span
                     class="icon">📦</span><span>Product Management</span></a></li>
         <li><a href="{% url 'admin-user' %}" class="{% if request.resolver_match.url_name == 'admin-user' %}active{% endif %}"><span
                     class="icon">👥</span><span>User Management</span></a></li>
