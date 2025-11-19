@@ -40,10 +40,29 @@ def admin_login(request):
 def admin_dashboard(request):
     return render(request, "staff/dashboard.html")
 
-def admin_user_management(request):
-    return render(request, "staff/user/list.html")
-
 
 def admin_logout(request):
     logout(request)
     return redirect("admin-login")
+
+
+""" ============================================
+    USER MANAGEMENT
+============================================ """
+
+
+def admin_user_management(request):
+    return render(request, "staff/user/list.html")
+
+
+def admin_view_user(request):
+    return render(request, "staff/user/view_user.html")
+
+def admin_edit_user(request):
+    return render(request, "staff/user/edit.html")
+
+def admin_add_staff(request):
+    return render(request, "staff/user/add_staff.html")
+
+def admin_view_staff(request):
+    return render(request, "staff/user/view_staff.html")

@@ -1,28 +1,30 @@
-    <!-- Top Navbar -->
-    <nav class="top-navbar">
-        <div class="navbar-left">
-            <button class="menu-toggle" id="menuToggle">☰</button>
-            <div class="navbar-title">Lookit Admin</div>
-        </div>
-        <div class="navbar-right">
-            <input type="text" class="navbar-search" placeholder="Search...">
-            <div class="navbar-user" id="navbarUser" onclick="toggleUserDropdown(event)">
-                <div class="user-avatar">A</div>
-                <span>Admin</span>
-                <div class="user-dropdown" id="userDropdown">
-                    <button class="user-dropdown-item" onclick="viewProfile()">
-                        <span>👤</span>
-                        <span>View Profile</span>
-                    </button>
-                    <button class="user-dropdown-item" onclick="openSettings()">
-                        <span>⚙️</span>
-                        <span>Settings</span>
-                    </button>
-                    <button class="user-dropdown-item logout" onclick="logout()">
+<!-- Top Navbar -->
+<nav class="top-navbar">
+    <div class="navbar-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="navbar-title">Lookit Admin</div>
+    </div>
+    <div class="navbar-right">
+        <input type="text" class="navbar-search" placeholder="Search...">
+        <div class="navbar-user" id="navbarUser" onclick="toggleUserDropdown(event)">
+            <div class="user-avatar">A</div>
+            <span>Admin</span>
+            <div class="user-dropdown" id="userDropdown">
+                <button class="user-dropdown-item" onclick="viewProfile()">
+                    <span>👤</span>
+                    <span>View Profile</span>
+                </button>
+                <button class="user-dropdown-item" onclick="openSettings()">
+                    <span>⚙️</span>
+                    <span>Settings</span>
+                </button>
+                <a style="text-decoration: none;" href="{% url 'admin-logout' %}">
+                    <button class="user-dropdown-item logout">
                         <span>🚪</span>
                         <span>Logout</span>
                     </button>
-                </div>
+                </a>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>

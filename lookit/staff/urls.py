@@ -1,10 +1,23 @@
 from django.urls import path
-from .views import admin_login, admin_dashboard, admin_logout, admin_user_management
+from .views import (
+    admin_login,
+    admin_dashboard,
+    admin_logout,
+    admin_user_management,
+    admin_view_user,
+    admin_edit_user,
+    admin_add_staff,
+    admin_view_staff,
+)
 
 
 urlpatterns = [
-    path("login/",admin_login, name="admin-login"),
+    path("login/", admin_login, name="admin-login"),
     path("", admin_dashboard, name="admin-dashboard"),
     path("logout/", admin_logout, name="admin-logout"),
-    path("user_management/", admin_user_management, name="admin-user")
+    path("user_management/", admin_user_management, name="admin-user"),
+    path("view-user/", admin_view_user, name="admin-view-user"),
+    path("edit-user", admin_edit_user, name="admin-edit-user"),
+    path("add-staff/", admin_add_staff, name="admin-add-staff"),
+    path("view-staff", admin_view_staff, name="admin-view-staff")
 ]

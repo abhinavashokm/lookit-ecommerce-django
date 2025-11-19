@@ -1,0 +1,296 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'staff/user/css/view_user.css' %}">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<main class="main-content">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="user_management.html">User Management</a>
+        <span>/</span>
+        <span>Ethan Walker</span>
+    </div>
+
+    <!-- User Header -->
+    <div class="user-header">
+        <div class="user-info">
+            <h1 class="user-name">Ethan Walker</h1>
+            <div class="user-meta">
+                <div class="user-meta-item">
+                    <span>User ID:</span>
+                    <span>usr30454</span>
+                </div>
+            </div>
+            <div class="badges-container">
+                <span class="status-badge">Active</span>
+                <span class="role-badge">User</span>
+            </div>
+        </div>
+        <div class="user-avatar-large">👤</div>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="section-card">
+        <h2 class="section-title">Contact Information</h2>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <span class="contact-label">Email</span>
+                <span class="contact-value">ethan.walker@email.com</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Phone</span>
+                <span class="contact-value">5551 234-5678</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Gender</span>
+                <span class="contact-value">Male</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Date of Birth</span>
+                <span class="contact-value">1990-05-15</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Address</span>
+                <span class="contact-value">123 Elm Street, Anytown, USA</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Joined Date</span>
+                <span class="contact-value">2023-11-20</span>
+            </div>
+        </div>
+        <div class="section-actions">
+            <a href="{% url 'admin-edit-user' %}">
+                <button class="btn btn-edit">Edit Info</button>
+            </a>
+            <button class="btn btn-block" onclick="blockUser()">Block User</button>
+        </div>
+    </div>
+
+    <!-- Referral Information -->
+    <div class="section-card">
+        <h2 class="section-title">Referral Information</h2>
+        <div class="contact-grid">
+            <div class="contact-item">
+                <span class="contact-label">Referral Code</span>
+                <span class="contact-value">ETHAN2024</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Referral Reward</span>
+                <span class="contact-value">$25.00</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Total Referrals</span>
+                <span class="contact-value">8</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Referrals Earned</span>
+                <span class="contact-value">$50.00</span>
+            </div>
+            <div class="contact-item">
+                <span class="contact-label">Referred By</span>
+                <span class="contact-value">john_doe456</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="section-card">
+        <h2 class="section-title">Recent Orders</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order-id">#12345</td>
+                        <td>May 15, 2024</td>
+                        <td><span class="status-badge status-shipped">Shipped</span></td>
+                        <td>$150</td>
+                    </tr>
+                    <tr>
+                        <td class="order-id">#12344</td>
+                        <td>May 10, 2024</td>
+                        <td><span class="status-badge status-delivered">Delivered</span></td>
+                        <td>$200</td>
+                    </tr>
+                    <tr>
+                        <td class="order-id">#12343</td>
+                        <td>May 5, 2024</td>
+                        <td><span class="status-badge status-delivered">Delivered</span></td>
+                        <td>$100</td>
+                    </tr>
+                    <tr>
+                        <td class="order-id">#12342</td>
+                        <td>April 20, 2024</td>
+                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
+                        <td>$50</td>
+                    </tr>
+                    <tr>
+                        <td class="order-id">#12341</td>
+                        <td>April 15, 2024</td>
+                        <td><span class="status-badge status-delivered">Delivered</span></td>
+                        <td>$250</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <button class="btn-view-all" onclick="viewAllOrders()">View All</button>
+        </div>
+    </div>
+
+    <!-- User Wallet -->
+    <div class="section-card">
+        <h2 class="section-title">User Wallet</h2>
+        <div class="wallet-content">
+            <div class="wallet-balance">
+                <div class="balance-header">
+                    <span class="balance-icon">💳</span>
+                    <span class="balance-label">Current Balance</span>
+                </div>
+                <div class="balance-amount">$50.00</div>
+            </div>
+            <div class="wallet-actions">
+                <div class="wallet-form-title">
+                    <span>💵</span>
+                    <span>Manage Wallet</span>
+                </div>
+                <div class="wallet-form-group">
+                    <label class="wallet-form-label" for="walletAmount">Enter Amount</label>
+                    <div class="wallet-input-wrapper">
+                        <input type="number" class="wallet-input" id="walletAmount" placeholder="0.00" min="0"
+                            step="0.01">
+                    </div>
+                </div>
+                <div class="wallet-buttons">
+                    <button class="btn btn-deduct" onclick="deductAmount()">
+                        <span>➖</span>
+                        <span>Deduct</span>
+                    </button>
+                    <button class="btn btn-add" onclick="addAmount()">
+                        <span>➕</span>
+                        <span>Add</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="section-card">
+        <h2 class="section-title">Recent Transactions</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Transaction Type</th>
+                        <th>Payment Method</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="order-id">TXN10234</td>
+                        <td>2025-11-12</td>
+                        <td>Order Payment</td>
+                        <td>Wallet</td>
+                        <td>₹450.00</td>
+                    </tr>
+                    <tr>
+                        <td class="order-id">TXN10221</td>
+                        <td>2025-11-10</td>
+                        <td>Wallet Top-up</td>
+                        <td>UPI</td>
+                        <td>₹899.00</td>
+                    </tr>
+                    <tr>
+                        <td class="order-id">TXN10175</td>
+                        <td>2025-11-08</td>
+                        <td>Refund</td>
+                        <td>Credit Card</td>
+                        <td>₹300.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-footer">
+            <button class="btn-view-all" onclick="viewAllTransactions()">View All</button>
+        </div>
+    </div>
+
+    <!-- Activity and Account Controls -->
+    <div class="section-card">
+        <h2 class="section-title">Activity and Account Controls</h2>
+        <div class="activity-grid">
+            <div class="activity-item">
+                <span class="activity-label">Last Login</span>
+                <span class="activity-value">May 20, 2024</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-label">IP Address</span>
+                <span class="activity-value">192.168.11</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-label">Total Orders</span>
+                <span class="activity-value">15</span>
+            </div>
+            <div class="activity-item">
+                <span class="activity-label">Total Spend</span>
+                <span class="activity-value">$750</span>
+            </div>
+        </div>
+        <div class="section-actions">
+            <button class="btn btn-secondary" onclick="sendPasswordReset()">Send Password Reset Link</button>
+            <button class="btn btn-delete" onclick="deleteAccount()">Delete Account</button>
+        </div>
+    </div>
+</main>
+<!-- Block User Confirmation Modal -->
+<div class="modal-overlay" id="blockModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title">Block User</h2>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message">Are you sure you want to block this user? They will no longer be able to access
+                their account.</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeBlockModal()">Cancel</button>
+                <button class="modal-btn modal-btn-block" onclick="confirmBlockUser()">Block User</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title">Delete Account</h2>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message">Are you sure you want to delete this user account? This action cannot be undone and
+                all their data will be permanently removed.</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDeleteAccount()">Delete Account</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'staff/user/js/view_user.js' %}"></script>
+{% endblock %}

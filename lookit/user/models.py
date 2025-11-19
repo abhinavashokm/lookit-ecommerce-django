@@ -47,6 +47,8 @@ class User(AbstractUser):
     referred_by = models.CharField(max_length=50, null=True, blank=True)
     referral_reward = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     
+    is_superadmin = models.BooleanField(default=False) #only a single super admin
+    
     status = models.CharField(max_length=10, default="Active")
     updated_at = models.DateField(auto_now=True)
     

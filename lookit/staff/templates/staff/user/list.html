@@ -11,7 +11,15 @@
     <div class="page-header">
         <h1 class="page-title">User Management</h1>
         <div class="header-actions">
-            <button class="btn btn-export">Export CSV</button>
+            <a href="{% url 'admin-add-staff' %}" class="btn btn-add-staff">
+                <span class="btn-add-staff-icon">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </span>
+                <span>Add New Staff</span>
+            </a>
         </div>
     </div>
 
@@ -19,34 +27,71 @@
     <div class="filters-section">
         <div class="search-container">
             <div class="search-bar">
-                <span class="search-icon">🔍</span>
                 <input type="text" placeholder="Search by Name, Email, or Phone" id="searchInput">
+                <span class="search-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </span>
             </div>
             <button class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
-                <span>🔽</span>
+                <span class="filter-icon"></span>
                 <span>Filters</span>
             </button>
         </div>
         <div class="filters-container" id="filtersContainer">
             <div class="filters-row">
                 <div class="filter-group">
-                    <select id="statusFilter">
-                        <option value="">Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="blocked">Blocked</option>
-                    </select>
-                    <span class="filter-arrow">▼</span>
+                    <div class="custom-dropdown">
+                        <button type="button" class="dropdown-button" onclick="toggleDropdown(this, event)"
+                            id="roleDropdownBtn">
+                            <span class="dropdown-text">Filter by Role</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="roleDropdown">
+                            <button type="button" class="dropdown-item" data-value="user"
+                                onclick="selectOption(this, 'roleDropdownBtn', event)">User</button>
+                            <button type="button" class="dropdown-item" data-value="staff"
+                                onclick="selectOption(this, 'roleDropdownBtn', event)">Staff</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="filter-group">
-                    <select id="dateFilter">
-                        <option value="">Registration Date</option>
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="year">This Year</option>
-                    </select>
-                    <span class="filter-arrow">▼</span>
+                    <div class="custom-dropdown">
+                        <button type="button" class="dropdown-button" onclick="toggleDropdown(this, event)"
+                            id="statusDropdownBtn">
+                            <span class="dropdown-text">Status</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="statusDropdown">
+                            <button type="button" class="dropdown-item" data-value="active"
+                                onclick="selectOption(this, 'statusDropdownBtn', event)">Active</button>
+                            <button type="button" class="dropdown-item" data-value="inactive"
+                                onclick="selectOption(this, 'statusDropdownBtn', event)">Inactive</button>
+                            <button type="button" class="dropdown-item" data-value="blocked"
+                                onclick="selectOption(this, 'statusDropdownBtn', event)">Blocked</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <div class="custom-dropdown">
+                        <button type="button" class="dropdown-button" onclick="toggleDropdown(this, event)"
+                            id="dateDropdownBtn">
+                            <span class="dropdown-text">Joined Date</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="dateDropdown">
+                            <button type="button" class="dropdown-item" data-value="today"
+                                onclick="selectOption(this, 'dateDropdownBtn', event)">Today</button>
+                            <button type="button" class="dropdown-item" data-value="week"
+                                onclick="selectOption(this, 'dateDropdownBtn', event)">This Week</button>
+                            <button type="button" class="dropdown-item" data-value="month"
+                                onclick="selectOption(this, 'dateDropdownBtn', event)">This Month</button>
+                            <button type="button" class="dropdown-item" data-value="year"
+                                onclick="selectOption(this, 'dateDropdownBtn', event)">This Year</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="filter-actions">
@@ -63,6 +108,7 @@
                 <tr>
                     <th>Profile</th>
                     <th>Full Name</th>
+                    <th>Role</th>
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Orders</th>
@@ -77,30 +123,33 @@
                         <div class="profile-picture">SC</div>
                     </td>
                     <td class="user-name">Sophia Carter</td>
+                    <td><span class="role-badge user">User</span></td>
                     <td class="user-email">sophia.carter@email.com</td>
                     <td class="user-phone">(555) 987-6543</td>
                     <td class="user-orders">12</td>
                     <td class="user-date">2023-08-15</td>
                     <td><span class="status-badge status-active">Active</span></td>
-                    <td><button class="btn-view" onclick="viewUser(1)">View</button></td>
+                    <td><a href="{% url 'admin-view-user' %}"><button class="btn-view" >View</button></a></td>
                 </tr>
                 <tr>
                     <td>
                         <div class="profile-picture">EW</div>
                     </td>
                     <td class="user-name">Ethan Walker</td>
+                    <td><span class="role-badge user">User</span></td>
                     <td class="user-email">ethan.walker@email.com</td>
                     <td class="user-phone">(555) 234-5678</td>
                     <td class="user-orders">8</td>
                     <td class="user-date">2023-11-20</td>
                     <td><span class="status-badge status-active">Active</span></td>
-                    <td><button class="btn-view" onclick="viewUser(2)">View</button></td>
+                    <td><a href="{% url 'admin-view-staff' %}"><button class="btn-view" >View</button></a></td>
                 </tr>
                 <tr>
                     <td>
                         <div class="profile-picture">AH</div>
                     </td>
                     <td class="user-name">Ava Harper</td>
+                    <td><span class="role-badge staff">Staff</span></td>
                     <td class="user-email">ava.harper@email.com</td>
                     <td class="user-phone">(555) 876-5432</td>
                     <td class="user-orders">5</td>
@@ -113,6 +162,7 @@
                         <div class="profile-picture">LF</div>
                     </td>
                     <td class="user-name">Liam Foster</td>
+                    <td><span class="role-badge user">User</span></td>
                     <td class="user-email">liam.foster@email.com</td>
                     <td class="user-phone">(555) 345-6789</td>
                     <td class="user-orders">15</td>
@@ -125,6 +175,7 @@
                         <div class="profile-picture">CR</div>
                     </td>
                     <td class="user-name">Chloe Reed</td>
+                    <td><span class="role-badge staff">Staff</span></td>
                     <td class="user-email">chloe.reed@email.com</td>
                     <td class="user-phone">(555) 456-7890</td>
                     <td class="user-orders">3</td>
