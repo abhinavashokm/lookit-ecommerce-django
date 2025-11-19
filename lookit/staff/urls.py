@@ -9,7 +9,6 @@ from .views import (
     admin_add_staff,
     admin_view_staff,
     admin_block_user_toggle,
-    admin_search_users,
     admin_filter_users,
 )
 
@@ -24,7 +23,6 @@ urlpatterns = [
     path("add-staff/", admin_add_staff, name="admin-add-staff"),
     path("view-staff/<staff_id>", admin_view_staff, name="admin-view-staff"),
     path("block-user-toggle/<user_id>", admin_block_user_toggle, name="admin-block-user-toggle"),
-    path("search-users", admin_search_users, name="admin-search-users"),
-    path("filter-users", admin_filter_users, name="admin-filter-users")
+    path("filter-users", admin_filter_users, name="admin-filter-users"),
     
 ]

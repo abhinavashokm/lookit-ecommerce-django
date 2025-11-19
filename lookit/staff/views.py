@@ -84,20 +84,6 @@ def admin_view_staff(request, staff_id):
     return render(request, "staff/user/view_staff.html", {"staff": staff_data})
 
 
-def admin_search_users(request):
-    if request.method == 'GET':
-        search_key = request.GET.get('search_key', '')
-        if search_key == "":
-            return redirect("admin-user")
-        search_result = User.objects.filter(
-            Q(full_name__icontains=search_key) | Q(email__icontains=search_key)
-        )
-        print(search_result)
-        return render(
-            request,
-            "staff/user/list.html",
-            {'users': search_result, 'search_key': search_key},
-        )
 
 
 def admin_filter_users(request):

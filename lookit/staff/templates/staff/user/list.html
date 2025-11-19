@@ -40,13 +40,15 @@
                         </svg>
                     </span>
                     <div class="search-actions">
-                        <button type="button" class="clear-btn" id="clearBtn" onclick="clearSearch()">
+                        <a style="text-decoration: none;" href="{% url 'admin-filter-users' %}">
+                        <button type="button" class="clear-btn" id="clearBtn" >
                             <svg viewBox="0 0 24 24">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
                             <span>Clear</span>
                         </button>
+                        </a>
                     </div>
                 </div>
                 <button type="submit" class="search-btn" id="searchBtn">

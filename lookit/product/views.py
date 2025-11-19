@@ -13,3 +13,5 @@ def admin_add_variant(request):
 def admin_list_variants(request):
     return render(request, "product/admin/list_variants.html")
 
+def admin_category_management(request):
+    return render(request, 'product/admin/category_management.html')
