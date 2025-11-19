@@ -16,8 +16,8 @@ urlpatterns = [
     path("", admin_dashboard, name="admin-dashboard"),
     path("logout/", admin_logout, name="admin-logout"),
     path("user_management/", admin_user_management, name="admin-user"),
-    path("view-user/", admin_view_user, name="admin-view-user"),
+    path("view-user/<user_id>", admin_view_user, name="admin-view-user"),
     path("edit-user", admin_edit_user, name="admin-edit-user"),
     path("add-staff/", admin_add_staff, name="admin-add-staff"),
-    path("view-staff", admin_view_staff, name="admin-view-staff")
+    path("view-staff/<staff_id>", admin_view_staff, name="admin-view-staff")
 ]

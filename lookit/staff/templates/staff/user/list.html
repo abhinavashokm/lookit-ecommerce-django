@@ -110,79 +110,51 @@
                     <th>Full Name</th>
                     <th>Role</th>
                     <th>Email</th>
-                    <th>Phone</th>
-                    <th>Orders</th>
+                    <th>Total Orders</th>
                     <th>Joined Date</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
+                {% for user in users %}
                 <tr>
                     <td>
                         <div class="profile-picture">SC</div>
                     </td>
-                    <td class="user-name">Sophia Carter</td>
-                    <td><span class="role-badge user">User</span></td>
-                    <td class="user-email">sophia.carter@email.com</td>
-                    <td class="user-phone">(555) 987-6543</td>
+                    <td class="user-name">{{ user.full_name }}</td>
+                    <td>
+                        {% if user.is_staff %}
+                        {% if user.is_superadmin %}
+                        <span class="role-badge admin">Admin</span>
+                        {% else %}
+                        <span class="role-badge staff">Staff</span>
+                        {% endif %}
+                        {% else %}
+                        <span class="role-badge user">User</span>
+                        {% endif %}
+
+                    </td>
+                    <td class="user-email">{{ user.email }}</td>
                     <td class="user-orders">12</td>
-                    <td class="user-date">2023-08-15</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><a href="{% url 'admin-view-user' %}"><button class="btn-view" >View</button></a></td>
-                </tr>
-                <tr>
+                    <td class="user-date">{{ user.created_at }}</td>
                     <td>
-                        <div class="profile-picture">EW</div>
+                        {%if user.is_active %}
+                        <span class="status-badge status-active">Active</span>
+                        {% else %}
+                        <span class="status-badge status-blocked">Blocked</span>
+                        {% endif %}
                     </td>
-                    <td class="user-name">Ethan Walker</td>
-                    <td><span class="role-badge user">User</span></td>
-                    <td class="user-email">ethan.walker@email.com</td>
-                    <td class="user-phone">(555) 234-5678</td>
-                    <td class="user-orders">8</td>
-                    <td class="user-date">2023-11-20</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><a href="{% url 'admin-view-staff' %}"><button class="btn-view" >View</button></a></td>
-                </tr>
-                <tr>
                     <td>
-                        <div class="profile-picture">AH</div>
+                        {% if user.is_staff %}
+                        <a href="{% url 'admin-view-staff' user.id %}"><button class="btn-view">View</button></a>
+                        {% else %}
+                        <a href="{% url 'admin-view-user' user.id %}"><button class="btn-view">View</button></a>
+                        {% endif %}
                     </td>
-                    <td class="user-name">Ava Harper</td>
-                    <td><span class="role-badge staff">Staff</span></td>
-                    <td class="user-email">ava.harper@email.com</td>
-                    <td class="user-phone">(555) 876-5432</td>
-                    <td class="user-orders">5</td>
-                    <td class="user-date">2024-01-10</td>
-                    <td><span class="status-badge status-inactive">Inactive</span></td>
-                    <td><button class="btn-view" onclick="viewUser(3)">View</button></td>
                 </tr>
-                <tr>
-                    <td>
-                        <div class="profile-picture">LF</div>
-                    </td>
-                    <td class="user-name">Liam Foster</td>
-                    <td><span class="role-badge user">User</span></td>
-                    <td class="user-email">liam.foster@email.com</td>
-                    <td class="user-phone">(555) 345-6789</td>
-                    <td class="user-orders">15</td>
-                    <td class="user-date">2023-07-05</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td><button class="btn-view" onclick="viewUser(4)">View</button></td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="profile-picture">CR</div>
-                    </td>
-                    <td class="user-name">Chloe Reed</td>
-                    <td><span class="role-badge staff">Staff</span></td>
-                    <td class="user-email">chloe.reed@email.com</td>
-                    <td class="user-phone">(555) 456-7890</td>
-                    <td class="user-orders">3</td>
-                    <td class="user-date">2024-03-22</td>
-                    <td><span class="status-badge status-blocked">Blocked</span></td>
-                    <td><button class="btn-view" onclick="viewUser(5)">View</button></td>
-                </tr>
+                {% endfor %}
+
             </tbody>
         </table>
 
@@ -197,6 +169,7 @@
             <button class="pagination-btn">›</button>
         </div>
     </div>
+
 </main>
 {% endblock %}
 

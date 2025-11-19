@@ -50,6 +50,7 @@ class User(AbstractUser):
     is_superadmin = models.BooleanField(default=False) #only a single super admin
     
     status = models.CharField(max_length=10, default="Active")
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     
     #Use email as the unique identifier for login instead of username.
@@ -60,6 +61,9 @@ class User(AbstractUser):
     
     #set custom user manager, becuase we are using email for authentication
     objects = UserManager()
+    
+    class Meta:
+        ordering = ['-created_at']
     
     def save(self, *args, **kwargs):
         if not self.referral_code:

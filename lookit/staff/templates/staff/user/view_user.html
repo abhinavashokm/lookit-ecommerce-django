@@ -9,9 +9,9 @@
 <main class="main-content">
     <!-- Breadcrumbs -->
     <div class="breadcrumbs">
-        <a href="user_management.html">User Management</a>
+        <a href="{% url 'admin-user' %}">User Management</a>
         <span>/</span>
-        <span>Ethan Walker</span>
+        <span>{{ user.full_name }}</span>
     </div>
 
     <!-- User Header -->

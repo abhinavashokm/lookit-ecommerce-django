@@ -411,6 +411,7 @@
        .role-badge {
            display: inline-flex;
            align-items: center;
+           justify-content: center;
            padding: 4px 10px;
            border-radius: 12px;
            font-size: 0.75rem;
@@ -422,11 +423,19 @@
        .role-badge.user {
            background: #e0f2fe;
            color: #0369a1;
+           min-width: 57.34px;
        }
 
        .role-badge.staff {
            background: #f3e8ff;
            color: #7c3aed;
+           min-width: 57.34px;
+       }
+
+        .role-badge.admin {
+           background: #f3e8ff;
+           color: #ff0000;
+           min-width: 57.34px;
        }
 
        .user-email {
@@ -447,11 +456,14 @@
        }
 
        .status-badge {
-           display: inline-block;
+           display: inline-flex;
+           justify-content: center;
+           align-items: center;
            padding: 6px 12px;
            border-radius: 20px;
            font-size: 0.75rem;
            font-weight: 600;
+           min-width: 70.69px;
        }
 
        .status-active {
