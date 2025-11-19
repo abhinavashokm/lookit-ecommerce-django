@@ -17,15 +17,20 @@
     <!-- User Header -->
     <div class="user-header">
         <div class="user-info">
-            <h1 class="user-name">Ethan Walker</h1>
+            <h1 class="user-name">{{ user.full_name }}</h1>
             <div class="user-meta">
                 <div class="user-meta-item">
                     <span>User ID:</span>
-                    <span>usr30454</span>
+                    <span>USR-{{ user.id|stringformat:"04d" }}
+</span>
                 </div>
             </div>
             <div class="badges-container">
-                <span class="status-badge">Active</span>
+                {% if user.is_active %}
+                <span class="status-badge active">Active</span>
+                {% else %}
+                <span class="status-badge blocked">Blocked</span>
+                {% endif %}
                 <span class="role-badge">User</span>
             </div>
         </div>
@@ -38,7 +43,7 @@
         <div class="contact-grid">
             <div class="contact-item">
                 <span class="contact-label">Email</span>
-                <span class="contact-value">ethan.walker@email.com</span>
+                <span class="contact-value">{{ user.email }}</span>
             </div>
             <div class="contact-item">
                 <span class="contact-label">Phone</span>
@@ -65,7 +70,13 @@
             <a href="{% url 'admin-edit-user' %}">
                 <button class="btn btn-edit">Edit Info</button>
             </a>
+
+            {% if user.is_active %}
             <button class="btn btn-block" onclick="blockUser()">Block User</button>
+
+            {% else %}
+            <button class="btn btn-unblock" onclick="blockUser()">Unblock User</button>
+            {% endif %}
         </div>
     </div>
 
@@ -263,11 +274,24 @@
             <h2 class="modal-title">Block User</h2>
         </div>
         <div class="modal-body">
-            <p class="modal-message">Are you sure you want to block this user? They will no longer be able to access
-                their account.</p>
+            <p class="modal-message">
+                {% if user.is_active %}
+                Are you sure you want to block this user? They will no longer be able to access
+                their account.
+                {% else %}
+                Are you sure you want to unblock this user?
+                They will regain access to their account and be able to log in again
+                {% endif %}
+            </p>
             <div class="modal-actions">
                 <button class="modal-btn modal-btn-cancel" onclick="closeBlockModal()">Cancel</button>
-                <button class="modal-btn modal-btn-block" onclick="confirmBlockUser()">Block User</button>
+                <a href="{% url 'admin-block-user-toggle' user.id%}">
+                    {% if user.is_active %}
+                    <button class="modal-btn modal-btn-block">Block User</button>
+                    {% else %}
+                    <button class="modal-btn modal-btn-unblock">Unblock User</button>
+                    {% endif %}
+                </a>
             </div>
         </div>
     </div>

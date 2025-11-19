@@ -19,9 +19,7 @@ function closeBlockModal() {
 }
 
 function confirmBlockUser() {
-    alert('User blocked');
     closeBlockModal();
-    // Add actual block logic here
 }
 
 // View all orders

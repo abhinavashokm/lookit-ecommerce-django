@@ -64,6 +64,12 @@ def admin_view_user(request, user_id):
 def admin_edit_user(request):
     return render(request, "staff/user/edit.html")
 
+def admin_block_user_toggle(request, user_id):
+    user_data = User.objects.get(id=user_id)
+    user_data.is_active = not user_data.is_active
+    user_data.save()
+    return redirect('admin-view-user',user_id = user_id)
+
 def admin_add_staff(request):
     return render(request, "staff/user/add_staff.html")
 
