@@ -20,4 +20,4 @@ def send_otp_email(email, otp):
 
 
 def generate_referral_code():
-    return uuid.uuid4().hex[:10]
+    return uuid.uuid4().hex[:10].upper()

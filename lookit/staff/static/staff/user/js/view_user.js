@@ -58,29 +58,6 @@ function viewAllTransactions() {
     alert('View all transactions');
 }
 
-// Send password reset link
-function sendPasswordReset() {
-    if (confirm('Send password reset link to user email?')) {
-        alert('Password reset link sent');
-    }
-}
-
-// Delete account
-function deleteAccount() {
-    const modal = document.getElementById('deleteModal');
-    modal.classList.add('show');
-}
-
-function closeDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.classList.remove('show');
-}
-
-function confirmDeleteAccount() {
-    alert('Account deleted');
-    closeDeleteModal();
-    // Add actual delete logic here
-}
 
 // Close modal when clicking overlay
 document.addEventListener('click', (e) => {

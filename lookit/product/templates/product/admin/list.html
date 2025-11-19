@@ -19,62 +19,86 @@
 
     <!-- Search and Filters -->
     <div class="filters-section">
-        <div class="search-container">
-            <div class="search-bar">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Search products" id="searchInput">
+        <!-- Search Form -->
+        <form method="GET" action="" id="searchForm" class="search-form">
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" name="search" placeholder="Search products" id="searchInput" value="">
+                    <span class="search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </span>
+                    <div class="search-actions">
+                        <button type="button" class="clear-btn" id="clearBtn" onclick="clearSearch()">
+                            <svg viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn" id="searchBtn">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <span>Search</span>
+                </button>
+                <button type="button" class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
+                    <span class="filter-icon"></span>
+                    <span>Filters</span>
+                </button>
             </div>
-            <button class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
-                <span>🔽</span>
-                <span>Filters</span>
-            </button>
-        </div>
-        <div class="filters-container" id="filtersContainer">
-            <div class="filters-row">
-                <div class="filter-group">
-                    <select id="categoryFilter">
-                        <option value="">Category</option>
-                        <option value="t-shirts">T-shirts</option>
-                        <option value="hoodies">Hoodies</option>
-                        <option value="sweatshirts">Sweatshirts</option>
-                        <option value="tank-tops">Tank Tops</option>
-                    </select>
-                    <span class="filter-arrow">▼</span>
+        </form>
+        <!-- Filters Form -->
+        <form method="GET" action="" id="filterForm" class="filter-form">
+            <div class="filters-container" id="filtersContainer">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <select name="category" id="categorySelect" class="filter-select">
+                            <option value="">Category</option>
+                            <option value="t-shirts">T-shirts</option>
+                            <option value="hoodies">Hoodies</option>
+                            <option value="sweatshirts">Sweatshirts</option>
+                            <option value="tank-tops">Tank Tops</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select name="type" id="typeSelect" class="filter-select">
+                            <option value="">Type</option>
+                            <option value="men">Men</option>
+                            <option value="women">Women</option>
+                            <option value="unisex">Unisex</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select name="stock" id="stockSelect" class="filter-select">
+                            <option value="">Stock Status</option>
+                            <option value="in-stock">In Stock</option>
+                            <option value="low-stock">Low Stock</option>
+                            <option value="out-of-stock">Out of Stock</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select name="price" id="priceSelect" class="filter-select">
+                            <option value="">Price Range</option>
+                            <option value="0-20">$0 - $20</option>
+                            <option value="20-35">$20 - $35</option>
+                            <option value="35-50">$35 - $50</option>
+                            <option value="50+">$50+</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <select id="typeFilter">
-                        <option value="">Type</option>
-                        <option value="men">Men</option>
-                        <option value="women">Women</option>
-                        <option value="unisex">Unisex</option>
-                    </select>
-                    <span class="filter-arrow">▼</span>
-                </div>
-                <div class="filter-group">
-                    <select id="stockFilter">
-                        <option value="">Stock Status</option>
-                        <option value="in-stock">In Stock</option>
-                        <option value="low-stock">Low Stock</option>
-                        <option value="out-of-stock">Out of Stock</option>
-                    </select>
-                    <span class="filter-arrow">▼</span>
-                </div>
-                <div class="filter-group">
-                    <select id="priceFilter">
-                        <option value="">Price Range</option>
-                        <option value="0-20">$0 - $20</option>
-                        <option value="20-35">$20 - $35</option>
-                        <option value="35-50">$35 - $50</option>
-                        <option value="50+">$50+</option>
-                    </select>
-                    <span class="filter-arrow">▼</span>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-apply" id="applyFiltersBtn">Apply Filters</button>
+                    <button type="button" class="btn btn-reset" id="resetFiltersBtn" onclick="resetFilters()">Reset
+                        Filters</button>
                 </div>
             </div>
-            <div class="filter-actions">
-                <button class="btn btn-apply">Apply Filter</button>
-                <button class="btn btn-reset">Reset Filter</button>
-            </div>
-        </div>
+        </form>
     </div>
 
     <!-- Product Table -->
@@ -82,16 +106,19 @@
         <table>
             <thead>
                 <tr>
+                    <th>Product ID</th>
                     <th>Product Image</th>
                     <th>Product Name</th>
                     <th>Price</th>
                     <th>Stock</th>
                     <th>Status</th>
+                    <th>Manage Stocks</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
+                    <td class="product-id">PRD-001</td>
                     <td>
                         <div class="product-image" style="background: #f3e5ab;">👕</div>
                     </td>
@@ -100,18 +127,14 @@
                     <td class="product-stock">150</td>
                     <td><span class="status-badge status-active">Active</span></td>
                     <td>
-                        <div class="actions-dropdown">
-                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="viewVariants(1)">👁️ View Variants</button>
-                                <button class="dropdown-item" onclick="deactivateProduct(1)">⏸️ Deactivate</button>
-                                <button class="dropdown-item" onclick="editProduct(1)">✏️ Edit</button>
-                                <button class="dropdown-item delete" onclick="deleteProduct(1)">🗑️ Delete</button>
-                            </div>
-                        </div>
+                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                    </td>
+                    <td>
+                        <button class="btn-view" onclick="viewProduct(1)">View</button>
                     </td>
                 </tr>
                 <tr>
+                    <td class="product-id">PRD-002</td>
                     <td>
                         <div class="product-image" style="background: #c8e6c9;">👕</div>
                     </td>
@@ -120,18 +143,14 @@
                     <td class="product-stock">80</td>
                     <td><span class="status-badge status-active">Active</span></td>
                     <td>
-                        <div class="actions-dropdown">
-                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="viewVariants(2)">👁️ View Variants</button>
-                                <button class="dropdown-item" onclick="deactivateProduct(2)">⏸️ Deactivate</button>
-                                <button class="dropdown-item" onclick="editProduct(2)">✏️ Edit</button>
-                                <button class="dropdown-item delete" onclick="deleteProduct(2)">🗑️ Delete</button>
-                            </div>
-                        </div>
+                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                    </td>
+                    <td>
+                        <button class="btn-view" onclick="viewProduct(2)">View</button>
                     </td>
                 </tr>
                 <tr>
+                    <td class="product-id">PRD-003</td>
                     <td>
                         <div class="product-image" style="background: #f3e5ab;">👕</div>
                     </td>
@@ -140,18 +159,14 @@
                     <td class="product-stock">120</td>
                     <td><span class="status-badge status-active">Active</span></td>
                     <td>
-                        <div class="actions-dropdown">
-                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="viewVariants(3)">👁️ View Variants</button>
-                                <button class="dropdown-item" onclick="deactivateProduct(3)">⏸️ Deactivate</button>
-                                <button class="dropdown-item" onclick="editProduct(3)">✏️ Edit</button>
-                                <button class="dropdown-item delete" onclick="deleteProduct(3)">🗑️ Delete</button>
-                            </div>
-                        </div>
+                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                    </td>
+                    <td>
+                        <button class="btn-view" onclick="viewProduct(3)">View</button>
                     </td>
                 </tr>
                 <tr>
+                    <td class="product-id">PRD-004</td>
                     <td>
                         <div class="product-image" style="background: #f3e5ab;">👕</div>
                     </td>
@@ -160,18 +175,14 @@
                     <td class="product-stock">200</td>
                     <td><span class="status-badge status-active">Active</span></td>
                     <td>
-                        <div class="actions-dropdown">
-                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="viewVariants(4)">👁️ View Variants</button>
-                                <button class="dropdown-item" onclick="deactivateProduct(4)">⏸️ Deactivate</button>
-                                <button class="dropdown-item" onclick="editProduct(4)">✏️ Edit</button>
-                                <button class="dropdown-item delete" onclick="deleteProduct(4)">🗑️ Delete</button>
-                            </div>
-                        </div>
+                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                    </td>
+                    <td>
+                        <button class="btn-view" onclick="viewProduct(4)">View</button>
                     </td>
                 </tr>
                 <tr>
+                    <td class="product-id">PRD-005</td>
                     <td>
                         <div class="product-image" style="background: #bbdefb;">👕</div>
                     </td>
@@ -180,15 +191,10 @@
                     <td class="product-stock">90</td>
                     <td><span class="status-badge status-inactive">Inactive</span></td>
                     <td>
-                        <div class="actions-dropdown">
-                            <button class="actions-btn" onclick="toggleDropdown(this)">⋯</button>
-                            <div class="dropdown-menu">
-                                <button class="dropdown-item" onclick="viewVariants(5)">👁️ View Variants</button>
-                                <button class="dropdown-item" onclick="deactivateProduct(5)">⏸️ Deactivate</button>
-                                <button class="dropdown-item" onclick="editProduct(5)">✏️ Edit</button>
-                                <button class="dropdown-item delete" onclick="deleteProduct(5)">🗑️ Delete</button>
-                            </div>
-                        </div>
+                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                    </td>
+                    <td>
+                        <button class="btn-view" onclick="viewProduct(5)">View</button>
                     </td>
                 </tr>
             </tbody>

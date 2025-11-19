@@ -24,82 +24,87 @@
     </div>
 
     <!-- Search and Filters -->
-    <div class="filters-section">
-        <div class="search-container">
-            <div class="search-bar">
-                <input type="text" placeholder="Search by Name, Email, or Phone" id="searchInput">
-                <span class="search-icon">
+
+
+    <!-- Search Form -->
+    <form method="GET" action="{% url 'admin-filter-users' %}" id="searchForm" class="search-form">
+        <div class="filters-section">
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" name="search_key" placeholder="Search by Name or Email" id="searchInput"
+                        value="{{ request.GET.search_key  }}">
+                    <span class="search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </span>
+                    <div class="search-actions">
+                        <button type="button" class="clear-btn" id="clearBtn" onclick="clearSearch()">
+                            <svg viewBox="0 0 24 24">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            <span>Clear</span>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn" id="searchBtn">
                     <svg viewBox="0 0 24 24">
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
-                </span>
+                    <span>Search</span>
+                </button>
+                <button type="button" class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
+                    <span class="filter-icon"></span>
+                    <span>Filters</span>
+                </button>
             </div>
-            <button class="filter-toggle-btn" id="filterToggle" onclick="toggleFilters()">
-                <span class="filter-icon"></span>
-                <span>Filters</span>
-            </button>
-        </div>
-        <div class="filters-container" id="filtersContainer">
-            <div class="filters-row">
-                <div class="filter-group">
-                    <div class="custom-dropdown">
-                        <button type="button" class="dropdown-button" onclick="toggleDropdown(this, event)"
-                            id="roleDropdownBtn">
-                            <span class="dropdown-text">Filter by Role</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" id="roleDropdown">
-                            <button type="button" class="dropdown-item" data-value="user"
-                                onclick="selectOption(this, 'roleDropdownBtn', event)">User</button>
-                            <button type="button" class="dropdown-item" data-value="staff"
-                                onclick="selectOption(this, 'roleDropdownBtn', event)">Staff</button>
-                        </div>
+            <!-- Filters Form -->
+            <div class="filters-container {% if request.GET.role or request.GET.status or request.GET.date %}show{% endif %}"
+                id="filtersContainer">
+                <div class="filters-row">
+                    <div class="filter-group">
+                        <select name="role" id="roleSelect" class="filter-select">
+                            <option value="">Filter by Role</option>
+                            <option value="user" {% if request.GET.role == 'user' %}selected {% endif %}>User</option>
+                            <option value="staff" {% if request.GET.role == 'staff' %}selected {% endif %}>Staff</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select name="status" id="statusSelect" class="filter-select">
+                            <option value="">Status</option>
+                            <option value="active" {% if request.GET.status == 'active' %}selected {% endif %}>Active
+                            </option>
+                            <option value="blocked" {% if request.GET.status == 'blocked' %}selected {% endif %}>Blocked
+                            </option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select name="date" id="dateSelect" class="filter-select">
+                            <option value="">Joined Date</option>
+                            <option value="today" {% if request.GET.date == 'today' %}selected {% endif %}>Today</option>
+                            <option value="week" {% if request.GET.date == 'week' %}selected {% endif %}>This Week
+                            </option>
+                            <option value="month" {% if request.GET.date == 'month' %}selected {% endif %}>This Month
+                            </option>
+                            <option value="year" {% if request.GET.date == 'year' %}selected {% endif %}>This Year
+                            </option>
+                        </select>
                     </div>
                 </div>
-                <div class="filter-group">
-                    <div class="custom-dropdown">
-                        <button type="button" class="dropdown-button" onclick="toggleDropdown(this, event)"
-                            id="statusDropdownBtn">
-                            <span class="dropdown-text">Status</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" id="statusDropdown">
-                            <button type="button" class="dropdown-item" data-value="active"
-                                onclick="selectOption(this, 'statusDropdownBtn', event)">Active</button>
-                            <button type="button" class="dropdown-item" data-value="inactive"
-                                onclick="selectOption(this, 'statusDropdownBtn', event)">Inactive</button>
-                            <button type="button" class="dropdown-item" data-value="blocked"
-                                onclick="selectOption(this, 'statusDropdownBtn', event)">Blocked</button>
-                        </div>
-                    </div>
+                <div class="filter-actions">
+                    <button type="submit" name="action" value="filter" class="btn btn-apply" id="applyFiltersBtn">Apply
+                        Filters</button>
+                    <button type="submit" name="action" value="reset" class="btn btn-reset" id="resetFiltersBtn">Reset
+                        Filters</button>
                 </div>
-                <div class="filter-group">
-                    <div class="custom-dropdown">
-                        <button type="button" class="dropdown-button" onclick="toggleDropdown(this, event)"
-                            id="dateDropdownBtn">
-                            <span class="dropdown-text">Joined Date</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </button>
-                        <div class="dropdown-menu" id="dateDropdown">
-                            <button type="button" class="dropdown-item" data-value="today"
-                                onclick="selectOption(this, 'dateDropdownBtn', event)">Today</button>
-                            <button type="button" class="dropdown-item" data-value="week"
-                                onclick="selectOption(this, 'dateDropdownBtn', event)">This Week</button>
-                            <button type="button" class="dropdown-item" data-value="month"
-                                onclick="selectOption(this, 'dateDropdownBtn', event)">This Month</button>
-                            <button type="button" class="dropdown-item" data-value="year"
-                                onclick="selectOption(this, 'dateDropdownBtn', event)">This Year</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="filter-actions">
-                <button class="btn btn-apply">Apply Filters</button>
-                <button class="btn btn-reset">Reset Filters</button>
             </div>
         </div>
-    </div>
+    </form>
+
+
 
     <!-- User Table -->
     <div class="table-container">
@@ -137,7 +142,7 @@
                     </td>
                     <td class="user-email">{{ user.email }}</td>
                     <td class="user-orders">12</td>
-                    <td class="user-date">{{ user.created_at }}</td>
+                    <td class="user-date">{{ user.created_at.date }}</td>
                     <td>
                         {%if user.is_active %}
                         <span class="status-badge status-active">Active</span>

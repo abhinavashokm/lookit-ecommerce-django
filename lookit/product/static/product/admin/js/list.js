@@ -1,113 +1,118 @@
+/* ============================================
+     FILTERS FUNCTIONALITY
+     ============================================ */
 // Toggle filters functionality
 function toggleFilters() {
     const filtersContainer = document.getElementById('filtersContainer');
     const filterToggle = document.getElementById('filterToggle');
-    const icon = filterToggle.querySelector('span:first-child');
 
     filtersContainer.classList.toggle('show');
     filterToggle.classList.toggle('active');
+}
 
-    // Change icon based on state
-    if (filtersContainer.classList.contains('show')) {
-        icon.textContent = '🔼';
+// Update select color when value changes
+function updateSelectColor(select) {
+    if (select.value) {
+        select.classList.add('has-value');
+        select.style.color = '#111827';
     } else {
-        icon.textContent = '🔽';
+        select.classList.remove('has-value');
+        select.style.color = '#9ca3af';
     }
 }
 
-// Toggle dropdown menu
-function toggleDropdown(btn) {
-    const dropdown = btn.nextElementSibling;
-    const isOpen = dropdown.classList.contains('show');
+// Reset filters functionality
+function resetFilters() {
+    const filterForm = document.getElementById('filterForm');
+    filterForm.reset();
 
-    // Close all other dropdowns
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        if (menu !== dropdown) {
-            menu.classList.remove('show');
-            menu.classList.remove('above');
-            menu.style.visibility = '';
-            menu.style.display = '';
-        }
+    // Reset select colors to placeholder color
+    const selects = filterForm.querySelectorAll('.filter-select');
+    selects.forEach(select => {
+        updateSelectColor(select);
     });
-
-    if (!isOpen) {
-        // Temporarily show dropdown to measure it
-        dropdown.style.visibility = 'hidden';
-        dropdown.style.display = 'block';
-        dropdown.classList.add('show');
-
-        // Force a reflow to get accurate measurements
-        void dropdown.offsetHeight;
-
-        // Get positions
-        const btnRect = btn.getBoundingClientRect();
-        const dropdownRect = dropdown.getBoundingClientRect();
-        const dropdownHeight = dropdownRect.height;
-        const gap = 5;
-
-        // Check if dropdown would overflow below
-        const spaceBelow = window.innerHeight - btnRect.bottom - gap;
-        const spaceAbove = btnRect.top - gap;
-
-        // Position above if not enough space below AND more space above
-        if (spaceBelow < dropdownHeight && spaceAbove > spaceBelow) {
-            dropdown.classList.add('above');
-        } else {
-            dropdown.classList.remove('above');
-        }
-
-        // Make visible
-        dropdown.style.visibility = 'visible';
-    } else {
-        dropdown.classList.remove('show');
-        dropdown.classList.remove('above');
-        dropdown.style.visibility = '';
-        dropdown.style.display = '';
-    }
 }
 
-// Close dropdowns when clicking outside
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.actions-dropdown')) {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-            menu.classList.remove('show');
-            menu.classList.remove('above');
-            menu.style.visibility = '';
-            menu.style.display = '';
+/* ============================================
+   INITIALIZE UI ON PAGE LOAD
+   ============================================ */
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize clear button visibility based on search input value
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearBtn');
+    if (searchInput && clearBtn) {
+        // Show/hide clear button based on input value
+        if (searchInput.value.trim().length > 0) {
+            clearBtn.classList.add('show');
+        } else {
+            clearBtn.classList.remove('show');
+        }
+    }
+
+    // Initialize select colors and add change event listeners
+    const selects = document.querySelectorAll('.filter-select');
+    selects.forEach(select => {
+        // Set initial color
+        updateSelectColor(select);
+
+        // Update color on change
+        select.addEventListener('change', () => {
+            updateSelectColor(select);
         });
+    });
+});
+
+/* ============================================
+   SEARCH FUNCTIONALITY
+   ============================================ */
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const clearBtn = document.getElementById('clearBtn');
+
+// Update clear button visibility based on input value
+searchInput.addEventListener('input', () => {
+    if (searchInput.value.trim().length > 0) {
+        clearBtn.classList.add('show');
+    } else {
+        clearBtn.classList.remove('show');
+    }
+});
+
+// Clear search function - just clears the input field
+function clearSearch() {
+    searchInput.value = '';
+    clearBtn.classList.remove('show');
+    searchInput.focus();
+}
+
+// Escape key to clear search
+searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && searchInput.value.trim().length > 0) {
+        clearSearch();
     }
 });
 
 // Action functions
+function viewProduct(productId) {
+    window.location.href = 'view_product.html';
+}
+
 function viewVariants(productId) {
-    alert(`View variants for product ID: ${productId}`);
-    closeAllDropdowns();
+    window.location.href = 'view_variants.html';
 }
 
 function deactivateProduct(productId) {
     if (confirm(`Are you sure you want to deactivate product ID: ${productId}?`)) {
         alert(`Product ${productId} deactivated`);
-        closeAllDropdowns();
     }
 }
 
 function editProduct(productId) {
-    alert(`Edit product ID: ${productId}`);
-    closeAllDropdowns();
+    window.location.href = 'edit_product.html';
 }
 
 function deleteProduct(productId) {
     if (confirm(`Are you sure you want to delete product ID: ${productId}? This action cannot be undone.`)) {
         alert(`Product ${productId} deleted`);
-        closeAllDropdowns();
     }
-}
-
-function closeAllDropdowns() {
-    document.querySelectorAll('.dropdown-menu').forEach(menu => {
-        menu.classList.remove('show');
-        menu.classList.remove('above');
-        menu.style.visibility = '';
-        menu.style.display = '';
-    });
 }

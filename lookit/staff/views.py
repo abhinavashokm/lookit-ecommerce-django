@@ -3,6 +3,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from user.models import User
+from django.db.models import Q
+from datetime import date, timedelta
 
 
 # custom decorator
@@ -54,25 +56,94 @@ def admin_logout(request):
 
 def admin_user_management(request):
     user_list = User.objects.all()
-    return render(request, "staff/user/list.html",{'users': user_list})
+    return render(request, "staff/user/list.html", {'users': user_list})
 
 
 def admin_view_user(request, user_id):
     user_data = User.objects.get(id=user_id)
-    return render(request, "staff/user/view_user.html", {"user":user_data})
+    return render(request, "staff/user/view_user.html", {"user": user_data})
+
 
 def admin_edit_user(request):
     return render(request, "staff/user/edit.html")
+
 
 def admin_block_user_toggle(request, user_id):
     user_data = User.objects.get(id=user_id)
     user_data.is_active = not user_data.is_active
     user_data.save()
-    return redirect('admin-view-user',user_id = user_id)
+    return redirect('admin-view-user', user_id=user_id)
+
 
 def admin_add_staff(request):
     return render(request, "staff/user/add_staff.html")
 
+
 def admin_view_staff(request, staff_id):
     staff_data = User.objects.get(id=staff_id)
-    return render(request, "staff/user/view_staff.html",{"staff":staff_data})
+    return render(request, "staff/user/view_staff.html", {"staff": staff_data})
+
+
+def admin_search_users(request):
+    if request.method == 'GET':
+        search_key = request.GET.get('search_key', '')
+        if search_key == "":
+            return redirect("admin-user")
+        search_result = User.objects.filter(
+            Q(full_name__icontains=search_key) | Q(email__icontains=search_key)
+        )
+        print(search_result)
+        return render(
+            request,
+            "staff/user/list.html",
+            {'users': search_result, 'search_key': search_key},
+        )
+
+
+def admin_filter_users(request):
+    if request.method == 'GET':
+        if request.GET.get('action') == 'reset':
+            return redirect('admin-user')
+
+        search_key = request.GET.get('search_key', '').strip()
+        role = request.GET.get('role', '').strip()
+        status = request.GET.get('status', '').strip()
+        date_filter = request.GET.get('date', '').strip()
+
+        users = User.objects.all()
+
+        if role:
+            is_staff = True if role == 'staff' else False
+            users = users.filter(is_staff=is_staff)
+
+        if status:
+            is_active = True if status == 'active' else False
+            users = users.filter(is_active=is_active)
+
+            # ---- DATE filter ----
+        if date_filter:
+            today = date.today()
+
+            if date_filter == 'today':
+                users = users.filter(created_at__date=today)
+
+            elif date_filter == 'week':
+                start_of_week = today - timedelta(days=today.weekday())
+                users = users.filter(created_at__date__gte=start_of_week)
+
+            elif date_filter == 'month':
+                users = users.filter(
+                    created_at__year=today.year, created_at__month=today.month
+                )
+
+            elif date_filter == 'year':
+                users = users.filter(created_at__year=today.year)
+
+        if search_key:
+            users = users.filter(
+                Q(full_name__icontains=search_key) | Q(email__icontains=search_key)
+            )
+
+        print(request.GET)
+        # print(users)
+        return render(request, "staff/user/list.html", {'users': users})

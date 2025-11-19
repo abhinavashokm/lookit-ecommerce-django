@@ -47,15 +47,15 @@
             </div>
             <div class="contact-item">
                 <span class="contact-label">Phone</span>
-                <span class="contact-value">5551 234-5678</span>
+                <span class="contact-value">{{ user.phone | default:'not provided' }}</span>
             </div>
             <div class="contact-item">
                 <span class="contact-label">Gender</span>
-                <span class="contact-value">Male</span>
+                <span class="contact-value">{{ user.gender | default:'not provided' }}</span>
             </div>
             <div class="contact-item">
                 <span class="contact-label">Date of Birth</span>
-                <span class="contact-value">1990-05-15</span>
+                <span class="contact-value">{{ user.dob | default:'not provided' }}</span>
             </div>
             <div class="contact-item">
                 <span class="contact-label">Address</span>
@@ -86,7 +86,7 @@
         <div class="contact-grid">
             <div class="contact-item">
                 <span class="contact-label">Referral Code</span>
-                <span class="contact-value">ETHAN2024</span>
+                <span class="contact-value">{{ user.referral_code | upper }}</span>
             </div>
             <div class="contact-item">
                 <span class="contact-label">Referral Reward</span>
@@ -242,7 +242,7 @@
 
     <!-- Activity and Account Controls -->
     <div class="section-card">
-        <h2 class="section-title">Activity and Account Controls</h2>
+        <h2 class="section-title">Activity and Other Info</h2>
         <div class="activity-grid">
             <div class="activity-item">
                 <span class="activity-label">Last Login</span>
@@ -260,10 +260,6 @@
                 <span class="activity-label">Total Spend</span>
                 <span class="activity-value">$750</span>
             </div>
-        </div>
-        <div class="section-actions">
-            <button class="btn btn-secondary" onclick="sendPasswordReset()">Send Password Reset Link</button>
-            <button class="btn btn-delete" onclick="deleteAccount()">Delete Account</button>
         </div>
     </div>
 </main>
@@ -297,22 +293,6 @@
     </div>
 </div>
 
-<!-- Delete Account Confirmation Modal -->
-<div class="modal-overlay" id="deleteModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 class="modal-title">Delete Account</h2>
-        </div>
-        <div class="modal-body">
-            <p class="modal-message">Are you sure you want to delete this user account? This action cannot be undone and
-                all their data will be permanently removed.</p>
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-                <button class="modal-btn modal-btn-confirm" onclick="confirmDeleteAccount()">Delete Account</button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}

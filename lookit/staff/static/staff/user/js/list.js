@@ -1,108 +1,104 @@
-/* ============================================
-       FILTERS FUNCTIONALITY
-       ============================================ */
-// Toggle filters functionality
-function toggleFilters() {
-    const filtersContainer = document.getElementById('filtersContainer');
-    const filterToggle = document.getElementById('filterToggle');
 
-    filtersContainer.classList.toggle('show');
-    filterToggle.classList.toggle('active');
-}
-
-// Custom dropdown functionality
-function toggleDropdown(button, event) {
-    if (event) {
-        event.stopPropagation();
-    }
-    const dropdown = button.nextElementSibling;
-    const isActive = button.classList.contains('active');
-
-    // Close all other dropdowns
-    closeAllDropdowns();
-
-    // Toggle current dropdown
-    if (!isActive) {
-        button.classList.add('active');
-        dropdown.classList.add('show');
-    } else {
-        button.classList.remove('active');
-        dropdown.classList.remove('show');
-    }
-}
-
-function selectOption(item, buttonId, event) {
-    if (event) {
-        event.stopPropagation();
-    }
-    const button = document.getElementById(buttonId);
-    const dropdown = button.nextElementSibling;
-    const text = item.textContent;
-    const value = item.getAttribute('data-value');
-
-    // Update button text
-    button.querySelector('.dropdown-text').textContent = text;
-    button.classList.add('has-value');
-
-    // Update selected state
-    const allItems = dropdown.querySelectorAll('.dropdown-item');
-    allItems.forEach(i => i.classList.remove('selected'));
-    item.classList.add('selected');
-
-    // Store the value on the button
-    button.setAttribute('data-value', value);
-
-    // Close dropdown
-    button.classList.remove('active');
-    dropdown.classList.remove('show');
-}
-
-function closeAllDropdowns() {
-    const allButtons = document.querySelectorAll('.dropdown-button');
-    const allMenus = document.querySelectorAll('.dropdown-menu');
-
-    allButtons.forEach(btn => btn.classList.remove('active'));
-    allMenus.forEach(menu => menu.classList.remove('show'));
-}
-
-// Close dropdowns when clicking outside
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.custom-dropdown')) {
-        closeAllDropdowns();
-    }
-});
-
-// Reset filters functionality
-document.querySelector('.btn-reset')?.addEventListener('click', () => {
-    const allButtons = document.querySelectorAll('.dropdown-button');
-    allButtons.forEach(button => {
-        // Get the default placeholder text from the button id
-        const buttonId = button.id;
-        let defaultText = 'Status';
-        if (buttonId === 'roleDropdownBtn') {
-            defaultText = 'Filter by Role';
-        } else if (buttonId === 'dateDropdownBtn') {
-            defaultText = 'Joined Date';
+        /* ============================================
+           FILTERS FUNCTIONALITY
+           ============================================ */
+        // Toggle filters functionality
+        function toggleFilters() {
+            const filtersContainer = document.getElementById('filtersContainer');
+            const filterToggle = document.getElementById('filterToggle');
+            
+            filtersContainer.classList.toggle('show');
+            filterToggle.classList.toggle('active');
         }
 
-        button.querySelector('.dropdown-text').textContent = defaultText;
-        button.classList.remove('has-value');
-        button.removeAttribute('data-value');
+        // Update select color when value changes
+        function updateSelectColor(select) {
+            if (select.value) {
+                select.classList.add('has-value');
+                select.style.color = '#111827';
+            } else {
+                select.classList.remove('has-value');
+                select.style.color = '#9ca3af';
+            }
+        }
 
-        // Clear selected state
-        const dropdown = button.nextElementSibling;
-        const allItems = dropdown.querySelectorAll('.dropdown-item');
-        allItems.forEach(item => item.classList.remove('selected'));
-    });
+        // Reset filters functionality
+        function resetFilters() {
+            const filterForm = document.getElementById('filterForm');
+            filterForm.reset();
+            
+            // Reset select colors to placeholder color
+            const selects = filterForm.querySelectorAll('.filter-select');
+            selects.forEach(select => {
+                updateSelectColor(select);
+            });
+        }
 
-    closeAllDropdowns();
-});
+        /* ============================================
+           INITIALIZE UI ON PAGE LOAD
+           ============================================ */
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize clear button visibility based on search input value
+            const searchInput = document.getElementById('searchInput');
+            const clearBtn = document.getElementById('clearBtn');
+            if (searchInput && clearBtn) {
+                // Show/hide clear button based on input value
+                if (searchInput.value.trim().length > 0) {
+                    clearBtn.classList.add('show');
+                } else {
+                    clearBtn.classList.remove('show');
+                }
+            }
 
-/* ============================================
-   TABLE FUNCTIONALITY
-   ============================================ */
-// View user functionality
-function viewUser(userId) {
-    alert(`Viewing details for user ID: ${userId}`);
-    // Add navigation to user details page
-}
+            // Initialize select colors and add change event listeners
+            const selects = document.querySelectorAll('.filter-select');
+            selects.forEach(select => {
+                // Set initial color
+                updateSelectColor(select);
+                
+                // Update color on change
+                select.addEventListener('change', () => {
+                    updateSelectColor(select);
+                });
+            });
+        });
+
+        /* ============================================
+           SEARCH FUNCTIONALITY
+           ============================================ */
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const clearBtn = document.getElementById('clearBtn');
+
+        // Update clear button visibility based on input value
+        searchInput.addEventListener('input', () => {
+            if (searchInput.value.trim().length > 0) {
+                clearBtn.classList.add('show');
+            } else {
+                clearBtn.classList.remove('show');
+            }
+        });
+
+        // Clear search function - just clears the input field
+        function clearSearch() {
+            searchInput.value = '';
+            clearBtn.classList.remove('show');
+            searchInput.focus();
+        }
+
+        // Escape key to clear search
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchInput.value.trim().length > 0) {
+                clearSearch();
+            }
+        });
+
+        /* ============================================
+           TABLE FUNCTIONALITY
+           ============================================ */
+        // View user functionality
+        function viewUser(userId) {
+            alert(`Viewing details for user ID: ${userId}`);
+            // Add navigation to user details page
+        }
+
