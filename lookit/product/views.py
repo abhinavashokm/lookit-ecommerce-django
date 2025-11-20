@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from .models import Style, Product, Variant
-from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 
@@ -106,7 +105,7 @@ def admin_manage_stocks(request, product_id):
     variants = Variant.objects.filter(product=product)
     return render(request, "product/admin/manage_stocks.html",{'product':product, 'variants': variants})
 
-@csrf_exempt
+
 def admin_update_stock(request):
     print("call vannnne.....")
     if request.method == "POST":

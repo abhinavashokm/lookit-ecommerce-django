@@ -2,6 +2,7 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'staff/user/css/list.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
 {% endblock %}
 
 <!-- Main Content -->
@@ -124,7 +125,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user in users %}
+                {% for user in page_obj %}
                 <tr>
                     <td>
                         <div class="profile-picture">SC</div>
@@ -166,15 +167,8 @@
         </table>
 
         <!-- Pagination -->
-        <div class="pagination">
-            <button class="pagination-btn" disabled>‹</button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">4</button>
-            <button class="pagination-btn">5</button>
-            <button class="pagination-btn">›</button>
-        </div>
+        {% include 'admin_base/components/pagination.html' %}
+
     </div>
 
 </main>

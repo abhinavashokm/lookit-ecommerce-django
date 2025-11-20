@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import user_passes_test
 from user.models import User
 from django.db.models import Q
 from datetime import date, timedelta
+from django.core.paginator import Paginator
 
 
 # custom decorator
@@ -56,7 +57,13 @@ def admin_logout(request):
 
 def admin_user_management(request):
     user_list = User.objects.all()
-    return render(request, "staff/user/list.html", {'users': user_list})
+    
+    #pagination
+    paginator = Paginator(user_list, 7)
+    page = request.GET.get('page')
+    page_obj = paginator.get_page(page)
+    
+    return render(request, "staff/user/list.html", {'page_obj': page_obj})
 
 
 def admin_view_user(request, user_id):
