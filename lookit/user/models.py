@@ -63,7 +63,7 @@ class User(AbstractUser):
     objects = UserManager()
     
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-is_active','-created_at']
     
     def save(self, *args, **kwargs):
         if not self.referral_code:

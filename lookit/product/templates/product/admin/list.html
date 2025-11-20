@@ -12,8 +12,9 @@
     <div class="page-header">
         <h1 class="page-title">Product Management</h1>
         <div class="header-actions">
-            <button class="btn btn-view-types">View Types</button>
-            <button class="btn btn-add-product">+ Add Product</button>
+            <a href="{% url 'admin-add-product' %}">
+                <button class="btn btn-add-product">+ Add Product</button>
+            </a>
         </div>
     </div>
 
