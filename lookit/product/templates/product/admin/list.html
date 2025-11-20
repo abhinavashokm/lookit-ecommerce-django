@@ -2,6 +2,7 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'product/admin/css/list.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
 {% endblock %}
 
 <!-- Main Content -->
@@ -118,99 +119,40 @@
                 </tr>
             </thead>
             <tbody>
+
+                {% for product in page_obj %}
                 <tr>
-                    <td class="product-id">PRD-001</td>
+                    <td class="product-id">PRD-{{product.id|stringformat:'04d'}}</td>
                     <td>
                         <div class="product-image" style="background: #f3e5ab;">👕</div>
                     </td>
-                    <td class="product-name">Classic Cotton Tee</td>
-                    <td class="product-price">$20</td>
+                    <td class="product-name">{{product.name}}</td>
+                    <td class="product-price">${{ product.price }}</td>
                     <td class="product-stock">150</td>
-                    <td><span class="status-badge status-active">Active</span></td>
                     <td>
-                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                        {% if product.is_active %}
+                        <span class="status-badge status-active">Active</span>
+                        {% else %}
+                        <span class="status-badge status-inactive">Inactive</span>
+                        {% endif %}
                     </td>
                     <td>
-                        <button class="btn-view" onclick="viewProduct(1)">View</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="product-id">PRD-002</td>
-                    <td>
-                        <div class="product-image" style="background: #c8e6c9;">👕</div>
-                    </td>
-                    <td class="product-name">Cozy Fleece Hoodie</td>
-                    <td class="product-price">$45</td>
-                    <td class="product-stock">80</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td>
-                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
+                        <a href="{% url 'admin-manage-stocks' product.id %}" class="manage-stocks-link">Manage Stocks</a>
                     </td>
                     <td>
-                        <button class="btn-view" onclick="viewProduct(2)">View</button>
+                        <a href="{% url 'admin-view-product' product.id %}">
+                            <button class="btn-view">View</button>
+                        </a>
                     </td>
                 </tr>
-                <tr>
-                    <td class="product-id">PRD-003</td>
-                    <td>
-                        <div class="product-image" style="background: #f3e5ab;">👕</div>
-                    </td>
-                    <td class="product-name">Relaxed Fit Sweatshirt</td>
-                    <td class="product-price">$35</td>
-                    <td class="product-stock">120</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td>
-                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
-                    </td>
-                    <td>
-                        <button class="btn-view" onclick="viewProduct(3)">View</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="product-id">PRD-004</td>
-                    <td>
-                        <div class="product-image" style="background: #f3e5ab;">👕</div>
-                    </td>
-                    <td class="product-name">Performance Tank Top</td>
-                    <td class="product-price">$18</td>
-                    <td class="product-stock">200</td>
-                    <td><span class="status-badge status-active">Active</span></td>
-                    <td>
-                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
-                    </td>
-                    <td>
-                        <button class="btn-view" onclick="viewProduct(4)">View</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="product-id">PRD-005</td>
-                    <td>
-                        <div class="product-image" style="background: #bbdefb;">👕</div>
-                    </td>
-                    <td class="product-name">Thermal Long Sleeve</td>
-                    <td class="product-price">$28</td>
-                    <td class="product-stock">90</td>
-                    <td><span class="status-badge status-inactive">Inactive</span></td>
-                    <td>
-                        <a href="view_variants.html" class="manage-stocks-link">Manage Stocks</a>
-                    </td>
-                    <td>
-                        <button class="btn-view" onclick="viewProduct(5)">View</button>
-                    </td>
-                </tr>
+                {% endfor %}
+
             </tbody>
         </table>
 
         <!-- Pagination -->
-        <div class="pagination">
-            <button class="pagination-btn" disabled>‹</button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">4</button>
-            <button class="pagination-btn">5</button>
-            <button class="pagination-btn">›</button>
-        </div>
+        {% include 'admin_base/components/pagination.html' %}
+
     </div>
 </main>
 {% endblock %}

@@ -10,6 +10,9 @@ from .views import (
     admin_delete_category,
     admin_restore_category,
     admin_edit_category,
+    admin_view_product,
+    admin_manage_stocks,
+    admin_update_stock
 )
 
 urlpatterns = [
@@ -27,4 +30,7 @@ urlpatterns = [
     path("admin/delete-category/<style_id>", admin_delete_category, name="admin-delete-category"),
     path("admin/restore-category/<style_id>", admin_restore_category, name="admin-restore-category"),
     path("admin/edit-category/", admin_edit_category, name="admin-edit-category"),
+    path("admin/view-product/<product_id>", admin_view_product, name="admin-view-product"),
+    path("admin/product/manage-stocks/<product_id>", admin_manage_stocks, name="admin-manage-stocks"),
+    path("admin/product/update-stock", admin_update_stock, name="admin-update-stock")
 ]

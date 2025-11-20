@@ -19,7 +19,8 @@ class Product(models.Model):
         UNISEX = 'UNISEX', 'Unisex'
 
     name = models.CharField(max_length=50)
-    description = models.TextField()
+    brand = models.CharField(max_length=50, blank=True)
+    description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
 
     material = models.CharField(max_length=50, null=True, blank=True)
@@ -30,7 +31,18 @@ class Product(models.Model):
     category = models.CharField(
         max_length=10, choices=Category.choices, default=Category.UNISEX
     )
-    tshirt_type = models.ForeignKey(Style, on_delete=models.PROTECT)
+    style = models.ForeignKey(Style, on_delete=models.PROTECT, blank=True, null=True)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['is_active','created_at']
+        
+        
+class Variant(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    size = models.CharField(max_length=10) #make it unique
+    stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

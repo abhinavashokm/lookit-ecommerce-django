@@ -1,0 +1,157 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'product/admin/css/view_product.css' %}">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="{% url 'admin-list-products' %}">Products</a>
+        <span>/</span>
+        <span>{{ product.name }}</span>
+    </div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Product Details</h1>
+        <div class="page-actions">
+            <button class="btn-secondary">Edit</button>
+            <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
+        </div>
+    </div>
+
+    <!-- Product Header -->
+    <div class="product-header">
+        <div class="product-info">
+            <div class="product-name-row">
+                <h1 class="product-name">{{ product.name }}</h1>
+                <span class="status-badge status-active">Active</span>
+            </div>
+            <div class="product-brand">{{product.brand}}</div>
+            <p class="product-description">{{ product.description }}</p>
+            <div class="product-categories">
+                <div class="category-badge">
+                    <span class="category-label">Category:</span>
+                    <span class="category-value">{{ product.category }}</span>
+                </div>
+                <div class="category-badge">
+                    <span class="category-label">Style:</span>
+                    <span class="category-value">{{ product.style.name }}</span>
+                </div>
+            </div>
+            <div class="product-meta">
+                <div class="product-meta-item">
+                    <span class="product-meta-label">Product ID:</span>
+                    <span class="product-meta-value">PRD-{{ product.id | stringformat:'04d' }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="product-thumbnail">
+            <img src="https://via.placeholder.com/300x300?text=Thumbnail" alt="Product Thumbnail">
+        </div>
+    </div>
+
+    <!-- Mobile Actions (shown only on small devices) -->
+    <div class="mobile-actions">
+        <button class="btn-secondary" onclick="editProduct()">Edit</button>
+        <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
+    </div>
+
+    <!-- Details Container -->
+    <div class="details-container">
+        <!-- Pricing & Inventory -->
+        <div class="details-section">
+            <h2 class="section-title">Pricing & Inventory</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Base Price</span>
+                    <span class="detail-value price">₹{{ product.price }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Variants</span>
+                    <span class="detail-value">12</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Stock</span>
+                    <span class="detail-value stock">450 units</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Units Sold</span>
+                    <span class="detail-value sold">1,234 units</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Revenue Generated</span>
+                    <span class="detail-value revenue">$37,001.66</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Created Date</span>
+                    <span class="detail-value date">{{ product.created_at.date }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Specifications -->
+        <div class="details-section">
+            <h2 class="section-title">Product Specifications</h2>
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Material</span>
+                    <span class="detail-value">{{ product.material }}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Fit</span>
+                    <span class="detail-value">{{ product.fit }}</span>
+                </div>
+                <div class="detail-item full-width">
+                    <span class="detail-label">Care Instructions</span>
+                    <span class="detail-value">{{ product.care_instructions }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Gallery -->
+        <div class="details-section">
+            <h2 class="section-title">Product Gallery</h2>
+            <div class="image-preview">
+                <div class="image-preview-item">
+                    <img src="https://via.placeholder.com/300x300?text=Image+1" alt="Product Image 1">
+                </div>
+                <div class="image-preview-item">
+                    <img src="https://via.placeholder.com/300x300?text=Image+2" alt="Product Image 2">
+                </div>
+                <div class="image-preview-item">
+                    <img src="https://via.placeholder.com/300x300?text=Image+3" alt="Product Image 3">
+                </div>
+                <div class="image-preview-item">
+                    <img src="https://via.placeholder.com/300x300?text=Image+4" alt="Product Image 4">
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title">Delete Product</h2>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message">Are you sure you want to delete this product? This action cannot be undone and all
+                product data including variants will be permanently removed.</p>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'product/admin/js/view_product.js' %}"></script>
+{% endblock %}

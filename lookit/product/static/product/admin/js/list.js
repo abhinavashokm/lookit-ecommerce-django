@@ -92,11 +92,6 @@ searchInput.addEventListener('keydown', (e) => {
     }
 });
 
-// Action functions
-function viewProduct(productId) {
-    window.location.href = 'view_product.html';
-}
-
 function viewVariants(productId) {
     window.location.href = 'view_variants.html';
 }

@@ -23,28 +23,29 @@
 
     <!-- Form Container -->
     <div class="form-container">
-        <form id="addProductForm">
+        <form id="addProductForm" method="post" action="{% url 'admin-add-product' %}">
+            {% csrf_token %}
             <!-- Basic Information -->
             <div class="form-section">
                 <h2 class="section-title">Basic Information</h2>
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label for="productName">Product Name</label>
-                        <input type="text" id="productName" name="productName" placeholder="Enter Product Name"
-                            required>
+                        <input type="text" name="name" id="productName" name="productName" placeholder="Enter Product Name"
+                            >
                     </div>
                     <div class="form-group full-width">
                         <label for="description">Description</label>
                         <textarea id="description" name="description" placeholder="Enter product description"
-                            required></textarea>
+                            ></textarea>
                     </div>
                     <div class="form-group">
                         <label for="brand">Brand</label>
-                        <input type="text" id="brand" name="brand" placeholder="Enter Brand Name" required>
+                        <input type="text" id="brand" name="brand" placeholder="Enter Brand Name" >
                     </div>
                     <div class="form-group">
                         <label for="status">Status</label>
-                        <select id="status" name="status" required>
+                        <select id="status" name="status" >
                             <option value="" disabled selected>Select Status</option>
                             <option value="active">Active</option>
                             <option value="inactive">Inactive</option>
@@ -52,7 +53,7 @@
                     </div>
                     <div class="form-group">
                         <label for="colorBase">Color Base</label>
-                        <select id="colorBase" name="colorBase" required>
+                        <select id="colorBase" name="colorBase" >
                             <option value="" disabled selected>Name for filtering</option>
                             <option value="white">White</option>
                             <option value="black">Black</option>
@@ -71,7 +72,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="category">Category</label>
-                        <select id="category" name="category" required>
+                        <select id="category" name="category" >
                             <option value="" disabled selected>Select Category</option>
                             <option value="t-shirts">T-shirts</option>
                             <option value="hoodies">Hoodies</option>
@@ -81,7 +82,7 @@
                     </div>
                     <div class="form-group">
                         <label for="type">Type</label>
-                        <select id="type" class="select2" name="type" required>
+                        <select id="type" class="select2" name="type" >
                             <option value="" disabled selected>Select Type</option>
                             <option value="men">Men</option>
                             <option value="women">Women</option>
@@ -117,8 +118,8 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="basePrice">Price</label>
-                        <input type="number" id="basePrice" name="basePrice" placeholder="Enter Price" step="0.01"
-                            required>
+                        <input type="number" id="basePrice" name="price" placeholder="Enter Price" step="0.01"
+                            >
                     </div>
                 </div>
             </div>

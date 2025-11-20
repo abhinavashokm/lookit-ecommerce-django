@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Form submission
 document.getElementById('addProductForm').addEventListener('submit', (e) => {
-    e.preventDefault();
+    //e.preventDefault();
 
     // Validate thumbnail
     if (!validateThumbnail()) {
