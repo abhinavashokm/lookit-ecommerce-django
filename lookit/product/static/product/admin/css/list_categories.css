@@ -469,6 +469,57 @@
            background: #059669;
        }
 
+       .modal-btn-add {
+           background: #6366f1;
+           color: white;
+       }
+
+       .modal-btn-add:hover {
+           background: #4f46e5;
+       }
+
+       .modal-btn-update {
+           background: #6366f1;
+           color: white;
+       }
+
+       .modal-btn-update:hover {
+           background: #4f46e5;
+       }
+
+       .modal-form-group {
+           margin-bottom: 0;
+       }
+
+       .modal-form-label {
+           display: block;
+           font-size: 0.9rem;
+           font-weight: 600;
+           color: #374151;
+           margin-bottom: 8px;
+       }
+
+       .modal-form-input {
+           width: 100%;
+           padding: 10px 12px;
+           border: 1px solid #d1d5db;
+           border-radius: 8px;
+           font-size: 0.95rem;
+           color: #1f2937;
+           transition: all 0.2s ease;
+           box-sizing: border-box;
+       }
+
+       .modal-form-input:focus {
+           outline: none;
+           border-color: #6366f1;
+           box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+       }
+
+       .modal-form-input::placeholder {
+           color: #9ca3af;
+       }
+
        /* Pagination */
        .pagination {
            display: flex;

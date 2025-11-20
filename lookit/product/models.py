@@ -3,8 +3,12 @@ from django.db import models
 
 class Style(models.Model):
     name = models.CharField(max_length=50)
+    is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['is_deleted', '-created_at']
 
 
 class Product(models.Model):
