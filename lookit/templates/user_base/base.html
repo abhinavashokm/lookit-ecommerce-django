@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lookit Admin - Dashboard</title>
+    <!--Global CSS-->
+    <link rel="stylesheet" href="{% static 'user/css/base.css' %}">
+
+    <!--Components CSS-->
+    <link rel="stylesheet" href="{% static 'user/css/components/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'user/css/components/navbar.css' %}">
+
+    <!-- Page-specific CSS -->
+    {% block styles %}{% endblock %}
+
+</head>
+
+<body>
+    <!-- Top Navbar -->
+    {% include 'user_base/components/navbar.html' %}
+
+    <!-- Main Content  -->
+    {% block content %}{% endblock %}
+
+    {% include 'user_base/components/footer.html' %}
+
+    <!--Component JS-->
+    <script src="{% static 'user/js/components/navbar.js' %}"></script>
+
+    <!-- Page-specific JS -->
+    {% block scripts %}{% endblock %}
+</body>
+
+</html>

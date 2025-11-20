@@ -6,6 +6,5 @@ def home(request):
     if user.is_authenticated:
         if user.is_staff:
             return redirect('admin-dashboard')
-        return render(request, "core/index.html",{user:user})
+    return render(request, "core/index.html",{user:user})
         
-    return redirect('user-login')
