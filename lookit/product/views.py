@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator
 from .models import Style
 
 """ ============================================
@@ -24,7 +25,13 @@ def admin_list_variants(request):
 
 def admin_list_categories(request):
     styles = Style.objects.all()
-    return render(request, 'product/admin/list_categories.html', {"styles": styles})
+    
+    #pagination
+    paginator = Paginator(styles, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'product/admin/list_categories.html', {"page_obj": page_obj})
 
 
 def admin_add_style(request):
@@ -39,7 +46,7 @@ def admin_search_categories(request):
     search_key = request.GET.get('search', '')
     search_result = Style.objects.filter(name__icontains=search_key)
     return render(
-        request, 'product/admin/list_categories.html', {"styles": search_result}
+        request, 'product/admin/list_categories.html', {"page_obj": search_result}
     )
 
 

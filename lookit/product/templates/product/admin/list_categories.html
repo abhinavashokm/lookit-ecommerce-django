@@ -29,7 +29,7 @@
                         </svg>
                     </span>
                     <div class="search-actions">
-                        <a style="text-decoration: none;" href="{% url 'admin-search-categories' %}">
+                        <a style="text-decoration: none;" href="{% url 'admin-category-management' %}?page={{request.GET.page}}">
                             <button type="button" class="clear-btn" id="clearBtn" onclick="clearSearch()">
                                 <svg viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -64,9 +64,9 @@
                 </tr>
             </thead>
             <tbody>
-                {% for style in styles %}
+                {% for style in page_obj %}
                 <tr>
-                    <td class="style-id">STY-001</td>
+                    <td class="style-id">STY-{{ style.id|stringformat:'04d' }}</td>
                     <td class="style-name">{{ style.name }}</td>
                     <td class="added-date">{{ style.created_at.date }}</td>
                     <td>
@@ -145,16 +145,16 @@
                             <div class="modal-body">
                                 <div class="modal-form-group">
                                     <label class="modal-form-label" for="editCategoryName">Style Category Name</label>
-                                    <input type="text" name="style_name" class="modal-form-input" id="editCategoryName{{style.id}}"
-                                        placeholder="Enter style category name" autocomplete="off"
-                                        value="{{style.name}}">
+                                    <input type="text" name="style_name" class="modal-form-input"
+                                        id="editCategoryName{{style.id}}" placeholder="Enter style category name"
+                                        autocomplete="off" value="{{style.name}}">
                                     <input type="hidden" name="style_id" value="{{ style.id }}" id="">
                                 </div>
                             </div>
                             <div class="modal-actions">
                                 <button type="button" class="modal-btn modal-btn-cancel"
                                     onclick="closeEditCategoryModal('{{style.id}}')">Cancel</button>
-                                    <button type="submit" class="modal-btn modal-btn-update">Update</button>
+                                <button type="submit" class="modal-btn modal-btn-update">Update</button>
                             </div>
                         </form>
                     </div>
@@ -166,13 +166,47 @@
 
         <!-- Pagination -->
         <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">
+                <button class="pagination-btn">‹</button>
+            </a>
+            {% else %}
             <button class="pagination-btn" disabled>‹</button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <button class="pagination-btn">4</button>
-            <button class="pagination-btn">5</button>
-            <button class="pagination-btn">›</button>
+            {% endif %}
+
+            {% for number in page_obj.paginator.page_range %}
+
+                {% if number <= 4 %}
+                    {% if page_obj.number == number %}
+                        <button class="pagination-btn active">{{ number }}</button>
+                    {% else %}
+                        <a href="?page={{ number }}">
+                            <button class="pagination-btn">{{ number }}</button>
+                        </a>
+                    {% endif %}
+                {% elif number == page_obj.paginator.num_pages %}
+                    {% if page_obj.paginator.num_pages > 5 %}
+                        <span class="pagination-ellipsis">...</span>
+                    {% endif %}
+                    {% if page_obj.number == number %}
+                        <button class="pagination-btn active">{{ number }}</button>
+                    {% else %}
+                        <a href="?page={{ number }}">
+                            <button class="pagination-btn">{{ number }}</button>
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">
+                <button class="pagination-btn">›</button>
+            </a>
+            {% else %}
+            <button class="pagination-btn" disabled>›</button>
+            {% endif %}
+
         </div>
     </div>
 </main>
