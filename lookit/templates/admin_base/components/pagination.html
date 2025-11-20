@@ -1,0 +1,43 @@
+ <div class="pagination">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">
+                <button class="pagination-btn">‹</button>
+            </a>
+            {% else %}
+            <button class="pagination-btn" disabled>‹</button>
+            {% endif %}
+
+            {% for number in page_obj.paginator.page_range %}
+
+                {% if number <= 4 %}
+                    {% if page_obj.number == number %}
+                        <button class="pagination-btn active">{{ number }}</button>
+                    {% else %}
+                        <a href="?page={{ number }}">
+                            <button class="pagination-btn">{{ number }}</button>
+                        </a>
+                    {% endif %}
+                {% elif number == page_obj.paginator.num_pages %}
+                    {% if page_obj.paginator.num_pages > 5 %}
+                        <span class="pagination-ellipsis">...</span>
+                    {% endif %}
+                    {% if page_obj.number == number %}
+                        <button class="pagination-btn active">{{ number }}</button>
+                    {% else %}
+                        <a href="?page={{ number }}">
+                            <button class="pagination-btn">{{ number }}</button>
+                        </a>
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">
+                <button class="pagination-btn">›</button>
+            </a>
+            {% else %}
+            <button class="pagination-btn" disabled>›</button>
+            {% endif %}
+
+</div>

@@ -2,6 +2,8 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'product/admin/css/list_categories.css' %}">
+<!--CSS for pagination-->
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
 {% endblock %}
 
 <!-- Main Content -->
@@ -59,6 +61,7 @@
                     <th>Style ID</th>
                     <th>Style Name</th>
                     <th>Added Date</th>
+                    <th>Last Updated</th>
                     <th>Status</th>
                     <th>Actions</th>
                 </tr>
@@ -69,6 +72,7 @@
                     <td class="style-id">STY-{{ style.id|stringformat:'04d' }}</td>
                     <td class="style-name">{{ style.name }}</td>
                     <td class="added-date">{{ style.created_at.date }}</td>
+                    <td class="added-date">{{ style.updated_at.date }}</td>
                     <td>
                         {% if style.is_deleted %}
                         <span class="status-badge status-deleted">Deleted</span>
@@ -165,49 +169,8 @@
         </table>
 
         <!-- Pagination -->
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">
-                <button class="pagination-btn">‹</button>
-            </a>
-            {% else %}
-            <button class="pagination-btn" disabled>‹</button>
-            {% endif %}
-
-            {% for number in page_obj.paginator.page_range %}
-
-                {% if number <= 4 %}
-                    {% if page_obj.number == number %}
-                        <button class="pagination-btn active">{{ number }}</button>
-                    {% else %}
-                        <a href="?page={{ number }}">
-                            <button class="pagination-btn">{{ number }}</button>
-                        </a>
-                    {% endif %}
-                {% elif number == page_obj.paginator.num_pages %}
-                    {% if page_obj.paginator.num_pages > 5 %}
-                        <span class="pagination-ellipsis">...</span>
-                    {% endif %}
-                    {% if page_obj.number == number %}
-                        <button class="pagination-btn active">{{ number }}</button>
-                    {% else %}
-                        <a href="?page={{ number }}">
-                            <button class="pagination-btn">{{ number }}</button>
-                        </a>
-                    {% endif %}
-                {% endif %}
-
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">
-                <button class="pagination-btn">›</button>
-            </a>
-            {% else %}
-            <button class="pagination-btn" disabled>›</button>
-            {% endif %}
-
-        </div>
+        {% include 'admin_base/components/pagination.html' %}
+        
     </div>
 </main>
 
