@@ -11,14 +11,20 @@
     <aside class="filter-sidebar">
         <h2 class="filter-title">Filter By</h2>
 
-        <form id="filterForm" onsubmit="handleFilterSubmit(event)">
+        <!--FILTER FORM DESKTOP (there is a seperate form for mobile devices)-->
+        <form action="{% url 'explore' %}" method="get" id="filterForm">
+
+            <!--for preserving query params of search and sort-->
+            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+            <input type="hidden" name="search" value="{{ request.GET.search }}">
+
             <!-- Styles Filter -->
             <div class="filter-group">
                 <label for="styles">Styles</label>
                 <div class="searchable-dropdown" id="stylesDropdown">
-                    <input type="text" class="searchable-dropdown-input" id="stylesInput" name="styles"
-                        placeholder="All Styles" readonly>
-                    <input type="hidden" id="stylesValue" name="styles" value="">
+                    <input type="text" class="searchable-dropdown-input" id="stylesInput" placeholder="All Styles"
+                        value="{{ request.GET.style }}" readonly>
+                    <input type="hidden" id="stylesValue" name="style" value="{{ request.GET.style }}">
                     <svg class="searchable-dropdown-arrow" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                         <path fill="#333" d="M6 9L1 4h10z" />
                     </svg>
@@ -27,10 +33,9 @@
                             <input type="text" placeholder="Search styles..." id="stylesSearch">
                         </div>
                         <div class="searchable-dropdown-option" data-value="" data-text="All Styles">All Styles</div>
-                        <div class="searchable-dropdown-option" data-value="polo" data-text="Polo">Polo</div>
-                        <div class="searchable-dropdown-option" data-value="oversized" data-text="Oversized">Oversized
-                        </div>
-                        <div class="searchable-dropdown-option" data-value="plain" data-text="Plain">Plain</div>
+                        {% for style in styles %}
+                        <div class="searchable-dropdown-option" data-value="{{ style.name }}" data-text="{{ style.name }}">{{ style.name }}</div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -69,25 +74,29 @@
                 <div class="price-range-container">
                     <div class="price-range-wrapper">
                         <div class="price-range-active" id="priceRangeActive"></div>
-                        <input type="range" id="priceRangeMin" name="priceMin"
-                            class="price-range-slider price-range-slider-min" min="0" max="5000" value="500" step="100">
-                        <input type="range" id="priceRangeMax" name="priceMax"
-                            class="price-range-slider price-range-slider-max" min="0" max="5000" value="2500"
+                        <input type="range" id="priceRangeMin" name="price_min"
+                            class="price-range-slider price-range-slider-min" min="0" max="5000" value="{%if request.GET.price_min %}{{ request.GET.price_min }}{% else %}0{% endif %}" step="100">
+                        <input type="range" id="priceRangeMax" name="price_max"
+                            class="price-range-slider price-range-slider-max" min="0" max="5000" value="{%if request.GET.price_max %}{{ request.GET.price_max }}{% else %}5000{% endif %}"
                             step="100">
                     </div>
                     <div class="price-display">
-                        <span id="priceMinDisplay">₹500</span>
-                        <span id="priceMaxDisplay">₹2500</span>
+                        <span id="priceMinDisplay">₹{{ request.GET.price_min }}</span>
+                        <span id="priceMaxDisplay">₹{{ request.GET.price_max }}</span>
                     </div>
                 </div>
             </div>
 
             <!-- Filter Buttons -->
             <div class="filter-buttons">
-                <button type="button" class="clear-btn" onclick="clearFilters()">Clear All</button>
+                <a href="{% url 'explore' %}">
+                    <button type="button" class="clear-btn">Clear All</button>
+                </a>
                 <button type="submit" class="apply-btn">Apply Filters</button>
             </div>
+
         </form>
+
     </aside>
 
     <!-- Product Content Area -->
@@ -97,16 +106,33 @@
                 Explore our collection
                 <span class="title-badge">All</span>
             </h1>
+
+            <!--SEARCH SECTION-->
             <div class="search-container">
-                <form id="searchForm" onsubmit="handleSearch(event)">
-                    <input type="text" placeholder="Search" id="searchInput" name="search">
-                    <button type="button" class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()"
-                        title="Clear">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
-                        </svg>
-                    </button>
+                <form method="GET" action="{% url 'explore' %}" id="searchForm">
+
+                    <!-- hidden inputs to preserve other query params -->
+                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                    <input type="hidden" name="style" value="{{ request.GET.style }}">
+                    <input type="hidden" name="color" value="{{ request.GET.color }}">
+                    <input type="hidden" name="size" value="{{ request.GET.size }}">
+                    <input type="hidden" name="priceMin" value="{{ request.GET.priceMin }}">
+                    <input type="hidden" name="priceMax" value="{{ request.GET.priceMax }}">
+
+                    <input type="text" placeholder="Search" id="searchInput" name="search"
+                        value="{{ request.GET.search }}">
+                    <!--clear button-->
+                    <a
+                        href="{% url 'explore' %}?sort={{ request.GET.sort }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                        <button type="button" class="search-clear-btn {% if request.GET.search %}visible{% endif %}"
+                            id="searchClearBtn" title="Clear">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                            </svg>
+                        </button>
+                    </a>
+                    <!--submit button-->
                     <button type="submit" class="search-submit-btn" title="Search">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -115,19 +141,32 @@
                     </button>
                 </form>
             </div>
+
         </div>
 
         <!-- Sort Buttons -->
         <div class="sort-container">
             <div class="sort-group">
                 <span class="sort-label" style="font-size: 0.85rem;">Price:</span>
-                <button class="sort-btn" onclick="sortProducts('price-low')">Low to High</button>
-                <button class="sort-btn" onclick="sortProducts('price-high')">High to Low</button>
+                <a
+                    href="{% url 'explore' %}?sort=price&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort == 'price' %}active{% endif %}">Low to High</button>
+                </a>
+                <a
+                    href="{% url 'explore' %}?sort=-price&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort == '-price' %}active{% endif %}">High to Low</button>
+                </a>
             </div>
             <div class="sort-group">
                 <span class="sort-label" style="font-size: 0.85rem;">Name:</span>
-                <button class="sort-btn" onclick="sortProducts('name-az')">A-Z</button>
-                <button class="sort-btn" onclick="sortProducts('name-za')">Z-A</button>
+                <a
+                    href="{% url 'explore' %}?sort=name&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort == 'name' %}active{% endif %}">A-Z</button>
+                </a>
+                <a
+                    href="{% url 'explore' %}?sort=-name&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort == '-name' %}active{% endif %}">Z-A</button>
+                </a>
             </div>
         </div>
 
@@ -144,14 +183,16 @@
         <aside class="filter-sidebar" id="mobileFilterSidebar">
             <h2 class="filter-title">Filter By</h2>
 
-            <form id="mobileFilterForm" onsubmit="handleFilterSubmit(event)">
+            <form action="{url 'explore'}" method="get" id="mobileFilterForm">
+                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+
                 <!-- Styles Filter -->
                 <div class="filter-group">
                     <label for="styles">Styles</label>
                     <div class="searchable-dropdown" id="stylesDropdownMobile">
-                        <input type="text" class="searchable-dropdown-input" id="stylesInputMobile" name="styles"
+                        <input type="text" class="searchable-dropdown-input" id="stylesInputMobile" name="style"
                             placeholder="All Styles" readonly>
-                        <input type="hidden" id="stylesValueMobile" name="styles" value="">
+                        <input type="hidden" id="stylesValueMobile" name="style" value="">
                         <svg class="searchable-dropdown-arrow" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path fill="#333" d="M6 9L1 4h10z" />
                         </svg>
@@ -219,19 +260,23 @@
 
                 <!-- Filter Buttons -->
                 <div class="filter-buttons">
-                    <button type="button" class="clear-btn" onclick="clearFilters()">Clear All</button>
+                    <a href="{% url 'explore' %}">
+                        <button type="button" class="clear-btn">Clear All</button>
+                    </a>
                     <button type="submit" class="apply-btn">Apply Filters</button>
                 </div>
             </form>
         </aside>
 
         <div class="product-grid">
+
+            {% for product in page_obj %}
             <div class="product-card">
                 <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
                 <div class="product-info">
-                    <h3 class="product-title">Abstract Art Tee</h3>
+                    <h3 class="product-title">{{ product.name }}</h3>
                     <p class="product-price">
-                        ₹2,499
+                        ₹{{ product.price }}
                         <button class="wishlist-btn" onclick="this.classList.toggle('active')">
                             <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -241,7 +286,10 @@
                     </p>
                 </div>
             </div>
-            <div class="product-card">
+            {% endfor %}
+
+
+            <!-- <div class="product-card">
                 <div class="product-image" style="background: linear-gradient(135deg, #1a4d5e, #0d2a35);"></div>
                 <div class="product-info">
                     <h3 class="product-title">Graphic Tee</h3>
@@ -255,157 +303,8 @@
                         </button>
                     </p>
                 </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #8b4513, #654321);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Long Sleeve Tee</h3>
-                    <p class="product-price">
-                        ₹2,899
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #d2b48c, #c19a6b);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Pocket Tee</h3>
-                    <p class="product-price">
-                        ₹2,299
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #808000, #6b6b00);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Striped Tee</h3>
-                    <p class="product-price">
-                        ₹2,599
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">V-Neck Tee</h3>
-                    <p class="product-price">
-                        ₹2,199
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Crew Neck Tee</h3>
-                    <p class="product-price">
-                        ₹2,149
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #808000, #6b6b00);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Henley Tee</h3>
-                    <p class="product-price">
-                        ₹2,699
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #f5f5dc, #e6e6d4);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Raglan Tee</h3>
-                    <p class="product-price">
-                        ₹2,549
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #1a4d5e, #0d2a35);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Tie-Dye Tee</h3>
-                    <p class="product-price">
-                        ₹2,799
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Oversized Tee</h3>
-                    <p class="product-price">
-                        ₹2,399
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
-            <div class="product-card">
-                <div class="product-image" style="background: linear-gradient(135deg, #1a4d5e, #0d2a35);"></div>
-                <div class="product-info">
-                    <h3 class="product-title">Slim Fit Tee</h3>
-                    <p class="product-price">
-                        ₹1,999
-                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </p>
-                </div>
-            </div>
+            </div> -->
+
         </div>
 
         <!-- Pagination -->

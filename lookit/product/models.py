@@ -32,6 +32,7 @@ class Product(models.Model):
         max_length=10, choices=Category.choices, default=Category.UNISEX
     )
     style = models.ForeignKey(Style, on_delete=models.PROTECT, blank=True, null=True)
+    base_color = models.CharField(max_length=20, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -42,7 +43,18 @@ class Product(models.Model):
         
 class Variant(models.Model):
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    size = models.CharField(max_length=10) #make it unique
+    size = models.CharField(max_length=10)
     stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['product', 'size'], name="unique_product_size")
+        ]
+    
+    #ensure size is always upper case
+    def save(self, *args, **kwargs):
+        if self.size:
+            self.size = self.size.upper()
+        super().save(*args, **kwargs)
