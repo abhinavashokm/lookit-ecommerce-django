@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from product.models import Product, Style
+from django.core.paginator import Paginator
 
 
 def home(request):
@@ -40,6 +41,11 @@ def explore(request):
         products = products.filter(base_color = color)
     if size:
         products = products.filter(variant__size = size.upper())
+        
+    paginator = Paginator(products,12)
+    page = request.GET.get('page')
+    page_obj = paginator.get_page(page)
     
-    return render(request, "core/explore.html",{"page_obj": products, "styles":styles})
+    
+    return render(request, "core/explore.html",{"page_obj": page_obj, "styles":styles})
         

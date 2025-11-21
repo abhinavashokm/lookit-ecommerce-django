@@ -1,6 +1,7 @@
 {% extends 'user_base/base.html' %}
 {% load static %}
 {% block styles %}
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
 <link rel="stylesheet" href="{% static 'core/css/explore.css' %}">
 {% endblock %}
 
@@ -308,15 +309,8 @@
         </div>
 
         <!-- Pagination -->
-        <div class="pagination">
-            <button class="pagination-btn" disabled>‹</button>
-            <button class="pagination-btn active">1</button>
-            <button class="pagination-btn">2</button>
-            <button class="pagination-btn">3</button>
-            <span style="padding: 0 0.5rem; color: #666;">...</span>
-            <button class="pagination-btn">10</button>
-            <button class="pagination-btn">›</button>
-        </div>
+        {% include 'admin_base/components/pagination.html' %}
+
     </main>
 </div>
 

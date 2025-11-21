@@ -583,29 +583,14 @@
     justify-content: space-between;
 }
 
-/* Pagination */
-.pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 3rem;
-}
+/* Pagination style override */
 
 .pagination-btn {
-    width: 40px;
-    height: 40px;
     border: 1px solid #ddd;
     background-color: white;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
     transition: all 0.3s;
     color: #333;
-    font-weight: 600;
-}
+} 
 
 .pagination-btn:hover {
     border-color: #B55E8A;
