@@ -45,12 +45,12 @@
                 <label for="color">Color</label>
                 <select id="color" name="color" class="filter-select">
                     <option value="">All Colors</option>
-                    <option value="black">Black</option>
-                    <option value="white">White</option>
-                    <option value="red">Red</option>
-                    <option value="blue">Blue</option>
-                    <option value="green">Green</option>
-                    <option value="gray">Gray</option>
+                    <option value="black" {% if request.GET.color == 'black' %}selected{% endif %}>Black</option>
+                    <option value="white" {% if request.GET.color == 'white' %}selected{% endif %}>White</option>
+                    <option value="red" {% if request.GET.color == 'red' %}selected{% endif %}>Red</option>
+                    <option value="blue" {% if request.GET.color == 'blue' %}selected{% endif %}>Blue</option>
+                    <option value="green" {% if request.GET.color == 'green' %}selected{% endif %}>Green</option>
+                    <option value="gray" {% if request.GET.color == 'gray' %}selected{% endif %}>Gray</option>
                 </select>
             </div>
 
@@ -59,12 +59,12 @@
                 <label for="size">Size</label>
                 <select id="size" name="size" class="filter-select">
                     <option value="">All Sizes</option>
-                    <option value="xs">XS</option>
-                    <option value="s">S</option>
-                    <option value="m">M</option>
-                    <option value="l">L</option>
-                    <option value="xl">XL</option>
-                    <option value="xxl">XXL</option>
+                    <option value="xs" {% if request.GET.size == 'xs' %}selected{% endif %}>XS</option>
+                    <option value="s" {% if request.GET.size == 's' %}selected{% endif %}>S</option>
+                    <option value="m" {% if request.GET.size == 'm' %}selected{% endif %}>M</option>
+                    <option value="l" {% if request.GET.size == 'l' %}selected{% endif %}>L</option>
+                    <option value="xl" {% if request.GET.size == 'xl' %}selected{% endif %}>XL</option>
+                    <option value="xxl" {% if request.GET.size == 'xxl' %}selected{% endif %}>XXL</option>
                 </select>
             </div>
 
