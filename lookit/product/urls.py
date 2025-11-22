@@ -15,6 +15,7 @@ from .views import (
     admin_update_stock,
     
     product_details,
+    explore,
 )
 
 urlpatterns = [
@@ -37,7 +38,8 @@ urlpatterns = [
     path("admin/category/restore-style/<style_id>", admin_restore_category, name="admin-restore-category"),
     path("admin/category/edit-style/", admin_edit_category, name="admin-edit-category"),
     
-    path("product-details/",product_details, name="product-details")
+    path("product-details/",product_details, name="product-details"),
+    path("explore/", explore, name="explore"),
     
 
 ]
