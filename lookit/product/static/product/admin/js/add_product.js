@@ -98,7 +98,7 @@ function handleThumbnailUpload(event) {
     }
 
     // Reset input to allow uploading same file again
-    event.target.value = '';
+    //event.target.value = '';
 }
 
 function handleAdditionalUpload(event) {
@@ -122,7 +122,7 @@ function handleAdditionalUpload(event) {
     });
 
     // Reset input to allow uploading same files again
-    event.target.value = '';
+   // event.target.value = '';
 }
 
 // Remove thumbnail

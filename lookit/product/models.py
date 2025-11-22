@@ -22,6 +22,8 @@ class Product(models.Model):
     brand = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    image_url = models.URLField()
 
     material = models.CharField(max_length=50, null=True, blank=True)
     fit = models.CharField(max_length=50, null=True, blank=True)

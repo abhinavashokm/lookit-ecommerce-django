@@ -23,7 +23,7 @@
 
     <!-- Form Container -->
     <div class="form-container">
-        <form id="addProductForm" method="post" action="{% url 'admin-add-product' %}">
+        <form id="addProductForm" method="post" enctype="multipart/form-data"  action="{% url 'admin-add-product' %}">
             {% csrf_token %}
             <!-- Basic Information -->
             <div class="form-section">
@@ -127,17 +127,24 @@
             <div class="form-section">
                 <h2 class="section-title">Images & Media</h2>
                 <div class="form-grid">
+
+                    <!--THUMBNAIL IMAGE-->
                     <div class="form-group full-width">
                         <label>Upload Thumbnail Image <span style="color: #ef4444;">*</span></label>
+
+                        <!--file input-->
                         <div class="upload-area" id="thumbnailUpload"
                             onclick="document.getElementById('thumbnailInput').click()">
                             <div class="upload-text">Drag and drop or click to upload</div>
                             <button type="button" class="upload-btn">Upload Image</button>
-                            <input type="file" id="thumbnailInput" accept="image/*" style="display: none;"
+                            <input type="file" name="image" id="thumbnailInput" accept="image/*" style="display: none;"
                                 onchange="handleThumbnailUpload(event)">
                         </div>
+
                         <div class="validation-message" id="thumbnailValidationMessage">Please upload exactly one
                             thumbnail image</div>
+
+                        <!--thumbnail image preview-->
                         <div class="thumbnail-preview-container" id="thumbnailPreviewContainer" style="display: none;">
                             <div class="thumbnail-preview">
                                 <img id="thumbnailPreviewImg" src="" alt="Thumbnail Preview">
@@ -147,7 +154,10 @@
                                 </button>
                             </div>
                         </div>
+
                     </div>
+
+                    <!--ADDITIONAL IMAGES-->
                     <div class="form-group full-width">
                         <label>Upload Additional Images <span style="color: #ef4444;">*</span> (Minimum 2
                             images)</label>
@@ -163,6 +173,7 @@
                         <div class="images-count" id="additionalImagesCount">0 images uploaded</div>
                         <div class="additional-images-grid" id="additionalImagesGrid"></div>
                     </div>
+
                 </div>
             </div>
 

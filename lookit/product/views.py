@@ -5,6 +5,7 @@ from django.http import JsonResponse
 import json
 from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
+from cloudinary.uploader import upload
 
 """ ============================================
     ADMIN SIDE
@@ -61,12 +62,13 @@ def admin_list_products(request):
 
 def admin_add_product(request):
     if request.method == "POST":
-
+        print(request.POST)
+ 
         name = request.POST.get('name')
         description = request.POST.get('description')
         brand = request.POST.get('brand')
         base_color = request.POST.get('base_color')
-        category = request.POST.get('category')
+        category = request.POST.get('category') 
 
         style_name = request.POST.get('style')
         style = Style.objects.get(name=style_name)
@@ -76,8 +78,15 @@ def admin_add_product(request):
         care_instructions = request.POST.get('care_instructions')
 
         price = request.POST.get('price')
+        
+        image = request.FILES.get('image')
+        img_url = None
+        if image:
+            result = upload(image, folder=f"products/{name}/")
+            img_url = result.get('secure_url')
+        print(image)
 
-        product = Product.objects.create(
+        Product.objects.create(
             name=name,
             description=description,
             brand=brand,
@@ -88,11 +97,12 @@ def admin_add_product(request):
             fit=fit,
             care_instructions=care_instructions,
             price=price,
+            image_url=img_url
         )
-        print(product.name)
 
     styles = Style.objects.all()
     return render(request, "product/admin/add_product.html", {"styles": styles})
+
 
 #--stock_management-------------------------
 def admin_manage_stocks(request, product_id):

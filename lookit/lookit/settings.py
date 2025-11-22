@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import cloudinary_storage, cloudinary
 
 
 load_dotenv()  # reads .env file
@@ -83,8 +84,12 @@ INSTALLED_APPS = [
     "user",
     "core",
     "staff",
-    'social_django',
     "product",
+    
+    #extensions
+    'social_django',
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 MIDDLEWARE = [
@@ -175,3 +180,23 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+#CLOUDINARY CONFIGURATION {
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME':os.getenv('CLOUD_NAME'),
+    'API_KEY':os.getenv('API_KEY'),
+    'API_SECRET':os.getenv('API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
+
+# Ensure Cloudinary is configured globally for the uploader
+cloudinary.config( 
+  cloud_name = os.getenv('CLOUD_NAME'),
+  api_key = os.getenv('API_KEY'),
+  api_secret = os.getenv('API_SECRET'),
+  secure = True
+)
+
+# }
