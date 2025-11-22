@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from .models import Style, Product, Variant
 from django.http import JsonResponse
 import json
-from django.db.models import Sum, Q, Value
+from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
 
 """ ============================================
@@ -139,8 +139,15 @@ def admin_delete_variant(request, variant_id):
 
 
 def admin_view_product(request, product_id):
-    product = Product.objects.get(id=product_id)
+    product = Product.objects.filter(id=product_id).annotate(total_stocks =  Coalesce(Sum('variant__stock'), Value(0)), total_variants = Coalesce(Count('variant'), Value(0))).first()
     return render(request, "product/admin/view_product.html", {"product": product})
+
+def admin_toggle_product_active(request, product_id):
+    product = Product.objects.get(id=product_id)
+    product.is_active = not product.is_active
+    product.save()
+    print(product.is_active)
+    return redirect('admin-view-product', product_id=product_id)
 
 
 def admin_list_categories(request):

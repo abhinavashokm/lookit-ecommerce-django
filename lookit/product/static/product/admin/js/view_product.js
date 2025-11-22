@@ -9,12 +9,17 @@ function closeDeleteModal() {
     modal.classList.remove('show');
 }
 
-function confirmDelete() {
-    alert('Product deleted successfully!');
-    closeDeleteModal();
-    // Add actual delete logic here
-    // window.location.href = 'product_management.html';
+// Restore Modal Functions
+function openRestoreModal() {
+    const modal = document.getElementById('restoreModal');
+    modal.classList.add('show');
 }
+
+function closeRestoreModal() {
+    const modal = document.getElementById('restoreModal');
+    modal.classList.remove('show');
+}
+
 
 // Close modal when clicking overlay
 document.addEventListener('click', (e) => {
