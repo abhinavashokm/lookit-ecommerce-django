@@ -11,7 +11,7 @@
 <div class="breadcrumb">
     <a href="{% url 'index' %}">Home</a>
     <span>/</span>
-    <a href="#">Men</a>
+    <a href="{% url 'explore' %}?category={{ product.category }}">{{ product.category }}</a>
     <span>/</span>
     <span class="current">{{ product.name }}</span>
 </div>

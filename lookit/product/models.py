@@ -60,3 +60,10 @@ class Variant(models.Model):
         if self.size:
             self.size = self.size.upper()
         super().save(*args, **kwargs)
+        
+class ProductImages(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    image_url = models.URLField()
+    image_public_id = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+        

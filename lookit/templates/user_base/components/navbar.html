@@ -1,7 +1,7 @@
 <header>
     <nav>
         <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
-        <a href="#" class="logo">Lookit</a>
+        <a href="{% url 'index' %}" class="logo">Lookit</a>
         <ul class="nav-links">
             <li  ><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == Null %}active_category{% endif %}" href="{% url 'explore' %}">All</a></li>
             <li><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == 'men' %}active_category{% endif %}" href="{% url 'explore' %}?category=men">Men</a></li>

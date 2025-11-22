@@ -572,6 +572,13 @@
     font-weight: 600;
     color: #333;
     margin-bottom: 0.5rem;
+    height: calc(1.4em * 2);
+    /* 2 lines worth of space */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* limit to 2 visible lines */
+    -webkit-box-orient: vertical;
 }
 
 .product-price {
@@ -590,7 +597,7 @@
     background-color: white;
     transition: all 0.3s;
     color: #333;
-} 
+}
 
 .pagination-btn:hover {
     border-color: #B55E8A;

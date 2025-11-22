@@ -64,33 +64,33 @@ function handleThumbnailReplace(event) {
 }
 
 // Handle additional images add
-// function handleAdditionalImagesAdd(event) {
-//     const files = event.target.files;
-//     if (files.length > 0) {
-//         const grid = document.getElementById('additionalImagesGrid');
-//         const imagesGroup = grid.closest('.form-group');
+function handleAdditionalImagesAdd(event) {
+    const files = event.target.files;
+    if (files.length > 0) {
+        const grid = document.getElementById('additionalImagesGrid');
+        const imagesGroup = grid.closest('.form-group');
 
-//         Array.from(files).forEach(file => {
-//             const reader = new FileReader();
-//             reader.onload = (e) => {
-//                 const imageItem = document.createElement('div');
-//                 imageItem.className = 'additional-image-item modified';
-//                 imageItem.innerHTML = `
-//                             <img src="${e.target.result}" alt="Additional Image">
-//                             <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)" title="Remove image">×</button>
-//                         `;
-//                 grid.appendChild(imageItem);
+        Array.from(files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imageItem = document.createElement('div');
+                imageItem.className = 'additional-image-item modified';
+                imageItem.innerHTML = `
+                            <img src="${e.target.result}" alt="Additional Image">
+                            <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)" title="Remove image">×</button>
+                        `;
+                grid.appendChild(imageItem);
 
-//                 // Mark images section as modified
-//                 imagesGroup.classList.add('modified-images');
-//             };
-//             reader.readAsDataURL(file);
-//         });
+                // Mark images section as modified
+                imagesGroup.classList.add('modified-images');
+            };
+            reader.readAsDataURL(file);
+        });
 
-//         console.log(`${files.length} additional image(s) added`);
-//         updateAdditionalImagesModifiedState();
-//     }
-// }
+        console.log(`${files.length} additional image(s) added`);
+        updateAdditionalImagesModifiedState();
+    }
+}
 
 // Remove additional image
 function removeAdditionalImage(button) {

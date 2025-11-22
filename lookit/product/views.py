@@ -4,9 +4,9 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
-from cloudinary.uploader import upload
+from cloudinary.uploader import upload, destroy
 
-from .models import Style, Product, Variant
+from .models import Style, Product, Variant, ProductImages
 
 """ ============================================
     ADMIN SIDE
@@ -129,9 +129,9 @@ def admin_edit_product(request, product_id):
         price = request.POST.get('price')
 
         image = request.FILES.get('image')
+        additional_images = request.FILES.getlist('additional_images')
         img_url = None
         if image:
-            print(image)
             result = upload(
                 image,
                 folder=f"products/{name}/",
@@ -142,7 +142,29 @@ def admin_edit_product(request, product_id):
                 ],
             )
             img_url = result.get('secure_url')
-        print(image)
+        else:
+            img_url = request.POST.get('old_image_url')
+
+        product = Product.objects.get(id=product_id)
+        current_additional_images = ProductImages.objects.filter(product=product)
+
+        for current_img in current_additional_images:
+            # If hidden input is missing => image removed in UI
+            if not request.POST.get(str(current_img.id)):
+                print(current_img.id)
+                # Remove from Cloudinary using public_id
+                destroy(current_img.image_public_id)
+                # Remove from db
+                current_img.delete()
+
+        if additional_images:
+            for file in additional_images:
+                result = upload(file, folder=f"products/{name}/additional-images/")
+                ProductImages.objects.create(
+                    product=product,
+                    image_url=result['secure_url'],
+                    image_public_id=result['public_id'],
+                )
 
         Product.objects.filter(id=product_id).update(
             name=name,
@@ -159,13 +181,20 @@ def admin_edit_product(request, product_id):
         )
         return redirect('admin-view-product', product_id=product_id)
 
-    product = Product.objects.get(id=product_id)
-    styles = Style.objects.all()
-    return render(
-        request,
-        "product/admin/edit_product.html",
-        {'product': product, 'styles': styles},
-    )
+    else:
+
+        product = Product.objects.get(id=product_id)
+        additional_images = ProductImages.objects.filter(product=product)
+        styles = Style.objects.all()
+        return render(
+            request,
+            "product/admin/edit_product.html",
+            {
+                'product': product,
+                'styles': styles,
+                'additional_images': additional_images,
+            },
+        )
 
 
 # --stock_management-------------------------
@@ -225,7 +254,8 @@ def admin_view_product(request, product_id):
         )
         .first()
     )
-    return render(request, "product/admin/view_product.html", {"product": product})
+    product_images = ProductImages.objects.filter(product__id=product_id)
+    return render(request, "product/admin/view_product.html", {"product": product,"product_images": product_images})
 
 
 def admin_toggle_product_active(request, product_id):
@@ -301,7 +331,7 @@ def explore(request):
     # ---category page
     category = request.GET.get('category')
     if category:
-        products = products.filter(category=category.upper())
+        products = products.filter(category=category.lower())
 
     # ---search----------------------------
     search_key = request.GET.get('search')
@@ -343,8 +373,9 @@ def explore(request):
 def product_details(request, product_id):
     product = Product.objects.get(id=product_id)
     old_price = int(product.price) * 1.2
+    print(old_price)
     return render(
         request,
         "product/user/product_details.html",
-        {"product": product, old_price: old_price},
+        {"product": product, 'old_price': old_price},
     )

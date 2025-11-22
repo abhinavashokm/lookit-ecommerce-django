@@ -77,10 +77,10 @@
                         <label for="category">Category</label>
                         <select id="category" name="category" required>
                             <option value="" disabled>Select Category</option>
-                            <option value="men">Men</option>
-                            <option value="women">Women</option>
-                            <option value="kids">Kids</option>
-                            <option value="unisex">Unisex</option>
+                            <option value="men" {% if product.category == 'men' %}selected{% endif %}>Men</option>
+                            <option value="women" {% if product.category == 'women' %}selected{% endif %}>Women</option>
+                            <option value="kids" {% if product.category == 'kids' %}selected{% endif %}>Kids</option>
+                            <option value="unisex" {% if product.category == 'unisex' %}selected{% endif %}>Unisex</option>
                         </select>
                     </div>
 
@@ -148,44 +148,54 @@
                         </div>
                     </div>
 
+                    <!--for preserving old image if it not replaced-->
+                    <input type="hidden" name="old_image_url" value="{{ product.image_url }}">
+
+
                     <!-- Current Additional Images -->
                     <div class="form-group full-width">
                         <label class="current-image-label">Current Additional Images</label>
+
+                        <!--Display additional images-->
                         <div class="additional-images-grid" id="additionalImagesGrid">
+
+                            {% for image in additional_images %}
                             <div class="additional-image-item">
-                                <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+1"
+                                <img src="{{ image.image_url }}"
                                     alt="Additional Image 1">
                                 <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
                                     title="Remove image">×</button>
+                                <input type="hidden" value="preserve" name="{{image.id}}">
                             </div>
-                            <div class="additional-image-item">
+                            {% endfor %}
+
+                            <!-- <div class="additional-image-item">
                                 <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+2"
                                     alt="Additional Image 2">
                                 <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
                                     title="Remove image">×</button>
-                            </div>
-                            <div class="additional-image-item">
-                                <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+3"
-                                    alt="Additional Image 3">
-                                <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
-                                    title="Remove image">×</button>
-                            </div>
+                            </div> -->
                         </div>
+
+                        <!--add additional images-->
                         <div class="add-images-area" id="addImagesArea"
                             onclick="document.getElementById('additionalInput').click()">
                             <div class="upload-text">Click or drag and drop to add more images</div>
                             <button type="button" class="upload-btn">Add Images</button>
-                            <input type="file" id="additionalInput" accept="image/*" multiple style="display: none;"
+                            <input type="file" name="additional_images" id="additionalInput" accept="image/*" multiple style="display: none;"
                                 onchange="handleAdditionalImagesAdd(event)">
                         </div>
+
                     </div>
+
                 </div>
             </div>
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="button" class="btn-cancel"
-                    onclick="window.location.href='view_product.html'">Cancel</button>
+                <a href="{% url 'admin-view-product' product.id %}">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                </a>
                 <button type="submit" class="btn-save">Save Changes</button>
             </div>
 
