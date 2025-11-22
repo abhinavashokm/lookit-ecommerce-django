@@ -272,7 +272,7 @@
         <div class="product-grid">
 
             {% for product in page_obj %}
-            <a style="text-decoration: none;" href="{% url 'product-details' %}">
+            <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
             <div class="product-card">
                 <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
                 <div class="product-info">

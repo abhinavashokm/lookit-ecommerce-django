@@ -31,29 +31,22 @@
                 <div class="form-grid">
                     <div class="form-group full-width">
                         <label for="productName">Product Name</label>
-                        <input type="text" name="name" id="productName" name="productName" placeholder="Enter Product Name"
-                            >
+                        <input type="text" name="name" id="productName" name="productName"
+                            placeholder="Enter Product Name">
                     </div>
                     <div class="form-group full-width">
                         <label for="description">Description</label>
-                        <textarea id="description" name="description" placeholder="Enter product description"
-                            ></textarea>
+                        <textarea id="description" name="description"
+                            placeholder="Enter product description"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="brand">Brand</label>
-                        <input type="text" id="brand" name="brand" placeholder="Enter Brand Name" >
+                        <input type="text" id="brand" name="brand" placeholder="Enter Brand Name">
                     </div>
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select id="status" name="status" >
-                            <option value="" disabled selected>Select Status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                        </select>
-                    </div>
+
                     <div class="form-group">
                         <label for="colorBase">Color Base</label>
-                        <select id="colorBase" name="colorBase" >
+                        <select id="colorBase" name="base_color">
                             <option value="" disabled selected>Name for filtering</option>
                             <option value="white">White</option>
                             <option value="black">Black</option>
@@ -61,8 +54,15 @@
                             <option value="green">Green</option>
                             <option value="blue">Blue</option>
                             <option value="red">Red</option>
+                            <option value="orange">Orange</option>
+                            <option value="grey">Grey</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="brown">Brown</option>
+                            <option value="purple">Purple</option>
+                            <option value="pink">Pink</option>
                         </select>
                     </div>
+
                 </div>
             </div>
 
@@ -72,21 +72,21 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="category">Category</label>
-                        <select id="category" name="category" >
+                        <select id="category" name="category">
                             <option value="" disabled selected>Select Category</option>
-                            <option value="t-shirts">T-shirts</option>
-                            <option value="hoodies">Hoodies</option>
-                            <option value="sweatshirts">Sweatshirts</option>
-                            <option value="tank-tops">Tank Tops</option>
+                            <option value="men">Men</option>
+                            <option value="women">Women</option>
+                            <option value="kids">Kids</option>
+                            <option value="unisex">Unisex</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="type">Type</label>
-                        <select id="type" class="select2" name="type" >
-                            <option value="" disabled selected>Select Type</option>
-                            <option value="men">Men</option>
-                            <option value="women">Women</option>
-                            <option value="unisex">Unisex</option>
+                        <label for="type">Style</label>
+                        <select id="type" class="select2" name="style">
+                            <option value="" disabled selected>Select Style</option>
+                            {% for style in styles %}
+                            <option value="{{ style.name }}">{{ style.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                     </div>
                     <div class="form-group full-width">
                         <label for="careInstructions">Care Instructions</label>
-                        <input type="text" id="careInstructions" name="careInstructions"
+                        <input type="text" id="careInstructions" name="care_instructions"
                             placeholder="Enter care instructions">
                     </div>
                 </div>
@@ -118,8 +118,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="basePrice">Price</label>
-                        <input type="number" id="basePrice" name="price" placeholder="Enter Price" step="0.01"
-                            >
+                        <input type="number" id="basePrice" name="price" placeholder="Enter Price" step="0.01">
                     </div>
                 </div>
             </div>

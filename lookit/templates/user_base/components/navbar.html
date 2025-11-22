@@ -3,10 +3,10 @@
         <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         <a href="#" class="logo">Lookit</a>
         <ul class="nav-links">
-            <li><a href="#">All</a></li>
-            <li><a href="#">Men</a></li>
-            <li><a href="#">Women</a></li>
-            <li><a href="#">Kids</a></li>
+            <li  ><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == Null %}active_category{% endif %}" href="{% url 'explore' %}">All</a></li>
+            <li><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == 'men' %}active_category{% endif %}" href="{% url 'explore' %}?category=men">Men</a></li>
+            <li><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == 'women' %}active_category{% endif %}" href="{% url 'explore' %}?category=women">Women</a></li>
+            <li><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == 'kids' %}active_category{% endif %}" href="{% url 'explore' %}?category=kids">Kids</a></li>
         </ul>
         <div class="header-right">
             <button class="icon-btn" title="Wishlist">

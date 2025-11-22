@@ -41,6 +41,10 @@
          color: #B55E8A;
      }
 
+     .active_category {
+        color: #B55E8A !important;
+     }
+
      .header-right {
          display: flex;
          align-items: center;

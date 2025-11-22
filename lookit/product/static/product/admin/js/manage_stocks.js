@@ -241,32 +241,32 @@ function updateLastUpdated(variantId) {
 // Open remove modal
 function openRemoveModal(variantId) {
     currentVariantId = variantId;
-    const modal = document.getElementById('removeModal');
+    const modal = document.getElementById('removeModal'+variantId);
     modal.classList.add('show');
 }
 
 // Close remove modal
 function closeRemoveModal() {
-    const modal = document.getElementById('removeModal');
+    const modal = document.getElementById('removeModal'+currentVariantId);
     modal.classList.remove('show');
     currentVariantId = null;
 }
 
 // Confirm remove
-function confirmRemove() {
-    if (currentVariantId) {
-        const stockElement = document.getElementById(`stock-${currentVariantId}`);
-        if (stockElement) {
-            const row = stockElement.closest('tr');
-            if (row) {
-                row.remove();
-            }
-        }
-        alert(`Variant ${currentVariantId} removed`);
-        // Add actual API call here
-    }
-    closeRemoveModal();
-}
+// function confirmRemove() {
+//     if (currentVariantId) {
+//         const stockElement = document.getElementById(`stock-${currentVariantId}`);
+//         if (stockElement) {
+//             const row = stockElement.closest('tr');
+//             if (row) {
+//                 row.remove();
+//             }
+//         }
+//         alert(`Variant ${currentVariantId} removed`);
+//         // Add actual API call here
+//     }
+//     closeRemoveModal();
+// }
 
 // Open delete modal
 function openDeleteModal(variantId) {
@@ -402,7 +402,6 @@ function changePage(page) {
 
 // Update stock
 function updateStock(variantId, change) {
-    console.log(variantId)
     stock = document.getElementById(variantId).innerText
     stock = parseInt(stock) + change
     document.getElementById(variantId).innerHTML = stock
@@ -425,7 +424,6 @@ function submitStock(variantId, csrfToken) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data);
-            alert("Stock updated!");
+            document.getElementById('totalStock').innerHTML = data.new_stock;
         });
 }

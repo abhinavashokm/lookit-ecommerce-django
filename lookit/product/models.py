@@ -38,7 +38,7 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        ordering = ['is_active','created_at']
+        ordering = ['-is_active','-created_at']
         
         
 class Variant(models.Model):

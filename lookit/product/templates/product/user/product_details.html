@@ -9,11 +9,11 @@
 {% block content %}
 <!-- Breadcrumb -->
 <div class="breadcrumb">
-    <a href="#">Home</a>
+    <a href="{% url 'index' %}">Home</a>
     <span>/</span>
     <a href="#">Men</a>
     <span>/</span>
-    <span class="current">Abstract Art Tee</span>
+    <span class="current">{{ product.name }}</span>
 </div>
 
 <!-- Product Details Container -->
@@ -69,16 +69,16 @@
 
         <!-- Right Side - Product Info -->
         <div class="product-info">
-            <h1 class="product-title">Abstract Art Tee</h1>
-            <p class="product-brand">by Lookit</p>
+            <h1 class="product-title">{{ product.name }}</h1>
+            <p class="product-brand">{{ product.brand }}</p>
 
             <div class="price-section">
                 <div class="price-special-label">Special price</div>
                 <div class="price-container">
-                    <div class="price">₹377</div>
-                    <div class="price-old">₹2,999</div>
+                    <div class="price">₹{{ product.price }}</div>
+                    <div class="price-old">₹{{ old_price }}</div>
                     <div class="price-offer-container">
-                        <div class="price-offer">87% off on men's tshirt</div>
+                        <div class="price-offer">20% off on {{ product.category | lower }}'s tshirt</div>
                         <div class="price-info-icon" title="Discount information">i</div>
                     </div>
                 </div>
@@ -92,8 +92,7 @@
             </div>
 
             <p class="product-description">
-                This unique tee features an abstract art design, blending modern art with everyday wear. Made from soft,
-                breathable cotton, It offers a comfortable fit and a standout style.
+                {{ product.description }}
             </p>
 
             <div class="size-section">
@@ -139,23 +138,23 @@
                 <h2 class="section-heading">Product Details</h2>
                 <div class="detail-item">
                     <span class="detail-label">Category:</span>
-                    <span class="detail-value">Men</span>
+                    <span class="detail-value">{{ product.category }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Style:</span>
-                    <span class="detail-value">Abstract Art</span>
+                    <span class="detail-value">{{ product.style.name }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Material:</span>
-                    <span class="detail-value">100% Cotton</span>
+                    <span class="detail-value">{{ product.material }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Fit:</span>
-                    <span class="detail-value">Regular Fit</span>
+                    <span class="detail-value">{{ product.fit }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Care Instructions:</span>
-                    <span class="detail-value">Machine wash cold, tumble dry low</span>
+                    <span class="detail-value">{{ product.care_instructions }}</span>
                 </div>
             </div>
         </div>

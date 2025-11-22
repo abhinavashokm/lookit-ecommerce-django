@@ -21,18 +21,6 @@ function updateSelectColor(select) {
     }
 }
 
-// Reset filters functionality
-function resetFilters() {
-    const filterForm = document.getElementById('filterForm');
-    filterForm.reset();
-
-    // Reset select colors to placeholder color
-    const selects = filterForm.querySelectorAll('.filter-select');
-    selects.forEach(select => {
-        updateSelectColor(select);
-    });
-}
-
 /* ============================================
    INITIALIZE UI ON PAGE LOAD
    ============================================ */

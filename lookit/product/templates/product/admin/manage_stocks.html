@@ -12,7 +12,7 @@
     <div class="breadcrumbs">
         <a href="{% url 'admin-list-products' %}">Products</a>
         <span>/</span>
-        <a href="#">Classic Cotton Tee</a>
+        <a href="{% url 'admin-view-product' product.id %}">{{ product.name }}</a>
         <span>/</span>
         <span>View Variants</span>
     </div>
@@ -23,7 +23,7 @@
             <span class="product-status">Active</span>
             <h1 class="product-name">{{ product.name }}</h1>
             <div class="product-details">
-                Price: ₹{{ product.price }} | Total Stock: 150
+                Price: ₹{{ product.price }} | Total Stock: <span id="totalStock">{{ product.total_stock }}</span>
             </div>
         </div>
         <div class="product-image">
@@ -88,12 +88,35 @@
                                 <span>Update</span>
                             </button>
 
-                            <button class="btn-remove" onclick="openRemoveModal(1)">
+                            <button class="btn-remove" onclick="openRemoveModal('{{ variant.id }}')">
                                 <span>🗑️</span>
                                 <span>Remove</span>
                             </button>
+
                         </td>
                     </tr>
+
+                    <!-- Remove Variant Confirmation Modal -->
+                    <div class="modal-overlay" id="removeModal{{ variant.id }}">
+                        <div class="modal">
+                            <div class="modal-header">
+                                <h2 class="modal-title">Remove Variant</h2>
+                            </div>
+                            <div class="modal-body">
+                                <p class="modal-message">Are you sure you want to remove size {{ variant.size }} variant? All stocks of this variant will be permanently removed from the product.</p>
+                            </div>
+                            <div class="modal-actions">
+                                <button class="modal-btn modal-btn-cancel" onclick="closeRemoveModal()">Cancel</button>
+                                <form action="{% url 'admin-delete-variant' variant.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                                    <button type="submit" class="modal-btn modal-btn-confirm">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
                     {% endfor %}
                 </tbody>
             </table>
@@ -102,22 +125,6 @@
     </div>
 </main>
 
-<!-- Remove Variant Confirmation Modal -->
-<div class="modal-overlay" id="removeModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 class="modal-title">Remove Variant</h2>
-        </div>
-        <div class="modal-body">
-            <p class="modal-message">Are you sure you want to remove this variant? This action cannot be undone and the
-                variant will be permanently removed from the product.</p>
-        </div>
-        <div class="modal-actions">
-            <button class="modal-btn modal-btn-cancel" onclick="closeRemoveModal()">Cancel</button>
-            <button class="modal-btn modal-btn-confirm" onclick="confirmRemove()">Remove</button>
-        </div>
-    </div>
-</div>
 
 <!-- Add New Size Modal -->
 <div class="modal-overlay" id="addSizeModal">
