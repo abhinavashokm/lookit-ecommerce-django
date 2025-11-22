@@ -1,11 +1,12 @@
+import json
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-from .models import Style, Product, Variant
 from django.http import JsonResponse
-import json
 from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
 from cloudinary.uploader import upload
+
+from .models import Style, Product, Variant
 
 """ ============================================
     ADMIN SIDE
@@ -62,13 +63,12 @@ def admin_list_products(request):
 
 def admin_add_product(request):
     if request.method == "POST":
-        print(request.POST)
- 
+
         name = request.POST.get('name')
         description = request.POST.get('description')
         brand = request.POST.get('brand')
         base_color = request.POST.get('base_color')
-        category = request.POST.get('category') 
+        category = request.POST.get('category')
 
         style_name = request.POST.get('style')
         style = Style.objects.get(name=style_name)
@@ -78,13 +78,20 @@ def admin_add_product(request):
         care_instructions = request.POST.get('care_instructions')
 
         price = request.POST.get('price')
-        
+
         image = request.FILES.get('image')
         img_url = None
         if image:
-            result = upload(image, folder=f"products/{name}/")
+            result = upload(
+                image,
+                folder=f"products/{name}/",
+                transformation=[
+                    {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                    {'quality': 'auto'},
+                    {'fetch_format': 'auto'},
+                ],
+            )
             img_url = result.get('secure_url')
-        print(image)
 
         Product.objects.create(
             name=name,
@@ -97,14 +104,71 @@ def admin_add_product(request):
             fit=fit,
             care_instructions=care_instructions,
             price=price,
-            image_url=img_url
+            image_url=img_url,
         )
 
     styles = Style.objects.all()
     return render(request, "product/admin/add_product.html", {"styles": styles})
 
 
-#--stock_management-------------------------
+def admin_edit_product(request, product_id):
+    if request.method == 'POST':
+
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        brand = request.POST.get('brand')
+        base_color = request.POST.get('base_color')
+        category = request.POST.get('category')
+
+        style_name = request.POST.get('style')
+        style = Style.objects.get(name=style_name)
+
+        material = request.POST.get('material')
+        fit = request.POST.get('fit')
+        care_instructions = request.POST.get('care_instructions')
+        price = request.POST.get('price')
+
+        image = request.FILES.get('image')
+        img_url = None
+        if image:
+            print(image)
+            result = upload(
+                image,
+                folder=f"products/{name}/",
+                transformation=[
+                    {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                    {'quality': 'auto'},
+                    {'fetch_format': 'auto'},
+                ],
+            )
+            img_url = result.get('secure_url')
+        print(image)
+
+        Product.objects.filter(id=product_id).update(
+            name=name,
+            description=description,
+            brand=brand,
+            base_color=base_color,
+            category=category.lower(),
+            style=style,
+            material=material,
+            fit=fit,
+            care_instructions=care_instructions,
+            price=price,
+            image_url=img_url,
+        )
+        return redirect('admin-view-product', product_id=product_id)
+
+    product = Product.objects.get(id=product_id)
+    styles = Style.objects.all()
+    return render(
+        request,
+        "product/admin/edit_product.html",
+        {'product': product, 'styles': styles},
+    )
+
+
+# --stock_management-------------------------
 def admin_manage_stocks(request, product_id):
     product = (
         Product.objects.filter(id=product_id)
@@ -125,7 +189,8 @@ def admin_manage_stocks(request, product_id):
         {'product': product, 'variants': variants},
     )
 
-#---stock_update_ajax----------
+
+# ---stock_update_ajax----------
 def admin_update_stock(request):
     if request.method == "POST":
         # convert json data into python dict
@@ -139,18 +204,29 @@ def admin_update_stock(request):
         variant.stock = new_stock
         variant.save()
 
-    return JsonResponse({"status": "success", "message": "Stock updated", "new_stock":new_stock})
+    return JsonResponse(
+        {"status": "success", "message": "Stock updated", "new_stock": new_stock}
+    )
+
 
 def admin_delete_variant(request, variant_id):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
         Variant.objects.get(id=variant_id).delete()
-        return redirect('admin-manage-stocks',product_id=product_id)
+        return redirect('admin-manage-stocks', product_id=product_id)
 
 
 def admin_view_product(request, product_id):
-    product = Product.objects.filter(id=product_id).annotate(total_stocks =  Coalesce(Sum('variant__stock'), Value(0)), total_variants = Coalesce(Count('variant'), Value(0))).first()
+    product = (
+        Product.objects.filter(id=product_id)
+        .annotate(
+            total_stocks=Coalesce(Sum('variant__stock'), Value(0)),
+            total_variants=Coalesce(Count('variant'), Value(0)),
+        )
+        .first()
+    )
     return render(request, "product/admin/view_product.html", {"product": product})
+
 
 def admin_toggle_product_active(request, product_id):
     product = Product.objects.get(id=product_id)

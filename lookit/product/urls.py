@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     admin_list_products,
     admin_add_product,
+    admin_edit_product,
     admin_list_categories,
     admin_add_style,
     admin_search_categories,
@@ -21,6 +22,7 @@ from .views import (
 urlpatterns = [
     path("admin/list/", admin_list_products, name="admin-list-products"),
     path("admin/add-product/", admin_add_product, name="admin-add-product"),
+    path("admin/edit-product/<product_id>/", admin_edit_product, name="admin-edit-product"),
     path("admin/view-product/<product_id>", admin_view_product, name="admin-view-product"),
     path("admin/toggle-product-active/<product_id>/", admin_toggle_product_active, name="admin_toggle_product_active"),
     path("admin/manage-stocks/<product_id>", admin_manage_stocks, name="admin-manage-stocks"),

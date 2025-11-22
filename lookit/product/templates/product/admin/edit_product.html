@@ -1,0 +1,204 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<link rel="stylesheet" href="{% static 'product/admin/css/edit_product.css' %}">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="{% url 'admin-list-products' %}">Products</a>
+        <span>/</span>
+        <a href="{% url 'admin-view-product' product.id %}">{{ product.name }}</a>
+        <span>/</span>
+        <span>Edit Product</span>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">Edit Product</h1>
+
+    <!-- Form Container -->
+    <div class="form-container">
+
+        <form action="{% url 'admin-edit-product' product.id %}"  method="post" enctype="multipart/form-data"  id="editProductForm">
+            {% csrf_token %}
+            <!-- Basic Information -->
+            <div class="form-section">
+                <h2 class="section-title">Basic Information</h2>
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="productName">Product Name</label>
+                        <input type="text" id="productName" name="name" value="{{ product.name }}" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description"
+                          required>{{ product.description }}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" name="brand" value="{{ product.brand }}" placeholder="Enter Brand Name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="colorBase">Color Base</label>
+                        <select id="colorBase" name="base_color" required>
+                            <option value="" disabled>Name for filtering</option>
+                            <option value="white" {% if product.base_color == 'white' %}selected{% endif %}>White</option>
+                            <option value="black" {% if product.base_color == 'black' %}selected{% endif %}>Black</option>
+                            <option value="beige" {% if product.base_color == 'beige' %}selected{% endif %}>Beige</option>
+                            <option value="green" {% if product.base_color == 'green' %}selected{% endif %}>Green</option>
+                            <option value="blue" {% if product.base_color == 'blue' %}selected{% endif %}>Blue</option>
+                            <option value="red" {% if product.base_color == 'red' %}selected{% endif %}>Red</option>
+                            <option value="orange" {% if product.base_color == 'orange' %}selected{% endif %}>Orange</option>
+                            <option value="grey" {% if product.base_color == 'grey' %}selected{% endif %}>Grey</option>
+                            <option value="yellow" {% if product.base_color == 'yellow' %}selected{% endif %}>Yellow</option>
+                            <option value="brown" {% if product.base_color == 'brown' %}selected{% endif %}>Brown</option>
+                            <option value="purple" {% if product.base_color == 'purple' %}selected{% endif %}>Purple</option>
+                            <option value="pink" {% if product.base_color == 'pink' %}selected{% endif %}>Pink</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Category -->
+            <div class="form-section">
+                <h2 class="section-title">Category</h2>
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="" disabled>Select Category</option>
+                            <option value="men">Men</option>
+                            <option value="women">Women</option>
+                            <option value="kids">Kids</option>
+                            <option value="unisex">Unisex</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Type</label>
+                        <select id="type" class="select2" name="style" required>
+                            <option value="" disabled>Select Style</option>
+                            {% for style in styles %}
+                            <option value="{{ style.name }}">{{ style.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="form-section">
+                <h2 class="section-title optional">Additional Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="material">Material</label>
+                        <input type="text" id="material" name="material" value="{{ product.material }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="fit">Fit</label>
+                        <input type="text" id="fit" name="fit" value="{{ product.fit }}">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="careInstructions">Care Instructions</label>
+                        <input type="text" id="careInstructions" name="careInstructions"
+                            value="{{ product.care_instructions }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price -->
+            <div class="form-section">
+                <h2 class="section-title">Price</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="basePrice">Price</label>
+                        <input type="number" id="basePrice" name="price" value="{{ product.price }}" step="0.01" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Images & Media -->
+            <div class="form-section">
+                <h2 class="section-title">Images & Media</h2>
+                <div class="form-grid">
+
+                    <!-- Current Thumbnail Image -->
+                    <div class="form-group full-width">
+                        <label class="current-image-label">Current Thumbnail Image</label>
+                        <div class="image-preview-container">
+                            <div class="thumbnail-preview">
+                                <img src="{{ product.image_url }}"
+                                    alt="Thumbnail" id="thumbnailImage">
+                                <button type="button" class="replace-btn"
+                                    onclick="document.getElementById('thumbnailInput').click()">Replace</button>
+                                <input type="file" name="image" id="thumbnailInput" value="{{ product.image_url }}" accept="image/*" style="display: none;"
+                                    onchange="handleThumbnailReplace(event)">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Additional Images -->
+                    <div class="form-group full-width">
+                        <label class="current-image-label">Current Additional Images</label>
+                        <div class="additional-images-grid" id="additionalImagesGrid">
+                            <div class="additional-image-item">
+                                <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+1"
+                                    alt="Additional Image 1">
+                                <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
+                                    title="Remove image">×</button>
+                            </div>
+                            <div class="additional-image-item">
+                                <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+2"
+                                    alt="Additional Image 2">
+                                <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
+                                    title="Remove image">×</button>
+                            </div>
+                            <div class="additional-image-item">
+                                <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+3"
+                                    alt="Additional Image 3">
+                                <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
+                                    title="Remove image">×</button>
+                            </div>
+                        </div>
+                        <div class="add-images-area" id="addImagesArea"
+                            onclick="document.getElementById('additionalInput').click()">
+                            <div class="upload-text">Click or drag and drop to add more images</div>
+                            <button type="button" class="upload-btn">Add Images</button>
+                            <input type="file" id="additionalInput" accept="image/*" multiple style="display: none;"
+                                onchange="handleAdditionalImagesAdd(event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel"
+                    onclick="window.location.href='view_product.html'">Cancel</button>
+                <button type="submit" class="btn-save">Save Changes</button>
+            </div>
+
+        </form>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- jQuery (required for Select2) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script src="{% static 'product/admin/js/edit_product.js' %}"></script>
+{% endblock %}

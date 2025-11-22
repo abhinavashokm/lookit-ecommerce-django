@@ -147,7 +147,11 @@
                 <tr>
                     <td class="product-id">PRD-{{product.id|stringformat:'04d'}}</td>
                     <td>
+                        {% if product.image_url != ' ' %}
+                        <img class="product-image" src="{{ product.image_url }}" alt="">
+                        {% else %}
                         <div class="product-image" style="background: #f3e5ab;">👕</div>
+                        {% endif %}
                     </td>
                     <td class="product-name">{{product.name}}</td>
                     <td class="product-price">₹{{ product.price }}</td>

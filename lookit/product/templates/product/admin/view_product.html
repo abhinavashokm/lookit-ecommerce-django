@@ -19,7 +19,9 @@
     <div class="page-header">
         <h1 class="page-title">Product Details</h1>
         <div class="page-actions">
-            <button class="btn-secondary">Edit</button>
+            <a href="{% url 'admin-edit-product' product.id %}">
+                <button class="btn-secondary">Edit</button>
+            </a>
             {% if product.is_active %}
 
             <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
@@ -61,7 +63,7 @@
             </div>
         </div>
         <div class="product-thumbnail">
-            <img src="https://via.placeholder.com/300x300?text=Thumbnail" alt="Product Thumbnail">
+            <img src="{{ product.image_url }}" alt="Product Thumbnail">
         </div>
     </div>
 

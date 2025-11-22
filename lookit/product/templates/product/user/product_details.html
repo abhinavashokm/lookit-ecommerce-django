@@ -35,11 +35,17 @@
                     </div>
                 </div>
                 <div class="main-image-container">
+                    {% if product.image_url != ' ' %}
+                    <img class="main-image" id="mainImage" src="{{ product.image_url }}" alt="">
+                    {% else %}
                     <div class="main-image" id="mainImage">
                         <div
                             style="width: 100%; height: 100%; background: linear-gradient(135deg, #ff6b6b, #ff8e53, #333); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">
-                            Abstract Art Design</div>
+                            {{ product.name }}</div>
                     </div>
+                    {% endif %}
+
+
                     <div class="zoom-icon" onclick="openImageModal()">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
@@ -170,7 +176,13 @@
             </svg>
         </button>
         <div class="modal-image" id="modalImage">
-            <div id="modalImageContent"></div>
+
+            {% if product.image_url != ' ' %}
+            <img id="modalImageContent" src="{{product.image_url}}" alt="">
+            {% else %}
+            <div id="modalImageContent" style="background-image: url({{product.image_url}});"></div>
+            {% endif %}
+
             <button class="modal-close" onclick="event.stopPropagation(); closeImageModal();">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
