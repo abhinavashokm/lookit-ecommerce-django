@@ -66,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
    SEARCH FUNCTIONALITY
    ============================================ */
 const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
 const clearBtn = document.getElementById('clearBtn');
 
 // Update clear button visibility based on input value
@@ -78,36 +77,65 @@ searchInput.addEventListener('input', () => {
     }
 });
 
-// Clear search function - just clears the input field
-function clearSearch() {
-    searchInput.value = '';
-    clearBtn.classList.remove('show');
-    searchInput.focus();
+
+  /* ------------SEARCHABLE STYLE CATEGORY DROPDOWN---------------*/
+
+function initSearchableDropdown(dropdownId, inputId, valueId, searchId) {
+    const dropdown = document.getElementById(dropdownId);
+    const input = document.getElementById(inputId);
+    const hiddenInput = document.getElementById(valueId);
+    const searchInput = document.getElementById(searchId);
+    const options = dropdown.querySelectorAll('.searchable-dropdown-option');
+
+    if (!dropdown || !input || !hiddenInput || !searchInput) return;
+
+    // Toggle dropdown visibility
+    input.addEventListener('click', function (e) {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+        if (dropdown.classList.contains('open')) {
+            searchInput.focus();
+        }
+    });
+
+    // Filter options based on search
+    searchInput.addEventListener('input', function () {
+        const searchTerm = this.value.toLowerCase();
+        options.forEach(option => {
+            const text = option.getAttribute('data-text').toLowerCase();
+            option.classList.toggle('hidden', !text.includes(searchTerm));
+        });
+    });
+
+    // Select option
+    options.forEach(option => {
+        option.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            const text = this.getAttribute('data-text');
+
+            input.value = text;
+            hiddenInput.value = value;
+
+            // Mark selected
+            options.forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+
+            // Close dropdown
+            dropdown.classList.remove('open');
+            searchInput.value = '';
+            options.forEach(opt => opt.classList.remove('hidden'));
+        });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (e) {
+        if (!dropdown.contains(e.target)) {
+            dropdown.classList.remove('open');
+            searchInput.value = '';
+            options.forEach(opt => opt.classList.remove('hidden'));
+        }
+    });
 }
 
-// Escape key to clear search
-searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && searchInput.value.trim().length > 0) {
-        clearSearch();
-    }
-});
-
-function viewVariants(productId) {
-    window.location.href = 'view_variants.html';
-}
-
-function deactivateProduct(productId) {
-    if (confirm(`Are you sure you want to deactivate product ID: ${productId}?`)) {
-        alert(`Product ${productId} deactivated`);
-    }
-}
-
-function editProduct(productId) {
-    window.location.href = 'edit_product.html';
-}
-
-function deleteProduct(productId) {
-    if (confirm(`Are you sure you want to delete product ID: ${productId}? This action cannot be undone.`)) {
-        alert(`Product ${productId} deleted`);
-    }
-}
+// Initialize your component
+initSearchableDropdown('stylesDropdownMobile', 'stylesInputMobile', 'stylesValueMobile', 'stylesSearchMobile');

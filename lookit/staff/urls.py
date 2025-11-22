@@ -9,7 +9,6 @@ from .views import (
     admin_add_staff,
     admin_view_staff,
     admin_block_user_toggle,
-    admin_filter_users,
 )
 
 
@@ -17,12 +16,12 @@ urlpatterns = [
     path("login/", admin_login, name="admin-login"),
     path("", admin_dashboard, name="admin-dashboard"),
     path("logout/", admin_logout, name="admin-logout"),
-    path("user_management/", admin_user_management, name="admin-user"),
-    path("view-user/<user_id>", admin_view_user, name="admin-view-user"),
-    path("edit-user", admin_edit_user, name="admin-edit-user"),
-    path("add-staff/", admin_add_staff, name="admin-add-staff"),
-    path("view-staff/<staff_id>", admin_view_staff, name="admin-view-staff"),
-    path("block-user-toggle/<user_id>", admin_block_user_toggle, name="admin-block-user-toggle"),
-    path("filter-users", admin_filter_users, name="admin-filter-users"),
+    
+    path("user/list/", admin_user_management, name="admin-user"),
+    path("user/view-user/<user_id>", admin_view_user, name="admin-view-user"),
+    path("user/edit-user", admin_edit_user, name="admin-edit-user"),
+    path("user/add-staff/", admin_add_staff, name="admin-add-staff"),
+    path("user/view-staff/<staff_id>", admin_view_staff, name="admin-view-staff"),
+    path("user/block-user-toggle/<user_id>", admin_block_user_toggle, name="admin-block-user-toggle"),
     
 ]

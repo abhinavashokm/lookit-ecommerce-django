@@ -13,7 +13,7 @@
             </a></li>
 
         <li><a href="{% url 'admin-list-products' %}"
-                class="{% if request.resolver_match.url_name == 'admin-list-products' %}active{% endif %}">
+                class="{% if '/product/admin/' in request.path and '/product/admin/category/' not in request.path%}active{% endif %}">
                 <span class="icon">
                     <svg viewBox="0 0 24 24">
                         <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
@@ -36,9 +36,9 @@
             </a></li>
 
         <li><a href="{% url 'admin-user' %}"
-                class="{% if request.resolver_match.url_name == 'admin-user' %}active{% endif %}">
+                class="{% if '/admin/user/' in  request.path %}active{% endif %}">
                 <span class="icon">
-                    <svg viewBox="0 0 24 24">
+                    <svg viewBox="0 0 24 24"> 
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                         <circle cx="9" cy="7" r="4"></circle>
                         <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>

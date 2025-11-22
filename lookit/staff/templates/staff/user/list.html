@@ -28,12 +28,12 @@
 
 
     <!-- Search Form -->
-    <form method="GET" action="{% url 'admin-filter-users' %}" id="searchForm" class="search-form">
+    <form method="GET" action="{% url 'admin-user' %}" id="searchForm" class="search-form">
         <div class="filters-section">
             <div class="search-container">
                 <div class="search-bar">
-                    <input type="text" name="search_key" placeholder="Search by Name or Email" id="searchInput"
-                        value="{{ request.GET.search_key  }}">
+                    <input type="text" name="search" placeholder="Search by Name or Email" id="searchInput"
+                        value="{{ request.GET.search  }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -41,13 +41,12 @@
                         </svg>
                     </span>
                     <div class="search-actions">
-                        <a style="text-decoration: none;" href="{% url 'admin-filter-users' %}">
+                        <a style="text-decoration: none;" href="{% url 'admin-user' %}">
                         <button type="button" class="clear-btn" id="clearBtn" >
                             <svg viewBox="0 0 24 24">
                                 <line x1="18" y1="6" x2="6" y2="18"></line>
                                 <line x1="6" y1="6" x2="18" y2="18"></line>
                             </svg>
-                            <span>Clear</span>
                         </button>
                         </a>
                     </div>
@@ -98,10 +97,11 @@
                     </div>
                 </div>
                 <div class="filter-actions">
-                    <button type="submit" name="action" value="filter" class="btn btn-apply" id="applyFiltersBtn">Apply
+                    <button type="submit"  class="btn btn-apply" id="applyFiltersBtn">Apply
                         Filters</button>
-                    <button type="submit" name="action" value="reset" class="btn btn-reset" id="resetFiltersBtn">Reset
-                        Filters</button>
+                    <a href="{% url 'admin-user' %}">
+                        <button type="button" class="btn btn-reset" id="resetFiltersBtn">Reset Filters</button>
+                    </a>
                 </div>
             </div>
         </div>

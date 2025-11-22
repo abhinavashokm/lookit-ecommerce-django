@@ -56,13 +56,51 @@ def admin_logout(request):
 
 
 def admin_user_management(request):
-    user_list = User.objects.all()
-    
-    #pagination
-    paginator = Paginator(user_list, 7)
+    users = User.objects.all()
+
+    search_key = request.GET.get('search', '').strip()
+    role = request.GET.get('role', '').strip()
+    status = request.GET.get('status', '').strip()
+    date_filter = request.GET.get('date', '').strip()
+
+    users = User.objects.all()
+
+    if role:
+        is_staff = True if role == 'staff' else False
+        users = users.filter(is_staff=is_staff)
+
+    if status:
+        is_active = True if status == 'active' else False
+        users = users.filter(is_active=is_active)
+
+    # ---- DATE filter ----
+    if date_filter:
+        today = date.today()
+
+        if date_filter == 'today':
+            users = users.filter(created_at__date=today)
+
+        elif date_filter == 'week':
+            start_of_week = today - timedelta(days=today.weekday())
+            users = users.filter(created_at__date__gte=start_of_week)
+
+        elif date_filter == 'month':
+            users = users.filter(
+                created_at__year=today.year, created_at__month=today.month
+            )
+        elif date_filter == 'year':
+            users = users.filter(created_at__year=today.year)
+
+    if search_key:
+        users = users.filter(
+            Q(full_name__icontains=search_key) | Q(email__icontains=search_key)
+        )
+
+    # pagination
+    paginator = Paginator(users, 7)
     page = request.GET.get('page')
     page_obj = paginator.get_page(page)
-    
+
     return render(request, "staff/user/list.html", {'page_obj': page_obj})
 
 
@@ -89,54 +127,3 @@ def admin_add_staff(request):
 def admin_view_staff(request, staff_id):
     staff_data = User.objects.get(id=staff_id)
     return render(request, "staff/user/view_staff.html", {"staff": staff_data})
-
-
-
-
-def admin_filter_users(request):
-    if request.method == 'GET':
-        if request.GET.get('action') == 'reset':
-            return redirect('admin-user')
-
-        search_key = request.GET.get('search_key', '').strip()
-        role = request.GET.get('role', '').strip()
-        status = request.GET.get('status', '').strip()
-        date_filter = request.GET.get('date', '').strip()
-
-        users = User.objects.all()
-
-        if role:
-            is_staff = True if role == 'staff' else False
-            users = users.filter(is_staff=is_staff)
-
-        if status:
-            is_active = True if status == 'active' else False
-            users = users.filter(is_active=is_active)
-
-            # ---- DATE filter ----
-        if date_filter:
-            today = date.today()
-
-            if date_filter == 'today':
-                users = users.filter(created_at__date=today)
-
-            elif date_filter == 'week':
-                start_of_week = today - timedelta(days=today.weekday())
-                users = users.filter(created_at__date__gte=start_of_week)
-
-            elif date_filter == 'month':
-                users = users.filter(
-                    created_at__year=today.year, created_at__month=today.month
-                )
-
-            elif date_filter == 'year':
-                users = users.filter(created_at__year=today.year)
-
-        if search_key:
-            users = users.filter(
-                Q(full_name__icontains=search_key) | Q(email__icontains=search_key)
-            )
-
-        print(request.GET)
-        # print(users)
-        return render(request, "staff/user/list.html", {'users': users})

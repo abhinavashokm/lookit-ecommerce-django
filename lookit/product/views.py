@@ -11,13 +11,22 @@ import json
 
 def admin_list_products(request):
     products = Product.objects.all()
+    styles = Style.objects.all()
+    
+    search = request.GET.get('search')
+    category = request.GET.get('category')
+    style = request.GET.get('style')
+    stock_status = request.GET.get('stock')
+    price_range = request.GET.get('price')
+    if search:
+        products = products.filter(name__icontains = search)
 
     #pagination
     paginator = Paginator(products, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
-    return render(request, "product/admin/list.html", {"page_obj":page_obj})
+    return render(request, "product/admin/list.html", {"page_obj":page_obj, "styles":styles})
 
 
 def admin_add_product(request):
@@ -107,16 +116,24 @@ def admin_manage_stocks(request, product_id):
 
 
 def admin_update_stock(request):
-    print("call vannnne.....")
     if request.method == "POST":
+        #convert json data into python dict
         data = json.loads(request.body)
-        print(data)
+
         variant_id = data.get('variant_id')
         new_stock = data.get('stock')
-        print(variant_id, new_stock)
+        
+        #update new stock
         variant = Variant.objects.get(id=variant_id)
         variant.stock = new_stock
         variant.save()
         
     return JsonResponse({"status": "success", "message": "Stock updated"})
     
+    
+""" ============================================
+    USER SIDE
+============================================ """
+
+def product_details(request):
+    return render(request, "product/user/product_details.html")
