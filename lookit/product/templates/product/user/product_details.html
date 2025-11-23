@@ -91,8 +91,16 @@
                 <div class="stock-info">
                     <span class="stock-label">Availability:</span>
                     <div class="stock-status">
-                        <span class="stock-indicator"></span>
-                        <span class="stock-text">In Stock</span>
+                        {% if product.total_stock > 10 %}
+                        <span class="stock-indicator in-stock"></span>
+                        <span class="stock-text in-stock">In Stock</span>
+                        {% elif product.total_stock > 0 %}
+                        <span class="stock-indicator low-stock"></span>
+                        <span class="stock-text low-stock">Limited Stocks Only</span>
+                        {% elif product.total_stock == 0 %}
+                        <span class="stock-indicator out-of-stock"></span>
+                        <span class="stock-text out-of-stock">Out of Stock</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from product.models import Product
 
 
 def home(request):
@@ -6,7 +7,8 @@ def home(request):
     if user.is_authenticated:
         if user.is_staff:
             return redirect('admin-dashboard')
-    return render(request, "core/index.html",{user:user})
+    new_arrivals = Product.objects.filter(is_active=True).order_by('-created_at')[:8]
+    return render(request, "core/index.html",{'user':user, 'new_arrivals': new_arrivals})
 
 
         

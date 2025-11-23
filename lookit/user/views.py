@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import User
+from .models import User, OTP
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from .utils import generate_otp, generate_referral_code, send_otp_email
+from datetime import timedelta
+from django.utils import timezone
 
 
 # custom decorator
@@ -66,9 +68,8 @@ def signup(request):
         }
 
         otp = generate_otp()
-        request.session['otp'] = otp
-
         send_otp_email(email, otp)
+        OTP.objects.create(email=email, code = otp) 
 
         return redirect('signup-otp')
 
@@ -77,16 +78,22 @@ def signup(request):
         if request.user.is_staff:
             return redirect('admin-dashboard')
         return redirect('index')
+    
+    expiry_time = timezone.now() + timedelta(minutes=2)
+    # Store expiry in session so it survives page reload
+    request.session["otp_expires_at"] = expiry_time.timestamp()
 
-    return render(request, "user/signup.html")
+    return render(request, "user/signup.html", {"otp_expires_at": expiry_time.timestamp()})
 
 
 def otp_verification(request):
     if request.method == "POST":
+        email = request.session['signup_data'].get('email')
         otp_entered = request.POST.get('otp')
-        otp_sent = request.session.get('otp')
+        otp_record = OTP.objects.filter(email=email, code=otp_entered).last()
         raw_password = request.session['signup_data'].get('password')
-        if otp_entered == otp_sent:
+        
+        if otp_record and otp_record.is_valid():
             print(request.session['signup_data'].get('email'))
             new_user = User.objects.create_user(
                 email=request.session['signup_data'].get('email'),

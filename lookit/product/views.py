@@ -371,7 +371,7 @@ def explore(request):
 
 
 def product_details(request, product_id):
-    product = Product.objects.get(id=product_id)
+    product = Product.objects.filter(id=product_id).annotate(total_stock = Coalesce(Sum('variant__stock'), 0)).first()
     old_price = int(product.price) * 1.2
     print(old_price)
     return render(
