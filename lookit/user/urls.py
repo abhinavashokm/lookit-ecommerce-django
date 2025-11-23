@@ -1,12 +1,13 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from .views import user_login, signup, otp_verification, user_logout
+from .views import user_login, signup, otp_verification, user_logout, send_otp
 
 urlpatterns = [
     path("", user_login, name="user-login"),
     path("signup/", signup, name="user-signup"),
     path("signup/otp/", otp_verification, name="signup-otp"),
     path("logout/", user_logout, name="user-logout"),
+    path("signup/otp/resend/", send_otp, name='signup-send-otp'),
     
     # password reset paths
     # 1.enter email and button for sent link

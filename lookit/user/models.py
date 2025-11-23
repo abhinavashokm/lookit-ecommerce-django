@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.base_user import BaseUserManager
 from .utils import generate_referral_code
-from datetime import timedelta, timezone
+from datetime import timedelta
+from django.utils import timezone
 
 #Creating custom user manager
 class UserManager(BaseUserManager):

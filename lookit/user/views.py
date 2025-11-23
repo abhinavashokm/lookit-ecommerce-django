@@ -67,11 +67,7 @@ def signup(request):
             'password': password,
         }
 
-        otp = generate_otp()
-        send_otp_email(email, otp)
-        OTP.objects.create(email=email, code = otp) 
-
-        return redirect('signup-otp')
+        return redirect('signup-send-otp')
 
     # redirect authenticated users
     if request.user.is_authenticated:
@@ -79,11 +75,18 @@ def signup(request):
             return redirect('admin-dashboard')
         return redirect('index')
     
-    expiry_time = timezone.now() + timedelta(minutes=2)
-    # Store expiry in session so it survives page reload
-    request.session["otp_expires_at"] = expiry_time.timestamp()
+    return render(request, "user/signup.html")
 
-    return render(request, "user/signup.html", {"otp_expires_at": expiry_time.timestamp()})
+def send_otp(request):
+    email = request.session['signup_data'].get('email')
+    otp = generate_otp()
+    send_otp_email(email, otp)
+    OTP.objects.create(email=email, code = otp)
+        
+    expiry_time = timezone.now() + timedelta(minutes=1)
+    # Store expiry in session so it survives page reload
+    request.session["otp_expires_at"] = expiry_time.timestamp() 
+    return redirect('signup-otp')
 
 
 def otp_verification(request):
@@ -94,7 +97,6 @@ def otp_verification(request):
         raw_password = request.session['signup_data'].get('password')
         
         if otp_record and otp_record.is_valid():
-            print(request.session['signup_data'].get('email'))
             new_user = User.objects.create_user(
                 email=request.session['signup_data'].get('email'),
                 password=raw_password,
@@ -107,11 +109,13 @@ def otp_verification(request):
                 request, email=new_user.email, password=raw_password
             )
             login(request, auth_user)
+            messages.success(request, "ACCOUNT CREATED SUCCESSFULLY")
             return redirect('index')
         else:
             messages.error(request, "Incorrect OTP. Please try again.")
 
-    return render(request, "user/otp_verification.html")
+    expiry_time = request.session["otp_expires_at"]
+    return render(request, "user/otp_verification.html", {"otp_expires_at": expiry_time})
 
 
 def user_logout(request):
