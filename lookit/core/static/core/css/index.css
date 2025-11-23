@@ -2,7 +2,12 @@
  .hero {
      position: relative;
      height: 400px;
-     background: linear-gradient(135deg, #B55E8A 0%, #9a4d72 100%);
+     /* background: linear-gradient(135deg, #B55E8A 0%, #9a4d72 100%); */
+     background-image: url("https://img.freepik.com/premium-photo/fashion-background_670672-19012.jpg?semt=ais_hybrid&w=740&q=80");
+     background-repeat: no-repeat;
+     /* shows image once */
+     background-size: cover;
+     /* fill container, crop if needed */
      display: flex;
      align-items: center;
      justify-content: center;
@@ -22,12 +27,14 @@
      font-size: 3.5rem;
      margin-bottom: 1rem;
      font-weight: 700;
+     color: #b55e6d;
  }
 
  .hero p {
      font-size: 1.2rem;
      margin-bottom: 2rem;
      opacity: 0.95;
+     color: #645353;
  }
 
  .shop-now-btn {
@@ -84,7 +91,7 @@
 
  .product-image {
      width: 100%;
-     height: 220px;
+     height: 240px;
      background-color: #f0f0f0;
      display: flex;
      align-items: center;
@@ -149,6 +156,11 @@
      font-weight: 600;
      color: #333;
      margin-bottom: 0.4rem;
+     height: calc(1.1rem * 2);
+     overflow: hidden;
+     display: -webkit-box;
+     -webkit-line-clamp: 2;
+     -webkit-box-orient: vertical;
  }
 
  .product-description {
@@ -191,7 +203,7 @@
 
  .category-image {
      width: 100%;
-     height: 180px;
+     height: 250px;
      background-color: #f0f0f0;
      display: flex;
      align-items: center;
@@ -267,173 +279,178 @@
  }
 
 
-        /* Main Content Responsive */
-        @media (max-width: 1200px) {
-            .section {
-                padding: 0 6%;
-                margin: 3.5rem auto;
-            }
+ /* Main Content Responsive */
+ @media (max-width: 1200px) {
+     .section {
+         padding: 0 6%;
+         margin: 3.5rem auto;
+     }
 
-            .hero {
-                margin: 1.5rem 6% 1rem 6%;
-            }
-        }
+     .hero {
+         margin: 1.5rem 6% 1rem 6%;
+     }
+ }
 
-        @media (max-width: 992px) {
-            .section {
-                padding: 0 5%;
-                margin: 3.5rem auto;
-            }
+ @media (max-width: 992px) {
+     .section {
+         padding: 0 5%;
+         margin: 3.5rem auto;
+     }
 
-            .hero {
-                margin: 1.5rem 5% 1rem 5%;
-                height: 300px;
-            }
+     .hero {
+         margin: 1.5rem 5% 1rem 5%;
+         height: 300px;
+     }
 
-            .hero h1 {
-                font-size: 2.5rem;
-            }
+     .hero h1 {
+         font-size: 2.5rem;
+     }
 
-            .hero p {
-                font-size: 1.1rem;
-            }
+     .hero p {
+         font-size: 1.1rem;
+     }
 
-            .product-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
+     .product-grid {
+         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+     }
 
-            .category-grid {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            }
-        }
+     .category-grid {
+         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+     }
+ }
 
-        @media (max-width: 768px) {
-            .section {
-                padding: 0 4%;
-                margin: 3rem auto;
-            }
+ @media (max-width: 768px) {
+     .section {
+         padding: 0 4%;
+         margin: 3rem auto;
+     }
 
-            .hero {
-                margin: 1.5rem 4% 1rem 4%;
-                height: 280px;
-            }
+     .hero {
+         margin: 1.5rem 4% 1rem 4%;
+         height: 280px;
+     }
 
-            .hero h1 {
-                font-size: 1.8rem;
-            }
+     .hero h1 {
+         font-size: 1.8rem;
+     }
 
-            .hero p {
-                font-size: 0.95rem;
-            }
+     .hero p {
+         font-size: 0.95rem;
+     }
 
-            .section-title {
-                font-size: 1.5rem;
-            }
+     .section-title {
+         font-size: 1.5rem;
+     }
 
-            .product-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
+     .product-grid {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 1rem;
+     }
 
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-            }
+     .category-grid {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 0.8rem;
+     }
 
-            .testimonials-grid {
-                grid-template-columns: 1fr;
-                gap: 1.2rem;
-            }
+     .testimonials-grid {
+         grid-template-columns: 1fr;
+         gap: 1.2rem;
+     }
 
-            .product-image {
-                height: 250px;
-            }
+     .product-image {
+         height: 250px;
+     }
 
-            .category-image {
-                height: 120px;
-            }
+     .category-image {
+         height: 120px;
+     }
 
-            .category-image::before {
-                font-size: 2.5rem;
-            }
+     .category-image::before {
+         font-size: 2.5rem;
+     }
 
-            .category-title {
-                padding: 0.6rem;
-                font-size: 0.85rem;
-            }
-        }
+     .category-title {
+         padding: 0.6rem;
+         font-size: 0.85rem;
+     }
+ }
 
-        @media (max-width: 480px) {
-            .section {
-                padding: 0 3%;
-                margin: 2.5rem auto;
-            }
+ @media (max-width: 480px) {
+     .section {
+         padding: 0 3%;
+         margin: 2.5rem auto;
+     }
 
-            .hero {
-                margin: 1rem 3% 0.8rem 3%;
-                height: 250px;
-            }
+     .hero {
+         margin: 1rem 3% 0.8rem 3%;
+         height: 250px;
+     }
 
-            .hero h1 {
-                font-size: 1.4rem;
-                margin-bottom: 0.8rem;
-            }
+     .hero h1 {
+         font-size: 1.4rem;
+         margin-bottom: 0.8rem;
+     }
 
-            .hero p {
-                font-size: 0.85rem;
-                margin-bottom: 1.5rem;
-            }
+     .hero p {
+         font-size: 0.85rem;
+         margin-bottom: 1.5rem;
+     }
 
-            .shop-now-btn {
-                padding: 0.8rem 2rem;
-                font-size: 1rem;
-            }
+     .shop-now-btn {
+         padding: 0.8rem 2rem;
+         font-size: 1rem;
+     }
 
-            .section-title {
-                font-size: 1.3rem;
-                margin-bottom: 1.5rem;
-            }
+     .section-title {
+         font-size: 1.3rem;
+         margin-bottom: 1.5rem;
+     }
 
-            .product-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.8rem;
-            }
+     .product-grid {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 0.8rem;
+     }
 
-            .category-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 0.6rem;
-            }
+     .category-grid {
+         grid-template-columns: repeat(2, 1fr);
+         gap: 0.6rem;
+     }
 
-            .category-image {
-                height: 100px;
-            }
+     .category-image {
+         height: 100px;
+     }
 
-            .category-image::before {
-                font-size: 2rem;
-            }
+     .category-image::before {
+         font-size: 2rem;
+     }
 
-            .category-title {
-                padding: 0.5rem;
-                font-size: 0.75rem;
-            }
+     .category-title {
+         padding: 0.5rem;
+         font-size: 0.75rem;
+     }
 
-            .product-image {
-                height: 200px;
-            }
+     .product-image {
+         height: 200px;
+     }
 
-            .product-info {
-                padding: 0.8rem;
-            }
+     .product-info {
+         padding: 0.8rem;
+     }
 
-            .product-title {
-                font-size: 1rem;
-            }
+     .product-title {
+         font-size: 1rem;
+         height: calc(1rem * 2);
+         overflow: hidden;
+         display: -webkit-box;
+         -webkit-line-clamp: 2;
+         -webkit-box-orient: vertical;
+     }
 
-            .product-description {
-                font-size: 0.8rem;
-            }
+     .product-description {
+         font-size: 0.8rem;
+     }
 
-            .testimonial-card {
-                padding: 1.5rem;
-            }
-        }
+     .testimonial-card {
+         padding: 1.5rem;
+     }
+ }

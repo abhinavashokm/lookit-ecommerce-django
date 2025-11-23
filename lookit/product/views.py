@@ -146,7 +146,7 @@ def admin_edit_product(request, product_id):
     product = Product.objects.get(id=product_id)
     if request.method == 'POST':
         # ---retrive-all-data
-        name = request.POST.get('name')
+        name = request.POST.get('name').strip()
         description = request.POST.get('description')
         brand = request.POST.get('brand')
         base_color = request.POST.get('base_color')

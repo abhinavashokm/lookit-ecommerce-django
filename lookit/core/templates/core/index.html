@@ -21,13 +21,16 @@
 <section class="section">
     <h2 class="section-title">Featured T-Shirts</h2>
     <div class="product-grid">
+
+        {% for product in featured %}
         <div class="product-card">
-            <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
+            <!-- <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
+            <img class="product-image" src="{{ product.image_url }}" alt="">
             <div class="product-info">
-                <h3 class="product-title">Abstract Art Tee</h3>
-                <p class="product-description">Express your creativity with this unique design.</p>
+                <h3 class="product-title">{{ product.name }}</h3>
+                <p class="product-description">{{ product.description }}</p>
                 <p class="product-price">
-                    $29.99
+                    ₹{{ product.price }}
                     <button class="wishlist-btn" onclick="this.classList.toggle('active')">
                         <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -37,75 +40,32 @@
                 </p>
             </div>
         </div>
-        <div class="product-card">
-            <div class="product-image" style="background: linear-gradient(135deg, #ffe5d9, #ffd4c4);"></div>
-            <div class="product-info">
-                <h3 class="product-title">Nature's Embrace Tee</h3>
-                <p class="product-description">Connect with nature in this comfortable tee.</p>
-                <p class="product-price">
-                    $32.99
-                    <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </button>
-                </p>
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image" style="background: linear-gradient(135deg, #2c2c2c, #1a1a1a);"></div>
-            <div class="product-info">
-                <h3 class="product-title">Quote Tee</h3>
-                <p class="product-description">Share your thoughts with this stylish quote tee.</p>
-                <p class="product-price">
-                    $27.99
-                    <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </button>
-                </p>
-            </div>
-        </div>
-        <div class="product-card">
-            <div class="product-image" style="background: linear-gradient(135deg, #e0f2f1, #b2dfdb);"></div>
-            <div class="product-info">
-                <h3 class="product-title">Minimalist Tee</h3>
-                <p class="product-description">Clean and simple design for everyday comfort.</p>
-                <p class="product-price">
-                    $28.99
-                    <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </button>
-                </p>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
 <!-- Popular Categories -->
 <section class="section">
-    <h2 class="section-title">Popular Categories</h2>
+    <h2 class="section-title">Popular Styles</h2>
     <div class="category-grid">
         <div class="category-card">
-            <div class="category-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
+            <!-- <div class="category-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
+             <img class="category-image" src="https://veirdo.in/cdn/shop/files/Artboard12_5_1.jpg?v=1754631099" alt="">
             <div class="category-title">Graphic Tees</div>
         </div>
         <div class="category-card">
-            <div class="category-image" style="background: linear-gradient(135deg, #8b0000, #6b0000);"></div>
+            <!-- <div class="category-image" style="background: linear-gradient(135deg, #8b0000, #6b0000);"></div> -->
+            <img class="category-image" src="https://m.media-amazon.com/images/I/81-bMmDmYYL._AC_UY350_.jpg" alt="">
             <div class="category-title">Vintage Tees</div>
         </div>
         <div class="category-card">
-            <div class="category-image" style="background: linear-gradient(135deg, #ffffff, #f5f5f5);"></div>
+            <!-- <div class="category-image" style="background: linear-gradient(135deg, #ffffff, #f5f5f5);"></div> -->
+            <img class="category-image" src="https://alcissports.com/cdn/shop/products/AAWTEESM00063202_1.jpg?v=1740640523" alt="">
             <div class="category-title">Sports Tees</div>
         </div>
         <div class="category-card">
-            <div class="category-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
+            <!-- <div class="category-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
+            <img class="category-image" src="https://veirdo.in/cdn/shop/files/Artboard_29_4.jpg?v=1754542502" alt="">
             <div class="category-title">Music Tees</div>
         </div>
     </div>
