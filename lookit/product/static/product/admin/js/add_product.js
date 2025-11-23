@@ -214,8 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Form submission
 document.getElementById('addProductForm').addEventListener('submit', (e) => {
-    //e.preventDefault();
-
     // Validate thumbnail
     if (!validateThumbnail()) {
         alert('Please upload exactly one thumbnail image.');
@@ -227,31 +225,6 @@ document.getElementById('addProductForm').addEventListener('submit', (e) => {
         alert('Please upload minimum 2 additional images.');
         return;
     }
-
-    const formData = new FormData(e.target);
-    const productData = {
-        name: formData.get('productName'),
-        description: formData.get('description'),
-        category: formData.get('category'),
-        status: formData.get('status'),
-        type: formData.get('type'),
-        colorBase: formData.get('colorBase'),
-        brand: formData.get('brand'),
-        material: formData.get('material'),
-        fit: formData.get('fit'),
-        careInstructions: formData.get('careInstructions'),
-        basePrice: formData.get('basePrice'),
-        thumbnail: thumbnailImage,
-        additionalImages: additionalImages
-    };
-
-    console.log('Product Data:', productData);
-    console.log('Thumbnail:', thumbnailImage ? thumbnailImage.name : 'None');
-    console.log('Additional Images:', additionalImages.length);
-
-    alert('Product saved successfully!');
-    // Add actual form submission logic here
-    // window.location.href = 'product_management.html';
 });
 
 

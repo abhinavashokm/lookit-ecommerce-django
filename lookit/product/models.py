@@ -44,7 +44,7 @@ class Product(models.Model):
         ordering = ['-is_active','-created_at']
         
         
-class Variant(models.Model):
+class Variant(models.Model): 
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     size = models.CharField(max_length=10)
     stock = models.IntegerField(default=0)

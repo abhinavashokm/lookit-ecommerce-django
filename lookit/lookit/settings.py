@@ -200,3 +200,6 @@ cloudinary.config(
 )
 
 # }
+
+# ⏰ Session expires after 30 minutes (in seconds)
+SESSION_COOKIE_AGE = 30 * 60  # 30 minutes

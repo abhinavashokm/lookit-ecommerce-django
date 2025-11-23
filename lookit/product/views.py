@@ -6,6 +6,7 @@ from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
 from cloudinary.uploader import upload, destroy
 from django.contrib import messages
+from django.db.models import Case, When, Value, IntegerField
 
 from .models import Style, Product, Variant, ProductImages
 
@@ -64,7 +65,7 @@ def admin_list_products(request):
 
 def admin_add_product(request):
     if request.method == "POST":
-        
+
         # ---retrive-all-post-data-------------------
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -85,7 +86,7 @@ def admin_add_product(request):
         additional_images = request.FILES.getlist('additional_images')
         img_url = None
         image_public_id = None
-        
+
         # --upload-image-to-cloudinary-----------------------------
         if image:
             result = upload(
@@ -99,7 +100,6 @@ def admin_add_product(request):
             )
             img_url = result.get('secure_url')
             image_public_id = result['public_id']
-
 
         # ---create-new-product-
         product = Product.objects.create(
@@ -116,16 +116,26 @@ def admin_add_product(request):
             image_url=img_url,
             image_public_id=image_public_id,
         )
-        
+
         # ---upload-additional-images-------
         if additional_images:
             for file in additional_images:
-                result = upload(file, folder=f"products/{product.name}/additional-images/")
+                result = upload(
+                    file,
+                    folder=f"products/{product.name}/additional-images/",
+                    transformation=[
+                        {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                        {'quality': 'auto'},
+                        {'fetch_format': 'auto'},
+                    ],
+                )
                 ProductImages.objects.create(
                     product=product,
                     image_url=result['secure_url'],
                     image_public_id=result['public_id'],
                 )
+        messages.success(request, "NEW PRODUCT CREATED")
+        return redirect('admin-list-products')
 
     # ---redner-add-product-page------------------------------------------------
     styles = Style.objects.all()
@@ -170,7 +180,7 @@ def admin_edit_product(request, product_id):
                     ],
                 )
                 img_url = result.get('secure_url')
-            #---temporary else block to set image public id for products which have it empty
+            # ---temporary else block to set image public id for products which have it empty
             else:
                 result = upload(
                     main_image,
@@ -200,14 +210,22 @@ def admin_edit_product(request, product_id):
         # ---manage-additional-images( upload new ones )-------------------------
         if additional_images:
             for file in additional_images:
-                result = upload(file, folder=f"products/{name}/additional-images/")
+                result = upload(
+                    file,
+                    folder=f"products/{name}/additional-images/",
+                    transformation=[
+                        {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                        {'quality': 'auto'},
+                        {'fetch_format': 'auto'},
+                    ],
+                )
                 ProductImages.objects.create(
                     product=product,
                     image_url=result['secure_url'],
                     image_public_id=result['public_id'],
                 )
         # ---update-modal-----------------------------
-        Product.objects.filter(id=product_id).update(
+        product = Product.objects.filter(id=product_id).update(
             name=name,
             description=description,
             brand=brand,
@@ -221,7 +239,7 @@ def admin_edit_product(request, product_id):
             image_url=img_url,
             image_public_id=image_public_id,
         )
-        messages.success(request, "Product details updated")
+        messages.success(request, f"PRODUCT DETAILS UPDATED")
         return redirect('admin-view-product', product_id=product_id)
 
     else:
@@ -250,7 +268,14 @@ def admin_manage_stocks(request, product_id):
     if request.method == "POST":
         size = request.POST.get('size')
         stock = request.POST.get('stock')
+
+        size_already_exist = Variant.objects.filter(product=product, size=size).exists()
+        if size_already_exist:
+            messages.error(request, f"SIZE VARIANT ALREADY EXIST")
+            return redirect('admin-manage-stocks', product_id=product_id)
+
         Variant.objects.create(product=product, size=size, stock=stock)
+        messages.success(request, f"NEW VARIANT ADDED")
         return redirect('admin-manage-stocks', product_id=product_id)
 
     variants = Variant.objects.filter(product=product)
@@ -284,6 +309,7 @@ def admin_delete_variant(request, variant_id):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
         Variant.objects.get(id=variant_id).delete()
+        messages.success(request, f"VARIANT DELETED")
         return redirect('admin-manage-stocks', product_id=product_id)
 
 
@@ -309,6 +335,10 @@ def admin_toggle_product_active(request, product_id):
     product.is_active = not product.is_active
     product.save()
     print(product.is_active)
+    if product.is_active:
+        messages.success(request, f"PRODUCT RESTORED")
+    else:
+        messages.success(request, f"PRODUCT DELETED")
     return redirect('admin-view-product', product_id=product_id)
 
 
@@ -327,7 +357,8 @@ def admin_add_style(request):
     if request.method == "POST":
         style_name = request.POST.get('style_name').strip()
         print(f"request came with {style_name}")
-        Style.objects.create(name=style_name)
+        style = Style.objects.create(name=style_name)
+        messages.success(request, f"CREATED NEW STYLE - {style.name}")
     return redirect('admin-category-management')
 
 
@@ -343,6 +374,7 @@ def admin_delete_category(request, style_id):
     style = Style.objects.get(id=style_id)
     style.is_deleted = True
     style.save()
+    messages.success(request, f"STYLE DELETED - {style.name}")
     return redirect('admin-category-management')
 
 
@@ -350,6 +382,7 @@ def admin_restore_category(request, style_id):
     style = Style.objects.get(id=style_id)
     style.is_deleted = False
     style.save()
+    messages.success(request, f"Restored style - {style.name}")
     return redirect('admin-category-management')
 
 
@@ -361,7 +394,7 @@ def admin_edit_category(request):
         style = Style.objects.get(id=style_id)
         style.name = style_name
         style.save()
-
+        messages.success(request, f"EDITED STYLE - {style.name}")
         return redirect('admin-category-management')
 
 
@@ -371,17 +404,17 @@ def admin_edit_category(request):
 
 
 def explore(request):
-    #fetch only products which are active and not out of stock
-    products = Product.objects.filter(is_active=True ,variant__stock__gt = 0).distinct()
-    #fetch only styles with minimum one product with minimum one stock
-    styles = Style.objects.filter(product__variant__stock__gt = 0).distinct()
+    # fetch only products which are active and not out of stock
+    products = Product.objects.filter(is_active=True, variant__stock__gt=0).distinct()
+    # fetch only styles with minimum one product with minimum one stock
+    styles = Style.objects.filter(product__variant__stock__gt=0).distinct()
 
     # ---category page
     category = request.GET.get('category')
     if category:
         products = products.filter(category=category.lower())
-        #fetch only styles which have atleast one product in men's category
-        styles = styles.filter(product__category = category.lower()).distinct()
+        # fetch only styles which have atleast one product in men's category
+        styles = styles.filter(product__category=category.lower()).distinct()
 
     # ---search----------------------------
     search_key = request.GET.get('search')
@@ -396,7 +429,7 @@ def explore(request):
         order_fields.append(sort_price)
     if sort_name:
         order_fields.append(sort_name)
-    #if both sort exists first order by price then name    
+    # if both sort exists first order by price then name
     products = products.order_by(*order_fields)
 
     # ----filter---------------------
@@ -424,6 +457,7 @@ def explore(request):
 
 
 def product_details(request, product_id):
+
     product = (
         Product.objects.filter(id=product_id)
         .annotate(
@@ -432,12 +466,29 @@ def product_details(request, product_id):
         )
         .first()
     )
-    
-    #redirect to product listing page if product is not active
+
+    # ---manual ordering for sizes----
+    size_order = Case(
+        When(size='S', then=Value(1)),
+        When(size='M', then=Value(2)),
+        When(size='L', then=Value(3)),
+        When(size='XL', then=Value(4)),
+        When(size='XXL', then=Value(5)),
+        default=Value(99),
+        output_field=IntegerField(),
+    )
+    # ---fetch all available sizes of this product-----------------------
+    sizes = Variant.objects.filter(product=product).order_by(size_order)
+
+    # ---redirect to product listing page if product is not active-------
     if not product.is_active:
+        messages.error(request, "PRODUCT IS UNAVAILABLE")
         return redirect('explore')
-    
+
+    # ---fetch additional product images--------------------------
     product_images = ProductImages.objects.filter(product=product)
+
+    # ---old price for showing offer temporarly---
     old_price = int(product.price) * 1.2
 
     return render(
@@ -447,5 +498,6 @@ def product_details(request, product_id):
             "product": product,
             'old_price': old_price,
             'additional_product_images': product_images,
+            'sizes': sizes,
         },
     )

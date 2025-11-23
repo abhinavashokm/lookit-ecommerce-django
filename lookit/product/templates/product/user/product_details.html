@@ -136,12 +136,12 @@
             <div class="size-section">
                 <h2 class="section-heading">Select Size</h2>
                 <div class="size-options">
-                    <button class="size-btn" onclick="selectSize(this)">XS</button>
-                    <button class="size-btn" onclick="selectSize(this)">S</button>
-                    <button class="size-btn active" onclick="selectSize(this)">M</button>
-                    <button class="size-btn" onclick="selectSize(this)">L</button>
-                    <button class="size-btn" onclick="selectSize(this)">XL</button>
-                    <button class="size-btn" onclick="selectSize(this)">XXL</button>
+                    {% for size in sizes %}
+                    <button class="size-btn {% if forloop.first %}active{% endif %}" onclick="selectSize(this)">{{ size.size }}</button>
+                    {% endfor %}
+                    <!-- <button class="size-btn" onclick="selectSize(this)">S</button>
+                    <button class="size-btn active" onclick="selectSize(this)">M</button> -->
+
                 </div>
                 <div class="quantity-section">
                     <div class="quantity-control">

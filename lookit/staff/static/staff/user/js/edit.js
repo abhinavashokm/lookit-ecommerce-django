@@ -56,10 +56,3 @@ function saveChanges() {
     alert('Changes saved successfully');
     // Add actual save logic here
 }
-
-// Cancel
-function cancel() {
-    if (confirm('Are you sure you want to cancel? Unsaved changes will be lost.')) {
-        window.history.back();
-    }
-}

@@ -6,7 +6,7 @@ from user.models import User
 from django.db.models import Q
 from datetime import date, timedelta
 from django.core.paginator import Paginator
-
+from django.contrib import messages
 
 # custom decorator
 def admin_required(view_func):
@@ -109,14 +109,20 @@ def admin_view_user(request, user_id):
     return render(request, "staff/user/view_user.html", {"user": user_data})
 
 
-def admin_edit_user(request):
-    return render(request, "staff/user/edit.html")
+def admin_edit_user(request, user_id):
+    user = User.objects.get(id=user_id)
+    return render(request, "staff/user/edit.html",{"user":user})
 
 
 def admin_block_user_toggle(request, user_id):
     user_data = User.objects.get(id=user_id)
     user_data.is_active = not user_data.is_active
     user_data.save()
+    if user_data.is_active:
+        messages.success(request, f"UNBLOCKED USER")
+    else:
+       messages.success(request, f"BLOCKED USER") 
+        
     return redirect('admin-view-user', user_id=user_id)
 
 
