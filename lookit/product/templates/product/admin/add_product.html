@@ -161,16 +161,19 @@
                     <div class="form-group full-width">
                         <label>Upload Additional Images <span style="color: #ef4444;">*</span> (Minimum 2
                             images)</label>
+
                         <div class="upload-area" id="additionalUpload"
                             onclick="document.getElementById('additionalInput').click()">
                             <div class="upload-text">Drag and drop or click to upload multiple images</div>
                             <button type="button" class="upload-btn">Upload Images</button>
-                            <input type="file" id="additionalInput" accept="image/*" multiple style="display: none;"
+                            <input type="file" name="additional_images" id="additionalInput" accept="image/*" multiple style="display: none;"
                                 onchange="handleAdditionalUpload(event)">
                         </div>
+
                         <div class="validation-message" id="additionalValidationMessage">Please upload minimum 2
                             additional images</div>
                         <div class="images-count" id="additionalImagesCount">0 images uploaded</div>
+
                         <div class="additional-images-grid" id="additionalImagesGrid"></div>
                     </div>
 

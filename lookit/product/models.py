@@ -18,12 +18,13 @@ class Product(models.Model):
         KIDS = 'KIDS', 'Kids'
         UNISEX = 'UNISEX', 'Unisex'
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=100)
     brand = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     
     image_url = models.URLField()
+    image_public_id = models.CharField(max_length=255)
 
     material = models.CharField(max_length=50, null=True, blank=True)
     fit = models.CharField(max_length=50, null=True, blank=True)

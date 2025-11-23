@@ -63,7 +63,8 @@ def admin_list_products(request):
 
 def admin_add_product(request):
     if request.method == "POST":
-
+        
+        # ---retrive-all-post-data-------------------
         name = request.POST.get('name')
         description = request.POST.get('description')
         brand = request.POST.get('brand')
@@ -80,7 +81,11 @@ def admin_add_product(request):
         price = request.POST.get('price')
 
         image = request.FILES.get('image')
+        additional_images = request.FILES.getlist('additional_images')
         img_url = None
+        image_public_id = None
+        
+        # --upload-image-to-cloudinary-----------------------------
         if image:
             result = upload(
                 image,
@@ -92,8 +97,11 @@ def admin_add_product(request):
                 ],
             )
             img_url = result.get('secure_url')
+            image_public_id = result['public_id']
 
-        Product.objects.create(
+
+        # ---create-new-product-
+        product = Product.objects.create(
             name=name,
             description=description,
             brand=brand,
@@ -105,15 +113,28 @@ def admin_add_product(request):
             care_instructions=care_instructions,
             price=price,
             image_url=img_url,
+            image_public_id=image_public_id,
         )
+        
+        # ---upload-additional-images-------
+        if additional_images:
+            for file in additional_images:
+                result = upload(file, folder=f"products/{product.name}/additional-images/")
+                ProductImages.objects.create(
+                    product=product,
+                    image_url=result['secure_url'],
+                    image_public_id=result['public_id'],
+                )
 
+    # ---redner-add-product-page------------------------------------------------
     styles = Style.objects.all()
     return render(request, "product/admin/add_product.html", {"styles": styles})
 
 
 def admin_edit_product(request, product_id):
+    product = Product.objects.get(id=product_id)
     if request.method == 'POST':
-
+        # ---retrive-all-data
         name = request.POST.get('name')
         description = request.POST.get('description')
         brand = request.POST.get('brand')
@@ -128,26 +149,44 @@ def admin_edit_product(request, product_id):
         care_instructions = request.POST.get('care_instructions')
         price = request.POST.get('price')
 
-        image = request.FILES.get('image')
+        main_image = request.FILES.get('image')
+        image_public_id = product.image_public_id
+
         additional_images = request.FILES.getlist('additional_images')
         img_url = None
-        if image:
-            result = upload(
-                image,
-                folder=f"products/{name}/",
-                transformation=[
-                    {'width': 1080, 'height': 1080, 'crop': 'limit'},
-                    {'quality': 'auto'},
-                    {'fetch_format': 'auto'},
-                ],
-            )
-            img_url = result.get('secure_url')
+
+        # ---replace main image if changed--------------------------
+        if main_image:
+            if image_public_id != ' ':
+                result = upload(
+                    main_image,
+                    folder=f"products/{name}/",
+                    public_id=product.image_public_id,
+                    transformation=[
+                        {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                        {'quality': 'auto'},
+                        {'fetch_format': 'auto'},
+                    ],
+                )
+                img_url = result.get('secure_url')
+            #---temporary else block to set image public id for products which have it empty
+            else:
+                result = upload(
+                    main_image,
+                    folder=f"products/{name}/",
+                    transformation=[
+                        {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                        {'quality': 'auto'},
+                        {'fetch_format': 'auto'},
+                    ],
+                )
+                image_public_id = result['public_id']
+                img_url = result.get('secure_url')
         else:
             img_url = request.POST.get('old_image_url')
 
-        product = Product.objects.get(id=product_id)
+        # ---manage-additional-images using hidden input( delete if missing)-----
         current_additional_images = ProductImages.objects.filter(product=product)
-
         for current_img in current_additional_images:
             # If hidden input is missing => image removed in UI
             if not request.POST.get(str(current_img.id)):
@@ -157,6 +196,7 @@ def admin_edit_product(request, product_id):
                 # Remove from db
                 current_img.delete()
 
+        # ---manage-additional-images( upload new ones )-------------------------
         if additional_images:
             for file in additional_images:
                 result = upload(file, folder=f"products/{name}/additional-images/")
@@ -165,7 +205,7 @@ def admin_edit_product(request, product_id):
                     image_url=result['secure_url'],
                     image_public_id=result['public_id'],
                 )
-
+        # ---update-modal-----------------------------
         Product.objects.filter(id=product_id).update(
             name=name,
             description=description,
@@ -178,12 +218,12 @@ def admin_edit_product(request, product_id):
             care_instructions=care_instructions,
             price=price,
             image_url=img_url,
+            image_public_id=image_public_id,
         )
         return redirect('admin-view-product', product_id=product_id)
 
     else:
-
-        product = Product.objects.get(id=product_id)
+        # ---prefill-and-render-edit-page--------------------------------
         additional_images = ProductImages.objects.filter(product=product)
         styles = Style.objects.all()
         return render(
@@ -255,7 +295,11 @@ def admin_view_product(request, product_id):
         .first()
     )
     product_images = ProductImages.objects.filter(product__id=product_id)
-    return render(request, "product/admin/view_product.html", {"product": product,"product_images": product_images})
+    return render(
+        request,
+        "product/admin/view_product.html",
+        {"product": product, "product_images": product_images},
+    )
 
 
 def admin_toggle_product_active(request, product_id):
@@ -371,12 +415,23 @@ def explore(request):
 
 
 def product_details(request, product_id):
-    product = Product.objects.filter(id=product_id).annotate(total_stock = Coalesce(Sum('variant__stock'), 0), total_additional_images = Coalesce(Count('productimages'), 0)).first()
-    product_images = ProductImages.objects.filter(product = product)
+    product = (
+        Product.objects.filter(id=product_id)
+        .annotate(
+            total_stock=Coalesce(Sum('variant__stock'), 0),
+            total_additional_images=Coalesce(Count('productimages'), 0),
+        )
+        .first()
+    )
+    product_images = ProductImages.objects.filter(product=product)
     old_price = int(product.price) * 1.2
 
     return render(
         request,
         "product/user/product_details.html",
-        {"product": product, 'old_price': old_price, 'additional_product_images': product_images},
+        {
+            "product": product,
+            'old_price': old_price,
+            'additional_product_images': product_images,
+        },
     )
