@@ -1,21 +1,18 @@
-
-// Image change functionality
-const images = [
-    '<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #ff6b6b, #ff8e53, #333); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">Abstract Art Design</div>',
-    '<div style="width: 100%; height: 100%; background: linear-gradient(135deg, #4ecdc4, #ff8e53, #f5e6d3); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold;">Geometric Design</div>'
-];
-
+// // Image change functionality
 let currentImageIndex = 0;
+let current_url = null
+let extra_image_count = 0
 
-function changeImage(index) {
-    currentImageIndex = index;
+function changeImage(index, url) {
+    currentImageIndex = parseInt(index);
     const mainImage = document.getElementById('mainImage');
-    mainImage.innerHTML = images[index];
+    mainImage.src = url;
+    current_url = url; //for setting modal image when zoom
 
     // Update active thumbnail
     const thumbnails = document.querySelectorAll('.thumbnail');
     thumbnails.forEach((thumb, i) => {
-        if (i === index) {
+        if (i === parseInt(index)) {
             thumb.classList.add('active');
         } else {
             thumb.classList.remove('active');
@@ -30,7 +27,10 @@ function changeImage(index) {
 }
 
 // Modal functionality
-function openImageModal() {
+function openImageModal(image_count) {
+    //for disable modal button on dead end's
+    extra_image_count = parseInt(image_count)
+
     const modal = document.getElementById('imageModal');
     modal.classList.add('active');
     updateModalImage();
@@ -60,25 +60,54 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+//function to make modal change buttons disabled on deadend
+function updateModalButtons() {
+    console.log(Math.abs(currentImageIndex) , extra_image_count)
+    if (Math.abs(currentImageIndex) == extra_image_count) {
+        if (currentImageIndex == extra_image_count) {
+            let btn1 = document.getElementById("modalNext");
+            btn1.disabled = true;  // disable
+        }
+        if (-currentImageIndex == extra_image_count) {
+            let btn2 = document.getElementById("modalPrevious");
+            btn2.disabled = true;  // disable
+        }
+    } else {
+        let btn1 = document.getElementById("modalNext");
+        btn1.disabled = false;  // enable
+        let btn2 = document.getElementById("modalPrevious");
+        btn2.disabled = false;  // enable
+    }
+}
+
 function updateModalImage() {
     const modalImageContent = document.getElementById('modalImageContent');
+    updateModalButtons()
     if (modalImageContent) {
-        modalImageContent.innerHTML = images[currentImageIndex];
+        //update modal image only if current image is changed from default
+        if (current_url != null) {
+            modalImageContent.src = current_url;
+        }
     }
 }
 
 function changeModalImage(direction) {
     currentImageIndex += direction;
+    updateModalButtons()
 
-    // Loop around
-    if (currentImageIndex < 0) {
-        currentImageIndex = images.length - 1;
-    } else if (currentImageIndex >= images.length) {
-        currentImageIndex = 0;
+    id = 'imageIndex' + Math.abs(currentImageIndex)
+    thumbnail_img = document.getElementById(id)
+    if (thumbnail_img) {
+        img_url = thumbnail_img.src
+
+        // Update main image and thumbnails
+        changeImage(currentImageIndex, img_url);
+    } else {
+        //reverse current image index
+        currentImageIndex -= direction;
+        console.log('dead-end')
     }
 
-    // Update main image and thumbnails
-    changeImage(currentImageIndex);
 }
 
 // Keyboard navigation for modal

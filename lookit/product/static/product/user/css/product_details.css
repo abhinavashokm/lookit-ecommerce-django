@@ -1627,3 +1627,18 @@
     }
 
 }
+
+
+/* Disabled state for modal navigation buttons */
+.modal-nav:disabled,
+.modal-nav.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background-color: rgba(200, 200, 200, 0.5);
+}
+
+.modal-nav:disabled:hover,
+.modal-nav.disabled:hover {
+    background-color: rgba(200, 200, 200, 0.5);
+    transform: translateY(-50%) scale(1);
+}

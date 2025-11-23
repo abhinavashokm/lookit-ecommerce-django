@@ -371,11 +371,12 @@ def explore(request):
 
 
 def product_details(request, product_id):
-    product = Product.objects.filter(id=product_id).annotate(total_stock = Coalesce(Sum('variant__stock'), 0)).first()
+    product = Product.objects.filter(id=product_id).annotate(total_stock = Coalesce(Sum('variant__stock'), 0), total_additional_images = Coalesce(Count('productimages'), 0)).first()
+    product_images = ProductImages.objects.filter(product = product)
     old_price = int(product.price) * 1.2
-    print(old_price)
+
     return render(
         request,
         "product/user/product_details.html",
-        {"product": product, 'old_price': old_price},
+        {"product": product, 'old_price': old_price, 'additional_product_images': product_images},
     )
