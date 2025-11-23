@@ -567,3 +567,14 @@
                width: 100%;
            }
        }
+
+       .truncate-text {
+           display: inline-block;
+           /* or block/flex item */
+           max-width: 250px;
+           /* set the visible width */
+           white-space: nowrap;
+           overflow: hidden;
+           text-overflow: ellipsis;
+           vertical-align: middle;
+       }

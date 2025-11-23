@@ -468,6 +468,7 @@
           cursor: not-allowed;
           opacity: 0.6;
       }
+
       /*modified end*/
 
       .btn-remove {
@@ -710,4 +711,16 @@
           .variants-table {
               min-width: 500px;
           }
+      }
+
+
+      .truncate-text {
+          display: inline-block;
+          /* or block/flex item */
+          max-width: 250px;
+          /* set the visible width */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          vertical-align: middle;
       }

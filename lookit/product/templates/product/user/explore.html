@@ -16,7 +16,9 @@
         <form action="{% url 'explore' %}" method="get" id="filterForm">
 
             <!--for preserving query params of search and sort-->
-            <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+            <input type="hidden" name="category" value="{{ request.GET.category }}">
+            <input type="hidden" name="sort_name" value="{{ request.GET.sort_name }}">
+            <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
             <input type="hidden" name="search" value="{{ request.GET.search }}">
 
             <!-- Styles Filter -->
@@ -90,7 +92,7 @@
 
             <!-- Filter Buttons -->
             <div class="filter-buttons">
-                <a href="{% url 'explore' %}">
+                <a href="{% url 'explore' %}?category={{ request.GET.category }}">
                     <button type="button" class="clear-btn">Clear All</button>
                 </a>
                 <button type="submit" class="apply-btn">Apply Filters</button>
@@ -113,7 +115,9 @@
                 <form method="GET" action="{% url 'explore' %}" id="searchForm">
 
                     <!-- hidden inputs to preserve other query params -->
-                    <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                     <input type="hidden" name="category" value="{{ request.GET.category }}">
+                    <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
+                    <input type="hidden" name="sort_name" value="{{ request.GET.sort_name }}">
                     <input type="hidden" name="style" value="{{ request.GET.style }}">
                     <input type="hidden" name="color" value="{{ request.GET.color }}">
                     <input type="hidden" name="size" value="{{ request.GET.size }}">
@@ -124,7 +128,7 @@
                         value="{{ request.GET.search }}">
                     <!--clear button-->
                     <a
-                        href="{% url 'explore' %}?sort={{ request.GET.sort }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                        href="{% url 'explore' %}?sort_price={{ request.GET.sort_price }}&sort_name={{ request.GET.sort_name }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
                         <button type="button" class="search-clear-btn {% if request.GET.search %}visible{% endif %}"
                             id="searchClearBtn" title="Clear">
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -150,23 +154,23 @@
             <div class="sort-group">
                 <span class="sort-label" style="font-size: 0.85rem;">Price:</span>
                 <a
-                    href="{% url 'explore' %}?sort=price&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
-                    <button class="sort-btn {% if request.GET.sort == 'price' %}active{% endif %}">Low to High</button>
+                    href="{% url 'explore' %}?category={{ request.GET.category }}&sort_price=price&sort_name={{ request.GET.sort_name }}&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort_price == 'price' %}active{% endif %}">Low to High</button>
                 </a>
                 <a
-                    href="{% url 'explore' %}?sort=-price&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
-                    <button class="sort-btn {% if request.GET.sort == '-price' %}active{% endif %}">High to Low</button>
+                    href="{% url 'explore' %}?category={{ request.GET.category }}&sort_price=-price&sort_name={{ request.GET.sort_name }}&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort_price == '-price' %}active{% endif %}">High to Low</button>
                 </a>
             </div>
             <div class="sort-group">
                 <span class="sort-label" style="font-size: 0.85rem;">Name:</span>
                 <a
-                    href="{% url 'explore' %}?sort=name&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
-                    <button class="sort-btn {% if request.GET.sort == 'name' %}active{% endif %}">A-Z</button>
+                    href="{% url 'explore' %}?category={{ request.GET.category }}&sort_name=name&sort_price={{ request.GET.sort_price }}&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort_name == 'name' %}active{% endif %}">A-Z</button>
                 </a>
                 <a
-                    href="{% url 'explore' %}?sort=-name&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
-                    <button class="sort-btn {% if request.GET.sort == '-name' %}active{% endif %}">Z-A</button>
+                    href="{% url 'explore' %}?category={{ request.GET.category }}&sort_name=-name&sort_price={{ request.GET.sort_price }}&search={{ request.GET.search }}&styles={{ request.GET.style }}&color={{ request.GET.color }}&size={{ request.GET.size }}&priceMin={{ request.GET.priceMin }}&priceMax={{ request.GET.priceMax }}">
+                    <button class="sort-btn {% if request.GET.sort_name == '-name' %}active{% endif %}">Z-A</button>
                 </a>
             </div>
         </div>
@@ -185,7 +189,8 @@
             <h2 class="filter-title">Filter By</h2>
 
             <form action="{url 'explore'}" method="get" id="mobileFilterForm">
-                <input type="hidden" name="sort" value="{{ request.GET.sort }}">
+                <input type="hidden" name="sort_name" value="{{ request.GET.sort_name }}">
+                 <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
 
                 <!-- Styles Filter -->
                 <div class="filter-group">

@@ -97,7 +97,7 @@ def admin_user_management(request):
         )
 
     # pagination
-    paginator = Paginator(users, 7)
+    paginator = Paginator(users, 2)
     page = request.GET.get('page')
     page_obj = paginator.get_page(page)
 

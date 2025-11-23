@@ -32,7 +32,7 @@ def admin_list_products(request):
         products = products.filter(style__name=style)
 
     if category:
-        products = products.filter(category=category.upper())
+        products = products.filter(category=category.lower())
 
     if stock_status:
         reorder_level = 30
@@ -369,13 +369,17 @@ def admin_edit_category(request):
 
 
 def explore(request):
-    products = Product.objects.all()
-    styles = Style.objects.all()
+    #fetch only products which are active and not out of stock
+    products = Product.objects.filter(is_active=True ,variant__stock__gt = 0).distinct()
+    #fetch only styles with minimum one product with minimum one stock
+    styles = Style.objects.filter(product__variant__stock__gt = 0).distinct()
 
     # ---category page
     category = request.GET.get('category')
     if category:
         products = products.filter(category=category.lower())
+        #fetch only styles which have atleast one product in men's category
+        styles = styles.filter(product__category = category.lower()).distinct()
 
     # ---search----------------------------
     search_key = request.GET.get('search')
@@ -383,12 +387,15 @@ def explore(request):
         products = products.filter(name__icontains=search_key)
 
     # ---sort----------------------
-    sort = request.GET.get('sort')
-    if sort:
-        if "price" in sort:
-            products = products.order_by(sort)
-        elif "name" in sort:
-            products = products.order_by(sort)
+    sort_name = request.GET.get('sort_name')
+    sort_price = request.GET.get('sort_price')
+    order_fields = []
+    if sort_price:
+        order_fields.append(sort_price)
+    if sort_name:
+        order_fields.append(sort_name)
+    #if both sort exists first order by price then name    
+    products = products.order_by(*order_fields)
 
     # ----filter---------------------
     style = request.GET.get('style')
@@ -423,6 +430,11 @@ def product_details(request, product_id):
         )
         .first()
     )
+    
+    #redirect to product listing page if product is not active
+    if not product.is_active:
+        return redirect('explore')
+    
     product_images = ProductImages.objects.filter(product=product)
     old_price = int(product.price) * 1.2
 

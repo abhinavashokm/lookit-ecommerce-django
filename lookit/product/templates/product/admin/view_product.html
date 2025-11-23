@@ -12,18 +12,17 @@
     <div class="breadcrumbs">
         <a href="{% url 'admin-list-products' %}">Products</a>
         <span>/</span>
-        <span>{{ product.name }}</span>
+        <span class="truncate-text">{{ product.name }}</span>
     </div>
 
     <!-- Page Header -->
     <div class="page-header">
         <h1 class="page-title">Product Details</h1>
         <div class="page-actions">
+            {% if product.is_active %}
             <a href="{% url 'admin-edit-product' product.id %}">
                 <button class="btn-secondary">Edit</button>
             </a>
-            {% if product.is_active %}
-
             <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
             {% else %}
             <button class="btn-warning" onclick="openRestoreModal()">Restore</button>
