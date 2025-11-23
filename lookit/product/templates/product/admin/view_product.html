@@ -68,12 +68,13 @@
 
     <!-- Mobile Actions (shown only on small devices) -->
     <div class="mobile-actions">
-        <button class="btn-secondary" onclick="editProduct()">Edit</button>
-
         {% if product.is_active %}
+        <a href="{% url 'admin-edit-product' product.id %}">
+            <button class="btn-secondary">Edit</button>
+        </a>
         <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
         {% else %}
-        <button class="btn-danger" onclick="openDeleteModal()">Restore</button>
+        <button class="btn-warning" onclick="openRestoreModal()">Restore</button>
         {% endif %}
     </div>
 

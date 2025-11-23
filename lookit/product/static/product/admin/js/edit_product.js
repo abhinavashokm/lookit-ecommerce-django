@@ -164,13 +164,6 @@ document.querySelectorAll('select[required]:not(.select2-hidden-accessible)').fo
     select.addEventListener('change', updateSelectStyling);
 });
 
-
-// Form submission
-document.getElementById('editProductForm').addEventListener('submit', (e) => {
-    alert('Product updated successfully!');
-});
-
-
 // Initialize Select2 for type field
 $(document).ready(function () {
     $('#type').select2({

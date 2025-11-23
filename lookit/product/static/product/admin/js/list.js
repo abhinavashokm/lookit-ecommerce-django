@@ -66,7 +66,7 @@ searchInput.addEventListener('input', () => {
 });
 
 
-  /* ------------SEARCHABLE STYLE CATEGORY DROPDOWN---------------*/
+/* ------------SEARCHABLE STYLE CATEGORY DROPDOWN---------------*/
 
 function initSearchableDropdown(dropdownId, inputId, valueId, searchId) {
     const dropdown = document.getElementById(dropdownId);

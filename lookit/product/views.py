@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
 from cloudinary.uploader import upload, destroy
+from django.contrib import messages
 
 from .models import Style, Product, Variant, ProductImages
 
@@ -220,6 +221,7 @@ def admin_edit_product(request, product_id):
             image_url=img_url,
             image_public_id=image_public_id,
         )
+        messages.success(request, "Product details updated")
         return redirect('admin-view-product', product_id=product_id)
 
     else:
