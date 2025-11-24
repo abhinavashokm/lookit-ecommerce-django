@@ -5,6 +5,15 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 <link rel="stylesheet" href="{% static 'product/admin/css/add_product.css' %}">
+<style>
+        /* jQuery validation error styling */
+    label.error {
+      color: red;
+      font-weight: normal;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+</style>
 {% endblock %}
 
 <!-- Main Content -->
@@ -23,7 +32,7 @@
 
     <!-- Form Container -->
     <div class="form-container">
-        <form id="addProductForm" method="post" enctype="multipart/form-data"  action="{% url 'admin-add-product' %}">
+        <form id="addProductForm" method="post" enctype="multipart/form-data" action="{% url 'admin-add-product' %}">
             {% csrf_token %}
             <!-- Basic Information -->
             <div class="form-section">
@@ -166,8 +175,8 @@
                             onclick="document.getElementById('additionalInput').click()">
                             <div class="upload-text">Drag and drop or click to upload multiple images</div>
                             <button type="button" class="upload-btn">Upload Images</button>
-                            <input type="file" name="additional_images" id="additionalInput" accept="image/*" multiple style="display: none;"
-                                onchange="handleAdditionalUpload(event)">
+                            <input type="file" name="additional_images" id="additionalInput" accept="image/*" multiple
+                                style="display: none;" onchange="handleAdditionalUpload(event)">
                         </div>
 
                         <div class="validation-message" id="additionalValidationMessage">Please upload minimum 2
@@ -198,4 +207,153 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script src="{% static 'product/admin/js/add_product.js' %}"></script>
+
+<!--form validation-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script>
+    $.validator.addMethod("letterswithspaces", function (value, element) {
+        return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
+    }, "Only letters and spaces allowed");
+
+    $.validator.addMethod("positiveNumber", function (value, element) {
+        return this.optional(element) || Number(value) > 0;
+    }, "Please enter a valid price");
+
+    $(document).ready(function () {
+
+        $("#addProductForm").validate({
+            //ignore: [], // IMPORTANT: validates hidden fields like file inputs
+
+            rules: {
+                name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                description: {
+                    required: true,
+                    minlength: 10,
+                },
+                brand: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 50,
+                    letterswithspaces: true
+                },
+                base_color: {
+                    required: true
+                },
+                category: {
+                    required: true
+                },
+                style: {
+                    required: true
+                },
+                material: {
+                    minlength: 2,
+                    maxlength: 50,
+                    letterswithspaces: true
+                },
+                fit: {
+                    minlength: 2,
+                    maxlength: 50,
+                    letterswithspaces: true
+                },
+                care_instructions: {
+                    maxlength: 150
+                },
+                price: {
+                    required: true,
+                    number: true,
+                    positiveNumber: true
+                },
+                // image: {
+                //     required: true,
+                //     accept: "image/*"
+                // },
+                // additional_images: {
+                //     required: true,
+                //     accept: "image/*"
+                // }
+            },
+
+            messages: {
+                name: {
+                    required: "Product name is required",
+                    minlength: "Enter at least 2 characters",
+                    maxlength: "Max 100 characters allowed"
+                },
+                description: {
+                    required: "Description is required",
+                    minlength: "Description must be at least 10 characters"
+                },
+                brand: {
+                    required: "Brand is required",
+                    minlength: "Brand must be at least 2 characters",
+                    maxlength: "Brand name too long",
+                    letterswithspaces: "Brand name can only contain letters"
+                },
+                base_color: {
+                    required: "Select a base color"
+                },
+                category: {
+                    required: "Select category"
+                },
+                style: {
+                    required: "Select style"
+                },
+                material: {
+                    minlength: "Minimum 2 characters",
+                    maxlength: "Maximum 50 characters"
+                },
+                fit: {
+                    minlength: "Minimum 2 characters",
+                    maxlength: "Maximum 50 characters"
+                },
+                care_instructions: {
+                    maxlength: "Max 150 characters allowed"
+                },
+                price: {
+                    required: "Price is required",
+                    number: "Enter a valid number",
+                    positiveNumber: "Price must be greater than 0"
+                },
+                // image: {
+                //     required: "Upload a thumbnail image",
+                //     accept: "Only image files allowed"
+                // },
+                // additional_images: {
+                //     required: "Upload at least 2 additional images",
+                //     accept: "Only image files allowed"
+                // }
+            },
+
+            errorClass: "error",
+            errorElement: "label",
+
+            errorPlacement: function (error, element) {
+                if (element.attr("type") === "file") {
+                    error.appendTo(element.closest(".form-group"));
+                } else {
+                    error.insertAfter(element);
+                }
+            },
+
+            submitHandler: function (form) {
+                // Custom validation for min additional images count
+                const additionalCount = document.getElementById('additionalInput').files.length;
+                console.log(additionalCount)
+                if (additionalCount < 2) {
+                    $("#additionalValidationMessage").text("Upload minimum 2 images").show();
+                    return false;
+                }
+
+                form.submit();
+            }
+
+        });
+
+    });
+</script>
+
 {% endblock %}

@@ -127,20 +127,16 @@ function handleAdditionalUpload(event) {
 
 // Remove thumbnail
 function removeThumbnail() {
-    if (confirm('Are you sure you want to remove the thumbnail image?')) {
         thumbnailImage = null;
         const previewImg = document.getElementById('thumbnailPreviewImg');
         previewImg.src = '';
         validateThumbnail();
-    }
 }
 
 // Remove additional image
 function removeAdditionalImage(index) {
-    if (confirm('Are you sure you want to remove this image?')) {
         additionalImages.splice(index, 1);
         displayAdditionalImages();
-    }
 }
 
 // Drag and drop functionality
@@ -213,19 +209,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Form submission
-document.getElementById('addProductForm').addEventListener('submit', (e) => {
-    // Validate thumbnail
-    if (!validateThumbnail()) {
-        alert('Please upload exactly one thumbnail image.');
-        return;
-    }
+// document.getElementById('addProductForm').addEventListener('submit', (e) => {
+//     // Validate thumbnail
+//     if (!validateThumbnail()) {
+//         alert('Please upload exactly one thumbnail image.');
+//         return;
+//     }
 
-    // Validate additional images
-    if (!validateAdditionalImages()) {
-        alert('Please upload minimum 2 additional images.');
-        return;
-    }
-});
+//     // Validate additional images
+//     if (!validateAdditionalImages()) {
+//         alert('Please upload minimum 2 additional images.');
+//         return;
+//     }
+// });
 
 
 //SELECT 2 SCRIPT
