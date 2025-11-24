@@ -438,6 +438,7 @@ def explore(request):
     price_max = request.GET.get('price_max')
     color = request.GET.get('color')
     size = request.GET.get('size')
+    
     if style:
         products = products.filter(style__name__icontains=style)
     if price_min and price_max:
@@ -487,6 +488,9 @@ def product_details(request, product_id):
 
     # ---fetch additional product images--------------------------
     product_images = ProductImages.objects.filter(product=product)
+    
+    #---fetch related products---------------------------------------------------------------
+    related_products = Product.objects.filter(category=product.category,is_active=True, variant__stock__gt=0).distinct().exclude(id=product.id)
 
     # ---old price for showing offer temporarly---
     old_price = int(product.price) * 1.2
@@ -499,5 +503,6 @@ def product_details(request, product_id):
             'old_price': old_price,
             'additional_product_images': product_images,
             'sizes': sizes,
+            "related_products": related_products,
         },
     )

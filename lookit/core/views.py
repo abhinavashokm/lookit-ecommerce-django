@@ -7,8 +7,8 @@ def home(request):
     if user.is_authenticated:
         if user.is_staff:
             return redirect('admin-dashboard')
-    new_arrivals = Product.objects.filter(is_active=True).order_by('-created_at')[:8]
-    featured = Product.objects.filter(is_active=True).order_by('created_at')[:4]
+    new_arrivals = Product.objects.filter(is_active=True, variant__stock__gt=0).distinct().order_by('-created_at')[:8]
+    featured = Product.objects.filter(is_active=True, variant__stock__gt=0).distinct().order_by('created_at')[:4]
     return render(request, "core/index.html",{'user':user, 'new_arrivals': new_arrivals, 'featured':featured})
 
 

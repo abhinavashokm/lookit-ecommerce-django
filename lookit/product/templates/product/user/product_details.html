@@ -333,55 +333,23 @@
 <div class="related-products">
     <h2 class="related-title">Related Products</h2>
     <div class="related-grid">
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #ffe5d9, #ffd4c4);"></div>
-            <div class="related-info">
-                <div class="related-name">Graphic Print Tee</div>
-                <div class="related-price">$39.99</div>
+
+        {% for product in related_products %}
+        <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+            <div class="related-card">
+                {% if product.image_url != ' ' %}
+                <img class="related-image" src="{{ product.image_url }}" alt="">
+                {% else %}
+                <div class="related-image" style="background: linear-gradient(135deg, #ffe5d9, #ffd4c4);"></div>
+                {% endif %}
+                <div class="related-info">
+                    <div class="related-name">Graphic Print Tee</div>
+                    <div class="related-price">$39.99</div>
+                </div>
             </div>
-        </div>
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #2c2c2c, #1a1a1a);"></div>
-            <div class="related-info">
-                <div class="related-name">Patterned Tee</div>
-                <div class="related-price">$29.99</div>
-            </div>
-        </div>
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div>
-            <div class="related-info">
-                <div class="related-name">Artistic Tee</div>
-                <div class="related-price">$44.99</div>
-            </div>
-        </div>
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #e0f2f1, #b2dfdb);"></div>
-            <div class="related-info">
-                <div class="related-name">Minimalist Tee</div>
-                <div class="related-price">$28.99</div>
-            </div>
-        </div>
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #fff3e0, #ffe0b2);"></div>
-            <div class="related-info">
-                <div class="related-name">Sunset Tee</div>
-                <div class="related-price">$33.99</div>
-            </div>
-        </div>
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #e8e8e8, #d5d5d5);"></div>
-            <div class="related-info">
-                <div class="related-name">Geometric Tee</div>
-                <div class="related-price">$31.99</div>
-            </div>
-        </div>
-        <div class="related-card">
-            <div class="related-image" style="background: linear-gradient(135deg, #ff6b6b, #ff8e53);"></div>
-            <div class="related-info">
-                <div class="related-name">Vibrant Tee</div>
-                <div class="related-price">$35.99</div>
-            </div>
-        </div>
+        </a>
+        {% endfor %}
+
     </div>
 </div>
 

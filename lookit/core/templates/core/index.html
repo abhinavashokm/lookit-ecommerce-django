@@ -12,7 +12,7 @@
         <h1>Express Yourself with Lookit</h1>
         <p>Discover unique designs & high-quality t-shirts that reflect your style.</p>
         <a href="{% url 'explore' %}">
-        <button class="shop-now-btn">Shop Now</button>
+            <button class="shop-now-btn">Shop Now</button>
         </a>
     </div>
 </section>
@@ -23,23 +23,25 @@
     <div class="product-grid">
 
         {% for product in featured %}
-        <div class="product-card">
-            <!-- <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
-            <img class="product-image" src="{{ product.image_url }}" alt="">
-            <div class="product-info">
-                <h3 class="product-title">{{ product.name }}</h3>
-                <p class="product-description">{{ product.description }}</p>
-                <p class="product-price">
-                    ₹{{ product.price }}
-                    <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </button>
-                </p>
+        <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+            <div class="product-card">
+                <!-- <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
+                <img class="product-image" src="{{ product.image_url }}" alt="">
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-price">
+                        ₹{{ product.price }}
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
+                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                        </button>
+                    </p>
+                </div>
             </div>
-        </div>
+        </a>
         {% endfor %}
     </div>
 </section>
@@ -50,7 +52,7 @@
     <div class="category-grid">
         <div class="category-card">
             <!-- <div class="category-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
-             <img class="category-image" src="https://veirdo.in/cdn/shop/files/Artboard12_5_1.jpg?v=1754631099" alt="">
+            <img class="category-image" src="https://veirdo.in/cdn/shop/files/Artboard12_5_1.jpg?v=1754631099" alt="">
             <div class="category-title">Graphic Tees</div>
         </div>
         <div class="category-card">
@@ -60,7 +62,8 @@
         </div>
         <div class="category-card">
             <!-- <div class="category-image" style="background: linear-gradient(135deg, #ffffff, #f5f5f5);"></div> -->
-            <img class="category-image" src="https://alcissports.com/cdn/shop/products/AAWTEESM00063202_1.jpg?v=1740640523" alt="">
+            <img class="category-image"
+                src="https://rukminim2.flixcart.com/image/612/612/xif0q/t-shirt/m/j/p/xxl-dsw0905-dsws-original-imag55j22spcv9cm-bb.jpeg?q=70" alt="">
             <div class="category-title">Sports Tees</div>
         </div>
         <div class="category-card">
@@ -77,27 +80,29 @@
     <div class="product-grid">
 
         {% for product in new_arrivals %}
-        <div class="product-card">
-            {% if product.image_url != ' ' %}
-            <img class="product-image" src="{{ product.image_url }}" alt="">
-            {% else %}
-            <div class="product-image" style="background: linear-gradient(135deg, #e8e8e8, #d5d5d5);"></div>
-            {% endif %}
-           
-            <div class="product-info">
-                <h3 class="product-title">{{ product.name }}</h3>
-                <p class="product-description">{{ product.description }}</p>
-                <p class="product-price">
-                    ₹{{ product.price }}
-                    <button class="wishlist-btn" onclick="this.classList.toggle('active')">
-                        <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                        </svg>
-                    </button>
-                </p>
+        <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+            <div class="product-card">
+                {% if product.image_url != ' ' %}
+                <img class="product-image" src="{{ product.image_url }}" alt="">
+                {% else %}
+                <div class="product-image" style="background: linear-gradient(135deg, #e8e8e8, #d5d5d5);"></div>
+                {% endif %}
+
+                <div class="product-info">
+                    <h3 class="product-title">{{ product.name }}</h3>
+                    <p class="product-description">{{ product.description }}</p>
+                    <p class="product-price">
+                        ₹{{ product.price }}
+                        <button class="wishlist-btn" onclick="this.classList.toggle('active')">
+                            <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                            </svg>
+                        </button>
+                    </p>
+                </div>
             </div>
-        </div>
+        </a>
         {% endfor %}
 
         <!-- <div class="product-card">
