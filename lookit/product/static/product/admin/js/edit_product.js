@@ -94,7 +94,6 @@ function handleAdditionalImagesAdd(event) {
 
 // Remove additional image
 function removeAdditionalImage(button) {
-    if (confirm('Are you sure you want to remove this image?')) {
         const imageItem = button.closest('.additional-image-item');
         const imagesGroup = imageItem.closest('.form-group');
 
@@ -103,7 +102,6 @@ function removeAdditionalImage(button) {
         imageItem.remove();
         console.log('Image removed');
         updateAdditionalImagesModifiedState();
-    }
 }
 
 // Update additional images modified state
@@ -191,4 +189,5 @@ $(document).ready(function () {
         $('#type').next('.select2-container').find('.select2-selection__rendered').css('color', '#1f2937');
     }
 });
+
 
