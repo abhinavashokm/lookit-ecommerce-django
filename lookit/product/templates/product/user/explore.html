@@ -21,6 +21,17 @@
             <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
             <input type="hidden" name="search" value="{{ request.GET.search }}">
 
+            <!-- Category Filter -->
+            <div class="filter-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="men">Men</option>
+                        <option value="women">Women</option>
+                        <option value="kids">Kids</option>
+                    </select>
+            </div>
+
             <!-- Styles Filter -->
             <div class="filter-group">
                 <label for="styles">Styles</label>
@@ -189,8 +200,27 @@
             <h2 class="filter-title">Filter By</h2>
 
             <form action="{url 'explore'}" method="get" id="mobileFilterForm">
+
+                <!-- hidden inputs to preserve other query params -->
+                <input type="hidden" name="category" value="{{ request.GET.category }}">
+                <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
                 <input type="hidden" name="sort_name" value="{{ request.GET.sort_name }}">
-                 <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
+                <input type="hidden" name="style" value="{{ request.GET.style }}">
+                <input type="hidden" name="color" value="{{ request.GET.color }}">
+                <input type="hidden" name="size" value="{{ request.GET.size }}">
+                <input type="hidden" name="priceMin" value="{{ request.GET.priceMin }}">
+                <input type="hidden" name="priceMax" value="{{ request.GET.priceMax }}">
+
+                <!-- Category Filter -->
+                <div class="filter-group">
+                        <label for="categoryMobile">Category</label>
+                        <select id="categoryMobile" name="category" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="men">Men</option>
+                            <option value="women">Women</option>
+                            <option value="kids">Kids</option>
+                        </select>
+                </div>
 
                 <!-- Styles Filter -->
                 <div class="filter-group">
