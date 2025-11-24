@@ -2,164 +2,11 @@
 <html lang="en">
 
 <head>
+  {% load static %}
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up - Lookit</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: #f5f5f5;
-      padding: 40px 0;
-    }
-
-    .signup-container {
-      background: #fff;
-      padding: 45px 35px;
-      border-radius: 12px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
-      max-width: 540px;
-      /* increased width */
-      width: 95%;
-      text-align: center;
-    }
-
-    /* ----- Attractive Title Styling ----- */
-    h2 {
-      margin-bottom: 25px;
-      color: #333;
-      font-size: 1.7rem;
-      /* bigger */
-      font-weight: 700;
-      line-height: 1.4;
-      letter-spacing: 0.5px;
-      padding: 10px 0;
-
-      /* subtle premium effect */
-      background: linear-gradient(to right, #f6f6f6, #ffffff);
-      border-radius: 8px;
-    }
-
-    h2 span {
-      color: #B55E8A;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-      text-align: left;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 13px;
-      background-color: #B55E8A;
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-size: 17px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background 0.3s ease;
-    }
-
-    .btn:hover {
-      background-color: #9c4c76;
-    }
-
-    .or-separator {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin: 22px 0;
-      color: #aaa;
-      font-weight: bold;
-    }
-
-    .or-separator::before,
-    .or-separator::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid #ccc;
-      margin: 0 12px;
-    }
-
-    .btn-google {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      background-color: #fff;
-      color: #444;
-      border: 1px solid #ccc;
-      padding: 12px 20px;
-      font-weight: bold;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .btn-google:hover {
-      background-color: #f0f0f0;
-    }
-
-    .btn-google svg {
-      width: 20px;
-      height: 20px;
-      margin-right: 10px;
-    }
-
-    .login-link {
-      margin-top: 18px;
-      font-size: 15px;
-    }
-
-    .login-link a {
-      color: #B55E8A;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-
-    .error-box {
-      background: #ffe6e6;
-      color: #b30000;
-      border: 1px solid #ffcccc;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 15px;
-      font-size: 0.95rem;
-    }
-
-    /* jQuery validation error styling */
-    label.error {
-      color: red;
-      font-weight: normal;
-      font-size: 0.85rem;
-      margin-top: 4px;
-    }
-  </style>
+  <link rel="stylesheet" href="{% static 'user/css/signup.css' %}">
 </head>
 
 <body>
@@ -187,10 +34,47 @@
           value="{{ referral_code | default:'' }}">
       </div>
       <div class="form-group">
-        <input type="password" name="password" id="password" placeholder="Password" required>
+
+        <div class="password-wrapper">
+          <input type="password" name="password" id="password" placeholder="Password" required>
+          <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+            <!-- Eye icon (shown when password is hidden) -->
+            <svg id="eyeIcon" viewBox="0 0 24 24" style="display: block;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <!-- Eye off icon (shown when password is visible) -->
+            <svg id="eyeOffIcon" viewBox="0 0 24 24" style="display: none;">
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+              </path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+
       </div>
       <div class="form-group">
-        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+        <div class="password-wrapper">
+          <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+          <button type="button" class="password-toggle" id="confirmPasswordToggle"
+            aria-label="Toggle confirm password visibility">
+            <!-- Eye icon (shown when password is hidden) -->
+            <svg id="confirmEyeIcon" viewBox="0 0 24 24" style="display: block;">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <!-- Eye off icon (shown when password is visible) -->
+            <svg id="confirmEyeOffIcon" viewBox="0 0 24 24" style="display: none;">
+              <path
+                d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+              </path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          </button>
+        </div>
+
       </div>
 
       <button type="submit" class="btn">Sign Up</button>
@@ -220,89 +104,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-
-
-  <script>
-    $.validator.addMethod("letterswithspaces", function (value, element) {
-      return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
-    }, "Only letters and spaces allowed");
-
-    $.validator.addMethod("strongPassword", function (value) {
-      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(value);
-    }, "Password must contain uppercase, lowercase, and a number");
-
-
-    $(document).ready(function () {
-
-      $("#signup_form").validate({
-        rules: {
-          full_name: {
-            required: true,
-            letterswithspaces: true,
-            minlength: 2,
-            maxlength: 50,
-          },
-          email: {
-            required: true,
-            email: true
-          },
-          referral_code: {
-            maxlength: 50
-          },
-          password: {
-            required: true,
-            minlength: 8,
-            strongPassword: true
-          },
-          confirm_password: {
-            required: true,
-            equalTo: "#password"
-          }
-        },
-        messages: {
-          full_name: {
-            required: "Full name is required",
-            minlength: "Name must be at least 2 characters",
-            maxlength: "Name can only contain max 50 characters",
-            letterswithspaces: "Name can only contain letters and spaces"
-          },
-          email: {
-            required: "Email is required",
-            email: "Please enter a valid email"
-          },
-          referral_code: {
-            maxlength: "Referral code cannot exceed 50 characters"
-          },
-          password: {
-            required: "Password is required",
-            minlength: "Password must be at least 8 characters"
-          },
-          confirm_password: {
-            required: "Please confirm your password",
-            equalTo: "Passwords do not match"
-          }
-        },
-        onkeyup: true,
-        errorClass: "error",
-        errorElement: "label",
-        errorPlacement: function (error, element) {
-          error.insertAfter(element);
-        }
-      });
-    });
-  </script>
-
-  <!--autohide error messages after 7 seconds-->
-  <script>
-    setTimeout(function () {
-      const alerts = document.querySelectorAll('.error-box');
-      alerts.forEach(alert => {
-        alert.style.transition = "opacity 0.8s";
-        alert.style.opacity = "0";
-        setTimeout(() => alert.remove(), 800);
-      });
-    }, 7000);
-  </script>
+  <script src="{% static 'user/js/signup.js' %}"></script>
 
 </body>
 
