@@ -368,6 +368,10 @@ def admin_add_style(request):
     if request.method == "POST":
         style_name = request.POST.get('style_name').strip()
         print(f"request came with {style_name}")
+        is_style_exist = Style.objects.filter(name=style_name).exists()
+        if is_style_exist:
+            messages.error(request, "Style already exist")
+            return redirect('admin-category-management')
         style = Style.objects.create(name=style_name)
         messages.success(request, f"CREATED NEW STYLE - {style.name}")
     return redirect('admin-category-management')
