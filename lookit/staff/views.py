@@ -54,7 +54,7 @@ def admin_logout(request):
     USER MANAGEMENT
 ============================================ """
 
-
+@admin_required
 def admin_user_management(request):
     users = User.objects.all()
 
@@ -103,17 +103,17 @@ def admin_user_management(request):
 
     return render(request, "staff/user/list.html", {'page_obj': page_obj})
 
-
+@admin_required
 def admin_view_user(request, user_id):
     user_data = User.objects.get(id=user_id)
     return render(request, "staff/user/view_user.html", {"user": user_data})
 
-
+@admin_required
 def admin_edit_user(request, user_id):
     user = User.objects.get(id=user_id)
     return render(request, "staff/user/edit.html",{"user":user})
 
-
+@admin_required
 def admin_block_user_toggle(request, user_id):
     user_data = User.objects.get(id=user_id)
     user_data.is_active = not user_data.is_active
@@ -125,11 +125,11 @@ def admin_block_user_toggle(request, user_id):
         
     return redirect('admin-view-user', user_id=user_id)
 
-
+@admin_required
 def admin_add_staff(request):
     return render(request, "staff/user/add_staff.html")
 
-
+@admin_required
 def admin_view_staff(request, staff_id):
     staff_data = User.objects.get(id=staff_id)
     return render(request, "staff/user/view_staff.html", {"staff": staff_data})

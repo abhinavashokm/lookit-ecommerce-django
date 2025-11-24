@@ -4,8 +4,9 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
-from cloudinary.uploader import upload, destroy
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
+from cloudinary.uploader import upload, destroy
 from django.db.models import Case, When, Value, IntegerField
 
 from .models import Style, Product, Variant, ProductImages
@@ -14,7 +15,15 @@ from .models import Style, Product, Variant, ProductImages
     ADMIN SIDE
 ============================================ """
 
+# custom decorator
+def admin_required(view_func):
+    decorated_view_func = user_passes_test(
+        lambda u: u.is_authenticated and u.is_staff,
+        login_url='/admin/login/',  # your custom login
+    )(view_func)
+    return decorated_view_func
 
+@admin_required
 def admin_list_products(request):
     products = Product.objects.annotate(
         total_stock=Coalesce(Sum('variant__stock'), Value(0))
@@ -62,7 +71,7 @@ def admin_list_products(request):
         request, "product/admin/list.html", {"page_obj": page_obj, "styles": styles}
     )
 
-
+@admin_required
 def admin_add_product(request):
     if request.method == "POST":
 
@@ -141,7 +150,7 @@ def admin_add_product(request):
     styles = Style.objects.all()
     return render(request, "product/admin/add_product.html", {"styles": styles})
 
-
+@admin_required
 def admin_edit_product(request, product_id):
     product = Product.objects.get(id=product_id)
     if request.method == 'POST':
@@ -258,6 +267,7 @@ def admin_edit_product(request, product_id):
 
 
 # --stock_management-------------------------
+@admin_required
 def admin_manage_stocks(request, product_id):
     product = (
         Product.objects.filter(id=product_id)
@@ -287,6 +297,7 @@ def admin_manage_stocks(request, product_id):
 
 
 # ---stock_update_ajax----------
+@admin_required
 def admin_update_stock(request):
     if request.method == "POST":
         # convert json data into python dict
@@ -304,7 +315,7 @@ def admin_update_stock(request):
         {"status": "success", "message": "Stock updated", "new_stock": new_stock}
     )
 
-
+@admin_required
 def admin_delete_variant(request, variant_id):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
@@ -312,7 +323,7 @@ def admin_delete_variant(request, variant_id):
         messages.success(request, f"VARIANT DELETED")
         return redirect('admin-manage-stocks', product_id=product_id)
 
-
+@admin_required
 def admin_view_product(request, product_id):
     product = (
         Product.objects.filter(id=product_id)
@@ -341,7 +352,7 @@ def admin_toggle_product_active(request, product_id):
         messages.success(request, f"PRODUCT DELETED")
     return redirect('admin-view-product', product_id=product_id)
 
-
+@admin_required
 def admin_list_categories(request):
     styles = Style.objects.all()
 
@@ -352,7 +363,7 @@ def admin_list_categories(request):
 
     return render(request, 'product/admin/list_categories.html', {"page_obj": page_obj})
 
-
+@admin_required
 def admin_add_style(request):
     if request.method == "POST":
         style_name = request.POST.get('style_name').strip()
@@ -361,7 +372,7 @@ def admin_add_style(request):
         messages.success(request, f"CREATED NEW STYLE - {style.name}")
     return redirect('admin-category-management')
 
-
+@admin_required
 def admin_search_categories(request):
     search_key = request.GET.get('search', '')
     search_result = Style.objects.filter(name__icontains=search_key)
@@ -369,7 +380,7 @@ def admin_search_categories(request):
         request, 'product/admin/list_categories.html', {"page_obj": search_result}
     )
 
-
+@admin_required
 def admin_delete_category(request, style_id):
     style = Style.objects.get(id=style_id)
     style.is_deleted = True
@@ -377,7 +388,7 @@ def admin_delete_category(request, style_id):
     messages.success(request, f"STYLE DELETED - {style.name}")
     return redirect('admin-category-management')
 
-
+@admin_required
 def admin_restore_category(request, style_id):
     style = Style.objects.get(id=style_id)
     style.is_deleted = False
@@ -385,7 +396,7 @@ def admin_restore_category(request, style_id):
     messages.success(request, f"Restored style - {style.name}")
     return redirect('admin-category-management')
 
-
+@admin_required
 def admin_edit_category(request):
     if request.method == "POST":
         style_id = request.POST.get('style_id')

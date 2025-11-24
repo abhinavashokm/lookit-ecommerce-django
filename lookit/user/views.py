@@ -9,11 +9,11 @@ from django.utils import timezone
 
 
 # custom decorator
-def user_required(view_func):
-    decorated_view_func = user_passes_test(
-        lambda u: u.is_authenticated and not u.is_staff, login_url='/login/'
-    )(view_func)
-    return decorated_view_func
+# def user_required(view_func):
+#     decorated_view_func = user_passes_test(
+#         lambda u: u.is_authenticated and not u.is_staff, login_url='/login/'
+#     )(view_func)
+#     return decorated_view_func
 
 
 def user_login(request):
@@ -22,20 +22,14 @@ def user_login(request):
         password = request.POST.get('password')
         user = authenticate(request, email=email, password=password)
         if user:
-            if not user.is_staff:
-                # create session
-                login(request, user)
-                return redirect('index')
-            messages.error(
-                request, "Admin accounts cannot sign in from the user login page."
-            )
+            # create session
+            login(request, user)
+            return redirect('index')
         else:
             messages.error(request, "Invalid email or password")
 
     # redirect authenticated users
     if request.user.is_authenticated:
-        if request.user.is_staff:
-            return redirect('admin-dashboard')
         return redirect('index')
 
     return render(request, "user/login.html")
@@ -71,9 +65,7 @@ def signup(request):
 
     # redirect authenticated users
     if request.user.is_authenticated:
-        if request.user.is_staff:
-            return redirect('admin-dashboard')
-        return redirect('index')
+            return redirect('index')
     
     return render(request, "user/signup.html")
 
@@ -114,6 +106,10 @@ def otp_verification(request):
         else:
             messages.error(request, "Incorrect OTP. Please try again.")
 
+    # redirect authenticated users
+    if request.user.is_authenticated:
+            return redirect('index')
+        
     expiry_time = request.session["otp_expires_at"]
     return render(request, "user/otp_verification.html", {"otp_expires_at": expiry_time})
 
