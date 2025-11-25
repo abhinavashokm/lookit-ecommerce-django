@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 
-from django.core.exceptions import PermissionDenied
+# from django.core.exceptions import PermissionDenied
 
-def block_admin_google_login(backend, user=None, **kwargs):
-    if user and user.is_staff:
-        raise PermissionDenied("ADMIN_GOOGLE_BLOCK")
+# def block_admin_google_login(backend, user=None, **kwargs):
+#     if user and user.is_staff:
+#         raise PermissionDenied("ADMIN_GOOGLE_BLOCK")
 
 
 User = get_user_model()

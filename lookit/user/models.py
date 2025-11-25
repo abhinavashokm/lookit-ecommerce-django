@@ -44,6 +44,9 @@ class User(AbstractUser):
     phone = models.CharField(max_length=15, null=True, blank=True )
     gender = models.CharField(max_length=10, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
+    
+    profile_img_url = models.URLField(null=True, blank=True)
+    profile_img_public_id = models.CharField(max_length=255, null=True, blank=True)
 
     referral_code = models.CharField(max_length=50 ,unique=True, blank=True)
     referred_by = models.CharField(max_length=50, null=True, blank=True)

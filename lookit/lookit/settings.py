@@ -46,8 +46,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_uid',
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
-    # BLOCK ADMIN BEFORE CREATING SESSION
-    'user.pipeline.block_admin_google_login',
+    # # BLOCK ADMIN BEFORE CREATING SESSION
+    # 'user.pipeline.block_admin_google_login',
     # ⚠️ If email exist connect with existing account
     'user.pipeline.link_to_existing_user',
     'social_core.pipeline.user.get_username',

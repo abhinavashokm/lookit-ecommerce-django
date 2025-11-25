@@ -26,7 +26,12 @@
         </a>
         </div>
         <div class="user-summary">
+            {% if user.profile_img_url %}
+            <img src="{{ user.profile_img_url }}" alt="User Avatar" class="user-avatar">
+            {% else %}
             <img src="https://cdn-icons-png.flaticon.com/512/709/709699.png" alt="User Avatar" class="user-avatar">
+            {% endif %}
+            
             <div class="user-info">
                 <h3>{{ user.full_name }}</h3>
                 <p>{{ user.email }}</p>

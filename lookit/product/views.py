@@ -182,6 +182,7 @@ def admin_edit_product(request, product_id):
                     main_image,
                     folder=f"products/{name}/",
                     public_id=product.image_public_id,
+                    overwrite=True,
                     transformation=[
                         {'width': 1080, 'height': 1080, 'crop': 'limit'},
                         {'quality': 'auto'},

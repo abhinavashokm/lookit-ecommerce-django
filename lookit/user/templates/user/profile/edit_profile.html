@@ -34,8 +34,19 @@
                 <div class="profile-picture-section">
 
                     <div class="profile-avatar-container">
+                        
+
+                        {% if user.profile_img_url %}
+                        <img src="{{ user.profile_img_url }}" alt="Profile Picture"
+                            class="profile-avatar" id="profileImage">
+                        {% else %}
                         <img src="https://cdn-icons-png.flaticon.com/512/709/709699.png" alt="Profile Picture"
                             class="profile-avatar" id="profileImage">
+                        {% endif %}
+
+                        <img src="https://cdn-icons-png.flaticon.com/512/709/709699.png" alt="Profile Picture"
+                            class="profile-avatar" id="profileImage">
+
                         <div class="image-upload-overlay" id="imageUploadOverlay">
                             <i class="fas fa-camera"></i>
                             <span>Change Photo</span>
