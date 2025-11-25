@@ -319,7 +319,7 @@
 }
 
 .edit-profile-form {
-    max-width: 600px;
+    /* max-width: 600px; */
     margin: 0 auto;
 }
 
@@ -1123,4 +1123,12 @@
     .otp-verify-btn {
         width: 100%;
     }
+}
+
+/* jQuery validation error styling */
+label.error {
+    color: red;
+    font-weight: normal;
+    font-size: 0.85rem;
+    margin-top: 4px;
 }

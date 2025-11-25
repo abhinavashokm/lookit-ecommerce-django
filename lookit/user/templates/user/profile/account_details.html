@@ -19,13 +19,17 @@
 
     <!-- Main Content -->
     <main class="main-content">
+        <div style="display: flex; justify-content: space-between;">
         <h1 class="page-title">My Account</h1>
-
+        <a style="text-decoration: none;" href="{% url 'edit-profile' %}">
+            <button class="edit-profile-btn">Edit Profile</button>
+        </a>
+        </div>
         <div class="user-summary">
             <img src="https://cdn-icons-png.flaticon.com/512/709/709699.png" alt="User Avatar" class="user-avatar">
             <div class="user-info">
-                <h3>Sophia Carter</h3>
-                <p>sophia.carter@email.com</p>
+                <h3>{{ user.full_name }}</h3>
+                <p>{{ user.email }}</p>
             </div>
         </div>
 
@@ -34,23 +38,27 @@
             <div class="details-grid">
                 <div class="detail-item">
                     <span class="detail-label">Name</span>
-                    <span class="detail-value">Sophia Carter</span>
+                    <span class="detail-value">{{ user.full_name }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Email</span>
-                    <span class="detail-value">sophia.carter@email.com</span>
+                    <span class="detail-value">{{ user.email }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Gender</span>
-                    <span class="detail-value">Female</span>
+                    <span class="detail-value">{% if user.gender %}{{ user.gender }}{% else %} - {% endif %}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Phone</span>
-                    <span class="detail-value">+1 (555) 123-4567</span>
+                    <span class="detail-value">{% if user.phone %}{{ user.phone }}{% else %} - {% endif %}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Date of Birth</span>
-                    <span class="detail-value">January 15, 1990</span>
+                    <span class="detail-value">{% if user.dob %}{{ user.dob }}{% else %} - {% endif %}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Address</span>
+                    <span class="detail-value">Maximus house, Alberquique, Walter Street</span>
                 </div>
             </div>
         </div>
@@ -74,9 +82,7 @@
             </div>
             <p class="referral-description">Share this code and both of you will get ₹100 in your wallet!</p>
         </div>
-        <a style="text-decoration: none;" href="{% url 'edit-profile' %}">
-            <button class="edit-profile-btn">Edit Profile</button>
-        </a>
+
         
     </main>
 </div>

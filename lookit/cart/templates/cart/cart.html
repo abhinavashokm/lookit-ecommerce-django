@@ -71,7 +71,8 @@
             </div>
             <!-- Continue Shopping Button -->
             <div style="margin: 20px 0 10px; text-align: left;">
-                <a href="index.html" style="display: inline-flex; align-items: center; padding: 8px 18px; background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; text-decoration: none; border-radius: 8px; border: none; font-weight: 600; transition: all 0.3s ease; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <a href="index.html"
+                    style="display: inline-flex; align-items: center; padding: 8px 18px; background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; text-decoration: none; border-radius: 8px; border: none; font-weight: 600; transition: all 0.3s ease; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
                     <i class="fas fa-arrow-left" style="margin-right: 6px; font-size: 0.8em;"></i> Continue Shopping
                 </a>
             </div>
@@ -81,73 +82,73 @@
         <div class="right-sidebar">
             <div class="cart-summary">
                 <h3 class="summary-title">Order Summary</h3>
-            <div class="summary-row">
-                <span>Subtotal</span>
-                <span>$89.98</span>
-            </div>
-            <div class="summary-row">
-                <span>Shipping</span>
-                <span>Free</span>
-            </div>
-            <div class="summary-row">
-                <span>Tax</span>
-                <span>$7.20</span>
-            </div>
-            <!-- Applied Coupon Row -->
-            <div id="appliedCouponRow" class="summary-row" style="display: none;">
-                <span>Discount (<span id="appliedCouponCode"></span>)</span>
-                <span class="discount-amount">-$<span id="appliedCouponDiscount">0.00</span></span>
-            </div>
-            <div class="summary-total">
-                <span>Total</span>
-                <span>$97.18</span>
-            </div>
-            
-            <!-- Toggle Button for Coupon Section -->
-            <button id="toggleCouponBtn" class="toggle-coupon-btn">
-                <i class="fas fa-tag"></i> Apply Coupon
-                <i class="fas fa-chevron-down toggle-icon"></i>
-            </button>
-            
-            <!-- Hidden Coupon Section -->
-            <div id="couponSection" class="coupon-section" style="display: none;">
-                <div class="coupon-input">
-                    <input type="text" id="couponCode" placeholder="Enter coupon code">
-                    <button id="applyCouponBtn" class="apply-coupon-btn">Apply</button>
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span>$89.98</span>
                 </div>
-                <div id="couponMessage" class="coupon-message"></div>
-                
-                <div class="available-coupons">
-                    <h4>Available Coupons</h4>
-                    <div class="coupon-item" data-code="WELCOME10" data-discount="10">
-                        <div class="coupon-info">
-                            <span class="coupon-code">WELCOME10</span>
-                            <span class="coupon-desc">10% off on your first order</span>
-                        </div>
-                        <button class="apply-coupon-btn">Apply</button>
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <div class="summary-row">
+                    <span>Tax</span>
+                    <span>$7.20</span>
+                </div>
+                <!-- Applied Coupon Row -->
+                <div id="appliedCouponRow" class="summary-row" style="display: none;">
+                    <span>Discount (<span id="appliedCouponCode"></span>)</span>
+                    <span class="discount-amount">-$<span id="appliedCouponDiscount">0.00</span></span>
+                </div>
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>$97.18</span>
+                </div>
+
+                <!-- Toggle Button for Coupon Section -->
+                <button id="toggleCouponBtn" class="toggle-coupon-btn">
+                    <i class="fas fa-tag"></i> Apply Coupon
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+
+                <!-- Hidden Coupon Section -->
+                <div id="couponSection" class="coupon-section" style="display: none;">
+                    <div class="coupon-input">
+                        <input type="text" id="couponCode" placeholder="Enter coupon code">
+                        <button id="applyCouponBtn" class="apply-coupon-btn">Apply</button>
                     </div>
-                    <div class="coupon-item" data-code="FREESHIP" data-discount="5">
-                        <div class="coupon-info">
-                            <span class="coupon-code">FREESHIP</span>
-                            <span class="coupon-desc">Free shipping on orders over $50</span>
+                    <div id="couponMessage" class="coupon-message"></div>
+
+                    <div class="available-coupons">
+                        <h4>Available Coupons</h4>
+                        <div class="coupon-item" data-code="WELCOME10" data-discount="10">
+                            <div class="coupon-info">
+                                <span class="coupon-code">WELCOME10</span>
+                                <span class="coupon-desc">10% off on your first order</span>
+                            </div>
+                            <button class="apply-coupon-btn">Apply</button>
                         </div>
-                        <button class="apply-coupon-btn">Apply</button>
-                    </div>
-                    <div class="coupon-item" data-code="SUMMER25" data-discount="25">
-                        <div class="coupon-info">
-                            <span class="coupon-code">SUMMER25</span>
-                            <span class="coupon-desc">25% off on summer collection</span>
+                        <div class="coupon-item" data-code="FREESHIP" data-discount="5">
+                            <div class="coupon-info">
+                                <span class="coupon-code">FREESHIP</span>
+                                <span class="coupon-desc">Free shipping on orders over $50</span>
+                            </div>
+                            <button class="apply-coupon-btn">Apply</button>
                         </div>
-                        <button class="apply-coupon-btn">Apply</button>
+                        <div class="coupon-item" data-code="SUMMER25" data-discount="25">
+                            <div class="coupon-info">
+                                <span class="coupon-code">SUMMER25</span>
+                                <span class="coupon-desc">25% off on summer collection</span>
+                            </div>
+                            <button class="apply-coupon-btn">Apply</button>
+                        </div>
                     </div>
                 </div>
+
+                <button class="checkout-btn">Proceed to Checkout</button>
+                <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 1rem;">
+                    <i class="fas fa-lock"></i> Secure Checkout
+                </p>
             </div>
-            
-            <button class="checkout-btn">Proceed to Checkout</button>
-            <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 1rem;">
-                <i class="fas fa-lock"></i> Secure Checkout
-            </p>
-        </div>
         </div>
 
     </div>

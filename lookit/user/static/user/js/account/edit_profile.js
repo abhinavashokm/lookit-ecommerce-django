@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners
     if (openModalBtn) {
         openModalBtn.addEventListener('click', function (e) {
-            e.preventDefault();
+           // e.preventDefault();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
@@ -183,43 +183,43 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmPasswordInput.addEventListener('input', checkPasswordMatch);
     }
 
-    // Form submission
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
+    // // Form submission
+    // if (form) {
+    //     form.addEventListener('submit', function (e) {
+    //        // e.preventDefault();
 
-            if (!validatePassword()) {
-                alert('Password must be at least 8 characters long');
-                return;
-            }
+    //         if (!validatePassword()) {
+    //             alert('Password must be at least 8 characters long');
+    //             return;
+    //         }
 
-            if (!checkPasswordMatch()) {
-                alert('Passwords do not match');
-                return;
-            }
+    //         if (!checkPasswordMatch()) {
+    //             alert('Passwords do not match');
+    //             return;
+    //         }
 
-            // Here you would typically make an API call to update the password
-            const formData = {
-                currentPassword: document.getElementById('currentPassword').value,
-                newPassword: newPasswordInput.value
-            };
+    //         // Here you would typically make an API call to update the password
+    //         const formData = {
+    //             currentPassword: document.getElementById('currentPassword').value,
+    //             newPassword: newPasswordInput.value
+    //         };
 
-            console.log('Updating password:', formData);
+    //         console.log('Updating password:', formData);
 
-            // Simulate API call
-            setTimeout(() => {
-                // Show success message
-                alert('Password updated successfully!');
+    //         // Simulate API call
+    //         setTimeout(() => {
+    //             // Show success message
+    //             alert('Password updated successfully!');
 
-                // Close modal and reset form
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
-                form.reset();
-                passwordMatch.textContent = '';
-                passwordMatch.className = 'password-match';
-            }, 1000);
-        });
-    }
+    //             // Close modal and reset form
+    //             modal.classList.remove('active');
+    //             document.body.style.overflow = '';
+    //             form.reset();
+    //             passwordMatch.textContent = '';
+    //             passwordMatch.className = 'password-match';
+    //         }, 1000);
+    //     });
+    // }
 });
 
 
@@ -360,25 +360,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const editProfileForm = document.querySelector('.edit-profile-form');
     let formData = null;
 
-    if (editProfileForm) {
-        // Prevent default form submission
-        editProfileForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            // Store form data for later submission
-            formData = new FormData(editProfileForm);
-            // Show OTP modal
-            otpModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            startCountdown();
-        });
+    // if (editProfileForm) {
+    //     // Prevent default form submission
+    //     editProfileForm.addEventListener('submit', function (e) {
+    //         e.preventDefault();
+    //         // Store form data for later submission
+    //         formData = new FormData(editProfileForm);
+    //         // Show OTP modal
+    //         otpModal.classList.add('active');
+    //         document.body.style.overflow = 'hidden';
+    //         startCountdown();
+    //     });
 
-        // Also handle the save button click
-        const saveChangesBtn = document.getElementById('saveChangesBtn');
-        if (saveChangesBtn) {
-            saveChangesBtn.addEventListener('click', function () {
-                // Trigger form submission which will be caught by the form's submit handler
-                editProfileForm.dispatchEvent(new Event('submit'));
-            });
-        }
-    }
+    //     // // Also handle the save button click
+    //     // const saveChangesBtn = document.getElementById('saveChangesBtn');
+    //     // if (saveChangesBtn) {
+    //     //     saveChangesBtn.addEventListener('click', function () {
+    //     //         // Trigger form submission which will be caught by the form's submit handler
+    //     //         editProfileForm.dispatchEvent(new Event('submit'));
+    //     //     });
+    //     // }
+    // }
 });
