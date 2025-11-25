@@ -117,3 +117,14 @@ def otp_verification(request):
 def user_logout(request):
     logout(request)
     return redirect('user-login')
+
+
+"""
+---USER PROFILE-----------
+"""
+
+def account_details(request):
+    return render(request, 'user/account/account_details.html')
+
+def edit_profile(request):
+    return render(request, "user/account/edit_profile.html")

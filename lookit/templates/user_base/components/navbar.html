@@ -23,7 +23,7 @@
             </button>
             {% if request.user.is_authenticated %}
             <!-- for profile icon -->
-            <a href="{% url 'user-logout' %}">
+            <a href="{% url 'account-details' %}">
                 <button class="profile-btn" title="User Profile">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
                         style="width: 100%; height: 100%; fill: #B55E8A;">

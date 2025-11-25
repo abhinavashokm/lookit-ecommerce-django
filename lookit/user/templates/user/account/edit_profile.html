@@ -1,0 +1,228 @@
+{% extends 'user_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'user/css/account/edit_profile.css' %}">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!--CSS for profile sidebar-->
+<link rel="stylesheet" href="{% static 'user/css/components/profile_sidebar.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Main Content -->
+<div class="profile-container">
+
+    <!-- Sidebar -->
+    {% include 'user_base/components/profile_sidebar.html' %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">
+            <a href="{% url 'account-details' %}" class="breadcrumb-link">My Account</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">Edit Profile</span>
+        </h1>
+
+        <div class="edit-profile-section">
+            <h2 class="section-heading">Edit Profile</h2>
+            <div class="profile-picture-section">
+                <div class="profile-avatar-container">
+                    <img src="https://cdn-icons-png.flaticon.com/512/709/709699.png" alt="Profile Picture" class="profile-avatar"
+                        id="profileImage">
+                    <div class="image-upload-overlay" id="imageUploadOverlay">
+                        <i class="fas fa-camera"></i>
+                        <span>Change Photo</span>
+                    </div>
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                </div>
+                <div class="profile-actions">
+                    <button type="button" class="btn btn-outline" id="changePhotoBtn">
+                        <i class="fas fa-camera"></i> Change Photo
+                    </button>
+                    <button type="button" class="btn btn-outline change-password-btn">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+            </div>
+
+            <form class="edit-profile-form">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name"
+                        value="Sophia Carter">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email"
+                        value="sophia.carter@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number"
+                        value="+1 (555) 123-4567">
+                </div>
+
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" class="form-control" value="1990-01-15">
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <div class="gender-options">
+                        <label class="radio-container">
+                            <input type="radio" name="gender" value="male">
+                            <span class="radio-custom"></span>
+                            Male
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="gender" value="female" checked>
+                            <span class="radio-custom"></span>
+                            Female
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="gender" value="other">
+                            <span class="radio-custom"></span>
+                            Other
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline">Cancel</button>
+                    <button type="button" id="saveChangesBtn" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </main>
+</div>
+<!-- Password Change Modal -->
+<div class="modal-overlay" id="passwordModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Change Password</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        <form id="changePasswordForm" class="modal-form">
+            <div class="form-group">
+                <label for="currentPassword">Current Password</label>
+                <div class="password-input">
+                    <input type="password" id="currentPassword" class="form-control" required>
+                    <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <div class="password-input">
+                    <input type="password" id="newPassword" class="form-control" required minlength="8">
+                    <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-requirements">
+                    <p>Password must be at least 8 characters long</p>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm New Password</label>
+                <div class="password-input">
+                    <input type="password" id="confirmPassword" class="form-control" required>
+                    <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-match" id="passwordMatch"></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline close-modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- OTP Verification Modal -->
+<div class="modal-overlay" id="otpModal">
+    <div class="otp-modal-content">
+        <div class="otp-modal-header">
+            <div class="otp-modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1 7.778 7.778 5.5 5.5 0 0 1-7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
+                    </path>
+                </svg>
+            </div>
+            <h3 class="otp-modal-title">Verify Your Email</h3>
+            <p class="otp-modal-subtitle">Enter the 6-digit code sent to your email</p>
+            <button class="otp-close-modal" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <div class="otp-modal-body">
+            <div class="otp-inputs-container">
+                <div class="otp-input-wrapper">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]*" autofocus>
+                </div>
+                <div class="otp-input-wrapper">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="otp-input-wrapper">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="otp-separator"></div>
+                <div class="otp-input-wrapper">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="otp-input-wrapper">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="otp-input-wrapper">
+                    <input type="text" maxlength="1" class="otp-input" inputmode="numeric" pattern="[0-9]*">
+                </div>
+            </div>
+
+            <div class="otp-timer-container">
+                <p class="otp-timer">
+                    <span id="countdown">30</span> seconds remaining
+                </p>
+                <button type="button" class="otp-resend-btn" id="resendOtp" disabled>
+                    <span class="otp-resend-text">Resend Code</span>
+                    <span class="otp-resend-timer">(<span id="countdown-text">30s</span>)</span>
+                </button>
+            </div>
+
+            <div class="otp-actions">
+                <button type="button" class="btn btn-outline otp-cancel-btn close-modal">
+                    <span>Cancel</span>
+                </button>
+                <button type="button" class="btn btn-primary otp-verify-btn" id="verifyOtpBtn">
+                    <span class="btn-text">Verify & Save</span>
+                    <span class="btn-loader" style="display: none;">
+                        <svg class="spinner" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"
+                                stroke-dasharray="31.42" stroke-dashoffset="31.42"></circle>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'user/js/account/edit_profile.js' %}"></script>
+{% endblock %}
