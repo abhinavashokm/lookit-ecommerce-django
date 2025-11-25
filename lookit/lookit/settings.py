@@ -85,6 +85,7 @@ INSTALLED_APPS = [
     "core",
     "staff",
     "product",
+    "cart",
     
     #extensions
     'social_django',
