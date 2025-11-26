@@ -530,7 +530,6 @@ def add_to_cart(request):
         user = request.user
         product_id = request.POST.get('product_id')
         variant_id = request.POST.get('variant_id')
-        print("variant id is ", variant_id)
         
         #restrict if not authenticated
         if not user.is_authenticated:
@@ -542,8 +541,13 @@ def add_to_cart(request):
             messages.error(request, "PLEASE SELECT A SIZE")
             return redirect('product-details', product_id = product_id)
         
+        is_already_exist = Cart.objects.filter(user=user, variant_id=variant_id)
+        if is_already_exist:
+            messages.error(request, "PRODUCT IS ALREADY IN CART")
+            return redirect('product-details', product_id = product_id)
+        
         try:
-            Cart.objects.create(user=user, product_id = product_id, variant_id=variant_id, quantity=1)
+            Cart.objects.create(user=user, variant_id=variant_id, quantity=1)
             messages.success(request, "PRODUCT ADDED TO CART")
         except Exception as e:
             print(e)

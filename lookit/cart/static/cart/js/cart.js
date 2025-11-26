@@ -41,9 +41,6 @@ function updateCartTotal() {
     document.querySelector('.summary-total span:last-child').textContent = `$${total.toFixed(2)}`;
 }
 
-// Initialize cart total
-updateCartTotal();
-
 // Toggle Coupon Section
 const toggleCouponBtn = document.getElementById('toggleCouponBtn');
 const couponSection = document.getElementById('couponSection');
@@ -108,63 +105,7 @@ function removeCoupon() {
     couponInput.value = '';
 }
 
-// Function to update order summary with coupon discount
-function updateOrderSummaryWithCoupon(discount) {
-    const subtotal = parseFloat(document.querySelector('.summary-row:first-child span:last-child').textContent.replace('$', ''));
-    let discountAmount = 0;
-    
-    if (appliedCoupon) {
-        if (appliedCoupon.code === 'FREESHIP') {
-            discountAmount = 5.00; // Example shipping cost
-        } else {
-            discountAmount = subtotal * (parseInt(discount) / 100);
-        }
-        // Update the displayed discount amount
-        document.getElementById('appliedCouponDiscount').textContent = discountAmount.toFixed(2);
-    }
-    
-    let discountRow = document.querySelector('.discount-row');
-    
-    if (!discountRow && discount > 0) {
-        const shippingRow = document.querySelector('.summary-row:nth-child(3)');
-        discountRow = document.createElement('div');
-        discountRow.className = 'summary-row discount-row';
-        discountRow.innerHTML = `
-            <span>Discount (${appliedCoupon.code})</span>
-            <span>-$${discountAmount.toFixed(2)}</span>
-            <button class="remove-coupon-btn">×</button>
-        `;
-        shippingRow.after(discountRow);
-        
-        discountRow.querySelector('.remove-coupon-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            removeCoupon();
-            discountRow.remove();
-        });
-    } else if (discountRow && discount > 0) {
-        discountRow.innerHTML = `
-            <span>Discount (${appliedCoupon.code})</span>
-            <span>-$${discountAmount.toFixed(2)}</span>
-            <button class="remove-coupon-btn">×</button>
-        `;
-        
-        discountRow.querySelector('.remove-coupon-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            removeCoupon();
-            discountRow.remove();
-        });
-    } else if (discountRow && discount === 0) {
-        discountRow.remove();
-    }
-    
-    const shipping = 0; // Assuming free shipping for this example
-    const taxRate = 0.08; // 8% tax
-    const tax = (subtotal - discountAmount) * taxRate;
-    const total = subtotal - discountAmount + shipping + tax;
-    
-    document.querySelector('.summary-row:last-child span:last-child').textContent = `$${tax.toFixed(2)}`;
-    document.querySelector('.summary-total span:last-child').textContent = `$${total.toFixed(2)}`;
-}
+
 
 // Function to show coupon message
 function showCouponMessage(message, type = '') {

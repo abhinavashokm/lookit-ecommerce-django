@@ -13,7 +13,7 @@
     <!--Components CSS-->
     <link rel="stylesheet" href="{% static 'user/css/components/footer.css' %}">
     <link rel="stylesheet" href="{% static 'user/css/components/navbar.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/css/components/toast.css' %}">
+    <link rel="stylesheet" href="{% static 'user/css/components/toast.css' %}">
 
     <!-- Page-specific CSS -->
     {% block styles %}{% endblock %}
@@ -30,11 +30,11 @@
     {% include 'user_base/components/footer.html' %}
 
     <!-- toast for notification (temporarly used admin's toast) -->
-    {% include 'admin_base/components/toast.html' %}
+    {% include 'user_base/components/toast.html' %}
 
     <!--Component JS-->
     <script src="{% static 'user/js/components/navbar.js' %}"></script>
-    <script src="{% static 'admin/js/components/toast.js' %}"></script>
+    <script src="{% static 'user/js/components/toast.js' %}"></script>
 
     <!-- Page-specific JS -->
     {% block scripts %}{% endblock %}
