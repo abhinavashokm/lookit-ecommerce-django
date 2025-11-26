@@ -87,13 +87,19 @@
                     </svg>
                     Add to Wishlist
                 </button>
-                <button class="btn-cart">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
-                    </svg>
-                    Add to Cart
-                </button>
+
+                <form action="{% url 'add-to-cart' %}" method="post" class="cart-form" id="addToCart">
+                    {% csrf_token %}
+                    <input name="product_id" type="hidden" value="{{ product.id }}">
+                    <button class="btn-cart">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                        </svg>
+                        Add to Cart
+                    </button>
+                </form>
+
             </div>
         </div>
 
@@ -135,14 +141,15 @@
 
             <div class="size-section">
                 <h2 class="section-heading">Select Size</h2>
-                <div class="size-options">
+
+                <div class="size-options" id="sizeOptions">
                     {% for size in sizes %}
-                    <button class="size-btn {% if forloop.first %}active{% endif %}" onclick="selectSize(this)">{{ size.size }}</button>
+                    <button class="size-btn {% if forloop.first %}active{% endif %}" value="{{ size.id }}" onclick="selectSize(this, '{{ size.id }}')">{{ size.size }}</button>
                     {% endfor %}
                     <!-- <button class="size-btn" onclick="selectSize(this)">S</button>
                     <button class="size-btn active" onclick="selectSize(this)">M</button> -->
-
                 </div>
+
                 <div class="quantity-section">
                     <div class="quantity-control">
                         <span class="quantity-label">Quantity:</span>

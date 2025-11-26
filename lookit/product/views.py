@@ -10,6 +10,7 @@ from cloudinary.uploader import upload, destroy
 from django.db.models import Case, When, Value, IntegerField
 
 from .models import Style, Product, Variant, ProductImages
+from cart.models import Cart
 
 """ ============================================
     ADMIN SIDE
@@ -522,3 +523,30 @@ def product_details(request, product_id):
             "related_products": related_products,
         },
     )
+
+
+def add_to_cart(request):
+    if request.method == "POST":
+        user = request.user
+        product_id = request.POST.get('product_id')
+        variant_id = request.POST.get('variant_id')
+        print("variant id is ", variant_id)
+        
+        #restrict if not authenticated
+        if not user.is_authenticated:
+            messages.error(request, f"PLEASE LOG IN TO USE CART, id = {variant_id}")
+            return redirect('product-details', product_id = product_id)
+        
+        #if size not selected
+        if not variant_id:
+            messages.error(request, "PLEASE SELECT A SIZE")
+            return redirect('product-details', product_id = product_id)
+        
+        try:
+            Cart.objects.create(user=user, product_id = product_id, variant_id=variant_id, quantity=1)
+            messages.success(request, "PRODUCT ADDED TO CART")
+        except Exception as e:
+            print(e)
+            messages.error(request, e)
+            
+    return redirect('product-details', product_id = product_id)

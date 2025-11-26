@@ -769,6 +769,11 @@
     color: #B55E8A;
 }
 
+.cart-form{
+    display: flex;
+    flex: 2;
+}
+
 .btn-cart {
     flex: 2;
     padding: 0.9rem;

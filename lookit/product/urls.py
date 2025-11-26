@@ -17,6 +17,7 @@ from .views import (
     
     product_details,
     explore,
+    add_to_cart,
 )
 
 urlpatterns = [
@@ -42,6 +43,6 @@ urlpatterns = [
     
     path("product-details/<product_id>/",product_details, name="product-details"),
     path("explore/", explore, name="explore"),
-    
+    path("add-to-cart/", add_to_cart, name="add-to-cart")
 
 ]

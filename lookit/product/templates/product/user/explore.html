@@ -26,9 +26,9 @@
                     <label for="category">Category</label>
                     <select id="category" name="category" class="filter-select">
                         <option value="">All Categories</option>
-                        <option value="men">Men</option>
-                        <option value="women">Women</option>
-                        <option value="kids">Kids</option>
+                        <option value="men" {% if request.GET.category == 'men' %}selected{% endif %}>Men</option>
+                        <option value="women" {% if request.GET.category == 'women' %}selected{% endif %}>Women</option>
+                        <option value="kids" {% if request.GET.category == 'kids' %}selected{% endif %}>Kids</option>
                     </select>
             </div>
 
@@ -215,7 +215,7 @@
                 <div class="filter-group">
                         <label for="categoryMobile">Category</label>
                         <select id="categoryMobile" name="category" class="filter-select">
-                            <option value="">All Categories</option>
+                            <option value="" >All Categories</option>
                             <option value="men">Men</option>
                             <option value="women">Women</option>
                             <option value="kids">Kids</option>
