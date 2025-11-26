@@ -28,20 +28,6 @@ document.querySelectorAll('.edit-address').forEach(button => {
     });
 });
 
-// Remove address
-document.querySelectorAll('.remove-address').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (confirm('Are you sure you want to remove this address?')) {
-            const addressOption = this.closest('.address-option');
-            addressOption.style.opacity = '0';
-            setTimeout(() => {
-                addressOption.remove();
-            }, 300);
-        }
-    });
-});
-
 // Modal functionality
 const modal = document.getElementById('addAddressModal');
 const openModalBtn = document.querySelector('.add-address-btn');

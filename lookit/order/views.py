@@ -21,7 +21,7 @@ def checkout(request):
     )
     
     #---address list of user---
-    address_list = Address.objects.filter(user=request.user)
+    address_list = Address.objects.filter(user=request.user, is_active=True)
 
     # ---total price of all items in cart considering quantity---------
     sub_total = (

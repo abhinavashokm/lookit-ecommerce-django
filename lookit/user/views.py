@@ -246,13 +246,13 @@ def add_address(request):
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
         type = request.POST.get('type')
-        
-        #---optional_fields-----------------------
+
+        # ---optional_fields-----------------------
         is_default = request.POST.get('is_default')
         if not is_default:
-            is_default=False
+            is_default = False
         second_phone = request.POST.get('second_phone')
-        
+
         print(request.POST)
         try:
             Address.objects.create(
@@ -265,11 +265,23 @@ def add_address(request):
                 state=state,
                 pincode=pincode,
                 type=type,
-                is_default=is_default
+                is_default=is_default,
             )
-            messages.success(request,"NEW ADDRESS ADDED")
+            messages.success(request, "NEW ADDRESS ADDED")
         except Exception as e:
             print(e)
-            messages.error(request,e)
+            messages.error(request, e)
+
     return redirect('checkout')
-            
+
+
+def delete_address(request):
+    if request.method == "POST":
+        address_id = request.POST.get('address_id')
+        try:
+            Address.objects.filter(id=address_id).update(is_active=False)
+            messages.success(request, "ADDRESS DELETED")
+        except Exception as e:
+            messages.error(request, e)
+
+    return redirect('checkout')

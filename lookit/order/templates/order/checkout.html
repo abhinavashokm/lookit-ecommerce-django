@@ -57,12 +57,14 @@
             <div class="address-options">
 
                 {% for address in address_list %}
-                <div class="address-option selected">
+                <div class="address-option {% if address.is_default %}selected{% endif %}">
                     <input type="radio" name="delivery-address" id="address-1" class="address-radio" checked>
                     <div class="address-details">
                         <div class="address-header">
                             <div class="address-name">{{ address.full_name }}</div>
+                            {% if address.is_default %}
                             <span class="default-badge">Default</span>
+                            {% endif %}
                         </div>
                         <p class="address-text">{{ address.address_line }}, {{ address.city }}, {{ address.state }}, PIN: {{ address.pincode }}</p>
                         <div class="address-phone">{{ address.phone }}{% if address.second_phone %}, alter: {{ address.second_phone }}{% endif %}</div>
@@ -71,9 +73,15 @@
                             <button class="edit-address" data-address-id="1">
                                 <i class="far fa-edit"></i> Edit
                             </button>
-                            <button class="remove-address" data-address-id="1">
-                                <i class="far fa-trash-alt"></i> Remove
-                            </button>
+
+                            <form action="{% url 'delete-address' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="address_id" value="{{ address.id }}">
+                                <button class="remove-address" data-address-id="1">
+                                    <i class="far fa-trash-alt"></i> Remove
+                                </button>
+                            </form>
+
                         </div>
                     </div>
                 </div>
