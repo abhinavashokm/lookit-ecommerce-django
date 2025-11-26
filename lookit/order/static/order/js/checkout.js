@@ -1,4 +1,3 @@
-
 // Address selection
 document.querySelectorAll('.address-option').forEach(option => {
     option.addEventListener('click', function(e) {
@@ -18,21 +17,12 @@ document.querySelectorAll('.address-option').forEach(option => {
     });
 });
 
-// Edit address
-document.querySelectorAll('.edit-address').forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const addressId = this.getAttribute('data-address-id');
-        // In a real app, this would open an edit modal or navigate to an edit page
-        alert(`Edit address with ID: ${addressId}`);
-    });
-});
 
 // Modal functionality
 const modal = document.getElementById('addAddressModal');
 const openModalBtn = document.querySelector('.add-address-btn');
-const closeModalBtn = document.querySelector('.close-modal');
-const cancelBtn = document.querySelector('.btn-outline');
+const closeModalBtn = document.getElementById('closeAddModel');
+const cancelBtn = document.getElementById('btn-outline');
 const addressForm = document.getElementById('addressForm');
 
 function openModal() {
@@ -54,6 +44,28 @@ openModalBtn.addEventListener('click', openModal);
 // Close modal when clicking close button or cancel
 closeModalBtn.addEventListener('click', closeModal);
 cancelBtn.addEventListener('click', closeModal);
+
+let editModal = null
+let closeEditModalBtn = null
+let cancelEditBtn = null
+let editAddressForm = null
+
+function openEditModal(address_id) {
+    editModal = document.getElementById('editAddressModal'+address_id);
+    editAddressForm = document.getElementById('addressForm'+address_id);
+
+    editModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    document.body.style.paddingRight = window.innerWidth - document.documentElement.clientWidth + 'px';
+}
+
+function closeEditModal() {
+    editModal.classList.remove('active');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+    editAddressForm.reset();
+}
+
 
 // Close modal when clicking outside the modal content
 modal.addEventListener('click', function(e) {

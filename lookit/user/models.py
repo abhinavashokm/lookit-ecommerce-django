@@ -105,3 +105,13 @@ class Address(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
     
+    def save(self, *args, **kwargs):
+        #if it's the only one set it as default
+        if not Address.objects.filter(user=self.user).exists():
+            self.is_default = True
+            
+        super().save(*args,**kwargs)
+        
+        #if it's default set is_default false for everything else
+        if self.is_default:
+            Address.objects.filter(user=self.user).exclude(id=self.id).update(is_default=False)

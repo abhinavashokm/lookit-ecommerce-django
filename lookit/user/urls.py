@@ -1,6 +1,17 @@
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
-from .views import user_login, signup, otp_verification, user_logout, send_otp, account_details, edit_profile, add_address, delete_address
+from .views import (
+    user_login,
+    signup,
+    otp_verification,
+    user_logout,
+    send_otp,
+    account_details,
+    edit_profile,
+    add_address,
+    delete_address,
+    edit_address,
+)
 
 urlpatterns = [
     path("", user_login, name="user-login"),
@@ -8,11 +19,12 @@ urlpatterns = [
     path("signup/otp/", otp_verification, name="signup-otp"),
     path("logout/", user_logout, name="user-logout"),
     path("signup/otp/resend/", send_otp, name='signup-send-otp'),
-    
     path("profile/account-details/", account_details, name='account-details'),
     path("profile/account-details/edit-profile", edit_profile, name='edit-profile'),
-    path("add-address/",add_address, name="add-address"),
-    path("delete-address/",delete_address, name="delete-address"),
+    path("add-address/", add_address, name="add-address"),
+    path("delete-address/", delete_address, name="delete-address"),
+    path("edit-address/", edit_address, name="edit-address"),
+    
     # password reset paths
     # 1.enter email and button for sent link
     path(

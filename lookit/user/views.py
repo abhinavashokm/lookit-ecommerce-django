@@ -274,7 +274,51 @@ def add_address(request):
 
     return redirect('checkout')
 
+@login_required
+def edit_address(request):
+    if request.method == "POST":
+        user = request.user
+        address_id = request.POST.get('address_id')
+        full_name = request.POST.get('full_name')
+        phone = request.POST.get('phone')
+        address_line = request.POST.get('address_line')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        pincode = request.POST.get('pincode')
+        type = request.POST.get('type')
 
+        # ---optional_fields-----------------------
+        is_default = request.POST.get('is_default')
+        if not is_default:
+            is_default = False
+        second_phone = request.POST.get('second_phone')
+        
+        print(request.POST)
+        try:
+            Address.objects.filter(id=address_id).update(
+                user=user,
+                full_name=full_name,
+                phone=phone,
+                second_phone=second_phone,
+                address_line=address_line,
+                city=city,
+                state=state,
+                pincode=pincode,
+                type=type,
+                is_default=is_default,
+            )
+            #---if it is default address set all other address is_default = false---------------
+            if is_default:
+                Address.objects.filter(user=user).exclude(id=address_id).update(is_default=False)
+                
+            messages.success(request, "ADDRESS UPDATED")
+        except Exception as e:
+            print(e)
+            messages.error(request, e)
+
+    return redirect('checkout')
+
+@login_required
 def delete_address(request):
     if request.method == "POST":
         address_id = request.POST.get('address_id')
