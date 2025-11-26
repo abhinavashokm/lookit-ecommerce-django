@@ -131,7 +131,10 @@
                     </div>
                 </div>
 
-                <button class="checkout-btn">Proceed to Checkout</button>
+                <a href="{% url 'checkout' %}">
+                    <button class="checkout-btn">Proceed to Checkout</button>
+                </a>
+
                 <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 1rem;">
                     <i class="fas fa-lock"></i> Secure Checkout
                 </p>
