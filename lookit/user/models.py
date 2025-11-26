@@ -89,3 +89,18 @@ class OTP(models.Model):
     
     def is_valid(self):
         return timezone.now() < self.created_at + timedelta(minutes=2)
+    
+class Address(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    full_name = models.CharField()
+    phone = models.CharField(max_length=15)
+    second_phone = models.CharField(max_length=15, blank=True, null=True)
+    address_line = models.TextField()
+    city = models.CharField()
+    state = models.CharField()
+    pincode = models.CharField(max_length=6)
+    type = models.CharField(max_length=15)
+    is_default = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    

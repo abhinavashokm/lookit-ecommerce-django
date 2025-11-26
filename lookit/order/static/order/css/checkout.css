@@ -1,6 +1,6 @@
 /* Main Content */
 .container {
-    max-width: 1200px;
+    max-width: 1168px;
     margin: 2rem auto;
     padding: 0 1rem;
 }
@@ -164,6 +164,13 @@
 }
 
 .address-phone {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.address-type{
+    font-weight: 600;
+    margin-top: 5px;
     color: #666;
     font-size: 0.9rem;
 }

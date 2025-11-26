@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from .models import User, OTP
+from .models import User, OTP, Address
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .utils import generate_otp, generate_referral_code, send_otp_email
@@ -190,11 +190,11 @@ def edit_profile(request):
                     )
                     img_url = result['secure_url']
                     image_public_id = result['public_id']
-            
+
             else:
                 img_url = request.user.profile_img_url
                 image_public_id = request.user.profile_img_public_id
-                
+
             # ---if email is same just update the rest of the details------
             if email == request.user.email:
                 user = User.objects.filter(email=request.user.email).update(
@@ -233,3 +233,43 @@ def edit_profile(request):
 
     user = request.user
     return render(request, "user/profile/edit_profile.html", {"user": user})
+
+
+@login_required
+def add_address(request):
+    if request.method == "POST":
+        user = request.user
+        full_name = request.POST.get('full_name')
+        phone = request.POST.get('phone')
+        address_line = request.POST.get('address_line')
+        city = request.POST.get('city')
+        state = request.POST.get('state')
+        pincode = request.POST.get('pincode')
+        type = request.POST.get('type')
+        
+        #---optional_fields-----------------------
+        is_default = request.POST.get('is_default')
+        if not is_default:
+            is_default=False
+        second_phone = request.POST.get('second_phone')
+        
+        print(request.POST)
+        try:
+            Address.objects.create(
+                user=user,
+                full_name=full_name,
+                phone=phone,
+                second_phone=second_phone,
+                address_line=address_line,
+                city=city,
+                state=state,
+                pincode=pincode,
+                type=type,
+                is_default=is_default
+            )
+            messages.success(request,"NEW ADDRESS ADDED")
+        except Exception as e:
+            print(e)
+            messages.error(request,e)
+    return redirect('checkout')
+            

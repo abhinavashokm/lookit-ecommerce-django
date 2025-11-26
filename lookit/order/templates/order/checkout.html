@@ -29,34 +29,24 @@
                 </tr>
             </thead>
             <tbody>
+
+                {% for item in order_items %}
                 <tr>
                     <td>
                         <div class="product-info">
-                            <img src="https://via.placeholder.com/80x100" alt="Classic White Tee" class="product-image">
+                            <img src="{{ item.product.image_url }}" alt="Classic White Tee" class="product-image">
                             <div>
-                                <div class="product-name">Classic White Tee</div>
-                                <div class="product-variant">Size: M</div>
+                                <div class="product-name">{{ item.product.name }}</div>
+                                <div class="product-variant">Size: {{ item.variant.size }}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="product-price">$25.00</td>
-                    <td class="product-quantity">2</td>
-                    <td class="product-total">$50.00</td>
+                    <td class="product-price">₹{{ item.product.price }}</td>
+                    <td class="product-quantity">{{ item.quantity }}</td>
+                    <td class="product-total">₹{{ item.sub_total_per_product }}</td>
                 </tr>
-                <tr>
-                    <td>
-                        <div class="product-info">
-                            <img src="https://via.placeholder.com/80x100" alt="Vintage Black Tee" class="product-image">
-                            <div>
-                                <div class="product-name">Vintage Black Tee</div>
-                                <div class="product-variant">Size: L</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="product-price">$30.00</td>
-                    <td class="product-quantity">1</td>
-                    <td class="product-total">$30.00</td>
-                </tr>
+                {% endfor %}
+
             </tbody>
         </table>
     </div>
@@ -65,15 +55,18 @@
         <div class="delivery-address">
             <h3>Select Delivery Address</h3>
             <div class="address-options">
+
+                {% for address in address_list %}
                 <div class="address-option selected">
                     <input type="radio" name="delivery-address" id="address-1" class="address-radio" checked>
                     <div class="address-details">
                         <div class="address-header">
-                            <div class="address-name">John Doe</div>
+                            <div class="address-name">{{ address.full_name }}</div>
                             <span class="default-badge">Default</span>
                         </div>
-                        <p class="address-text">123 Maple Street, Anytown, USA 12345</p>
-                        <div class="address-phone">+1 (555) 123-4567</div>
+                        <p class="address-text">{{ address.address_line }}, {{ address.city }}, {{ address.state }}, PIN: {{ address.pincode }}</p>
+                        <div class="address-phone">{{ address.phone }}{% if address.second_phone %}, alter: {{ address.second_phone }}{% endif %}</div>
+                        <div class="address-type">{{ address.type|upper }}</div>
                         <div class="address-actions">
                             <button class="edit-address" data-address-id="1">
                                 <i class="far fa-edit"></i> Edit
@@ -84,22 +77,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="address-option">
-                    <input type="radio" name="delivery-address" id="address-2" class="address-radio">
-                    <div class="address-details">
-                        <div class="address-name">Jane Smith</div>
-                        <p class="address-text">456 Oak Avenue, Springfield, USA 54321</p>
-                        <div class="address-phone">+1 (555) 987-6543</div>
-                        <div class="address-actions">
-                            <button class="edit-address" data-address-id="2">
-                                <i class="far fa-edit"></i> Edit
-                            </button>
-                            <button class="remove-address" data-address-id="2">
-                                <i class="far fa-trash-alt"></i> Remove
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
+
             </div>
             <button class="add-address-btn">
                 <i class="fas fa-plus"></i> Add New Address
@@ -110,29 +89,32 @@
             <h3>Price Details</h3>
             <div class="price-row">
                 <span>Total</span>
-                <span class="price-value">$80.00</span>
+                <span class="price-value">₹{{ price_summary.sub_total }}</span>
             </div>
             <div class="price-row">
                 <span>Delivery Fee</span>
-                <span class="price-value">$5.00</span>
+                <span class="price-value">₹0.00</span>
             </div>
+            {% if price_summary.discount %}
             <div class="price-row discount">
                 <span>Discount</span>
-                <span class="price-value">-$10.00</span>
+                <span class="price-value">-₹10.00</span>
             </div>
+            {% endif %}
             <div class="price-row">
                 <span>GST & Taxes</span>
-                <span class="price-value">$7.50</span>
+                <span class="price-value">₹{{ price_summary.tax }}</span>
             </div>
             <div class="price-row total">
                 <span>Final Amount</span>
-                <span class="price-value">$82.50</span>
+                <span class="price-value">₹{{ price_summary.grand_total }}</span>
             </div>
             <button class="checkout-btn">
                 Continue to Payment
                 <i class="fas fa-arrow-right"></i>
             </button>
         </div>
+
     </div>
 </div>
 
@@ -144,15 +126,18 @@
             <button class="close-modal" aria-label="Close modal">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="addressForm">
+
+            <form action="{% url 'add-address' %}" method="post" id="addressForm">
+                {% csrf_token %}
                 <div class="form-section">
                     <h4 class="section-title">Contact Information</h4>
                     <div class="form-grid">
+
                         <div class="form-group">
                             <label for="fullName">Full Name <span class="required">*</span></label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="fullName" placeholder="John Doe" required>
+                                <input type="text" name="full_name" id="fullName" placeholder="John Doe" required>
                             </div>
                         </div>
                         
@@ -160,7 +145,7 @@
                             <label for="phone">Phone Number <span class="required">*</span></label>
                             <div class="input-with-icon">
                                 <i class="fas fa-phone"></i>
-                                <input type="tel" id="phone" placeholder="+1 (555) 123-4567" required>
+                                <input type="tel" name="phone" id="phone" placeholder="+1 (555) 123-4567" required>
                             </div>
                         </div>
 
@@ -168,20 +153,22 @@
                             <label for="altPhone">Alternative Phone</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-phone-alt"></i>
-                                <input type="tel" id="altPhone" placeholder="+1 (555) 987-6543">
+                                <input type="tel" name="second_phone" id="altPhone" placeholder="+1 (555) 987-6543">
                             </div>
                         </div>
+
                     </div>
                 </div>
 
                 <div class="form-section">
                     <h4 class="section-title">Address Details</h4>
                     <div class="form-grid">
+
                         <div class="form-group full-width">
                             <label for="address">Address Line <span class="required">*</span></label>
                             <div class="input-with-icon">
                                 <i class="fas fa-map-marked-alt"></i>
-                                <input type="text" id="address" placeholder="123 Main St, Apt 4B" required>
+                                <input type="text" name="address_line" id="address" placeholder="123 Main St, Apt 4B" required>
                             </div>
                         </div>
 
@@ -189,7 +176,7 @@
                             <label for="city">City <span class="required">*</span></label>
                             <div class="input-with-icon">
                                 <i class="fas fa-city"></i>
-                                <input type="text" id="city" placeholder="New York" required>
+                                <input type="text" name="city" id="city" placeholder="New York" required>
                             </div>
                         </div>
 
@@ -197,15 +184,15 @@
                             <label for="state">State <span class="required">*</span></label>
                             <div class="input-with-icon">
                                 <i class="fas fa-flag"></i>
-                                <input type="text" id="state" placeholder="New York" required>
+                                <input type="text" name="state" id="state" placeholder="New York" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="zipCode">ZIP/Postal Code <span class="required">*</span></label>
+                            <label for="zipCode">PIN Code <span class="required">*</span></label>
                             <div class="input-with-icon">
                                 <i class="fas fa-mail-bulk"></i>
-                                <input type="text" id="zipCode" placeholder="10001" required>
+                                <input type="text" name="pincode" id="zipCode" placeholder="10001" required>
                             </div>
                         </div>
 
@@ -213,12 +200,14 @@
                             <label for="addressType">Address Type <span class="required">*</span></label>
                             <div class="select-wrapper">
                                 <i class="fas fa-tag"></i>
-                                <select id="addressType" required>
+
+                                <select name="type" id="addressType" required>
                                     <option value="" disabled selected>Select address type</option>
-                                    <option value="home">🏠 Home</option>
-                                    <option value="work">🏢 Work</option>
-                                    <option value="other">📍 Other</option>
+                                    <option value="home">Home</option>
+                                    <option value="work">Work</option>
+                                    <option value="other">Other</option>
                                 </select>
+
                             </div>
                         </div>
                     </div>
@@ -227,7 +216,7 @@
                 <div class="form-section">
                     <div class="form-options">
                         <label class="checkbox-container">
-                            <input type="checkbox" id="defaultAddress">
+                            <input name="is_default" value="True" type="checkbox" id="defaultAddress">
                             <span class="checkmark"></span>
                             Set as default shipping address
                         </label>
@@ -243,6 +232,7 @@
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
