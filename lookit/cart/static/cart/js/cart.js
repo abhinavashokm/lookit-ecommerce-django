@@ -10,16 +10,13 @@ document.querySelectorAll('.quantity-btn').forEach(button => {
         } else if (this.textContent === '-' && quantity > 1) {
             quantityElement.textContent = quantity - 1;
         }
-        
-        updateCartTotal();
     });
 });
 
 // Remove item
 document.querySelectorAll('.remove-btn').forEach(button => {
     button.addEventListener('click', function() {
-        this.closest('.cart-item').remove();
-        updateCartTotal();
+        //this.closest('.cart-item').remove();
     });
 });
 

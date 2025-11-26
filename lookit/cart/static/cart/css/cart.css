@@ -141,6 +141,13 @@
     margin-left: 0.5rem;
 }
 
+.item-sub-total {
+    color: #999;
+    font-size: 0.9rem;
+    font-weight: normal;
+    margin-left: 0.5rem;
+}
+
 .right-sidebar {
     flex: 1;
     display: flex;
