@@ -95,17 +95,17 @@
 
             <div class="summary-row">
                 <span>Shipping</span>
-                <span>₹{{ order.delivery_fee }}</span>
+                <span>₹{{ order.delivery_total }}</span>
             </div>
             
             <div class="summary-row">
                 <span>GST & Taxes</span>
-                <span>₹{{ order.tax_amount }}</span>
+                <span>₹{{ order.tax_total }}</span>
             </div>
 
             <div class="summary-row">
                 <span>Discount Applied</span>
-                <span>₹{{ order.discount_amount }}</span>
+                <span>₹{{ order.discount_total }}</span>
             </div>
             
             <div class="delivery-info">
@@ -126,7 +126,7 @@
             
             <div class="summary-row total">
                 <span>Total</span>
-                <span>₹{{ order.total_amount }}</span>
+                <span>₹{{ order.grand_total }}</span>
             </div>
         </div>
 

@@ -36,8 +36,12 @@
             <h3>Shipping Information</h3>
             <div class="info-row">
                 <span class="info-label">Shipping Address:</span>
-                <span>{{ address.full_name }}</span>
-                <span class="info-value">123 Main Street,<br>Anytown, CA 91234</span>
+                <div class="info-value">
+                    <p>{{ address.full_name }}</p>
+                    <p>{{ address.address_line }}, {{ address.city }}, {{ address.state }}</p>
+                    <p>pincode: {{ address.pincode }}</p>
+                    <p>Phone: {{ address.phone }}, {{address.second_phone}}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -66,9 +70,9 @@
                             </div>
                         </div>
                     </td>
-                    <td>₹{{ item.product.price }}</td>
+                    <td>₹{{ item.unit_price }}</td>
                     <td>{{ item.quantity }}</td>
-                    <td>₹{{ item.sub_total_per_item }}</td>
+                    <td>₹{{ item.sub_total }}</td>
                 </tr>
                 {% endfor %}
 
@@ -81,31 +85,31 @@
             <h3>Order Summary</h3>
         </div>
         <div class="summary-row">
-            <span class="summary-label">Subtotal ({{ order.item_count }} item)</span>
+            <span class="summary-label">Subtotal ({{ order.total_items }} item)</span>
             <span class="summary-value">₹{{ order.sub_total }}</span>
         </div>
         <div class="summary-row">
             <span class="summary-label">Shipping Fee</span>
-            <span class="summary-value {% if order.delivery_fee == 0 %}discount{% endif %}">{% if order.delivery_fee == 0 %}Free{% else %}{{ order.delivery_fee }}{% endif %}</span>
+            <span class="summary-value {% if order.delivery_total == 0 %}discount{% endif %}">{% if order.delivery_total == 0 %}Free{% else %}{{ order.delivery_fee }}{% endif %}</span>
         </div>
         <div class="summary-row">
             <span class="summary-label">Discount</span>
-            <span class="summary-value discount">-₹{{ order.discount_amount }}</span>
+            <span class="summary-value discount">-₹{{ order.discount_total }}</span>
         </div>
         <div class="summary-row">
             <span class="summary-label">GST & Tax</span>
-            <span class="summary-value">₹{{ order.tax_amount }}</span>
+            <span class="summary-value">₹{{ order.tax_total }}</span>
         </div>
         <div class="summary-divider"></div>
         <div class="summary-row total">
             <span class="summary-label">Total</span>
-            <span class="summary-value">₹{{ order.total_amount }}</span>
+            <span class="summary-value">₹{{ order.grand_total }}</span>
         </div>
     </div>
 
     <div class="action-buttons">
         <a href="{% url 'explore' %}" class="btn btn-outline">Continue Shopping</a>
-        <a href="#" class="btn btn-primary">Track My Order</a>
+        <a href="{% url 'my-orders' %}" class="btn btn-primary">Track My Order</a>
     </div>
 </main>
 {% endblock %}

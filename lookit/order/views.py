@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Count
+from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Count, Value
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from django.db import transaction
@@ -60,28 +60,46 @@ def create_order(request):
     address = Address.objects.get(id=address_id, user=user)
 
     # ---products in order------------------------------------------------
-    order_items = (
+    cart_items = (
         Cart.objects.filter(user=request.user)
         .select_related('variant')
         .annotate(
-            sub_total_per_product=ExpressionWrapper(
+            sub_total=ExpressionWrapper(
                 F('variant__product__price') * F('quantity'),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            ),
+            delivery_fee=Value(
+                0, output_field=DecimalField(max_digits=10, decimal_places=2)
+            ),
+            discount=Value(
+                0, output_field=DecimalField(max_digits=10, decimal_places=2)
+            ),
+            tax=ExpressionWrapper(
+                (F('variant__product__price') * F('quantity')) * Decimal('0.05'),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            ),
+        )
+        .annotate(
+            total_amount=ExpressionWrapper(
+                F('sub_total')
+                + F('tax')
+                + F('delivery_fee')
+                - F('discount'),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
     )
+
     # ---total price of all items in cart considering quantity---------
-    sub_total = (
-        order_items.aggregate(
-            sub_total=Sum(F('variant__product__price') * F('quantity'))
-        )['sub_total']
-        or 0
+    order_summary = cart_items.aggregate(
+        total_sub_total=Sum('sub_total'),
+        total_delivery_fee=Sum('delivery_fee'),
+        total_tax=Sum('tax'),
+        total_discount=Sum('discount'),
+        grand_total_amount=Sum('total_amount'),
     )
-    tax_amount = sub_total * Decimal(0.05)
-    tax_amount = tax_amount.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-    delivery_fee = Decimal(0)
-    discount_amount = Decimal(0)
-    grand_total = (sub_total + tax_amount + delivery_fee) - discount_amount
+    total_items = cart_items.count()
+
 
     order = None
     try:
@@ -90,19 +108,24 @@ def create_order(request):
             order = Order.objects.create(
                 user=user,
                 address=address,
-                sub_total=sub_total,
-                delivery_fee=delivery_fee,
-                discount_amount=discount_amount,
-                tax_amount=tax_amount,
-                total_amount=grand_total,
+                total_items = total_items,
+                sub_total=order_summary.get('total_sub_total'),
+                delivery_total=order_summary.get('total_delivery_fee'),
+                discount_total=order_summary.get('total_discount'),
+                tax_total=order_summary.get('total_tax'),
+                grand_total=order_summary.get('grand_total_amount'),
             )
-            for item in order_items:
+            for item in cart_items:
                 OrderItems.objects.create(
                     order=order,
                     variant=item.variant,
                     quantity=item.quantity,
                     unit_price=item.variant.product.price,
-                    sub_total=item.sub_total_per_product,
+                    sub_total=item.sub_total,
+                    delivery_fee = item.delivery_fee,
+                    discount_amount = item.discount,
+                    tax_amount = item.tax,
+                    total = item.total_amount  # final line total
                 )
 
     except Exception as e:
@@ -113,12 +136,14 @@ def create_order(request):
     return redirect('payment-page', order_id=order.id)
 
 
+@login_required
 def payment_page(request, order_id):
     order = Order.objects.get(id=order_id)
     address = order.address
     return render(request, "order/payment.html/", {"order": order, "address": address})
 
 
+@login_required
 def place_order(request, order_id):
     if request.method == "POST":
         payment_method = request.POST.get('payment_method')
@@ -131,11 +156,11 @@ def place_order(request, order_id):
         try:
             with transaction.atomic():
                 Order.objects.filter(id=order_id).update(
-                    payment_method=Order.PaymentMethod.COD,
-                    payment_status=Order.PaymentMethod.COD,
+                    payment_method=Order.PaymentMethod.COD
                 )
                 OrderItems.objects.filter(order_id=order_id).update(
-                    order_status=OrderItems.OrderStatus.PLACED
+                    order_status=OrderItems.OrderStatus.PLACED,
+                    payment_status=Order.PaymentMethod.COD,
                 )
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
         except Exception as e:
@@ -148,14 +173,12 @@ def place_order(request, order_id):
         return redirect('order-success', order_id=order_id)
 
 
+@login_required
 def order_success_page(request, order_id):
-    order = Order.objects.filter(id=order_id).annotate(item_count = Count('orderitems')).first()
-    order_items = OrderItems.objects.filter(order_id=order_id).annotate(
-        sub_total_per_item=ExpressionWrapper(
-            F('variant__product__price') * F('quantity'),
-            output_field=DecimalField(max_digits=10, decimal_places=2),
-        )
+    order = (
+        Order.objects.get(id=order_id)
     )
+    order_items = OrderItems.objects.filter(order_id=order_id)
     address = order.address
     return render(
         request,
@@ -163,5 +186,12 @@ def order_success_page(request, order_id):
         {'order': order, "address": address, "order_items": order_items},
     )
 
+
+@login_required
 def my_orders(request):
-    return render(request,"order/my_orders.html")
+    orders = (
+        Order.objects.filter(user=request.user)
+        .prefetch_related('items')
+        .order_by('-created_at')
+    )
+    return render(request, "order/my_orders.html", {"orders": orders})

@@ -36,65 +36,30 @@
     </div>
 
     <div class="cart-items">
-        <!-- Order 1 -->
+
+        {% for order in orders %}
+        {% for item in order.items.all %}
         <div class="cart-item">
-            <img src="https://via.placeholder.com/100x120" alt="Product" class="item-image">
+            <img src="{{ item.product.image_url }}" alt="Product" class="item-image">
             <div class="item-details">
-                <h3 class="item-title">Premium Cotton T-Shirt</h3>
-                <p class="item-sku">Order #ORD-2023-001</p>
-                <p class="item-color">Color: Black</p>
+                <h3 class="item-title">{{ item.product.name }}</h3>
+                <p class="item-sku">Order #OR{{ item.id|stringformat:'04d' }}</p>
                 <p class="item-size">Size: M</p>
+                <p class="item-color">Ordered at: {{ item.created_at.date }}</p>
                 <div class="item-actions">
-                    <button class="btn btn-view">View Details</button>
+                    <a href="{% url 'product-details' item.product.id %}">
+                        <button class="btn btn-view">View Product</button>
+                    </a>
                     <button class="btn btn-track">Track Order</button>
                 </div>
             </div>
             <div class="item-price-status">
-                <span class="status-badge status-delivered">Delivered</span>
-                <div class="item-price">$29.99</div>
+                <span class="status-badge status-processing">{{ item.order_status }}</span>
+                <div class="item-price">₹{{ item.product.price }}</div>
             </div>
         </div>
-
-        <!-- Order 2 -->
-        <div class="cart-item">
-            <img src="https://via.placeholder.com/100x120" alt="Product" class="item-image">
-            <div class="item-details">
-                <h3 class="item-title">Slim Fit Jeans</h3>
-                <p class="item-sku">Order #ORD-2023-002</p>
-                <p class="item-color">Color: Blue</p>
-                <p class="item-size">Size: 32x32</p>
-                <div class="item-actions">
-                    <button class="btn btn-view">View Details</button>
-                    <button class="btn btn-track">Track Order</button>
-                </div>
-            </div>
-            <div class="item-price-status">
-                <span class="status-badge status-shipped">Shipped</span>
-                <div class="item-price">$59.99</div>
-            </div>
-        </div>
-
-        <!-- Order 3 -->
-        <div class="cart-item">
-            <img src="https://via.placeholder.com/100x120" alt="Product" class="item-image">
-            <div class="item-details">
-                <h3 class="item-title">Running Shoes</h3>
-                <p class="item-sku">Order #ORD-2023-003</p>
-                <p class="item-color">Color: White/Red</p>
-                <p class="item-size">Size: 10</p>
-                <div class="item-actions">
-                    <button class="btn btn-view">View Details</button>
-                    <button class="btn btn-track" disabled>Track Order</button>
-                </div>
-            </div>
-            <div class="item-price-status">
-                <span class="status-badge status-processing">Processing</span>
-                <div class="item-price">$89.99</div>
-            </div>
-        </div>
-
-
-
+        {% endfor %}
+        {% endfor %}
 
     </div>
 

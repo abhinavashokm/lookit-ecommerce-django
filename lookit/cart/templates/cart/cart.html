@@ -17,7 +17,17 @@
 
         <!-- Cart Items -->
         <div class="cart-items">
-
+            {% if not cart_items %}
+            <!-- Empty Cart State -->
+            <div class="empty-cart">
+                <div class="empty-cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h2>Your cart is empty</h2>
+                <p>Looks like you haven't added anything to your cart yet. Start shopping to find amazing products!</p>
+            </div>
+            {% endif %}
+            
             {% for item in cart_items %}
             <div class="cart-item">
                 <img src="{{ item.product.image_url }}" alt="Product" class="item-image">

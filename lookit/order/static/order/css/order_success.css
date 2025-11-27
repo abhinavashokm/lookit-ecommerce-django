@@ -59,8 +59,6 @@
 
     .info-row {
         margin-bottom: 0.8rem;
-        display: flex;
-        justify-content: space-between;
     }
 
     .info-label {
@@ -70,7 +68,8 @@
 
     .info-value {
         color: #333;
-        text-align: right;
+        text-align: left;
+        width: 100%;
     }
 
     .order-items {

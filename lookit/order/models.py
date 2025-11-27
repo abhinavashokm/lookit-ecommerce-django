@@ -11,22 +11,18 @@ class Order(models.Model):
         UPI = 'UPI', 'UPI'
         WALLET = 'WALLET', 'Wallet'
 
-    class PaymentStatus(models.TextChoices):
-        PENDING = 'PENDING', 'Pending'
-        PAID = 'PAID', 'Paid'
-        FAILED = 'FAILED', 'Failed'
-        COD = 'COD', 'Cash on Delivery'
-        REFUNDED = 'REFUNDED', 'Refunded'
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=30, choices=PaymentMethod.choices, blank=True)
-    payment_status = models.CharField(max_length=30, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
-    sub_total = models.DecimalField(max_digits=10, decimal_places=2)
-    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2)
-    discount_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    total_items = models.PositiveIntegerField(default=0)
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2) #sum of base price of all items
+    discount_total = models.DecimalField(max_digits=10, decimal_places=2)
+    tax_total = models.DecimalField(max_digits=10, decimal_places=2)
+    delivery_total = models.DecimalField(max_digits=10, decimal_places=2)
+    grand_total = models.DecimalField(max_digits=10, decimal_places=2)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
@@ -40,11 +36,25 @@ class OrderItems(models.Model):
         CANCELLED = 'CANCELLED', 'Cancelled'
         RETURNED = 'RETURNED', 'Returned'
         
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    class PaymentStatus(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        PAID = 'PAID', 'Paid'
+        FAILED = 'FAILED', 'Failed'
+        COD = 'COD', 'Cash on Delivery'
+        REFUNDED = 'REFUNDED', 'Refunded'
+        
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
+    payment_status = models.CharField(max_length=30, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
+    
     quantity = models.IntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
-    sub_total = models.DecimalField(max_digits=10, decimal_places=2)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2) #base price without tax
+    sub_total = models.DecimalField(max_digits=10, decimal_places=2) #quantity x unit_price
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # final line total
+    
     order_status = models.CharField(max_length=30, choices=OrderStatus.choices, default=OrderStatus.PROCESSING)
     cancel_reason = models.TextField(blank=True, null=True)
     cancelled_at = models.DateTimeField(blank=True, null=True)
