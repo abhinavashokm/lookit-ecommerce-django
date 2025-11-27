@@ -50,3 +50,7 @@ class OrderItems(models.Model):
     cancelled_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    @property
+    def product(self):
+        return self.variant.product

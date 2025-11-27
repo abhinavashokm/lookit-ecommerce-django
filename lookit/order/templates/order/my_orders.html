@@ -1,0 +1,109 @@
+
+{% extends 'user_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'order/css/my_orders.css' %}">
+<!--CSS for profile sidebar-->
+<link rel="stylesheet" href="{% static 'user/css/components/profile_sidebar.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+<div class="profile-container">
+<!-- Sidebar -->
+{% include 'user_base/components/profile_sidebar.html' %}
+
+<!-- Main Content -->
+<main class="main-content">
+    <div class="page-header">
+        <h1 class="page-title">My Orders</h1>
+        <div class="search-orders">
+            <input type="text" placeholder="Search orders...">
+            <span class="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </span>
+            <button class="clear-search" aria-label="Clear search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="cart-items">
+        <!-- Order 1 -->
+        <div class="cart-item">
+            <img src="https://via.placeholder.com/100x120" alt="Product" class="item-image">
+            <div class="item-details">
+                <h3 class="item-title">Premium Cotton T-Shirt</h3>
+                <p class="item-sku">Order #ORD-2023-001</p>
+                <p class="item-color">Color: Black</p>
+                <p class="item-size">Size: M</p>
+                <div class="item-actions">
+                    <button class="btn btn-view">View Details</button>
+                    <button class="btn btn-track">Track Order</button>
+                </div>
+            </div>
+            <div class="item-price-status">
+                <span class="status-badge status-delivered">Delivered</span>
+                <div class="item-price">$29.99</div>
+            </div>
+        </div>
+
+        <!-- Order 2 -->
+        <div class="cart-item">
+            <img src="https://via.placeholder.com/100x120" alt="Product" class="item-image">
+            <div class="item-details">
+                <h3 class="item-title">Slim Fit Jeans</h3>
+                <p class="item-sku">Order #ORD-2023-002</p>
+                <p class="item-color">Color: Blue</p>
+                <p class="item-size">Size: 32x32</p>
+                <div class="item-actions">
+                    <button class="btn btn-view">View Details</button>
+                    <button class="btn btn-track">Track Order</button>
+                </div>
+            </div>
+            <div class="item-price-status">
+                <span class="status-badge status-shipped">Shipped</span>
+                <div class="item-price">$59.99</div>
+            </div>
+        </div>
+
+        <!-- Order 3 -->
+        <div class="cart-item">
+            <img src="https://via.placeholder.com/100x120" alt="Product" class="item-image">
+            <div class="item-details">
+                <h3 class="item-title">Running Shoes</h3>
+                <p class="item-sku">Order #ORD-2023-003</p>
+                <p class="item-color">Color: White/Red</p>
+                <p class="item-size">Size: 10</p>
+                <div class="item-actions">
+                    <button class="btn btn-view">View Details</button>
+                    <button class="btn btn-track" disabled>Track Order</button>
+                </div>
+            </div>
+            <div class="item-price-status">
+                <span class="status-badge status-processing">Processing</span>
+                <div class="item-price">$89.99</div>
+            </div>
+        </div>
+
+
+
+
+    </div>
+
+</main>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'order/js/my_orders.js' %}"></script>
+{% endblock %}
+

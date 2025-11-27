@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.db.models import ExpressionWrapper, DecimalField, F, Sum
+from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Count
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from django.db import transaction
@@ -82,7 +82,7 @@ def create_order(request):
     delivery_fee = Decimal(0)
     discount_amount = Decimal(0)
     grand_total = (sub_total + tax_amount + delivery_fee) - discount_amount
-    
+
     order = None
     try:
         with transaction.atomic():
@@ -104,16 +104,64 @@ def create_order(request):
                     unit_price=item.variant.product.price,
                     sub_total=item.sub_total_per_product,
                 )
-            #imp: need to delete cart
 
     except Exception as e:
         messages.error(request, e)
         print(e)
         return redirect('checkout')
 
-    return redirect('payment-page',order_id = order.id)
+    return redirect('payment-page', order_id=order.id)
 
 
 def payment_page(request, order_id):
     order = Order.objects.get(id=order_id)
-    return render(request, "order/payment.html/", {"order":order})
+    address = order.address
+    return render(request, "order/payment.html/", {"order": order, "address": address})
+
+
+def place_order(request, order_id):
+    if request.method == "POST":
+        payment_method = request.POST.get('payment_method')
+
+        # ---check if payment method is valid
+        if payment_method not in Order.PaymentMethod.values:
+            messages.error("Invalid Payment Method")
+            return redirect('payment-page', order_id=order_id)
+
+        try:
+            with transaction.atomic():
+                Order.objects.filter(id=order_id).update(
+                    payment_method=Order.PaymentMethod.COD,
+                    payment_status=Order.PaymentMethod.COD,
+                )
+                OrderItems.objects.filter(order_id=order_id).update(
+                    order_status=OrderItems.OrderStatus.PLACED
+                )
+                messages.success(request, "ORDER PLACED SUCCESSFULLY")
+        except Exception as e:
+            messages.error(request, e)
+            return redirect('payment-page', order_id=order_id)
+
+        # ---empty the cart of user--------------------
+        Cart.objects.filter(user=request.user).delete()
+        # ---redirect to order success page---------------
+        return redirect('order-success', order_id=order_id)
+
+
+def order_success_page(request, order_id):
+    order = Order.objects.filter(id=order_id).annotate(item_count = Count('orderitems')).first()
+    order_items = OrderItems.objects.filter(order_id=order_id).annotate(
+        sub_total_per_item=ExpressionWrapper(
+            F('variant__product__price') * F('quantity'),
+            output_field=DecimalField(max_digits=10, decimal_places=2),
+        )
+    )
+    address = order.address
+    return render(
+        request,
+        "order/order_success.html",
+        {'order': order, "address": address, "order_items": order_items},
+    )
+
+def my_orders(request):
+    return render(request,"order/my_orders.html")

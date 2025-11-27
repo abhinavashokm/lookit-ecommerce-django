@@ -1,0 +1,114 @@
+{% extends 'user_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'order/css/order_success.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<!-- Order Success Content -->
+<main class="order-success">
+    <h1 class="page-title">Order Confirmed</h1>
+    
+    <div class="confirmation-banner">
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for shopping with Lookit. Your order has been successfully placed.</p>
+    </div>
+    
+    <div class="order-details">
+        <div class="order-info">
+            <h3>Order Information</h3>
+            <div class="info-row">
+                <span class="info-label">Order Number:</span>
+                <span class="info-value">#123456789</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Order Date:</span>
+                <span class="info-value">{{ order.created_at.date }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Payment Method:</span>
+                <span class="info-value">{% if order.payment_method == 'COD' %}Cash On Delivery{% endif %}</span>
+            </div>
+        </div>
+        
+        <div class="order-info">
+            <h3>Shipping Information</h3>
+            <div class="info-row">
+                <span class="info-label">Shipping Address:</span>
+                <span>{{ address.full_name }}</span>
+                <span class="info-value">123 Main Street,<br>Anytown, CA 91234</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="order-items">
+        <h3>Items Ordered</h3>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for item in order_items %}
+                <tr>
+                    <td>
+                        <div class="item-details">
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="item-image">
+                            <div>
+                                <div class="item-name">{{ item.product.name }}</div>
+                                <div class="item-color">Size: {{ item.variant.size }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>₹{{ item.product.price }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.sub_total_per_item }}</td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="order-summary">
+        <div class="summary-header">
+            <h3>Order Summary</h3>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Subtotal ({{ order.item_count }} item)</span>
+            <span class="summary-value">₹{{ order.sub_total }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Shipping Fee</span>
+            <span class="summary-value {% if order.delivery_fee == 0 %}discount{% endif %}">{% if order.delivery_fee == 0 %}Free{% else %}{{ order.delivery_fee }}{% endif %}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Discount</span>
+            <span class="summary-value discount">-₹{{ order.discount_amount }}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">GST & Tax</span>
+            <span class="summary-value">₹{{ order.tax_amount }}</span>
+        </div>
+        <div class="summary-divider"></div>
+        <div class="summary-row total">
+            <span class="summary-label">Total</span>
+            <span class="summary-value">₹{{ order.total_amount }}</span>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <a href="{% url 'explore' %}" class="btn btn-outline">Continue Shopping</a>
+        <a href="#" class="btn btn-primary">Track My Order</a>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

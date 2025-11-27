@@ -48,9 +48,3 @@ document.getElementById('cardForm').addEventListener('submit', function(e) {
     alert('Processing your payment...');
     // In a real application, you would make an API call to your payment processor here
 });
-
-// Handle Cash on Delivery order
-function placeCODOrder() {
-    alert('Your order has been placed successfully! You will pay ₹839 at the time of delivery.');
-    // In a real application, you would submit the order to your backend here
-}
