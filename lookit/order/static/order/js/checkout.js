@@ -1,24 +1,34 @@
-// Address selection
-document.querySelectorAll('.address-option').forEach(option => {
-    option.addEventListener('click', function(e) {
-        // Don't trigger for buttons inside the address option
-        if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
-            return;
-        }
-        
-        document.querySelectorAll('.address-option').forEach(opt => {
-            opt.classList.remove('selected');
-        });
-        this.classList.add('selected');
-        const radio = this.querySelector('input[type="radio"]');
-        if (radio) {
-            radio.checked = true;
-        }
-    });
+// ---ADDRESS SELECTION ----------------------------------------
+let selectedAddressId = null
+
+//on page load put default address as selected address
+document.addEventListener("DOMContentLoaded", function () {
+    selectedAddressId = document.getElementById("defaultAddress").value
+    document.getElementById('selectedAddressId').value = selectedAddressId
 });
 
 
-// Modal functionality
+function selectAddress(e, div, addressId){
+    console.log("call aaayi")
+    // Don't trigger for buttons inside the address option
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+        return;
+    }
+    selectedAddressId = addressId
+    
+    document.querySelectorAll('.address-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+    document.getElementById('selectedAddressId').value = selectedAddressId
+    div.classList.add('selected');
+    const radio = div.querySelector('input[type="radio"]');
+    if (radio) {
+        radio.checked = true;
+    }
+}
+
+
+// ---MODAL FUNCTIONALITY-------------------------------
 const modal = document.getElementById('addAddressModal');
 const openModalBtn = document.querySelector('.add-address-btn');
 const closeModalBtn = document.getElementById('closeAddModel');

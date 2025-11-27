@@ -57,8 +57,11 @@
             <div class="address-options">
 
                 {% for address in address_list %}
-                <div class="address-option {% if address.is_default %}selected{% endif %}">
+                <div onclick="selectAddress(event, this, '{{ address.id }}')" class="address-option {% if address.is_default %}selected{% endif %}">
                     <input type="radio" name="delivery-address" id="address-1" class="address-radio" {% if address.is_default %}checked{% endif %}>
+                    {% if address.is_default %}
+                        <input type="hidden" value="{{ address.id }}" id="defaultAddress">
+                    {% endif %}
                     <div class="address-details">
                         <div class="address-header">
                             <div class="address-name">{{ address.full_name }}</div>
@@ -239,12 +242,14 @@
                 <span class="price-value">₹{{ price_summary.grand_total }}</span>
             </div>
 
-            <a href="{% url 'payment-page' %}">
+            <form action="{% url 'create_order' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="address_id" id="selectedAddressId">
                 <button class="checkout-btn">
                     Continue to Payment
                     <i class="fas fa-arrow-right"></i>
                 </button>
-            </a>
+            </form>
 
         </div>
 
