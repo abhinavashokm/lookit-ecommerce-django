@@ -238,10 +238,14 @@
                 <span>Final Amount</span>
                 <span class="price-value">₹{{ price_summary.grand_total }}</span>
             </div>
-            <button class="checkout-btn">
-                Continue to Payment
-                <i class="fas fa-arrow-right"></i>
-            </button>
+
+            <a href="{% url 'payment-page' %}">
+                <button class="checkout-btn">
+                    Continue to Payment
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </a>
+
         </div>
 
     </div>

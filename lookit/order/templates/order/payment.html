@@ -1,0 +1,132 @@
+{% extends 'user_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'order/css/payment.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<!--main content-->
+<div class="container">
+    <!-- Breadcrumbs -->
+    <div class="breadcrumbs">
+        <a href="{% url 'cart' %}">Shopping Cart</a>
+        <span>/</span>
+        <a href="{% url 'checkout' %}">Checkout</a>
+        <span>/</span>
+        <span class="active">Payment</span>
+    </div>
+
+    <div class="payment-layout">
+        <!-- Payment Methods -->
+        <div class="payment-methods">
+            <h2>Payment Method</h2>
+            
+            <div class="payment-tabs">
+                <div class="tab" onclick="showTab('upi')">UPI</div>
+                <div class="tab " onclick="showTab('debit-card')">Debit Card</div>
+                <div class="tab active" onclick="showTab('cod')">Cash on Delivery</div>
+                <div class="tab" onclick="showTab('wallet')">Wallet</div>
+            </div>
+            
+            <!-- UPI Payment -->
+            <div id="upi" class="tab-content">
+                <p>Pay via any UPI app</p>
+                <button class="btn-pay" style="margin-top: 1rem;">Pay with UPI</button>
+            </div>
+            
+            <!-- Debit Card Payment -->
+            <div id="debit-card" class="tab-content">
+                <form id="cardForm" class="card-form">
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number</label>
+                        <input type="text" id="cardNumber" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="expiryDate">Expiry Date</label>
+                            <input type="text" id="expiryDate" class="form-control" placeholder="MM/YY" maxlength="5" oninput="formatExpiryDate(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="cvv">CVV</label>
+                            <input type="password" id="cvv" class="form-control" placeholder="•••" maxlength="3">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cardName">Name on Card</label>
+                        <input type="text" id="cardName" class="form-control" placeholder="John Doe">
+                    </div>
+                    
+                    <button type="submit" class="btn-pay">Pay ₹82.00</button>
+                </form>
+            </div>
+            
+            <!-- Cash on Delivery -->
+            <div id="cod" class="tab-content active">
+                <p>Pay in cash when your order is delivered.</p>
+                <div class="cod-message">
+                    <p>You will pay ₹839 at the time of delivery.</p>
+                    <p>COD orders may require OTP confirmation.</p>
+                </div>
+                <button class="btn-pay" onclick="placeCODOrder()">Place Order</button>
+            </div>
+            
+            <!-- Wallet -->
+            <div id="wallet" class="tab-content">
+                <p>Pay using your wallet balance</p>
+                <button class="btn-pay" style="margin-top: 1rem;">Pay with Wallet</button>
+            </div>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <h3>Order Summary</h3>
+            
+            <div class="summary-row">
+                <span>Subtotal (2 items)</span>
+                <span>₹77.00</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>₹0.00</span>
+            </div>
+            
+            <div class="summary-row">
+                <span>GST & Taxes</span>
+                <span>₹9.00</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Discount Applied</span>
+                <span>₹3.00</span>
+            </div>
+            
+            <div class="delivery-info">
+                <h4>Delivery Address</h4>
+                <div class="delivery-address">
+                    <p>To: 123 Maple Street, Anytown, USA</p>
+                    <a href="checkout.html" class="change-link">Change</a>
+                </div>
+                
+                <h4>Delivery Date</h4>
+                <div class="delivery-date">
+                    <i class="fas fa-truck"></i>
+                    <span>Estimated Delivery: July 15, 2024</span>
+                </div>
+            </div>
+            
+            <div class="summary-row total">
+                <span>Total</span>
+                <span>₹82.00</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'order/js/payment.js' %}"></script>
+{% endblock %}

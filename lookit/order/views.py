@@ -40,3 +40,6 @@ def checkout(request):
         "order/checkout.html",
         {"order_items": order_items, "price_summary": price_summary, "address_list":address_list},
     )
+
+def payment_page(request):
+    return render(request, "order/payment.html")
