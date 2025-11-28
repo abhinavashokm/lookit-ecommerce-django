@@ -4,6 +4,9 @@
 <link rel="stylesheet" href="{% static 'user/css/account/edit_profile.css' %}">
 <!--CSS for profile sidebar-->
 <link rel="stylesheet" href="{% static 'user/css/components/profile_sidebar.css' %}">
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 {% endblock %}
 
 
@@ -128,11 +131,13 @@
             <h3>Change Password</h3>
             <button class="close-modal">&times;</button>
         </div>
-        <form id="changePasswordForm" class="modal-form">
+
+        <form action="{% url 'user-change-password' %}" method="post" id="changePasswordForm" class="modal-form">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="currentPassword">Current Password</label>
                 <div class="password-input">
-                    <input type="password" id="currentPassword" class="form-control" required>
+                    <input type="password" name="current_password" id="currentPassword" class="form-control" required>
                     <button type="button" class="toggle-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -141,19 +146,19 @@
             <div class="form-group">
                 <label for="newPassword">New Password</label>
                 <div class="password-input">
-                    <input type="password" id="newPassword" class="form-control" required minlength="8">
+                    <input type="password" name="new_password" id="newPassword" class="form-control" required minlength="8">
                     <button type="button" class="toggle-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
-                <div class="password-requirements">
+                <!-- <div class="password-requirements">
                     <p>Password must be at least 8 characters long</p>
-                </div>
+                </div> -->
             </div>
             <div class="form-group">
                 <label for="confirmPassword">Confirm New Password</label>
                 <div class="password-input">
-                    <input type="password" id="confirmPassword" class="form-control" required>
+                    <input type="password" name="confirm_new_password" id="confirmPassword" class="form-control" required>
                     <button type="button" class="toggle-password" aria-label="Toggle password visibility">
                         <i class="fas fa-eye"></i>
                     </button>
@@ -165,6 +170,7 @@
                 <button type="submit" class="btn btn-primary">Update Password</button>
             </div>
         </form>
+
     </div>
 </div>
 
@@ -307,6 +313,42 @@ $(document).ready(function () {
         errorElement: "label",
         errorPlacement: function (error, element) {
             error.insertAfter(element);
+        }
+    });
+
+        $("#changePasswordForm").validate({
+        rules: {
+            current_password: {
+                required: true,
+            },
+            new_password: {
+                required: true,
+                minlength: 8,
+                strongPassword: true
+            },
+            confirm_new_password: {
+                required: true,
+                equalTo: "#newPassword"
+            }
+        },
+        messages: {
+            current_password: {
+                required: "Password is required",
+            },
+            new_password: {
+                required: "Password is required",
+                minlength: "Password must be at least 8 characters",
+            },
+            confirm_new_password: {
+                required: "Password is required",
+                equalTo: "Passwords do not match"
+            }
+        },
+        onkeyup: true,
+        errorClass: "error",
+        errorElement: "label",
+        errorPlacement: function (error, element) {
+            error.insertAfter(element.closest('.password-input'));
         }
     });
 })

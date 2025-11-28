@@ -200,8 +200,9 @@ input[type="password"] {
 
 /* jQuery validation error styling */
 label.error {
-    color: red;
-    font-weight: normal;
-    font-size: 0.85rem;
-    margin-top: 4px;
-}
+      color: #b74747;
+      font-weight: normal;
+      font-size: 0.85rem;
+      margin-top: 4px;
+      margin-left: 1px;
+  }

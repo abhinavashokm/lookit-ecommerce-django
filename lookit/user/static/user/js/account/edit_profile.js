@@ -100,31 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Check password match
-    function checkPasswordMatch() {
-        if (newPasswordInput.value && confirmPasswordInput.value) {
-            if (newPasswordInput.value !== confirmPasswordInput.value) {
-                passwordMatch.textContent = 'Passwords do not match';
-                passwordMatch.className = 'password-match error';
-                return false;
-            } else {
-                passwordMatch.textContent = 'Passwords match';
-                passwordMatch.className = 'password-match success';
-                return true;
-            }
-        }
-        passwordMatch.textContent = '';
-        return false;
-    }
-
-    // Validate password strength
-    function validatePassword() {
-        const password = newPasswordInput.value;
-        if (password.length > 0 && password.length < 8) {
-            return false;
-        }
-        return true;
-    }
 
     // Event listeners
     if (openModalBtn) {
@@ -167,59 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Password validation on input
-    if (newPasswordInput) {
-        newPasswordInput.addEventListener('input', function () {
-            if (!validatePassword()) {
-                this.setCustomValidity('Password must be at least 8 characters long');
-            } else {
-                this.setCustomValidity('');
-            }
-            checkPasswordMatch();
-        });
-    }
 
-    if (confirmPasswordInput) {
-        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
-    }
-
-    // // Form submission
-    // if (form) {
-    //     form.addEventListener('submit', function (e) {
-    //        // e.preventDefault();
-
-    //         if (!validatePassword()) {
-    //             alert('Password must be at least 8 characters long');
-    //             return;
-    //         }
-
-    //         if (!checkPasswordMatch()) {
-    //             alert('Passwords do not match');
-    //             return;
-    //         }
-
-    //         // Here you would typically make an API call to update the password
-    //         const formData = {
-    //             currentPassword: document.getElementById('currentPassword').value,
-    //             newPassword: newPasswordInput.value
-    //         };
-
-    //         console.log('Updating password:', formData);
-
-    //         // Simulate API call
-    //         setTimeout(() => {
-    //             // Show success message
-    //             alert('Password updated successfully!');
-
-    //             // Close modal and reset form
-    //             modal.classList.remove('active');
-    //             document.body.style.overflow = '';
-    //             form.reset();
-    //             passwordMatch.textContent = '';
-    //             passwordMatch.className = 'password-match';
-    //         }, 1000);
-    //     });
-    // }
 });
 
 
@@ -360,25 +283,4 @@ document.addEventListener('DOMContentLoaded', function () {
     const editProfileForm = document.querySelector('.edit-profile-form');
     let formData = null;
 
-    // if (editProfileForm) {
-    //     // Prevent default form submission
-    //     editProfileForm.addEventListener('submit', function (e) {
-    //         e.preventDefault();
-    //         // Store form data for later submission
-    //         formData = new FormData(editProfileForm);
-    //         // Show OTP modal
-    //         otpModal.classList.add('active');
-    //         document.body.style.overflow = 'hidden';
-    //         startCountdown();
-    //     });
-
-    //     // // Also handle the save button click
-    //     // const saveChangesBtn = document.getElementById('saveChangesBtn');
-    //     // if (saveChangesBtn) {
-    //     //     saveChangesBtn.addEventListener('click', function () {
-    //     //         // Trigger form submission which will be caught by the form's submit handler
-    //     //         editProfileForm.dispatchEvent(new Event('submit'));
-    //     //     });
-    //     // }
-    // }
 });

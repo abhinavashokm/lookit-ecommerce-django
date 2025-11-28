@@ -11,6 +11,7 @@ from .views import (
     add_address,
     delete_address,
     edit_address,
+    change_password,
 )
 
 urlpatterns = [
@@ -24,6 +25,7 @@ urlpatterns = [
     path("add-address/", add_address, name="add-address"),
     path("delete-address/", delete_address, name="delete-address"),
     path("edit-address/", edit_address, name="edit-address"),
+    path('change-password/', change_password, name='user-change-password'),
     
     # password reset paths
     # 1.enter email and button for sent link

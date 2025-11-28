@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from .models import User, OTP, Address
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from .utils import generate_otp, generate_referral_code, send_otp_email
 from datetime import timedelta
 from django.utils import timezone
@@ -20,6 +21,7 @@ def user_login(request):
             return redirect('index')
         else:
             messages.error(request, "Invalid email or password")
+            return redirect('user-login')
 
     # redirect authenticated users
     if request.user.is_authenticated:
@@ -329,3 +331,24 @@ def delete_address(request):
             messages.error(request, e)
 
     return redirect('checkout')
+
+@login_required
+@require_POST
+def change_password(request):
+    current_password = request.POST.get('current_password')
+    new_password = request.POST.get('new_password')
+    email = request.user.email
+    user = request.user
+    
+    auth_user = authenticate(email=email, password=current_password)
+    if auth_user:
+        try:
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "PASSWORD CHANGED SUCCESSFULLY")
+        except Exception as e:
+            messages.error(request, e)
+    else:
+        messages.error(request, "INVALID PASSWORD")
+    return redirect('account-details')
