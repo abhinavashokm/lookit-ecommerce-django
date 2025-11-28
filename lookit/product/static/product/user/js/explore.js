@@ -174,4 +174,3 @@ if (searchInput && searchClearBtn) {
     });
 }
 
-

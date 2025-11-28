@@ -530,6 +530,8 @@ def add_to_cart(request):
         user = request.user
         product_id = request.POST.get('product_id')
         variant_id = request.POST.get('variant_id')
+        qunatity = request.POST.get('quantity')
+        print("quantity is " ,qunatity)
         
         #restrict if not authenticated
         if not user.is_authenticated:
@@ -547,7 +549,7 @@ def add_to_cart(request):
             return redirect('product-details', product_id = product_id)
         
         try:
-            Cart.objects.create(user=user, variant_id=variant_id, quantity=1)
+            Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
             messages.success(request, "PRODUCT ADDED TO CART")
         except Exception as e:
             print(e)

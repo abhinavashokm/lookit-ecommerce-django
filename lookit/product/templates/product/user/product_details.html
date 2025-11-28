@@ -91,6 +91,7 @@
                 <form action="{% url 'add-to-cart' %}" method="post" class="cart-form" id="addToCart">
                     {% csrf_token %}
                     <input name="product_id" type="hidden" value="{{ product.id }}">
+                    <input type="hidden" name="quantity" value="1" id="hiddenQuantityInput">
                     <button class="btn-cart">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path

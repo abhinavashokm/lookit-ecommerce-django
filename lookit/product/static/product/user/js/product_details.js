@@ -141,20 +141,29 @@ function toggleLike(button) {
     }
 }
 
-// Quantity functionality
+//increase quantity display and update hidden form inupt
 function increaseQuantity() {
     const quantityInput = document.getElementById('quantityInput');
+    const quantityInputForForm = document.getElementById('hiddenQuantityInput')
+
     let currentValue = parseInt(quantityInput.value);
     if (currentValue < 10) {
-        quantityInput.value = currentValue + 1;
+        let new_quantity = currentValue + 1;
+        quantityInput.value = new_quantity
+        quantityInputForForm.value = new_quantity
     }
 }
 
+//decrease quantity display and update hidden form inupt
 function decreaseQuantity() {
     const quantityInput = document.getElementById('quantityInput');
+    const quantityInputForForm = document.getElementById('hiddenQuantityInput')
+
     let currentValue = parseInt(quantityInput.value);
     if (currentValue > 1) {
-        quantityInput.value = currentValue - 1;
+        new_quantity = currentValue - 1;
+        quantityInput.value = new_quantity
+        quantityInputForForm.value = new_quantity
     }
 }
 
