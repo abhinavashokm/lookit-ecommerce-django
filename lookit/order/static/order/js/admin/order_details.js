@@ -10,21 +10,6 @@ function closeStatusModal() {
   document.body.style.overflow = '';
 }
 
-// function updateOrderStatus() {
-//     const statusSelect = document.getElementById('statusSelect');
-//     const adminNotes = document.getElementById('adminNotes');
-    
-//     console.log('Updating status to:', statusSelect.value);
-//     console.log('Admin notes:', adminNotes.value);
-    
-//     // Here you would typically make an API call to update the status
-//     // For now, we'll just close the modal
-//     closeStatusModal();
-    
-//     // Show success message (you can replace this with your own notification system)
-//     alert('Order status updated successfully!');
-// }
-
 // Close modal when clicking outside the modal content
 document.getElementById('statusModal').addEventListener('click', function(e) {
     if (e.target === this) {

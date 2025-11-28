@@ -242,5 +242,27 @@ def admin_list_orders(request):
 
     return render(request, "order/admin/list.html",{"page_obj": page_obj})
 
-def admin_order_details(request):
-    return render(request, "order/admin/order_details.html")
+def admin_order_details(request, order_item_id):
+    order_item = OrderItems.objects.get(id=order_item_id)
+    customer = order_item.order.user
+    address = order_item.order.address
+    return render(request, "order/admin/order_details.html", {"order":order_item, "customer":customer, "address":address})
+
+
+def admin_update_delivery_status(request, order_item_id):
+    if request.method == "POST":
+        print(order_item_id)
+        order_status = request.POST.get("order_status")
+        print(order_status)
+        try:
+            order_item = OrderItems.objects.get(id=order_item_id)
+            if  order_status.upper() in OrderItems.OrderStatus.values:
+                order_item.order_status = order_status.upper()
+                order_item.save()
+                messages.success(request, "ORDER STATUS UPDATED SUCCESSFULLY")
+            else:
+                messages.error(request, "INVALID ORDER STATUS")
+        except Exception as e:
+            messages.error(request, e)
+              
+    return redirect('admin-order-details', order_item_id = order_item_id)

@@ -29,9 +29,10 @@ class Order(models.Model):
 class OrderItems(models.Model):
     
     class OrderStatus(models.TextChoices):
+        INITIATED = 'INITIATED', 'Order Initiated'
         PLACED = 'PLACED', 'Order Placed'
-        PROCESSING = 'PROCESSING', 'Processing'
         SHIPPED = 'SHIPPED', 'Shipped'
+        OUT_FOR_DELIVERY = 'OUT_FOR_DELIVERY', 'Out For Delivery'
         DELIVERED = 'DELIVERED', 'Delivered'
         CANCELLED = 'CANCELLED', 'Cancelled'
         RETURNED = 'RETURNED', 'Returned'
@@ -55,7 +56,7 @@ class OrderItems(models.Model):
     tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # final line total
     
-    order_status = models.CharField(max_length=30, choices=OrderStatus.choices, default=OrderStatus.PROCESSING)
+    order_status = models.CharField(max_length=30, choices=OrderStatus.choices, default=OrderStatus.INITIATED)
     cancel_reason = models.TextField(blank=True, null=True)
     cancelled_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

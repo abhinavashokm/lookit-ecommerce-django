@@ -201,7 +201,7 @@
                         {{ order.created_at.date }}
                     </td>
                     <td>
-                        <a href="{% url 'admin-order-details' %}">
+                        <a href="{% url 'admin-order-details' order.id %}">
                             <button class="btn-view">View</button>
                         </a>
                     </td>
