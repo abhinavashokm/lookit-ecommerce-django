@@ -1,0 +1,158 @@
+<!--NOTE: CURRENTLY THIS IS JUST FOR COPY PASTE USE. NOT FOR INCLUDING AND REUSING-->
+
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteModal{{style.id}}">
+    <div class="modal">
+        <div class="modal-header">
+            <h2 class="modal-title">Delete Style Category</h2>
+        </div>
+        <div class="modal-body">
+            <p class="modal-message">Are you sure you want to delete style category <strong id="deleteStyleId">"{{
+                    style.name }}"</strong>? This action cannot be undone and the
+                category will be
+                permanently
+                removed.</p>
+        </div>
+        <div class="modal-actions">
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal('{{style.id}}')">Cancel</button>
+            <a href="{% url 'admin-delete-category' style.id %}">
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDelete('{{style.id}}')">Delete</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* ==============================
+   Modal Styles (Delete Modal)
+   ============================== */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal {
+        background: white;
+        border-radius: 12px;
+        padding: 0;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.show .modal {
+        transform: scale(1);
+    }
+
+    .modal-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .modal-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+    }
+
+    .modal-body {
+        padding: 24px;
+    }
+
+    .modal-message {
+        font-size: 0.95rem;
+        color: #4b5563;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .modal-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+        padding: 20px 24px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .modal-btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    /* Cancel Button */
+    .modal-btn-cancel {
+        background: #e5e7eb;
+        color: #1f2937;
+    }
+
+    .modal-btn-cancel:hover {
+        background: #d1d5db;
+    }
+
+    /* Confirm (Delete) Button */
+    .modal-btn-confirm {
+        background: #ef4444;
+        color: white;
+    }
+
+    .modal-btn-confirm:hover {
+        background: #dc2626;
+    }
+</style>
+<script>
+    // ==============================
+    // Delete Modal Functions
+    // ==============================
+    let currentStyleId = null;
+
+    function openDeleteModal(styleId) {
+        currentStyleId = styleId;
+        const modal = document.getElementById('deleteModal' + styleId);
+        if (modal) modal.classList.add('show');
+    }
+
+    function closeDeleteModal(styleId) {
+        const modal = document.getElementById('deleteModal' + styleId);
+        if (modal) modal.classList.remove('show');
+        currentStyleId = null;
+    }
+
+    // Optional: Close modal when clicking on overlay
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+            if (currentStyleId) closeDeleteModal(currentStyleId);
+        }
+    });
+
+    // Optional: Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && currentStyleId) {
+            closeDeleteModal(currentStyleId);
+        }
+    });
+
+</script>

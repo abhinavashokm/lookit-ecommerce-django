@@ -17,27 +17,27 @@
     <!-- Search and Filters -->
     <div class="filters-section">
         <!-- Search Form -->
-        <form method="GET" action="{% url 'admin-list-products' %}" id="searchForm" class="search-form">
+        <form method="GET" action="{% url 'admin-list-orders' %}" id="searchForm" class="search-form">
 
 
             <!--to preserve filter query params-->
             {% if request.GET.category %}
-            <input type="hidden" name="category" value="{{ request.GET.category }}">
+            <input type="hidden" name="date_range" value="{{ request.GET.date_range }}">
             {% endif %}
             {% if request.GET.style %}
-            <input type="hidden" name="style" value="{{ request.GET.style }}">
+            <input type="hidden" name="payment_method" value="{{ request.GET.payment_method }}">
             {% endif %}
             {% if request.GET.stock %}
-            <input type="hidden" name="stock" value="{{ request.GET.stock }}">
+            <input type="hidden" name="payment_status" value="{{ request.GET.payment_status }}">
             {% endif %}
             {% if request.GET.price %}
-            <input type="hidden" name="price" value="{{ request.GET.price }}">
+            <input type="hidden" name="order_status" value="{{ request.GET.order_status }}">
             {% endif %}
 
 
             <div class="search-container">
                 <div class="search-bar">
-                    <input type="text" name="search" placeholder="Search products" id="searchInput"
+                    <input type="text" name="search" placeholder="Search Orders.." id="searchInput"
                         value="{{ request.GET.search }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
@@ -45,9 +45,10 @@
                             <path d="m21 21-4.35-4.35"></path>
                         </svg>
                     </span>
+
                     <!--search field clear button-->
                     <div class="search-actions">
-                        <a href="{% url 'admin-list-products' %}?category={{ request.GET.category }}&style={{ request.GET.style }}&stock={{ request.GET.stock }}&price={{ request.GET.price }}">
+                        <a href="{% url 'admin-list-orders' %}">
                             <button type="button" class="clear-btn" id="clearBtn">
                                 <svg viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -82,14 +83,15 @@
                     <div class="filter-group">
                         <select name="category" id="categorySelect" class="filter-select">
                             <option value="">Date Range</option>
-                            <option value="men" {% if request.GET.category == 'men' %}selected{% endif %}>Men</option>
-                            <option value="women" {% if request.GET.category == 'women' %}selected{% endif %}>Women</option>
-                            <option value="kids" {% if request.GET.category == 'kids' %}selected{% endif %}>Kids</option>
-                            <option value="unisex" {% if request.GET.category == 'unisex' %}selected{% endif %}>Unisex</option>
+                            <option value="today" {% if request.GET.date == 'today' %}selected {% endif %}>Today</option>
+                            <option value="week" {% if request.GET.date == 'week' %}selected {% endif %}>This Week
+                            </option>
+                            <option value="month" {% if request.GET.date == 'month' %}selected {% endif %}>This Month
+                            </option>
+                            <option value="year" {% if request.GET.date == 'year' %}selected {% endif %}>This Year
+                            </option>
                         </select>
                     </div>
-
-                    <!-- Styles Filter
                     <div class="filter-group">
                         <div class="searchable-dropdown" id="stylesDropdownMobile">
                             <input type="text" class="searchable-dropdown-input" id="stylesInputMobile"
@@ -116,36 +118,41 @@
                     <div class="filter-group">
                         <select name="category" id="categorySelect" class="filter-select">
                             <option value="">Payment method</option>
-                            <option value="men" {% if request.GET.category == 'men' %}selected{% endif %}>Men</option>
-                            <option value="women" {% if request.GET.category == 'women' %}selected{% endif %}>Women</option>
-                            <option value="kids" {% if request.GET.category == 'kids' %}selected{% endif %}>Kids</option>
-                            <option value="unisex" {% if request.GET.category == 'unisex' %}selected{% endif %}>Unisex</option>
+                            <option value="men" {% if request.GET.category == 'men' %}selected{% endif %}>COD</option>
+                            <option value="women" {% if request.GET.category == 'women' %}selected{% endif %}>CREDIT_CARD</option>
+                            <option value="kids" {% if request.GET.category == 'kids' %}selected{% endif %}>DEBIT_CARD</option>
+                            <option value="unisex" {% if request.GET.category == 'unisex' %}selected{% endif %}>UPI</option>
+                             <option value="unisex" {% if request.GET.category == 'unisex' %}selected{% endif %}>WALLET</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
                         <select name="stock" id="stockSelect" class="filter-select">
                             <option value="">Payment Status</option>
-                            <option value="in_stock" {% if request.GET.stock == 'in_stock' %}selected{% endif %}>In Stock</option>
-                            <option value="low_stock"  {% if request.GET.stock == 'low_stock' %}selected{% endif %}>Low Stock</option>
-                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>Out of Stock</option>
+                            <option value="in_stock" {% if request.GET.stock == 'in_stock' %}selected{% endif %}>PENDING</option>
+                            <option value="low_stock"  {% if request.GET.stock == 'low_stock' %}selected{% endif %}>PAID</option>
+                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>FAILED</option>
+                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>COD</option>
+                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>REFUNDED</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
                         <select name="price" id="priceSelect" class="filter-select">
-                            <option value="">Delivery Status</option>
-                            <option value="0-500" {% if request.GET.price == '0-500' %}selected{% endif %}>₹0 - ₹500</option>
-                            <option value="500-1000" {% if request.GET.price == '500-1000' %}selected{% endif %}>₹500 - ₹1000</option>
-                            <option value="1000-2000" {% if request.GET.price == '1000-2000' %}selected{% endif %}>₹1000 - ₹2000</option>
-                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>₹2000+</option>
+                            <option value="">Order Status</option>
+                            <option value="0-500" {% if request.GET.price == '0-500' %}selected{% endif %}>PLACED</option>
+                            <option value="500-1000" {% if request.GET.price == '500-1000' %}selected{% endif %}>PROCESSING</option>
+                            <option value="1000-2000" {% if request.GET.price == '1000-2000' %}selected{% endif %}>SHIPPED</option>
+                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>DELIVERED</option>
+                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>CANCELLED</option>
+                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>RETURNED</option>
                         </select>
                     </div>
 
                 </div>
                 <div class="filter-actions">
                     <button type="submit" class="btn btn-apply" id="applyFiltersBtn">Apply Filters</button>
-                    <a href="{% url 'admin-list-products' %}">
+                    <a href="{% url 'admin-list-orders' %}">
                         <button type="button" class="btn btn-reset" id="resetFiltersBtn">Rest Filters</button>
                     </a>
                 </div>
@@ -194,7 +201,7 @@
                         {{ order.created_at.date }}
                     </td>
                     <td>
-                        <a href="#">
+                        <a href="{% url 'admin-order-details' %}">
                             <button class="btn-view">View</button>
                         </a>
                     </td>

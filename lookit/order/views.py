@@ -230,6 +230,10 @@ def track_order(request, order_item_id):
 
 def admin_list_orders(request):
     order_items = OrderItems.objects.all().order_by('-created_at')
+    
+    search = request.GET.get('search')
+    if search:
+        order_items = order_items.filter(Q(order__user__full_name__icontains = search) | Q(variant__product__name__icontains = search))
 
     # pagination
     paginator = Paginator(order_items, 5)
@@ -237,3 +241,6 @@ def admin_list_orders(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, "order/admin/list.html",{"page_obj": page_obj})
+
+def admin_order_details(request):
+    return render(request, "order/admin/order_details.html")

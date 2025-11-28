@@ -8,6 +8,7 @@ from .views import (
     my_orders,
     track_order,
     admin_list_orders,
+    admin_order_details,
 )
 
 urlpatterns = [
@@ -19,4 +20,5 @@ urlpatterns = [
     path("my-orders/", my_orders, name="my-orders"),
     path("track-order/<order_item_id>/", track_order, name="track-order"),
     path("admin/list-orders/", admin_list_orders, name="admin-list-orders"),
+    path("admin/order-details/", admin_order_details, name="admin-order-details")
 ]
