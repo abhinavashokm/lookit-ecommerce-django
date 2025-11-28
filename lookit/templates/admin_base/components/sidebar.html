@@ -48,7 +48,8 @@
                 <span>Users</span>
             </a></li>
 
-        <li><a href="#">
+        <li><a href="{% url 'admin-list-orders' %}" 
+            class="{% if '/order/admin/' in  request.path %}active{% endif %}">
                 <span class="icon">
                     <svg viewBox="0 0 24 24">
                         <circle cx="9" cy="21" r="1"></circle>

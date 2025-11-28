@@ -3,7 +3,13 @@ let selectedAddressId = null
 
 //on page load put default address as selected address
 document.addEventListener("DOMContentLoaded", function () {
-    selectedAddressId = document.getElementById("defaultAddress").value
+    const hiddenInput = document.getElementById("defaultAddressHidden")
+    if(hiddenInput){
+        selectedAddressId = hiddenInput.value
+    }else{
+        selectedAddressId = 0
+    }
+    console.log(selectedAddressId)
     document.getElementById('selectedAddressId').value = selectedAddressId
 });
 

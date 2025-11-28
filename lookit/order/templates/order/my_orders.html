@@ -36,7 +36,20 @@
     </div>
 
     <div class="cart-items">
-
+        {% if not orders %}
+        <!-- No Orders Card -->
+        <div class="no-orders-card">
+            <div class="no-orders-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9a4d72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </div>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+        </div>
+        {% endif %}
         {% for order in orders %}
         {% for item in order.items.all %}
         <div class="cart-item">
@@ -50,7 +63,9 @@
                     <a href="{% url 'product-details' item.product.id %}">
                         <button class="btn btn-view">View Product</button>
                     </a>
-                    <button class="btn btn-track">Track Order</button>
+                    <a href="{% url 'track-order' item.id %}">
+                        <button class="btn btn-track">Track Order</button>
+                    </a>
                 </div>
             </div>
             <div class="item-price-status">

@@ -8,6 +8,11 @@ from django.db import transaction
 from cart.models import Cart
 from user.models import Address
 from .models import Order, OrderItems
+from product.models import Product, Style
+from django.db.models.functions import Coalesce
+from django.db.models import Q
+from django.core.paginator import Paginator
+
 
 
 @login_required
@@ -23,6 +28,11 @@ def checkout(request):
             )
         )
     )
+    
+    cart_item_count = order_items.count()
+    if not cart_item_count:
+        messages.error(request, "PLEASE ADD ITEMS TO CONTINUE")
+        return redirect('cart')
 
     # ---address list of user, (default address first order)---
     address_list = Address.objects.filter(user=request.user, is_active=True).order_by(
@@ -57,7 +67,17 @@ def checkout(request):
 def create_order(request):
     user = request.user
     address_id = request.POST.get('address_id')
-    address = Address.objects.get(id=address_id, user=user)
+    
+    #---handle error if no address is selected----------------
+    if address_id == '0':
+        messages.error(request, "PLEASE SELECT AN ADDRESS")
+        return redirect('checkout')
+    
+    try:
+        address = Address.objects.get(id=address_id, user=user)
+    except Exception as e:
+        messages.error(request, e)
+        return redirect('checkout')
 
     # ---products in order------------------------------------------------
     cart_items = (
@@ -104,7 +124,7 @@ def create_order(request):
     order = None
     try:
         with transaction.atomic():
-
+            
             order = Order.objects.create(
                 user=user,
                 address=address,
@@ -195,3 +215,25 @@ def my_orders(request):
         .order_by('-created_at')
     )
     return render(request, "order/my_orders.html", {"orders": orders})
+
+@login_required
+def track_order(request, order_item_id):
+    order_item = OrderItems.objects.get(id=order_item_id)
+    delivery_address = order_item.order.address
+    return render(request, "order/track_order.html",{"order":order_item, "address":delivery_address})
+
+
+
+"""
+---------ADMIN SIDE------------------------------------------------------------------------- 
+"""
+
+def admin_list_orders(request):
+    order_items = OrderItems.objects.all().order_by('-created_at')
+
+    # pagination
+    paginator = Paginator(order_items, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "order/admin/list.html",{"page_obj": page_obj})

@@ -1,5 +1,14 @@
 from django.urls import path
-from .views import checkout, payment_page, create_order, place_order, order_success_page, my_orders
+from .views import (
+    checkout,
+    payment_page,
+    create_order,
+    place_order,
+    order_success_page,
+    my_orders,
+    track_order,
+    admin_list_orders,
+)
 
 urlpatterns = [
     path("checkout/", checkout, name="checkout"),
@@ -7,5 +16,7 @@ urlpatterns = [
     path("payment/<order_id>/", payment_page, name="payment-page"),
     path("place-order/<order_id>/", place_order, name="place-order"),
     path("order-success/<order_id>/", order_success_page, name="order-success"),
-    path("my-orders/", my_orders, name="my-orders")
+    path("my-orders/", my_orders, name="my-orders"),
+    path("track-order/<order_item_id>/", track_order, name="track-order"),
+    path("admin/list-orders/", admin_list_orders, name="admin-list-orders"),
 ]

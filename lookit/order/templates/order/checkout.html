@@ -60,7 +60,7 @@
                 <div onclick="selectAddress(event, this, '{{ address.id }}')" class="address-option {% if address.is_default %}selected{% endif %}">
                     <input type="radio" name="delivery-address" id="address-1" class="address-radio" {% if address.is_default %}checked{% endif %}>
                     {% if address.is_default %}
-                        <input type="hidden" value="{{ address.id }}" id="defaultAddress">
+                        <input type="hidden" value="{{ address.id }}" id="defaultAddressHidden">
                     {% endif %}
                     <div class="address-details">
                         <div class="address-header">
@@ -244,7 +244,7 @@
 
             <form action="{% url 'create_order' %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="address_id" id="selectedAddressId">
+                <input type="hidden" name="address_id" value="no-address" id="selectedAddressId">
                 <button class="checkout-btn">
                     Continue to Payment
                     <i class="fas fa-arrow-right"></i>
