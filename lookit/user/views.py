@@ -352,3 +352,8 @@ def change_password(request):
     else:
         messages.error(request, "INVALID PASSWORD")
     return redirect('account-details')
+
+
+@login_required
+def address_book(request):
+    return render(request, "user/profile/address_book.html")
