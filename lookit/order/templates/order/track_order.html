@@ -28,7 +28,7 @@
             </div>
 
             <!-- ORDER PROGRESS TRACKER -->
-            <div class="order-progress progress-3">
+            <div class="order-progress {% if order.order_status == 'PLACED' %}progress-1{% elif  order.order_status == 'SHIPPED' %}progress-2{% elif order.order_status == 'DELIVERED' %}progress-3{% endif %}">
                 <div class="progress-inner">
 
                     <!-- Step 1 -->
