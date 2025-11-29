@@ -27,29 +27,43 @@
                 </div>
             </div>
 
-            <!-- Order Progress Tracker -->
+            <!-- ORDER PROGRESS TRACKER -->
             <div class="order-progress progress-3">
-                <div class="progress-steps">
-                    <div class="progress-bar"></div> 
-                    <div class="step completed">
-                        <div class="step-icon">✓</div>
-                        <div class="step-label">Order Placed</div>
-                        <div class="step-date">Jul 20, 2024</div>
+                <div class="progress-inner">
+
+                    <!-- Step 1 -->
+                    <div class="step step-placed">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Placed</div>
+                            <div class="date">22-10-2025</div>
+                        </div>
                     </div>
-                    <div class="step active">
-                        <div class="step-icon">✓</div>
-                        <div class="step-label">Shipped</div>
-                        <div class="step-date">Jul 22, 2024</div>
+
+                    <!-- Connector 1 -->
+                    <div class="connector c1"></div>
+
+                    <!-- Step 2 -->
+                    <div class="step step-shipped">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Shipped</div>
+                            <div class="date">22-10-2025</div>
+                        </div>
                     </div>
-                    <div class="step">
-                        <div class="step-icon">3</div>
-                        <div class="step-label">Out For Delivery</div>
-                        <div class="step-date">Est. Jul 26, 2024</div>
+
+                    <!-- Connector 2 -->
+                    <div class="connector c2"></div>
+
+                    <!-- Step 3 -->
+                    <div class="step step-delivered">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Delivered</div>
+                            <div class="date">{{ order.delivered_date|default:"—" }}</div>
+                        </div>
                     </div>
-                    <div class="step">
-                        <div class="step-icon">4</div>
-                        <div class="step-label">Delivered</div>
-                    </div>
+
                 </div>
             </div>
 

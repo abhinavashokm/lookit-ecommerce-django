@@ -92,28 +92,6 @@
                             </option>
                         </select>
                     </div>
-                    <div class="filter-group">
-                        <div class="searchable-dropdown" id="stylesDropdownMobile">
-                            <input type="text" class="searchable-dropdown-input" id="stylesInputMobile"
-                                placeholder="{% if request.GET.style %}{{request.GET.style}}{% else %}All Styles{% endif %}" readonly>
-                            <input type="hidden" id="stylesValueMobile" name="style" value="{{ request.GET.style }}">
-                            <svg class="searchable-dropdown-arrow" viewBox="0 0 12 12"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill="#333" d="M6 9L1 4h10z" />
-                            </svg>
-                            <div class="searchable-dropdown-options">
-                                <div class="searchable-dropdown-search">
-                                    <input type="text" placeholder="Search styles..." id="stylesSearchMobile">
-                                </div>
-                                <div class="searchable-dropdown-option" data-value="" data-text="All Styles">All Styles
-                                </div>
-                                {% for style in styles %}
-                                <div class="searchable-dropdown-option" data-value="{{ style.name }}" data-text="{{ style.name }}">{{ style.name }}</div>
-                                {% endfor %}
-
-                            </div>
-                        </div>
-                    </div> -->
 
                     <div class="filter-group">
                         <select name="category" id="categorySelect" class="filter-select">
