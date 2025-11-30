@@ -1,6 +1,9 @@
 from django.db import models
 from user.models import User, Address
 from product.models import Variant
+import uuid
+from django.utils import timezone
+
 
 class Order(models.Model):
     
@@ -44,6 +47,8 @@ class OrderItems(models.Model):
         COD = 'COD', 'Cash on Delivery'
         REFUNDED = 'REFUNDED', 'Refunded'
         
+    order_item_id = models.CharField(max_length=20, blank=True, null=True) # add unique True
+        
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
     payment_status = models.CharField(max_length=30, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
@@ -59,9 +64,25 @@ class OrderItems(models.Model):
     order_status = models.CharField(max_length=30, choices=OrderStatus.choices, default=OrderStatus.INITIATED)
     cancel_reason = models.TextField(blank=True, null=True)
     cancelled_at = models.DateTimeField(blank=True, null=True)
+    
+    placed_at = models.DateTimeField(blank=True, null=True)
+    shipped_at = models.DateTimeField(blank=True, null=True)
+    out_for_delivery_at = models.DateTimeField(blank=True, null=True)
+    delivered_at = models.DateTimeField(blank=True, null=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     @property
     def product(self):
         return self.variant.product
+    
+    def save(self, *args, **kwargs):
+        if not self.order_item_id:
+            # Example: ORD-2025-000123
+            year = timezone.now().year
+            prefix = "ORD"
+            # Pad database ID estimate — better to use random unique portion before first save
+            unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
+            self.order_item_id = f"{prefix}-{year}-{unique_num}"
+        super().save(*args, **kwargs)

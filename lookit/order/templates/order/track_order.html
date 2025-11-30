@@ -23,67 +23,65 @@
                 </div>
                 <div class="order-meta">
                     <p class="meta-label">Order ID</p>
-                    <p class="meta-value">#OR{{ order.id|stringformat:'04d' }}</p>
+                    <p class="meta-value">{{ order.order_item_id }}</p>
                 </div>
             </div>
 
-<!-- ORDER PROGRESS TRACKER -->
-<div class="order-progress 
-    {% if order.order_status == 'PLACED' %}progress-1
-    {% elif order.order_status == 'SHIPPED' %}progress-2
-    {% elif order.order_status == 'OUT_FOR_DELIVERY' %}progress-3
-    {% elif order.order_status == 'DELIVERED' %}progress-4{% endif %}">
-    <div class="progress-inner">
+            <!-- ORDER PROGRESS TRACKER -->
+            <div class="order-progress 
+                {% if order.order_status == 'PLACED' %}progress-1
+                {% elif order.order_status == 'SHIPPED' %}progress-2
+                {% elif order.order_status == 'OUT_FOR_DELIVERY' %}progress-3
+                {% elif order.order_status == 'DELIVERED' %}progress-4{% endif %}">
+                <div class="progress-inner">
 
-        <!-- Step 1 -->
-        <div class="step step-placed">
-            <div class="step-circle"><span class="inner">✓</span></div>
-            <div class="step-text">
-                <div class="title">Placed</div>
-                <div class="date">{{ order.placed_date|default:"—" }}</div>
+                    <!-- Step 1 -->
+                    <div class="step step-placed">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Placed</div>
+                            <div class="date">{{ order.placed_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Connector 1 -->
+                    <div class="connector c1"></div>
+
+                    <!-- Step 2 -->
+                    <div class="step step-shipped {% if order.order_status == 'SHIPPED' %}active{% endif %}">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Shipped</div>
+                            <div class="date">{{ order.shipped_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Connector 2 -->
+                    <div class="connector c2"></div>
+
+                    <!-- 🆕 Step 3: Out for Delivery -->
+                    <div class="step step-out {% if order.order_status == 'OUT_FOR_DELIVERY' %}active{% endif %}">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Out for Delivery</div>
+                            <div class="date">{{ order.out_for_delivery_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                        </div>
+                    </div>
+
+                    <!-- 🆕 Connector 3 -->
+                    <div class="connector c3"></div>
+
+                    <!-- Step 4 -->
+                    <div class="step step-delivered {% if order.order_status == 'DELIVERED' %}active{% endif %}">
+                        <div class="step-circle"><span class="inner">✓</span></div>
+                        <div class="step-text">
+                            <div class="title">Delivered</div>
+                            <div class="date">{{ order.delivered_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-        </div>
-
-        <!-- Connector 1 -->
-        <div class="connector c1"></div>
-
-        <!-- Step 2 -->
-        <div class="step step-shipped">
-            <div class="step-circle"><span class="inner">✓</span></div>
-            <div class="step-text">
-                <div class="title">Shipped</div>
-                <div class="date">{{ order.shipped_date|default:"—" }}</div>
-            </div>
-        </div>
-
-        <!-- Connector 2 -->
-        <div class="connector c2"></div>
-
-        <!-- 🆕 Step 3: Out for Delivery -->
-        <div class="step step-out">
-            <div class="step-circle"><span class="inner">✓</span></div>
-            <div class="step-text">
-                <div class="title">Out for Delivery</div>
-                <div class="date">{{ order.out_for_delivery_date|default:"—" }}</div>
-            </div>
-        </div>
-
-        <!-- 🆕 Connector 3 -->
-        <div class="connector c3"></div>
-
-        <!-- Step 4 -->
-        <div class="step step-delivered">
-            <div class="step-circle"><span class="inner">✓</span></div>
-            <div class="step-text">
-                <div class="title">Delivered</div>
-                <div class="date">{{ order.delivered_date|default:"—" }}</div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-
             <div class="order-details">
                 <!-- Product Info - Full Width -->
                 <div class="product-info">

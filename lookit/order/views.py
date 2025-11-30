@@ -8,11 +8,9 @@ from django.db import transaction
 from cart.models import Cart
 from user.models import Address
 from .models import Order, OrderItems
-from product.models import Product, Style
-from django.db.models.functions import Coalesce
 from django.db.models import Q
 from django.core.paginator import Paginator
-
+from django.utils import timezone
 
 
 @login_required
@@ -28,7 +26,7 @@ def checkout(request):
             )
         )
     )
-    
+
     cart_item_count = order_items.count()
     if not cart_item_count:
         messages.error(request, "PLEASE ADD ITEMS TO CONTINUE")
@@ -67,12 +65,12 @@ def checkout(request):
 def create_order(request):
     user = request.user
     address_id = request.POST.get('address_id')
-    
-    #---handle error if no address is selected----------------
+
+    # ---handle error if no address is selected----------------
     if address_id == '0':
         messages.error(request, "PLEASE SELECT AN ADDRESS")
         return redirect('checkout')
-    
+
     try:
         address = Address.objects.get(id=address_id, user=user)
     except Exception as e:
@@ -101,10 +99,7 @@ def create_order(request):
         )
         .annotate(
             total_amount=ExpressionWrapper(
-                F('sub_total')
-                + F('tax')
-                + F('delivery_fee')
-                - F('discount'),
+                F('sub_total') + F('tax') + F('delivery_fee') - F('discount'),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
@@ -120,15 +115,14 @@ def create_order(request):
     )
     total_items = cart_items.count()
 
-
     order = None
     try:
         with transaction.atomic():
-            
+
             order = Order.objects.create(
                 user=user,
                 address=address,
-                total_items = total_items,
+                total_items=total_items,
                 sub_total=order_summary.get('total_sub_total'),
                 delivery_total=order_summary.get('total_delivery_fee'),
                 discount_total=order_summary.get('total_discount'),
@@ -142,10 +136,10 @@ def create_order(request):
                     quantity=item.quantity,
                     unit_price=item.variant.product.price,
                     sub_total=item.sub_total,
-                    delivery_fee = item.delivery_fee,
-                    discount_amount = item.discount,
-                    tax_amount = item.tax,
-                    total = item.total_amount  # final line total
+                    delivery_fee=item.delivery_fee,
+                    discount_amount=item.discount,
+                    tax_amount=item.tax,
+                    total=item.total_amount,  # final line total
                 )
 
     except Exception as e:
@@ -181,6 +175,7 @@ def place_order(request, order_id):
                 OrderItems.objects.filter(order_id=order_id).update(
                     order_status=OrderItems.OrderStatus.PLACED,
                     payment_status=Order.PaymentMethod.COD,
+                    placed_at=timezone.now(),
                 )
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
         except Exception as e:
@@ -195,9 +190,7 @@ def place_order(request, order_id):
 
 @login_required
 def order_success_page(request, order_id):
-    order = (
-        Order.objects.get(id=order_id)
-    )
+    order = Order.objects.get(id=order_id)
     order_items = OrderItems.objects.filter(order_id=order_id)
     address = order.address
     return render(
@@ -216,53 +209,80 @@ def my_orders(request):
     )
     return render(request, "order/my_orders.html", {"orders": orders})
 
+
 @login_required
 def track_order(request, order_item_id):
     order_item = OrderItems.objects.get(id=order_item_id)
     delivery_address = order_item.order.address
-    return render(request, "order/track_order.html",{"order":order_item, "address":delivery_address})
-
+    return render(
+        request,
+        "order/track_order.html",
+        {"order": order_item, "address": delivery_address},
+    )
 
 
 """
 ---------ADMIN SIDE------------------------------------------------------------------------- 
 """
 
+
 def admin_list_orders(request):
     order_items = OrderItems.objects.all().order_by('-created_at')
-    
+
     search = request.GET.get('search')
     if search:
-        order_items = order_items.filter(Q(order__user__full_name__icontains = search) | Q(variant__product__name__icontains = search))
+        order_items = order_items.filter(
+            Q(order__user__full_name__icontains=search)
+            | Q(variant__product__name__icontains=search)
+        )
 
     # pagination
     paginator = Paginator(order_items, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, "order/admin/list.html",{"page_obj": page_obj})
+    return render(request, "order/admin/list.html", {"page_obj": page_obj})
+
 
 def admin_order_details(request, order_item_id):
     order_item = OrderItems.objects.get(id=order_item_id)
     customer = order_item.order.user
     address = order_item.order.address
-    return render(request, "order/admin/order_details.html", {"order":order_item, "customer":customer, "address":address})
+    return render(
+        request,
+        "order/admin/order_details.html",
+        {"order": order_item, "customer": customer, "address": address},
+    )
 
 
 def admin_update_delivery_status(request, order_item_id):
     if request.method == "POST":
-        print(order_item_id)
         order_status = request.POST.get("order_status")
-        print(order_status)
         try:
             order_item = OrderItems.objects.get(id=order_item_id)
-            if  order_status.upper() in OrderItems.OrderStatus.values:
+            if order_status.upper() in OrderItems.OrderStatus.values:
                 order_item.order_status = order_status.upper()
+
+                if order_status == 'placed':
+                    order_item.placed_at = timezone.now()
+                    order_item.shipped_at = None
+                    order_item.out_for_delivery_at = None
+                    order_item.delivered_at = None
+                if order_status == 'shipped':
+                    order_item.shipped_at = timezone.now()
+                    order_item.out_for_delivery_at = None
+                    order_item.delivered_at = None
+                if order_status == 'out_for_delivery':
+                    order_item.out_for_delivery_at = timezone.now()
+                    order_item.delivered_at = None
+                if order_status == 'delivered':
+                    order_item.delivered_at = timezone.now()
+
                 order_item.save()
                 messages.success(request, "ORDER STATUS UPDATED SUCCESSFULLY")
             else:
                 messages.error(request, "INVALID ORDER STATUS")
         except Exception as e:
             messages.error(request, e)
-              
-    return redirect('admin-order-details', order_item_id = order_item_id)
+
+    return redirect('admin-order-details', order_item_id=order_item_id)

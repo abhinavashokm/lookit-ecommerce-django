@@ -290,11 +290,21 @@
         width: 100%;
     }
 }
-
 /* =========================================================
-   🌟 FINAL CLEAN PROGRESS TRACKER — COLUMN STEPS VERSION
+   💼 PROFESSIONAL PROGRESS TRACKER (Blue Active + Green Completed)
 ========================================================= */
 
+/* Core color palette */
+:root {
+    --blue: #2563eb;            /* Active step color */
+    --blue-light: #3b82f6;
+    --green: #16a34a;           /* Completed step color */
+    --green-light: #4ade80;
+    --gray: #e5e7eb;            /* Inactive connector */
+    --text-gray: #6b7280;
+}
+
+/* Container */
 .order-progress {
     width: 100%;
     padding: 1.5rem 0;
@@ -304,10 +314,10 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 1.5rem;
+    /* gap: 1.5rem; */
 }
 
-/* Each step now stacked vertically */
+/* Step base */
 .step {
     display: flex;
     flex-direction: column;
@@ -323,11 +333,12 @@
     height: 56px;
     border-radius: 50%;
     background: #fff;
-    border: 3px solid #e5e7eb;
+    border: 3px solid var(--gray);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
+    transition: all 0.3s ease;
 }
 
 .step-circle .inner {
@@ -335,13 +346,7 @@
     font-weight: 700;
 }
 
-/* Step text */
-.step-text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
+/* Text */
 .step-text .title {
     font-size: 0.95rem;
     font-weight: 700;
@@ -349,17 +354,17 @@
 
 .step-text .date {
     font-size: 0.82rem;
-    color: #6b7280;
+    color: var(--text-gray);
 }
 
-/* Connectors */
+/* Connector line */
 .connector {
     flex: 1;
     height: 4px;
-    background: #e5e7eb;
+    background: var(--gray);
     border-radius: 4px;
     position: relative;
-    top: 28px; /* aligns connectors with circles */
+    top: 28px;
     overflow: hidden;
 }
 
@@ -370,61 +375,91 @@
     top: 0;
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #9a4d72, #c17a9a);
-    transition: width .4s ease, height .4s ease;
+    background: linear-gradient(90deg, var(--green), var(--green-light));
+    transition: width 0.5s ease, height 0.5s ease;
 }
 
 /* ===========================
-   PROGRESS STAGES (with Out for Delivery)
+   🟢 Completed Steps
 =========================== */
-
-/* Progress 1 — only placed */
-.progress-1 .step-placed .step-circle {
-    background: linear-gradient(180deg, #9a4d72, #c17a9a);
-    border-color: #9a4d72;
-}
-.progress-1 .step-placed .inner { color: #fff; }
-
-/* Progress 2 — up to shipped */
 .progress-2 .step-placed .step-circle,
-.progress-2 .step-shipped .step-circle {
-    background: linear-gradient(180deg, #9a4d72, #c17a9a);
-    border-color: #9a4d72;
-    color: #fff;
-}
-.progress-2 .step-placed .inner,
-.progress-2 .step-shipped .inner { color: #fff; }
-.progress-2 .c1::before { width: 100%; }
-
-/* Progress 3 — up to out for delivery */
 .progress-3 .step-placed .step-circle,
 .progress-3 .step-shipped .step-circle,
-.progress-3 .step-out .step-circle {
-    background: linear-gradient(180deg, #9a4d72, #c17a9a);
-    border-color: #9a4d72;
-    color: #fff;
+.progress-4 .step-placed .step-circle,
+.progress-4 .step-shipped .step-circle,
+.progress-4 .step-out .step-circle {
+    background: linear-gradient(180deg, var(--green), var(--green-light));
+    border-color: var(--green);
 }
+
+.progress-2 .step-placed .inner,
 .progress-3 .step-placed .inner,
 .progress-3 .step-shipped .inner,
-.progress-3 .step-out .inner { color: #fff; }
-.progress-3 .c1::before,
-.progress-3 .c2::before { width: 100%; }
-
-/* Progress 4 — fully delivered */
-.progress-4 .step-circle {
-    background: linear-gradient(180deg, #9a4d72, #c17a9a);
-    border-color: #9a4d72;
+.progress-4 .step-placed .inner,
+.progress-4 .step-shipped .inner,
+.progress-4 .step-out .inner {
+    color: #fff;
 }
-.progress-4 .step-circle .inner { color: #fff; }
-.progress-4 .c1::before,
-.progress-4 .c2::before,
-.progress-4 .c3::before { width: 100%; }
+
+/* Connectors filled for completed */
+.progress-2 .c1::before { width: 100%; }
+.progress-3 .c1::before, .progress-3 .c2::before { width: 100%; }
+.progress-4 .c1::before, .progress-4 .c2::before, .progress-4 .c3::before { width: 100%; }
 
 /* ===========================
-   RESPONSIVE (Mobile)
+   🔵 Active Step (Blue Highlight)
+=========================== */
+.step.active .step-circle {
+    background: #fff;
+    border: 4px solid var(--blue);
+    box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+    animation: pulseRingBlue 1.5s infinite ease-in-out;
+}
+
+.step.active .inner {
+    color: var(--blue);
+    font-weight: 800;
+}
+
+/* .step.active .title {
+    color: var(--blue);
+    font-weight: 800;
+}
+
+.step.active .date {
+    color: var(--blue);
+} */
+
+/* Pulse animation for active step */
+@keyframes pulseRingBlue {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+    }
+}
+
+/* ===========================
+   ⚪ Inactive Steps
+=========================== */
+.step:not(.active) .step-circle {
+    border-color: var(--gray);
+}
+.step:not(.active) .title {
+    color: #374151;
+}
+.step:not(.active) .date {
+    color: var(--text-gray);
+}
+
+/* ===========================
+   📱 Responsive (Mobile)
 =========================== */
 @media (max-width: 720px) {
-
     .progress-inner {
         flex-direction: column;
         align-items: flex-start;
@@ -457,9 +492,6 @@
     }
 
     .progress-2 .c1::before { height: 100%; }
-    .progress-3 .c1::before,
-    .progress-3 .c2::before { height: 100%; }
-    .progress-4 .c1::before,
-    .progress-4 .c2::before,
-    .progress-4 .c3::before { height: 100%; }
+    .progress-3 .c1::before, .progress-3 .c2::before { height: 100%; }
+    .progress-4 .c1::before, .progress-4 .c2::before, .progress-4 .c3::before { height: 100%; }
 }
