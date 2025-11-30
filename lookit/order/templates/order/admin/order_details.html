@@ -211,17 +211,24 @@
                                 <p>July 15, 2024, 10:30 AM</p>
                             </div>
                         </div>
-                        <div class="timeline-item {% if  order.order_status == 'SHIPPED' or order.order_status == 'DELIVERED' %}completed{% elif order.order_status == 'PLACED' %}active{% endif %}">
+                        <div class="timeline-item {% if  order.order_status == 'SHIPPED' or order.order_status == 'DELIVERED' or order.order_status == 'OUT_FOR_DELIVERY' %}completed{% elif order.order_status == 'PLACED' %}active{% endif %}">
                             <div class="timeline-dot active"></div>
                             <div class="timeline-content">
                                 <h4>Order Placed</h4>
                                 <p>July 15, 2024, 11:00 AM</p>
                             </div>
                         </div>
-                        <div class="timeline-item {% if order.order_status == 'DELIVERED' %}completed{% elif order.order_status == 'SHIPPED' %}active{% endif %}">
+                        <div class="timeline-item {% if order.order_status == 'DELIVERED' or order.order_status == 'OUT_FOR_DELIVERY' %}completed{% elif order.order_status == 'SHIPPED' %}active{% endif %}">
                             <div class="timeline-dot active"></div>
                             <div class="timeline-content">
                                 <h4>Shipped</h4>
+                                <p>July 18, 2024, 2:15 PM</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item {% if order.order_status == 'DELIVERED' %}completed{% elif order.order_status == 'OUT_FOR_DELIVERY' %}active{% endif %}">
+                            <div class="timeline-dot active"></div>
+                            <div class="timeline-content">
+                                <h4>Out For Delivery</h4>
                                 <p>July 18, 2024, 2:15 PM</p>
                             </div>
                         </div>
@@ -302,6 +309,7 @@
                         <option value="" disabled selected>select status</option>
                         <option value="placed" >Placed</option>
                         <option value="shipped">Shipped</option>
+                        <option value="out_for_delivery">Out For Delivery</option>
                         <option value="delivered">Delivered</option>
                         <option value="cancelled">Cancelled</option>
                         <option value="returned">Returned</option>

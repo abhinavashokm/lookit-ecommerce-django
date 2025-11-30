@@ -292,37 +292,42 @@
 }
 
 /* =========================================================
-   🌟 FINAL CLEAN PROGRESS TRACKER (LATEST VERSION)
+   🌟 FINAL CLEAN PROGRESS TRACKER — COLUMN STEPS VERSION
 ========================================================= */
 
 .order-progress {
     width: 100%;
-    padding: 1.25rem 0;
+    padding: 1.5rem 0;
 }
 
 .progress-inner {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
-    gap: 0.75rem;
+    gap: 1.5rem;
 }
 
-/* Step circles */
+/* Each step now stacked vertically */
 .step {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    text-align: center;
+    min-width: 90px;
+    gap: 0.5rem;
 }
 
+/* Step circle */
 .step-circle {
-    width: 52px;
-    height: 52px;
+    width: 56px;
+    height: 56px;
     border-radius: 50%;
     background: #fff;
     border: 3px solid #e5e7eb;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .step-circle .inner {
@@ -330,14 +335,20 @@
     font-weight: 700;
 }
 
-/* Text */
+/* Step text */
+.step-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
 .step-text .title {
-    font-size: .95rem;
+    font-size: 0.95rem;
     font-weight: 700;
 }
 
 .step-text .date {
-    font-size: .82rem;
+    font-size: 0.82rem;
     color: #6b7280;
 }
 
@@ -348,6 +359,7 @@
     background: #e5e7eb;
     border-radius: 4px;
     position: relative;
+    top: 28px; /* aligns connectors with circles */
     overflow: hidden;
 }
 
@@ -362,66 +374,81 @@
     transition: width .4s ease, height .4s ease;
 }
 
-/* Progress 1 */
+/* ===========================
+   PROGRESS STAGES (with Out for Delivery)
+=========================== */
+
+/* Progress 1 — only placed */
 .progress-1 .step-placed .step-circle {
     background: linear-gradient(180deg, #9a4d72, #c17a9a);
     border-color: #9a4d72;
 }
+.progress-1 .step-placed .inner { color: #fff; }
 
-.progress-1 .step-placed .inner {
-    color: #fff;
-}
-
-/* Progress 2 */
+/* Progress 2 — up to shipped */
 .progress-2 .step-placed .step-circle,
-.progress-2 .step-placed .inner {
-    background: linear-gradient(180deg, #9a4d72, #c17a9a);
-    color: #fff;
-    border-color: #9a4d72;
-}
-
 .progress-2 .step-shipped .step-circle {
+    background: linear-gradient(180deg, #9a4d72, #c17a9a);
     border-color: #9a4d72;
+    color: #fff;
 }
+.progress-2 .step-placed .inner,
+.progress-2 .step-shipped .inner { color: #fff; }
+.progress-2 .c1::before { width: 100%; }
 
-.progress-2 .step-shipped .inner {
-    color: #9a4d72;
+/* Progress 3 — up to out for delivery */
+.progress-3 .step-placed .step-circle,
+.progress-3 .step-shipped .step-circle,
+.progress-3 .step-out .step-circle {
+    background: linear-gradient(180deg, #9a4d72, #c17a9a);
+    border-color: #9a4d72;
+    color: #fff;
 }
+.progress-3 .step-placed .inner,
+.progress-3 .step-shipped .inner,
+.progress-3 .step-out .inner { color: #fff; }
+.progress-3 .c1::before,
+.progress-3 .c2::before { width: 100%; }
 
-/* Fill connector 1 */
-.progress-2 .c1::before {
-    width: 100%;
-}
-
-/* Progress 3 */
-.progress-3 .step-circle {
+/* Progress 4 — fully delivered */
+.progress-4 .step-circle {
     background: linear-gradient(180deg, #9a4d72, #c17a9a);
     border-color: #9a4d72;
 }
+.progress-4 .step-circle .inner { color: #fff; }
+.progress-4 .c1::before,
+.progress-4 .c2::before,
+.progress-4 .c3::before { width: 100%; }
 
-.progress-3 .step-circle .inner {
-    color: white;
-}
-
-.progress-3 .c1::before,
-.progress-3 .c2::before {
-    width: 100%;
-}
-
-/* MOBILE TRACKER */
+/* ===========================
+   RESPONSIVE (Mobile)
+=========================== */
 @media (max-width: 720px) {
 
     .progress-inner {
         flex-direction: column;
         align-items: flex-start;
-        gap: 1.25rem;
-        padding-left: 0.5rem;
+        gap: 1.5rem;
+        padding-left: 0.75rem;
+    }
+
+    .step {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        gap: 0.75rem;
+    }
+
+    .step-circle {
+        width: 48px;
+        height: 48px;
     }
 
     .connector {
         width: 4px;
         height: 50px;
-        margin-left: 26px;
+        margin-left: 24px;
+        top: 0;
     }
 
     .connector::before {
@@ -430,12 +457,9 @@
     }
 
     .progress-2 .c1::before { height: 100%; }
-
     .progress-3 .c1::before,
     .progress-3 .c2::before { height: 100%; }
-
-    .step-circle {
-        width: 46px;
-        height: 46px;
-    }
+    .progress-4 .c1::before,
+    .progress-4 .c2::before,
+    .progress-4 .c3::before { height: 100%; }
 }

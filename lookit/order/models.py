@@ -32,6 +32,7 @@ class OrderItems(models.Model):
         INITIATED = 'INITIATED', 'Order Initiated'
         PLACED = 'PLACED', 'Order Placed'
         SHIPPED = 'SHIPPED', 'Shipped'
+        OUT_FOR_DELIVERY = 'OUT_FOR_DELIVERY', 'Out For Delivery'
         DELIVERED = 'DELIVERED', 'Delivered'
         CANCELLED = 'CANCELLED', 'Cancelled'
         RETURNED = 'RETURNED', 'Returned'
