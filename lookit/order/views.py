@@ -219,6 +219,21 @@ def track_order(request, order_item_id):
         "order/track_order.html",
         {"order": order_item, "address": delivery_address},
     )
+    
+@login_required
+def cancel_order(request, order_item_id):
+    try:
+        order_item = OrderItems.objects.get(id = order_item_id)
+        if order_item.order.user == request.user:
+            order_item.order_status = 'CANCELLED'
+            order_item.cancelled_at = timezone.now()
+            order_item.save()
+            messages.success(request, "Order Cancelled.")
+        else:
+            messages.error(request, "Unauthorized Access")
+    except Exception as e:
+        messages.error(request, e)
+    return redirect('track-order',order_item_id=order_item_id)
 
 
 """

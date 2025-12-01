@@ -1,7 +1,7 @@
 <!--NOTE: CURRENTLY THIS IS JUST FOR COPY PASTE USE. NOT FOR INCLUDING AND REUSING-->
 
 <!-- Danger Confirmation Modal -->
-<div class="danger_modal-overlay" id="deleteModal">
+<div class="danger_modal-overlay" id="dangerModel">
     <div class="danger_modal">
         <div class="danger_modal-header">
             <h2 class="danger_modal-title">Danger Style Category</h2>
@@ -15,7 +15,7 @@
         <div class="danger_modal-actions">
             <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDangerModal()">Cancel</button>
             <a href="#">
-                <button class="danger_modal-btn danger_modal-btn-confirm" onclick="confirmDanger()">Danger</button>
+                <button class="danger_modal-btn danger_modal-btn-confirm" >Danger</button>
             </a>
         </div>
     </div>
@@ -127,15 +127,14 @@
     // ==============================
     // Danger Modal Functions
     // ==============================
-    let currentStyleId = null;
 
     function openDangerModal() {
-        const danger_modal = document.getElementById('deleteModal');
+        const danger_modal = document.getElementById('dangerModel');
         if (danger_modal) danger_modal.classList.add('show');
     }
 
     function closeDangerModal() {
-        const danger_modal = document.getElementById('deleteModal');
+        const danger_modal = document.getElementById('dangerModel');
         if (danger_modal) danger_modal.classList.remove('show');
     }
 

@@ -120,23 +120,101 @@
     font-weight: 500;
 }
 
+/* Base badge */
 .status-badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid transparent;
+}
+.status-row {
+    flex-direction: row !important;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
 }
 
-.status-shipped {
-    background-color: #dbeafe;
-    color: #1d4ed8;
+.status-row .status-badge {
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    width: auto !important;
 }
 
-.status-paid {
-    background-color: #dcfce7;
-    color: #166534;
+
+/* --- Status Dots --- */
+.status-badge::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
 }
+
+/* ===========================
+   🌿 Completed (Green)
+=========================== */
+.status-delivered {
+    background-color: #ecfdf5;
+    border-color: #a7f3d0;
+    color: #065f46;
+}
+.status-delivered::before {
+    background-color: #10b981;
+}
+
+/* ===========================
+   🔵 Active (Blue)
+=========================== */
+.status-shipped,
+.status-out_for_delivery {
+    background-color: #eff6ff;
+    border-color: #bfdbfe;
+    color: #1e40af;
+}
+.status-shipped::before,
+.status-out_for_delivery::before {
+    background-color: #2563eb;
+}
+
+/* ===========================
+   🟡 Pending (Yellow)
+=========================== */
+.status-placed {
+    background-color: #fefce8;
+    border-color: #fef08a;
+    color: #854d0e;
+}
+.status-placed::before {
+    background-color: #facc15;
+}
+
+/* ===========================
+   🔴 Cancelled (Red)
+=========================== */
+.status-cancelled {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+.status-cancelled::before {
+    background-color: #dc2626;
+}
+
+/* ===========================
+   🟣 Returned (Optional)
+=========================== */
+.status-returned {
+    background-color: #faf5ff;
+    border-color: #e9d5ff;
+    color: #6b21a8;
+}
+.status-returned::before {
+    background-color: #a855f7;
+}
+
 
 .total-amount {
     font-size: 18px;
@@ -887,6 +965,7 @@ textarea.form-control {
     border-color: #bfdbfe;
 }
 
+
 /* Texts */
 .timeline-content h4 {
     font-size: 15px;
@@ -899,4 +978,26 @@ textarea.form-control {
     font-size: 13px;
     color: #6b7280;
     margin: 0;
+}
+
+
+/* CANCEL ACTIVE  */
+.timeline-item.cancel-active .timeline-content {
+    background-color: #fef2f2;   /* soft light red background */
+    border-color: #fecaca;       /* light red border */
+    box-shadow: 0 0 0 4px rgba(248, 113, 113, 0.25); /* subtle red glow */
+}
+
+.timeline-item.cancel-active .timeline-title {
+    color: #dc2626;  /* strong red title */
+    font-weight: 700;
+}
+
+.timeline-item.cancel-active .timeline-date {
+    color: #b91c1c; /* darker red for date text */
+}
+
+.timeline-item.cancel-active .timeline-dot {
+    background-color: #dc2626 !important;   /* main red */
+    box-shadow: 0 0 0 3px #fecaca;           /* soft red halo */
 }

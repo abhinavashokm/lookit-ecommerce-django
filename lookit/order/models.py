@@ -47,7 +47,7 @@ class OrderItems(models.Model):
         COD = 'COD', 'Cash on Delivery'
         REFUNDED = 'REFUNDED', 'Refunded'
         
-    order_item_id = models.CharField(max_length=20, blank=True, null=True) # add unique True
+    uuid = models.CharField(max_length=20, blank=True, null=True) # add unique True
         
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
@@ -78,11 +78,11 @@ class OrderItems(models.Model):
         return self.variant.product
     
     def save(self, *args, **kwargs):
-        if not self.order_item_id:
+        if not self.uuid:
             # Example: ORD-2025-000123
             year = timezone.now().year
             prefix = "ORD"
             # Pad database ID estimate — better to use random unique portion before first save
             unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
-            self.order_item_id = f"{prefix}-{year}-{unique_num}"
+            self.uuid = f"{prefix}-{year}-{unique_num}"
         super().save(*args, **kwargs)

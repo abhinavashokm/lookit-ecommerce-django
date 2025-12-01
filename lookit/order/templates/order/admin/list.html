@@ -158,7 +158,7 @@
 
                 {% for order in page_obj %}
                 <tr>
-                    <td class="product-id">{{ order.order_item_id }}</td>
+                    <td class="product-id">{{ order.uuid }}</td>
                     <td>
                         {{ order.order.user.full_name }}
                     </td>

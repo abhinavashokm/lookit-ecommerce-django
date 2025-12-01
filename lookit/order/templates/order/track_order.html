@@ -106,27 +106,8 @@
                 </div>
             </div>
             {% elif order.order_status == 'CANCELLED' %}
-            <style>
-                .order-status.cancelled {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: #ffeaea;
-    border: 1px solid #f5c2c7;
-    color: #b71c1c;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    margin: 1.5rem 0;
-}
 
-.order-status.cancelled i {
-    font-size: 1.8rem;
-    color: #b71c1c;
-}
-
-            </style>
-
-            <div class="order-status cancelled">
+            <div class="order-status-cancelled">
                 <i class="fas fa-times-circle"></i>
                 <div>
                     <h3>Order Cancelled</h3>
@@ -202,7 +183,7 @@
                 <a href="#" class="btn btn-primary">Download Invoice</a>
                 {% endif %}
                 {% if order.order_status == "PLACED" or order.order_status == "SHIPPED" or order.order_status == "SHIPPED" %}
-                    <a href="#" class="btn btn-danger">Cancel Order</a>
+                    <button onclick="openDangerModal()" class="btn btn-danger">Cancel Order</button>
                 {% endif %}
                 {% if order.order_status == "DELIVERED" %}
                     <a href="#" class="btn btn-danger">Return Order</a>
@@ -212,27 +193,28 @@
     </div>
 
 <!-- CANCEL ORDER CONFIRMATION MODEL -->
-<div class="danger_modal-overlay" id="deleteModal">
+<div class="danger_modal-overlay" id="dangerModel">
     <div class="danger_modal">
         <div class="danger_modal-header">
-            <h2 class="danger_modal-title">Delete Style Category</h2>
+            <h2 class="danger_modal-title">Cancel Order</h2>
         </div>
         <div class="danger_modal-body">
-            <p class="danger_modal-message">Are you sure you want to delete style category <strong id="deleteStyleId"> Oversized </strong>? This action cannot be undone and the
-                category will be
-                permanently
-                removed.</p>
+            <p class="danger_modal-message">Are you sure you want to cancel order for<strong id="deleteStyleId"> {{ order.product.name }} </strong>? This action cannot be undone.</p>
         </div>
         <div class="danger_modal-actions">
-            <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <a href="#">
-                <button class="danger_modal-btn danger_modal-btn-confirm" onclick="confirmDelete()">Delete</button>
-            </a>
+            <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDangerModal()">Cancel</button>
+            <form action="{% url 'cancel-order' order.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="danger_modal-btn danger_modal-btn-confirm">Confirm</button>
+            </form>
         </div>
     </div>
 </div>
+
+
+
 {% endblock %}
 
 {% block scripts %}
-
+<script src="{% static 'order/js/track_order.js' %}"></script>
 {% endblock %}
