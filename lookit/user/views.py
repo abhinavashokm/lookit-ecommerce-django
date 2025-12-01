@@ -239,6 +239,7 @@ def edit_profile(request):
 
 @login_required
 def add_address(request):
+    request_from = None
     if request.method == "POST":
         user = request.user
         full_name = request.POST.get('full_name')
@@ -248,6 +249,8 @@ def add_address(request):
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
         type = request.POST.get('type')
+        
+        request_from = request.POST.get('page_from')
 
         # ---optional_fields-----------------------
         is_default = request.POST.get('is_default')
@@ -255,7 +258,6 @@ def add_address(request):
             is_default = False
         second_phone = request.POST.get('second_phone')
 
-        print(request.POST)
         try:
             Address.objects.create(
                 user=user,
@@ -273,7 +275,9 @@ def add_address(request):
         except Exception as e:
             print(e)
             messages.error(request, e)
-
+    #if request is from address book redirect to address book
+    if request_from == 'address_book':
+        return redirect('address-book')
     return redirect('checkout')
 
 @login_required
@@ -322,14 +326,18 @@ def edit_address(request):
 
 @login_required
 def delete_address(request):
+    request_from = None
     if request.method == "POST":
         address_id = request.POST.get('address_id')
+        request_from = request.POST.get('request_from')
         try:
             Address.objects.filter(id=address_id).update(is_active=False)
             messages.success(request, "ADDRESS DELETED")
         except Exception as e:
             messages.error(request, e)
 
+    if request_from == 'address_book':
+        return redirect('address-book')
     return redirect('checkout')
 
 @login_required
@@ -356,4 +364,5 @@ def change_password(request):
 
 @login_required
 def address_book(request):
-    return render(request, "user/profile/address_book.html")
+    address_list = Address.objects.filter(user = request.user, is_active = True).order_by("-is_default", "-created_at")
+    return render(request, "user/profile/address_book.html", {"address_list": address_list})

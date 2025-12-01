@@ -1,22 +1,21 @@
 <!--NOTE: CURRENTLY THIS IS JUST FOR COPY PASTE USE. NOT FOR INCLUDING AND REUSING-->
 
 <!-- Delete Confirmation Modal -->
-<div class="modal-overlay" id="deleteModal{{style.id}}">
+<div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <div class="modal-header">
             <h2 class="modal-title">Delete Style Category</h2>
         </div>
         <div class="modal-body">
-            <p class="modal-message">Are you sure you want to delete style category <strong id="deleteStyleId">"{{
-                    style.name }}"</strong>? This action cannot be undone and the
+            <p class="modal-message">Are you sure you want to delete style category <strong id="deleteStyleId"> Oversized </strong>? This action cannot be undone and the
                 category will be
                 permanently
                 removed.</p>
         </div>
         <div class="modal-actions">
-            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal('{{style.id}}')">Cancel</button>
-            <a href="{% url 'admin-delete-category' style.id %}">
-                <button class="modal-btn modal-btn-confirm" onclick="confirmDelete('{{style.id}}')">Delete</button>
+            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <a href="#">
+                <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">Delete</button>
             </a>
         </div>
     </div>
@@ -123,22 +122,21 @@
         background: #dc2626;
     }
 </style>
+
 <script>
     // ==============================
     // Delete Modal Functions
     // ==============================
     let currentStyleId = null;
 
-    function openDeleteModal(styleId) {
-        currentStyleId = styleId;
-        const modal = document.getElementById('deleteModal' + styleId);
+    function openDeleteModal() {
+        const modal = document.getElementById('deleteModal');
         if (modal) modal.classList.add('show');
     }
 
-    function closeDeleteModal(styleId) {
-        const modal = document.getElementById('deleteModal' + styleId);
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
         if (modal) modal.classList.remove('show');
-        currentStyleId = null;
     }
 
     // Optional: Close modal when clicking on overlay
