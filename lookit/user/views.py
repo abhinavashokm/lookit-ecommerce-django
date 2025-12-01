@@ -8,6 +8,7 @@ from .utils import generate_otp, generate_referral_code, send_otp_email
 from datetime import timedelta
 from django.utils import timezone
 from cloudinary.uploader import upload
+from django.db import transaction
 
 
 def user_login(request):
@@ -282,6 +283,7 @@ def add_address(request):
 
 @login_required
 def edit_address(request):
+    request_from = None
     if request.method == "POST":
         user = request.user
         address_id = request.POST.get('address_id')
@@ -291,7 +293,9 @@ def edit_address(request):
         city = request.POST.get('city')
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
-        type = request.POST.get('type')
+        address_type = request.POST.get('type')
+        
+        request_from = request.POST.get('page_from')
 
         # ---optional_fields-----------------------
         is_default = request.POST.get('is_default')
@@ -310,7 +314,7 @@ def edit_address(request):
                 city=city,
                 state=state,
                 pincode=pincode,
-                type=type,
+                type=address_type,
                 is_default=is_default,
             )
             #---if it is default address set all other address is_default = false---------------
@@ -322,7 +326,21 @@ def edit_address(request):
             print(e)
             messages.error(request, e)
 
+    #if request is from address book redirect to address book
+    if request_from == 'address_book':
+        return redirect('address-book')
     return redirect('checkout')
+
+@login_required
+def set_default_address(request, address_id):
+    try:
+        Address.objects.filter(id=address_id, user=request.user).update(is_default = True)
+        # set all other address is_default = false
+        Address.objects.filter(user=request.user).exclude(id=address_id).update(is_default=False)
+        messages.success(request, "Default Address Updated.")
+    except Exception as e:
+        messages.error(request, e)
+    return redirect('address-book')
 
 @login_required
 def delete_address(request):
@@ -351,10 +369,11 @@ def change_password(request):
     auth_user = authenticate(email=email, password=current_password)
     if auth_user:
         try:
-            user.set_password(new_password)
-            user.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, "PASSWORD CHANGED SUCCESSFULLY")
+            with transaction.atomic():
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, "PASSWORD CHANGED SUCCESSFULLY")
         except Exception as e:
             messages.error(request, e)
     else:

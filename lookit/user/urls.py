@@ -13,6 +13,7 @@ from .views import (
     edit_address,
     change_password,
     address_book,
+    set_default_address,
 )
 
 urlpatterns = [
@@ -28,6 +29,7 @@ urlpatterns = [
     path("edit-address/", edit_address, name="edit-address"),
     path('change-password/', change_password, name='user-change-password'),
     path('address-book/', address_book, name="address-book"),
+    path("set-default-address/<address_id>/", set_default_address, name="set-default-address"),
     
     # password reset paths
     # 1.enter email and button for sent link

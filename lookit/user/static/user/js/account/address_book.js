@@ -36,45 +36,21 @@ window.addEventListener('click', (e) => {
 });
 
 // Functions
-function openModal(address = null) {
-    if (address) {
-        // Edit mode
-        modalTitle.textContent = 'Edit Address';
-        addressIdInput.value = address.id;
-        document.getElementById('fullName').value = address.fullName;
-        document.getElementById('phoneNumber').value = address.phoneNumber;
-        document.getElementById('addressLine1').value = address.addressLine1;
-        document.getElementById('addressLine2').value = address.addressLine2 || '';
-        document.getElementById('city').value = address.city;
-        document.getElementById('state').value = address.state;
-        document.getElementById('postalCode').value = address.postalCode;
-        document.getElementById('country').value = address.country;
-        
-        // Set the address label
-        const label = address.customLabel ? 'other' : address.label;
-        document.querySelector(`input[name="addressLabel"][value="${label}"]`).checked = true;
-        
-        // Show custom label if needed
-        if (address.customLabel) {
-            customLabelContainer.style.display = 'block';
-            document.getElementById('customLabel').value = address.customLabel;
-        } else {
-            customLabelContainer.style.display = 'none';
-        }
-        
-        // Set default checkbox
-        document.getElementById('setAsDefault').checked = address.isDefault;
-    } else {
-        // Add new mode
-        modalTitle.textContent = 'Add New Address';
-        addressForm.reset();
-        addressIdInput.value = '';
-        customLabelContainer.style.display = 'none';
-        document.getElementById('setAsDefault').checked = false;
-    }
-    
+function openModal() {
     addressModal.style.display = 'block';
     document.body.style.overflow = 'hidden';
+}
+
+function openEditAddressModal(address_id){
+    const editAddressModal = document.getElementById('editAddressModal'+address_id);
+    editAddressModal.style.display = 'block'
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditAddressModal(address_id){
+    const editAddressModal = document.getElementById('editAddressModal'+address_id);
+    editAddressModal.style.display = 'none'
+    document.body.style.overflow = 'auto';
 }
 
 function closeModalHandler() {
