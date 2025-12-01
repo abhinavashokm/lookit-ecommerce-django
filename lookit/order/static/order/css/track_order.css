@@ -382,22 +382,26 @@
 /* ===========================
    🟢 Completed Steps
 =========================== */
+/* .progress-1 .step-placed .step-circle, */
 .progress-2 .step-placed .step-circle,
 .progress-3 .step-placed .step-circle,
 .progress-3 .step-shipped .step-circle,
 .progress-4 .step-placed .step-circle,
 .progress-4 .step-shipped .step-circle,
-.progress-4 .step-out .step-circle {
+.progress-4 .step-out .step-circle,
+.progress-4 .step-delivered .step-circle {
     background: linear-gradient(180deg, var(--green), var(--green-light));
     border-color: var(--green);
 }
 
+/* .progress-1 .step-placed .inner, */
 .progress-2 .step-placed .inner,
 .progress-3 .step-placed .inner,
 .progress-3 .step-shipped .inner,
 .progress-4 .step-placed .inner,
 .progress-4 .step-shipped .inner,
-.progress-4 .step-out .inner {
+.progress-4 .step-out .inner,
+.progress-4 .step-delivered .inner  {
     color: #fff;
 }
 
@@ -411,13 +415,13 @@
 =========================== */
 .step.active .step-circle {
     background: #fff;
-    border: 4px solid var(--blue);
+    border: 4px solid var(--green); 
     box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
     animation: pulseRingBlue 1.5s infinite ease-in-out;
 }
 
 .step.active .inner {
-    color: var(--blue);
+    color: var(--green);
     font-weight: 800;
 }
 

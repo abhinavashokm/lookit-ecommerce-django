@@ -36,7 +36,7 @@
                 <div class="progress-inner">
 
                     <!-- Step 1 -->
-                    <div class="step step-placed">
+                    <div class="step step-placed {% if order.order_status == 'PLACED' %}active{% endif %}">
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Placed</div>
@@ -72,7 +72,7 @@
                     <div class="connector c3"></div>
 
                     <!-- Step 4 -->
-                    <div class="step step-delivered {% if order.order_status == 'DELIVERED' %}active{% endif %}">
+                    <div class="step step-delivered ">
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Delivered</div>
