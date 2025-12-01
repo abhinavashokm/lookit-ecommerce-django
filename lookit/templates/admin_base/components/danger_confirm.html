@@ -1,21 +1,21 @@
 <!--NOTE: CURRENTLY THIS IS JUST FOR COPY PASTE USE. NOT FOR INCLUDING AND REUSING-->
 
-<!-- Delete Confirmation Modal -->
-<div class="modal-overlay" id="deleteModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2 class="modal-title">Delete Style Category</h2>
+<!-- Danger Confirmation Modal -->
+<div class="danger_modal-overlay" id="deleteModal">
+    <div class="danger_modal">
+        <div class="danger_modal-header">
+            <h2 class="danger_modal-title">Danger Style Category</h2>
         </div>
-        <div class="modal-body">
-            <p class="modal-message">Are you sure you want to delete style category <strong id="deleteStyleId"> Oversized </strong>? This action cannot be undone and the
+        <div class="danger_modal-body">
+            <p class="danger_modal-message">Are you sure you want to delete style category <strong id="deleteStyleId"> Oversized </strong>? This action cannot be undone and the
                 category will be
                 permanently
                 removed.</p>
         </div>
-        <div class="modal-actions">
-            <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+        <div class="danger_modal-actions">
+            <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDangerModal()">Cancel</button>
             <a href="#">
-                <button class="modal-btn modal-btn-confirm" onclick="confirmDelete()">Delete</button>
+                <button class="danger_modal-btn danger_modal-btn-confirm" onclick="confirmDanger()">Danger</button>
             </a>
         </div>
     </div>
@@ -23,9 +23,9 @@
 
 <style>
     /* ==============================
-   Modal Styles (Delete Modal)
+   Modal Styles (Danger Modal)
    ============================== */
-    .modal-overlay {
+    .danger_modal-overlay {
         position: fixed;
         top: 0;
         left: 0;
@@ -41,12 +41,12 @@
         transition: all 0.3s ease;
     }
 
-    .modal-overlay.show {
+    .danger_modal-overlay.show {
         opacity: 1;
         visibility: visible;
     }
 
-    .modal {
+    .danger_modal {
         background: white;
         border-radius: 12px;
         padding: 0;
@@ -57,34 +57,34 @@
         transition: transform 0.3s ease;
     }
 
-    .modal-overlay.show .modal {
+    .danger_modal-overlay.show .danger_modal {
         transform: scale(1);
     }
 
-    .modal-header {
+    .danger_modal-header {
         padding: 20px 24px;
         border-bottom: 1px solid #e5e7eb;
     }
 
-    .modal-title {
+    .danger_modal-title {
         font-size: 1.3rem;
         font-weight: 600;
         color: #1f2937;
         margin: 0;
     }
 
-    .modal-body {
+    .danger_modal-body {
         padding: 24px;
     }
 
-    .modal-message {
+    .danger_modal-message {
         font-size: 0.95rem;
         color: #4b5563;
         line-height: 1.6;
         margin: 0;
     }
 
-    .modal-actions {
+    .danger_modal-actions {
         display: flex;
         gap: 12px;
         justify-content: flex-end;
@@ -92,7 +92,7 @@
         border-top: 1px solid #e5e7eb;
     }
 
-    .modal-btn {
+    .danger_modal-btn {
         padding: 10px 20px;
         border: none;
         border-radius: 8px;
@@ -103,53 +103,53 @@
     }
 
     /* Cancel Button */
-    .modal-btn-cancel {
+    .danger_modal-btn-cancel {
         background: #e5e7eb;
         color: #1f2937;
     }
 
-    .modal-btn-cancel:hover {
+    .danger_modal-btn-cancel:hover {
         background: #d1d5db;
     }
 
-    /* Confirm (Delete) Button */
-    .modal-btn-confirm {
+    /* Confirm (Danger) Button */
+    .danger_modal-btn-confirm {
         background: #ef4444;
         color: white;
     }
 
-    .modal-btn-confirm:hover {
+    .danger_modal-btn-confirm:hover {
         background: #dc2626;
     }
 </style>
 
 <script>
     // ==============================
-    // Delete Modal Functions
+    // Danger Modal Functions
     // ==============================
     let currentStyleId = null;
 
-    function openDeleteModal() {
-        const modal = document.getElementById('deleteModal');
-        if (modal) modal.classList.add('show');
+    function openDangerModal() {
+        const danger_modal = document.getElementById('deleteModal');
+        if (danger_modal) danger_modal.classList.add('show');
     }
 
-    function closeDeleteModal() {
-        const modal = document.getElementById('deleteModal');
-        if (modal) modal.classList.remove('show');
+    function closeDangerModal() {
+        const danger_modal = document.getElementById('deleteModal');
+        if (danger_modal) danger_modal.classList.remove('show');
     }
 
-    // Optional: Close modal when clicking on overlay
+    // Optional: Close danger_modal when clicking on overlay
     document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('modal-overlay')) {
-            if (currentStyleId) closeDeleteModal(currentStyleId);
+        if (e.target.classList.contains('danger_modal-overlay')) {
+            if (currentStyleId) closeDangerModal(currentStyleId);
         }
     });
 
-    // Optional: Close modal on Escape key
+    // Optional: Close danger_modal on Escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && currentStyleId) {
-            closeDeleteModal(currentStyleId);
+            closeDangerModal(currentStyleId);
         }
     });
 

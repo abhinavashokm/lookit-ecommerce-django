@@ -2,6 +2,8 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'order/css/track_order.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 {% endblock %}
 
 {% block content %}
@@ -19,7 +21,27 @@
         <div class="order-card">
             <div class="order-header">
                 <div>
-                    <div class="order-status shipped">{{ order.order_status }}</div>
+                {% if order.order_status == 'PLACED' %}
+                    <span class="order-status placed">
+                        <i class="fas fa-box-open"></i> {{ order.order_status|title }}
+                    </span>
+
+                {% elif order.order_status == 'SHIPPED' or order.order_status == 'OUT_FOR_DELIVERY' %}
+                    <span class="order-status shipped">
+                        <i class="fas fa-truck"></i> {{ order.order_status|title }}
+                    </span>
+
+                {% elif order.order_status == 'DELIVERED' %}
+                    <span class="order-status delivered">
+                        <i class="fas fa-check-circle"></i> {{ order.order_status|title }}
+                    </span>
+
+                {% elif order.order_status == 'CANCELLED' %}
+                    <span class="order-status order-cancelled">
+                        <i class="fas fa-times-circle"></i> {{ order.order_status|title }}
+                    </span>
+                {% endif %}
+
                 </div>
                 <div class="order-meta">
                     <p class="meta-label">Order ID</p>
@@ -27,6 +49,7 @@
                 </div>
             </div>
 
+            {% if order.order_status != 'CANCELLED' %}
             <!-- ORDER PROGRESS TRACKER -->
             <div class="order-progress 
                 {% if order.order_status == 'PLACED' %}progress-1
@@ -82,6 +105,36 @@
 
                 </div>
             </div>
+            {% elif order.order_status == 'CANCELLED' %}
+            <style>
+                .order-status.cancelled {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background-color: #ffeaea;
+    border: 1px solid #f5c2c7;
+    color: #b71c1c;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+}
+
+.order-status.cancelled i {
+    font-size: 1.8rem;
+    color: #b71c1c;
+}
+
+            </style>
+
+            <div class="order-status cancelled">
+                <i class="fas fa-times-circle"></i>
+                <div>
+                    <h3>Order Cancelled</h3>
+                    <p>This order was cancelled on <strong>{{ order.cancelled_at|date:"M d, Y h:i A" }}</strong>.</p>
+                </div>
+            </div>
+            {% endif %}
+            
             <div class="order-details">
                 <!-- Product Info - Full Width -->
                 <div class="product-info">
@@ -145,11 +198,39 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
+                {% if order.order_status == "DELIVERED" %}
                 <a href="#" class="btn btn-primary">Download Invoice</a>
-                <a href="#" class="btn btn-danger">Cancel Order</a>
+                {% endif %}
+                {% if order.order_status == "PLACED" or order.order_status == "SHIPPED" or order.order_status == "SHIPPED" %}
+                    <a href="#" class="btn btn-danger">Cancel Order</a>
+                {% endif %}
+                {% if order.order_status == "DELIVERED" %}
+                    <a href="#" class="btn btn-danger">Return Order</a>
+                {% endif %}
             </div>
         </div>
     </div>
+
+<!-- CANCEL ORDER CONFIRMATION MODEL -->
+<div class="danger_modal-overlay" id="deleteModal">
+    <div class="danger_modal">
+        <div class="danger_modal-header">
+            <h2 class="danger_modal-title">Delete Style Category</h2>
+        </div>
+        <div class="danger_modal-body">
+            <p class="danger_modal-message">Are you sure you want to delete style category <strong id="deleteStyleId"> Oversized </strong>? This action cannot be undone and the
+                category will be
+                permanently
+                removed.</p>
+        </div>
+        <div class="danger_modal-actions">
+            <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+            <a href="#">
+                <button class="danger_modal-btn danger_modal-btn-confirm" onclick="confirmDelete()">Delete</button>
+            </a>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}

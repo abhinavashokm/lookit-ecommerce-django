@@ -268,15 +268,17 @@ def admin_update_delivery_status(request, order_item_id):
                     order_item.shipped_at = None
                     order_item.out_for_delivery_at = None
                     order_item.delivered_at = None
-                if order_status == 'shipped':
+                elif order_status == 'shipped':
                     order_item.shipped_at = timezone.now()
                     order_item.out_for_delivery_at = None
                     order_item.delivered_at = None
-                if order_status == 'out_for_delivery':
+                elif order_status == 'out_for_delivery':
                     order_item.out_for_delivery_at = timezone.now()
                     order_item.delivered_at = None
-                if order_status == 'delivered':
+                elif order_status == 'delivered':
                     order_item.delivered_at = timezone.now()
+                elif order_status == 'cancelled':
+                    order_item.cancelled_at = timezone.now()
 
                 order_item.save()
                 messages.success(request, "ORDER STATUS UPDATED SUCCESSFULLY")

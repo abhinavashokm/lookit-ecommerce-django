@@ -76,25 +76,73 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
+/* ============================
+   ORDER STATUS BADGES - Modern UI
+============================ */
 .order-status {
     display: inline-flex;
     align-items: center;
-    padding: 0.6rem 1.2rem;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    font-weight: 500;
+    gap: 0.5rem;
+    padding: 0.45rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    text-transform: capitalize;
 }
 
-.order-status.shipped {
-    background-color: #e3f2fd;
+/* ---------- PLACED ---------- */
+.order-status.placed {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+.order-status.placed i {
     color: #1565c0;
 }
 
-.order-status.shipped::before {
-    content: '✓';
-    font-weight: bold;
-    margin-right: 0.35rem;
+/* ---------- SHIPPED ---------- */
+.order-status.shipped {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
 }
+
+.order-status.shipped i {
+    color: #2e7d32;
+}
+
+/* ---------- DELIVERED ---------- */
+.order-status.delivered {
+    background: linear-gradient(135deg, #e8f5e9, #a5d6a7);
+    color: #1b5e20;
+    border: 1px solid #a5d6a7;
+}
+
+.order-status.delivered i {
+    color: #1b5e20;
+}
+
+/* ---------- CANCELLED ---------- */
+.order-status.order-cancelled {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.order-status.order-cancelled i {
+    color: #c62828;
+}
+
+/* Hover effect (optional) */
+.order-status:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 
 .order-meta {
     text-align: right;
@@ -174,6 +222,7 @@
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
     gap: 2.5rem;
+    margin: 0 -1.5rem;
 }
 
 .delivery-address,
@@ -250,6 +299,7 @@
     display: flex;
     gap: 1rem;
     margin-top: 2rem;
+    padding: 0 20px;
 }
 
 /* =========================================================
@@ -498,4 +548,105 @@
     .progress-2 .c1::before { height: 100%; }
     .progress-3 .c1::before, .progress-3 .c2::before { height: 100%; }
     .progress-4 .c1::before, .progress-4 .c2::before, .progress-4 .c3::before { height: 100%; }
+}
+
+
+/* ==============================
+Modal Styles (CANCEL Modal)
+============================== */
+.danger_modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.danger_modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.danger_modal {
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s ease;
+}
+
+.danger_modal-overlay.show .danger_modal {
+    transform: scale(1);
+}
+
+.danger_modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.danger_modal-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+}
+
+.danger_modal-body {
+    padding: 24px;
+}
+
+.danger_modal-message {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.danger_modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 20px 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.danger_modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Cancel Button */
+.danger_modal-btn-cancel {
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+.danger_modal-btn-cancel:hover {
+    background: #d1d5db;
+}
+
+/* Confirm (Delete) Button */
+.danger_modal-btn-confirm {
+    background: #ef4444;
+    color: white;
+}
+
+.danger_modal-btn-confirm:hover {
+    background: #dc2626;
 }
