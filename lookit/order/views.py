@@ -11,7 +11,7 @@ from .models import Order, OrderItems
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils import timezone
-
+from datetime import date, timedelta
 
 @login_required
 def checkout(request):
@@ -245,11 +245,43 @@ def admin_list_orders(request):
     order_items = OrderItems.objects.all().order_by('-created_at')
 
     search = request.GET.get('search')
+    payment_method = request.GET.get('payment_method')
+    payment_status = request.GET.get('payment_status')
+    order_status = request.GET.get('order_status')
+    date_range = request.GET.get('date_range')
+    
     if search:
         order_items = order_items.filter(
             Q(order__user__full_name__icontains=search)
             | Q(variant__product__name__icontains=search)
         )
+    
+    if payment_method:
+        order_items = order_items.filter(order__payment_method=payment_method.upper())
+        
+    if payment_status:
+        order_items = order_items.filter(payment_status = payment_status.upper())
+        
+    if order_status:
+        order_items = order_items.filter(order_status = order_status.upper())
+        
+        # ---- DATE filter ----
+    if date_range:
+        today = date.today()
+
+        if date_range == 'today':
+            order_items = order_items.filter(placed_at__date=today)
+
+        elif date_range == 'week':
+            start_of_week = today - timedelta(days=today.weekday())
+            order_items = order_items.filter(placed_at__date__gte=start_of_week)
+
+        elif date_range == 'month':
+            order_items = order_items.filter(
+                placed_at__year=today.year, placed_at__month=today.month
+            )
+        elif date_range == 'year':
+            order_items = order_items.filter(placed_at__year=today.year)
 
     # pagination
     paginator = Paginator(order_items, 5)

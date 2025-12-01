@@ -21,16 +21,16 @@
 
 
             <!--to preserve filter query params-->
-            {% if request.GET.category %}
+            {% if request.GET.date_range %}
             <input type="hidden" name="date_range" value="{{ request.GET.date_range }}">
             {% endif %}
-            {% if request.GET.style %}
+            {% if request.GET.payment_method %}
             <input type="hidden" name="payment_method" value="{{ request.GET.payment_method }}">
             {% endif %}
-            {% if request.GET.stock %}
+            {% if request.GET.payment_status %}
             <input type="hidden" name="payment_status" value="{{ request.GET.payment_status }}">
             {% endif %}
-            {% if request.GET.price %}
+            {% if request.GET.order_status %}
             <input type="hidden" name="order_status" value="{{ request.GET.order_status }}">
             {% endif %}
 
@@ -48,7 +48,7 @@
 
                     <!--search field clear button-->
                     <div class="search-actions">
-                        <a href="{% url 'admin-list-orders' %}">
+                        <a href="{% url 'admin-list-orders' %}??{% for key, value in request.GET.items %}{% if key != 'search' %}{{ key }}={{ value }}&{% endif %}{% endfor %}">
                             <button type="button" class="clear-btn" id="clearBtn">
                                 <svg viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -77,53 +77,54 @@
             {% if request.GET.search %}
             <input type="hidden" value="{{ request.GET.search }}" name="search">
             {% endif %}
-            <div class="filters-container {% if request.GET.category or request.GET.style or request.GET.stock or request.GET.price %}show{% endif %}" id="filtersContainer">
+            <div class="filters-container {% if request.GET.date_range or request.GET.payment_method or request.GET.payment_status or request.GET.order_status %}show{% endif %}" id="filtersContainer">
                 <div class="filters-row">
 
                     <div class="filter-group">
-                        <select name="category" id="categorySelect" class="filter-select">
+                        <select name="date_range" id="categorySelect" class="filter-select">
                             <option value="">Date Range</option>
-                            <option value="today" {% if request.GET.date == 'today' %}selected {% endif %}>Today</option>
-                            <option value="week" {% if request.GET.date == 'week' %}selected {% endif %}>This Week
+                            <option value="today" {% if request.GET.date_range == 'today' %}selected {% endif %}>Today</option>
+                            <option value="week" {% if request.GET.date_range == 'week' %}selected {% endif %}>This Week
                             </option>
-                            <option value="month" {% if request.GET.date == 'month' %}selected {% endif %}>This Month
+                            <option value="month" {% if request.GET.date_range == 'month' %}selected {% endif %}>This Month
                             </option>
-                            <option value="year" {% if request.GET.date == 'year' %}selected {% endif %}>This Year
+                            <option value="year" {% if request.GET.date_range == 'year' %}selected {% endif %}>This Year
                             </option>
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <select name="category" id="categorySelect" class="filter-select">
+                        <select name="payment_method" id="categorySelect" class="filter-select">
                             <option value="">Payment method</option>
-                            <option value="men" {% if request.GET.category == 'men' %}selected{% endif %}>COD</option>
-                            <option value="women" {% if request.GET.category == 'women' %}selected{% endif %}>CREDIT_CARD</option>
-                            <option value="kids" {% if request.GET.category == 'kids' %}selected{% endif %}>DEBIT_CARD</option>
-                            <option value="unisex" {% if request.GET.category == 'unisex' %}selected{% endif %}>UPI</option>
-                             <option value="unisex" {% if request.GET.category == 'unisex' %}selected{% endif %}>WALLET</option>
+                            <option value="cod" {% if request.GET.payment_method == 'cod' %}selected{% endif %}>COD</option>
+                            <option value="credit_card" {% if request.GET.payment_method == 'credit_card' %}selected{% endif %}>CREDIT_CARD</option>
+                            <option value="debit_card" {% if request.GET.payment_method == 'debit_card' %}selected{% endif %}>DEBIT_CARD</option>
+                            <option value="upi" {% if request.GET.payment_method == 'upi' %}selected{% endif %}>UPI</option>
+                             <option value="wallet" {% if request.GET.payment_method == 'wallet' %}selected{% endif %}>WALLET</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <select name="stock" id="stockSelect" class="filter-select">
+                        <select name="payment_status" id="stockSelect" class="filter-select">
                             <option value="">Payment Status</option>
-                            <option value="in_stock" {% if request.GET.stock == 'in_stock' %}selected{% endif %}>PENDING</option>
-                            <option value="low_stock"  {% if request.GET.stock == 'low_stock' %}selected{% endif %}>PAID</option>
-                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>FAILED</option>
-                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>COD</option>
-                            <option value="out_of_stock" {% if request.GET.stock == 'out_of_stock' %}selected{% endif %}>REFUNDED</option>
+                            <option value="pending" {% if request.GET.payment_status == 'pending' %}selected{% endif %}>PENDING</option>
+                            <option value="paid"  {% if request.GET.payment_status == 'paid' %}selected{% endif %}>PAID</option>
+                            <option value="failed" {% if request.GET.payment_status == 'failed' %}selected{% endif %}>FAILED</option>
+                            <option value="cod" {% if request.GET.payment_status == 'cod' %}selected{% endif %}>COD</option>
+                            <option value="refunded" {% if request.GET.payment_status == 'refunded' %}selected{% endif %}>REFUNDED</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
-                        <select name="price" id="priceSelect" class="filter-select">
+                        <select name="order_status" id="priceSelect" class="filter-select">
                             <option value="">Order Status</option>
-                            <option value="0-500" {% if request.GET.price == '0-500' %}selected{% endif %}>PLACED</option>
-                            <option value="500-1000" {% if request.GET.price == '500-1000' %}selected{% endif %}>PROCESSING</option>
-                            <option value="1000-2000" {% if request.GET.price == '1000-2000' %}selected{% endif %}>SHIPPED</option>
-                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>DELIVERED</option>
-                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>CANCELLED</option>
-                            <option value="2000+" {% if request.GET.price == '2000+' %}selected{% endif %}>RETURNED</option>
+                            <option value="initiated" {% if request.GET.order_status == 'initiated' %}selected{% endif %}>INITIATED</option>
+                            <option value="placed" {% if request.GET.order_status == 'placed' %}selected{% endif %}>PLACED</option>
+                            <option value="shipped" {% if request.GET.order_status == 'shipped' %}selected{% endif %}>SHIPPED</option>
+                            <option value="out_for_delivery" {% if request.GET.order_status == 'out_for_delivery' %}selected{% endif %}>OUT FOR DELIVERY</option>
+                            <option value="delivered" {% if request.GET.order_status == 'delivered' %}selected{% endif %}>DELIVERED</option>
+                            <option value="cancelled" {% if request.GET.order_status == 'cancelled' %}selected{% endif %}>CANCELLED</option>
+                            <option value="returned" {% if request.GET.order_status == 'returned' %}selected{% endif %}>RETURNED</option>
                         </select>
                     </div>
 
