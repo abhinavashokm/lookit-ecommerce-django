@@ -14,7 +14,7 @@ function showToast(toastElement) {
     if (!toast) return;
 
     toast.classList.remove('hidden');
-    toast.style.display = 'flex';
+    // toast.style.display = 'flex';
 }
 
 /**

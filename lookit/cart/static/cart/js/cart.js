@@ -44,8 +44,18 @@ function submitQuantity(cartId, variantId, quantity, csrfToken, quantityElement)
     })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
-            quantityElement.textContent = data.new_quantity;
+            
+            if (data.error) {
+                console.log("something wrong")
+                quantityElement.textContent = data.quantity;
+                showToast("#toastError");
+
+            }else{
+                quantityElement.textContent = data.new_quantity;
+                console.log(data)
+            }
+            
+            
         });
 }
 
@@ -66,4 +76,32 @@ if (toggleCouponBtn) {
         couponSection.style.display = couponSection.style.display === 'none' ? 'block' : 'none';
         toggleCouponBtn.classList.toggle('active');
     });
+}
+
+
+    // ============================================
+// TOAST NOTIFICATION FUNCTIONALITY - OVERRIDE Component
+// ============================================
+
+/**
+ * Show a toast notification
+ * @param {HTMLElement|string} toastElement - Toast element or selector
+ */
+function showToast(selector) {
+    const toast = document.querySelector(selector);
+
+    if (!toast) return;
+
+    toast.classList.remove("hidden");
+    toast.classList.remove("hiding");
+
+    // Auto hide after 3 sec
+    setTimeout(() => {
+        toast.classList.add("hiding");
+
+        setTimeout(() => {
+            toast.classList.add("hidden");
+            toast.classList.remove("hiding");
+        }, 300);
+    }, 3000);
 }
