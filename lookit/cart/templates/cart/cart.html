@@ -41,9 +41,9 @@
                     <div class="item-size">Size: {{ item.variant.size }}</div>
                     <div class="item-actions">
                         <div class="quantity-selector">
-                            <button class="quantity-btn">-</button>
+                            <button class="quantity-btn" onclick="updateQuantity(this, '{{ item.id }}', '{{ item.variant.id }}', '{{ csrf_token }}')">-</button>
                             <span class="quantity">{{ item.quantity }}</span>
-                            <button class="quantity-btn">+</button>
+                            <button class="quantity-btn" onclick="updateQuantity(this, '{{ item.id }}', '{{ item.variant.id }}', '{{ csrf_token }}')">+</button>
                         </div>
 
                         <form action="{% url 'remove_cart_item' %}" method="post">
@@ -156,5 +156,9 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    //for updating quantity using ajax
+    url = "{% url 'update-quantity' %}"
+</script>
 <script src="{% static 'cart/js/cart.js' %}"></script>
 {% endblock %}
