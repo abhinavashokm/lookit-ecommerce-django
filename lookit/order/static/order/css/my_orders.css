@@ -349,6 +349,16 @@
     background-color: #853d62;
 }
 
+/* New button for Track Return */
+.btn-return-track {
+    background-color: #5a7a9a; /* blue-purple tone to differentiate */
+    color: white;
+}
+
+.btn-return-track:hover {
+    background-color: #4a6a89;
+}
+
 .btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -362,6 +372,7 @@
     gap: 0.75rem;
 }
 
+/* Common badge base */
 .status-badge {
     padding: 0.35rem 0.75rem;
     border-radius: 20px;
@@ -369,32 +380,58 @@
     font-weight: 500;
     text-align: center;
     text-transform: capitalize;
+    display: inline-block;
 }
 
-.status-delivered {
-    background-color: #e3f7e8;
-    color: #0a7b3e;
+/* ✅ Order lifecycle statuses */
+.status-initiated {
+    background-color: #fff8e1; /* light yellow */
+    color: #b28500;
+}
+
+.status-placed {
+    background-color: #fff3e0; /* soft orange */
+    color: #c75200;
 }
 
 .status-shipped {
-    background-color: #e3f0ff;
+    background-color: #e3f0ff; /* soft blue */
     color: #1a5fb4;
 }
 
+.status-out-for-delivery {
+    background-color: #e8f5e9; /* light green tint */
+    color: #2e7d32;
+}
+
+.status-delivered {
+    background-color: #e3f7e8; /* mint green */
+    color: #0a7b3e;
+}
+
+/* ❌ Cancelled & Returned */
+.status-cancelled {
+    background-color: #ffebee; /* soft red */
+    color: #c62828;
+}
+
+.status-returned {
+    background-color: #f3e5f5; /* lavender */
+    color: #7b1fa2;
+}
+
+/* 💬 Processing / Default */
 .status-processing {
     background-color: #fff3e0;
     color: #c75200;
 }
 
-.status-cancelled {
-    background-color: #ffebee;
-    color: #c62828;
+/* 🟡 Unknown / fallback */
+.status-unknown {
+    background-color: #eeeeee;
+    color: #424242;
 }
 
-.status-returned {
-    background-color: #f3e5f5;
-    color: #7b1fa2;
-}
 
 .item-price {
     font-size: 1.2rem;

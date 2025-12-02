@@ -212,8 +212,8 @@ def my_orders(request):
 
 
 @login_required
-def track_order(request, order_item_id):
-    order_item = OrderItems.objects.get(id=order_item_id)
+def track_order(request, order_uuid):
+    order_item = OrderItems.objects.get(uuid=order_uuid)
     delivery_address = order_item.order.address
     return render(
         request,
@@ -325,6 +325,7 @@ def return_request_form(request, order_uuid):
                         )
                     return_request.product_image3 = result['secure_url']
                 return_request.save()
+                
                 messages.success(request, "Return Request Submitted Successfully")
             
         except Exception as e:
@@ -341,6 +342,18 @@ def return_request_form(request, order_uuid):
         request,
         "order/return_request_form.html",
         {"order": order, "address_list": address_list},
+    )
+
+@login_required
+def track_return_request(request, order_uuid):
+    order_item = OrderItems.objects.get(uuid=order_uuid)
+    return_request = order_item.return_request
+    
+    delivery_address = order_item.order.address
+    return render(
+        request,
+        "order/track_return.html",
+        {"order": order_item, "address": delivery_address, "return_request": return_request},
     )
 
 

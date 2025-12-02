@@ -63,13 +63,51 @@
                     <a href="{% url 'product-details' item.product.id %}">
                         <button class="btn btn-view">View Product</button>
                     </a>
-                    <a href="{% url 'track-order' item.id %}">
+                    <a href="{% url 'track-order' item.uuid %}">
                         <button class="btn btn-track">Track Order</button>
                     </a>
+                    {% if item.return_request %}
+                    <a href="{% url 'track_return_request' item.uuid %}">
+                        <button class="btn btn-return-track">Track Return</button>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
             <div class="item-price-status">
-                <span class="status-badge status-processing">{{ item.order_status }}</span>
+
+                <!--For showing status-->
+                {% with return_status=item.return_request.status %}
+                    {% if item.return_request %}
+                        {% if return_status == 'REQUESTED' %}
+                            <span class="status-badge status-processing">Return Requested</span>
+                        {% elif return_status == 'APPROVED' %}
+                            <span class="status-badge status-processing">Approved for Pickup</span>
+                        {% elif return_status == 'REFUNDED' %}
+                            <span class="status-badge status-processing">Refund Completed</span>
+                        {% endif %}
+                    {% else %}
+                        {% if item.order_status == 'INITIATED' %}
+                            <span class="status-badge status-initiated">Order Initiated</span>
+                        {% elif item.order_status == 'PLACED' %}
+                            <span class="status-badge status-placed">Order Placed</span>
+                        {% elif item.order_status == 'SHIPPED' %}
+                            <span class="status-badge status-shipped">Shipped</span>
+                        {% elif item.order_status == 'OUT_FOR_DELIVERY' %}
+                            <span class="status-badge status-out-for-delivery">Out for Delivery</span>
+                        {% elif item.order_status == 'DELIVERED' %}
+                            <span class="status-badge status-delivered">Delivered</span>
+                        {% elif item.order_status == 'CANCELLED' %}
+                            <span class="status-badge status-cancelled">Cancelled</span>
+                        {% elif item.order_status == 'RETURNED' %}
+                            <span class="status-badge status-returned">Returned</span>
+                        {% elif item.order_status == 'PROCESSING' %}
+                            <span class="status-badge status-processing">Processing</span>
+                        {% else %}
+                            <span class="status-badge status-unknown">{{ item.order_status|title }}</span>
+                        {% endif %}
+                    {% endif %}
+                {% endwith %}
+
                 <div class="item-price">₹{{ item.product.price }}</div>
             </div>
         </div>
