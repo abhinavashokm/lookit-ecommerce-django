@@ -95,9 +95,9 @@ class ReturnRequest(models.Model):
         REQUESTED = 'REQUESTED', 'Requested'
         APPROVED = 'APPROVED', 'Approved'
         REJECTED = 'REJECTED', 'Rejected'
-        PICKUP_SCHEDULED = 'PICKUP_SCHEDULED', 'Pickup Scheduled'
+        # PICKUP_SCHEDULED = 'PICKUP_SCHEDULED', 'Pickup Scheduled'
         PICKED_UP = 'PICKED_UP', 'Picked Up'
-        REFUND_INITIATED = 'REFUND_INITIATED', 'Refund Initiated'
+        # REFUND_INITIATED = 'REFUND_INITIATED', 'Refund Initiated'
         REFUNDED = 'REFUNDED', 'Refund Completed'
 
     order_item = models.OneToOneField(OrderItems, on_delete=models.CASCADE, related_name="return_request")

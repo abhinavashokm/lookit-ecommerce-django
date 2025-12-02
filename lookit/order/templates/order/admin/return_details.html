@@ -28,16 +28,12 @@
       </div>
       <div class="card-body return-summary">
         <div class="summary-row">
-          <span class="summary-label">Return ID</span>
-          <span class="summary-value">#RET-0012</span>
-        </div>
-        <div class="summary-row">
-          <span class="summary-label">Linked Order</span>
+          <span class="summary-label">Linked Order Id</span>
           <span class="summary-value">#ORD-0123</span>
         </div>
         <div class="summary-row">
           <span class="summary-label">Amount Paid</span>
-          <span class="summary-value">₹1,499</span>
+          <span class="summary-value">₹{{ order.total }}</span>
         </div>
         <div class="summary-row">
           <span class="summary-label">Refund Method</span>
@@ -45,7 +41,7 @@
         </div>
         <div class="summary-row status">
           <span class="summary-label">Return Status</span>
-          <span class="status-badge status-approved">Approved</span>
+          <span class="status-badge status-approved">{{ return_request.status }}</span>
         </div>
       </div>
     </div>
@@ -63,16 +59,16 @@
               <th>Product</th>
               <th>Variant</th>
               <th>Quantity</th>
-              <th>Price</th>
+              <th>Base Price</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><img style="max-height: 75px;" src="https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=" alt="Product"></td>
-              <td>Classic Cotton Tee</td>
-              <td>M / Navy Blue</td>
-              <td>1</td>
-              <td>₹1,499</td>
+              <td><img style="max-height: 75px;" src="{{ order.product.image_url }}" alt="Product"></td>
+              <td>{{ order.product.name }}</td>
+              <td>{{ order.variant.size }}</td>
+              <td>{{ order.quantity }}</td>
+              <td>₹{{ order.unit_price }}</td>
             </tr>
           </tbody>
         </table>
@@ -87,18 +83,27 @@
       <div class="card-body">
         <div class="info-item">
           <span class="info-label"><i class="fas fa-quote-left"></i> Reason</span>
-          <span class="info-value important">Item arrived damaged</span>
+          <span class="info-value important">{{ return_request.reason }}</span>
         </div>
         <div class="info-item">
           <span class="info-label"><i class="fas fa-comment"></i> Customer Comments</span>
-          <span class="info-value">“The product had visible stains on arrival.”</span>
+          <span class="info-value">“{{ return_request.comments }}”</span>
         </div>
         <div class="info-item">
           <span class="info-label"><i class="fas fa-images"></i> Uploaded Images (up to 3)</span>
           <div class="return-images">
-            <img src="https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=" alt="Return Image 1">
-            <img src="https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=" alt="Return Image 2">
-            <img src="https://media.istockphoto.com/id/488160041/photo/mens-shirt.jpg?s=612x612&w=0&k=20&c=xVZjKAUJecIpYc_fKRz_EB8HuRmXCOOPOtZ-ST6eFvQ=" alt="Return Image 3">
+            {% if return_request.product_image1 %}
+                <img src="{{ return_request.product_image1 }}" alt="Return Image 1">
+            {% endif %}
+
+            {% if return_request.product_image2 %}
+                <img src="{{ return_request.product_image2 }}" alt="Return Image 2">
+            {% endif %}
+
+            {% if return_request.product_image3 %}
+                <img src="{{ return_request.product_image3 }}" alt="Return Image 3">
+            {% endif %}
+           
           </div>
         </div>
       </div>
@@ -113,10 +118,10 @@
         </div>
         <div class="card-body">
           <div class="delivery-address">
-            <div class="address-line"><i class="fas fa-user"></i> Abhinav Ashok</div>
-            <div class="address-line"><i class="fas fa-map"></i> 221B Baker Street</div>
-            <div class="address-line"><i class="fas fa-city"></i> Kochi, Kerala, 682020</div>
-            <div class="address-line"><i class="fas fa-phone"></i> +91 9876543210</div>
+            <div class="address-line"><i class="fas fa-user"></i> {{ address.full_name }}</div>
+            <div class="address-line"><i class="fas fa-map"></i> {{ address.address_line }}</div>
+            <div class="address-line"><i class="fas fa-city"></i> {{ address.city }}, {{ address.state }}, {{ address.pincode }}</div>
+            <div class="address-line"><i class="fas fa-phone"></i> {{ address.phone }}{% if address.second_phone %}, {{ address.second_phone }}{% endif %}</div>
           </div>
         </div>
       </div>
@@ -127,9 +132,9 @@
           <h2><i class="fas fa-user"></i> Customer Information</h2>
         </div>
         <div class="card-body">
-          <div class="info-item"><span class="info-label">Name</span><span class="info-value">Abhinav Ashok</span></div>
-          <div class="info-item"><span class="info-label">Email</span><span class="info-value">abhinav@example.com</span></div>
-          <div class="info-item"><span class="info-label">Phone</span><span class="info-value">+91 9876543210</span></div>
+          <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ customer.full_name }}</span></div>
+          <div class="info-item"><span class="info-label">Email</span><span class="info-value">{{ customer.email }}</span></div>
+          <div class="info-item"><span class="info-label">Phone</span><span class="info-value">{{ customer.phone }}</span></div>
         </div>
       </div>
     </div>
@@ -148,21 +153,21 @@
               <p>Dec 2, 2025 – 10:30 AM</p>
             </div>
           </div>
-          <div class="timeline-item completed">
+          <div class="timeline-item {% if return_request.status == 'APPROVED' %}active{% elif return_request.status == 'PICKED_UP' or return_request.status == 'REFUNDED' %}completed{% endif %}">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Approved</h4>
               <p>Dec 3, 2025 – 11:00 AM</p>
             </div>
           </div>
-          <div class="timeline-item completed">
+          <div class="timeline-item {% if return_request.status == 'PICKED_UP' %}active{% elif return_request.status == 'REFUNDED' %}completed{% endif %}">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
-              <h4>Pickup Scheduled</h4>
+              <h4>Pickup Completed</h4>
               <p>Dec 4, 2025 – 09:00 AM</p>
             </div>
           </div>
-          <div class="timeline-item active">
+          <div class="timeline-item {% if return_request.status == 'PICKED_UP' %}completed{% endif %}">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Refund Completed</h4>

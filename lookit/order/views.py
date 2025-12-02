@@ -464,12 +464,14 @@ def admin_list_return_requests(request):
 
 
 
-def admin_return_details(request, order_uuid):
-    order_item = OrderItems.objects.get(uuid=order_uuid)
+def admin_return_details(request, return_request_id):
+    return_request = ReturnRequest.objects.get(id=return_request_id)
+    order_item = return_request.order_item
     customer = order_item.order.user
     address = order_item.order.address
+
     return render(
         request,
         "order/admin/return_details.html",
-        {"order": order_item, "customer": customer, "address": address},
+        {"return_request": return_request,"order": order_item, "customer": customer, "address": address},
     )

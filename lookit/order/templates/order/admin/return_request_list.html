@@ -154,7 +154,7 @@
                     </td>
                     <td>{{ return_request.request_date.date }}</td>
                     <td>
-                        <a href="{% url 'admin-return-details' return_request.order_item.uuid %}">
+                        <a href="{% url 'admin-return-details' return_request.id %}">
                             <button class="btn-view">Manage</button>
                         </a>
                     </td>

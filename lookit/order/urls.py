@@ -34,5 +34,5 @@ urlpatterns = [
     #return
     path("return-request-form/<order_uuid>/", return_request_form, name="return-request-form"),
     path("track-return-request/<order_uuid>/", track_return_request, name="track_return_request"),
-    path("admin/return-request/return-details/<order_uuid>/", admin_return_details, name="admin-return-details"),
+    path("admin/return-request/return-details/<return_request_id>/", admin_return_details, name="admin-return-details"),
 ]
