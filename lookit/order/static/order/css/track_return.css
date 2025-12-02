@@ -76,66 +76,99 @@
     border-bottom: 1px solid #f0f0f0;
 }
 
-/* ============================
-   ORDER STATUS BADGES - Modern UI
-============================ */
+/* =============================
+   Base Badge Style
+============================= */
 .order-status {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 1rem;
-    border-radius: 50px;
-    font-size: 0.9rem;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
     font-weight: 600;
-    letter-spacing: 0.3px;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 30px;
+    border: 1px solid transparent;
     text-transform: capitalize;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* ---------- PLACED ---------- */
-.order-status.placed {
-    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
-    color: #1565c0;
-    border: 1px solid #bbdefb;
+.order-status i {
+    font-size: 0.9rem;
 }
 
-.order-status.placed i {
-    color: #1565c0;
+/* =============================
+   🟦 REQUESTED
+============================= */
+.order-status.requested {
+    background: linear-gradient(135deg, #fff8e1, #ffecb3);
+    color: #b28704;
+    border-color: #ffecb3;
+}
+.order-status.requested i {
+    color: #b28704;
 }
 
-/* ---------- SHIPPED ---------- */
-.order-status.shipped {
+/* =============================
+   🟩 APPROVED
+============================= */
+.order-status.approved {
     background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
     color: #2e7d32;
-    border: 1px solid #c8e6c9;
+    border-color: #c8e6c9;
 }
-
-.order-status.shipped i {
+.order-status.approved i {
     color: #2e7d32;
 }
 
-/* ---------- DELIVERED ---------- */
-.order-status.delivered {
+/* =============================
+   🟦 PICKUP SCHEDULED
+============================= */
+.order-status.pickup-scheduled {
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #1565c0;
+    border-color: #bbdefb;
+}
+.order-status.pickup-scheduled i {
+    color: #1565c0;
+}
+
+/* =============================
+   🟢 PICKED UP
+============================= */
+.order-status.picked-up {
     background: linear-gradient(135deg, #e8f5e9, #a5d6a7);
     color: #1b5e20;
-    border: 1px solid #a5d6a7;
+    border-color: #a5d6a7;
 }
-
-.order-status.delivered i {
+.order-status.picked-up i {
     color: #1b5e20;
 }
 
-/* ---------- CANCELLED ---------- */
-.order-status.order-cancelled {
-    background: linear-gradient(135deg, #ffebee, #ffcdd2);
-    color: #c62828;
-    border: 1px solid #ffcdd2;
+/* =============================
+   🟣 REFUNDED
+============================= */
+.order-status.refunded {
+    background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+    color: #6a1b9a;
+    border-color: #e1bee7;
+}
+.order-status.refunded i {
+    color: #6a1b9a;
 }
 
-.order-status.order-cancelled i {
+/* =============================
+   🔴 REJECTED
+============================= */
+.order-status.rejected {
+    background: linear-gradient(135deg, #ffebee, #ffcdd2);
+    color: #c62828;
+    border-color: #ffcdd2;
+}
+.order-status.rejected i {
     color: #c62828;
 }
+
 
 /* Hover effect (optional) */
 .order-status:hover {
