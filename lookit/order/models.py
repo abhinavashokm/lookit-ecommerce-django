@@ -95,9 +95,8 @@ class ReturnRequest(models.Model):
         REQUESTED = 'REQUESTED', 'Requested'
         APPROVED = 'APPROVED', 'Approved'
         REJECTED = 'REJECTED', 'Rejected'
-        # PICKUP_SCHEDULED = 'PICKUP_SCHEDULED', 'Pickup Scheduled'
+        PICKUP_SCHEDULED = 'PICKUP_SCHEDULED', 'Pickup Scheduled'
         PICKED_UP = 'PICKED_UP', 'Picked Up'
-        # REFUND_INITIATED = 'REFUND_INITIATED', 'Refund Initiated'
         REFUNDED = 'REFUNDED', 'Refund Completed'
 
     order_item = models.OneToOneField(OrderItems, on_delete=models.CASCADE, related_name="return_request")
@@ -117,6 +116,12 @@ class ReturnRequest(models.Model):
     refunded_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     
     stock_updated = models.BooleanField(default=False)
+    
+    approved_at = models.DateTimeField(null=True, blank=True)
+    rejected_at = models.DateTimeField(null=True, blank=True)
+    pickedup_at = models.DateTimeField(null=True, blank=True)
+    refunded_at = models.DateTimeField(null=True, blank=True)
+    pickup_scheduled_at = models.DateTimeField(null=True, blank=True)
 
     request_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

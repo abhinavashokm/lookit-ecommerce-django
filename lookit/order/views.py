@@ -475,3 +475,43 @@ def admin_return_details(request, return_request_id):
         "order/admin/return_details.html",
         {"return_request": return_request,"order": order_item, "customer": customer, "address": address},
     )
+    
+
+def admin_update_return_status(request, return_request_id):
+    if request.method == "POST":
+        return_status = request.POST.get("return_status")
+
+        if return_status in ReturnRequest.ReturnStatus.values:
+            return_request = ReturnRequest.objects.get(id=return_request_id)
+            return_request.status = return_status
+
+            # Set relevant timestamp based on new status
+            if return_status == ReturnRequest.ReturnStatus.APPROVED:
+                return_request.approved_at = timezone.now()
+                return_request.rejected_at = None
+                return_request.pickup_scheduled_at = None
+                return_request.pickedup_at = None
+                return_request.refunded_at = None
+            elif return_status == ReturnRequest.ReturnStatus.REJECTED:
+                return_request.rejected_at = timezone.now()
+                return_request.approved_at = None
+                return_request.pickup_scheduled_at = None
+                return_request.pickedup_at = None
+                return_request.refunded_at = None
+            elif return_status == ReturnRequest.ReturnStatus.PICKUP_SCHEDULED:
+                return_request.pickup_scheduled_at = timezone.now()
+                return_request.pickedup_at = None
+                return_request.refunded_at = None
+            elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
+                return_request.pickedup_at = timezone.now()
+                return_request.refunded_at = None
+            elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
+                return_request.refunded_at = timezone.now()
+ 
+
+            return_request.save()
+            messages.success(request, "Return status updated successfully.")
+        else:
+            messages.error(request, "Invalid return status.")
+
+    return redirect("admin-return-details", return_request_id=return_request_id)

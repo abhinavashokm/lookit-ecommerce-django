@@ -150,28 +150,28 @@
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Return Requested</h4>
-              <p>Dec 2, 2025 – 10:30 AM</p>
+              <p>{{ return_request.request_date|date:"d M Y, h:i A" }}</p>
             </div>
           </div>
           <div class="timeline-item {% if return_request.status == 'APPROVED' %}active{% elif return_request.status == 'PICKED_UP' or return_request.status == 'REFUNDED' %}completed{% endif %}">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Approved</h4>
-              <p>Dec 3, 2025 – 11:00 AM</p>
+              <p>{% if return_request.approved_at %}{{ return_request.approved_at|date:"d M Y, h:i A" }}{% else %}pending{% endif %}</p>
             </div>
           </div>
           <div class="timeline-item {% if return_request.status == 'PICKED_UP' %}active{% elif return_request.status == 'REFUNDED' %}completed{% endif %}">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Pickup Completed</h4>
-              <p>Dec 4, 2025 – 09:00 AM</p>
+              <p>{% if return_request.pickedup_at %}{{ return_request.pickedup_at|date:"d M Y, h:i A" }}{% else %}pending{% endif %}</p>
             </div>
           </div>
-          <div class="timeline-item {% if return_request.status == 'PICKED_UP' %}completed{% endif %}">
+          <div class="timeline-item {% if return_request.status == 'REFUNDED' %}completed{% endif %}">
             <div class="timeline-dot"></div>
             <div class="timeline-content">
               <h4>Refund Completed</h4>
-              <p>Pending</p>
+              <p>{% if return_request.refunded_at %}{{ return_request.refunded_at|date:"d M Y, h:i A" }}{% else %}pending{% endif %}</p>
             </div>
           </div>
         </div>
@@ -197,17 +197,17 @@
       <button class="close-btn" onclick="closeStatusModal()">&times;</button>
     </div>
 
-    <form action="" method="post">
+    <form action="{% url 'admin-update-return-status' return_request.id %}" method="post">
       {% csrf_token %}
       <div class="modal-body">
         <div class="order-info">
-          <p><strong>Return ID:</strong> #RET-{{ return.id|stringformat:'04d' }}</p>
-          <p><strong>Product:</strong> {{ return.order_item.variant.product.name }}</p>
+          <p><strong>Order ID:</strong> {{ order.uuid }}</p>
+          <p><strong>Product:</strong> {{ order.product.name }}</p>
         </div>
 
         <div class="form-group">
           <label for="statusSelect">New Status</label>
-          <select name="status" id="statusSelect" class="form-control" required>
+          <select name="return_status" id="statusSelect" class="form-control" required>
             <option value="" disabled selected>Select status</option>
             <option value="REQUESTED">Requested</option>
             <option value="APPROVED">Approved</option>

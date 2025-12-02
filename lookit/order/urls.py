@@ -15,6 +15,7 @@ from .views import (
     return_request_form,
     track_return_request,
     admin_return_details,
+    admin_update_return_status,
 )
 
 urlpatterns = [
@@ -35,4 +36,5 @@ urlpatterns = [
     path("return-request-form/<order_uuid>/", return_request_form, name="return-request-form"),
     path("track-return-request/<order_uuid>/", track_return_request, name="track_return_request"),
     path("admin/return-request/return-details/<return_request_id>/", admin_return_details, name="admin-return-details"),
+    path("admin/return-request/update-return-status/<return_request_id>/", admin_update_return_status, name="admin-update-return-status"),
 ]

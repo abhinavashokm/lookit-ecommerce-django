@@ -69,7 +69,7 @@
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Requested</div>
-                            <div class="date">{{ order.placed_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                            <div class="date">{{ return_request.request_date|date:"d M Y, h:i A"|default:"—" }}</div>
                         </div>
                     </div>
 
@@ -81,7 +81,7 @@
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Approved</div>
-                            <div class="date">{{ order.shipped_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                            <div class="date">{{ return_request.approved_at|date:"d M Y, h:i A"|default:"—" }}</div>
                         </div>
                     </div>
 
@@ -93,7 +93,7 @@
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Picked Up</div>
-                            <div class="date">{{ order.out_for_delivery_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                            <div class="date">{{ return_request.pickedup_at|date:"d M Y, h:i A"|default:"—" }}</div>
                         </div>
                     </div>
 
@@ -105,7 +105,7 @@
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Refunded</div>
-                            <div class="date">{{ order.delivered_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                            <div class="date">{{ return_request.refunded_at|date:"d M Y, h:i A"|default:"—" }}</div>
                         </div>
                     </div>
 
@@ -157,52 +157,52 @@
                         <!-- <a href="#" class="btn btn-outline">Change Delivery Address</a> -->
                     </div>
 
-<div class="refund-summary">
-    <h4 class="section-title">Refund Summary</h4>
+                    <div class="refund-summary">
+                        <h4 class="section-title">Refund Summary</h4>
 
-    <div class="price-row">
-        <span>Item Price</span>
-        <span>₹{{ return_request.order_item.sub_total }}</span>
-    </div>
+                        <div class="price-row">
+                            <span>Item Price</span>
+                            <span>₹{{ return_request.order_item.sub_total }}</span>
+                        </div>
 
-    <div class="price-row">
-        <span>Tax (GST/VAT)</span>
-        <span>₹{{ return_request.order_item.tax_amount }}</span>
-    </div>
+                        <div class="price-row">
+                            <span>Tax (GST/VAT)</span>
+                            <span>₹{{ return_request.order_item.tax_amount }}</span>
+                        </div>
 
-    <div class="price-row">
-        <span>Delivery Fee</span>
-        <span>- ₹{{ return_request.order_item.delivery_fee }}</span>
-    </div>
+                        <div class="price-row">
+                            <span>Delivery Fee</span>
+                            <span>- ₹{{ return_request.order_item.delivery_fee }}</span>
+                        </div>
 
-    <div class="price-row">
-        <span>Discount Applied</span>
-        <span>- ₹{{ return_request.order_item.discount_amount }}</span>
-    </div>
+                        <div class="price-row">
+                            <span>Discount Applied</span>
+                            <span>- ₹{{ return_request.order_item.discount_amount }}</span>
+                        </div>
 
-    <div class="price-row total">
-        <span>Amount Paid</span>
-        <span>₹{{ return_request.amount_paid }}</span>
-    </div>
+                        <div class="price-row total">
+                            <span>Amount Paid</span>
+                            <span>₹{{ return_request.amount_paid }}</span>
+                        </div>
 
-    {% if return_request.refunded_amount %}
-    <div class="price-row total refunded">
-        <span>Refunded Amount</span>
-        <span>₹{{ return_request.refunded_amount }}</span>
-    </div>
-    {% else %}
-    <div class="price-row total pending">
-        <span>Refund Amount (Pending)</span>
-        <span>₹{{ return_request.amount_paid }}</span>
-    </div>
-    {% endif %}
+                        {% if return_request.refunded_amount %}
+                        <div class="price-row total refunded">
+                            <span>Refunded Amount</span>
+                            <span>₹{{ return_request.refunded_amount }}</span>
+                        </div>
+                        {% else %}
+                        <div class="price-row total pending">
+                            <span>Refund Amount (Pending)</span>
+                            <span>₹{{ return_request.amount_paid }}</span>
+                        </div>
+                        {% endif %}
 
-</div>
+                    </div>
 
                 </div>
             </div>
 
-            <!-- Action Buttons -->
+            <!-- Action Buttons
             <div class="action-buttons">
                 {% if return_request.status == "DELIVERED" %}
                 <a href="#" class="btn btn-primary">Download Invoice</a>
@@ -213,7 +213,7 @@
                 {% if return_request.status == "DELIVERED" %}
                     <a href="{% url 'return-request-form' order.uuid %}" class="btn btn-danger">Return Order</a>
                 {% endif %}
-            </div>
+            </div> -->
         </div>
     </div>
 
