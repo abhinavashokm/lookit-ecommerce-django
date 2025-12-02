@@ -9,6 +9,7 @@ from datetime import timedelta
 from django.utils import timezone
 from cloudinary.uploader import upload
 from django.db import transaction
+from django.http import JsonResponse
 
 
 def user_login(request):
@@ -236,6 +237,21 @@ def edit_profile(request):
 
     user = request.user
     return render(request, "user/profile/edit_profile.html", {"user": user})
+
+@login_required
+def profile_send_otp(request):
+     if request.method == "POST":
+        email = request.POST.get("email")
+
+        otp = generate_otp()
+        request.session["profile_email_otp"] = otp
+        request.session["profile_new_email"] = email
+
+        send_otp_email(email, otp)
+
+        return JsonResponse({"success": True})
+
+     return JsonResponse({"success": False, "error": "Invalid request"})
 
 
 @login_required

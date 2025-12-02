@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners
     if (openModalBtn) {
         openModalBtn.addEventListener('click', function (e) {
-           // e.preventDefault();
+            // e.preventDefault();
             modal.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
@@ -284,3 +284,57 @@ document.addEventListener('DOMContentLoaded', function () {
     let formData = null;
 
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const form = document.getElementById("edit-profile-form");
+    const emailField = document.getElementById("email");
+    const originalEmail = document.getElementById("originalEmail").value;
+
+    form.addEventListener("submit", function (e) {
+        if (emailField.value.trim() !== originalEmail.trim()) {
+            e.preventDefault(); // Stop form submit
+
+            $.ajax({
+                url: url,   // your Django URL
+                type: "POST",
+                data: {
+                    email: emailField.value.trim(),
+                    csrfmiddlewaretoken: document.querySelector("[name=csrfmiddlewaretoken]").value
+                },
+                success: function (response) {
+                    if (response.success) {
+                        console.log("OTP sent!");
+                        // Step 1: Send AJAX to request OTP
+                        openOTPModel(emailField.value.trim());
+                    } else {
+                        showErrorToast(response.error || "Failed to send OTP");
+                    }
+                },
+                error: function (xhr) {
+                    // showErrorToast("Something went wrong!");
+                }
+            });
+
+            
+        }
+        // else → allow normal submit
+    });
+});
+
+
+function openOTPModel(newEmail) {
+    otpModel = document.getElementById("otpModal")
+    otpModal.classList.add('active')
+    document.body.style.overflow = 'hidden';
+    // document.getElementById("otpSendForm").value = newEmail
+    // document.getElementById("otpSendForm").submit();
+
+}
+
+function closeOTPModel() {
+    otpModel = document.getElementById("otpModal")
+    otpModal.classList.remove('active')
+    document.body.style.overflow = 'auto';
+}

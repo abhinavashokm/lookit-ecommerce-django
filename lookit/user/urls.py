@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import (
     user_login,
@@ -14,6 +14,7 @@ from .views import (
     change_password,
     address_book,
     set_default_address,
+    profile_send_otp,
 )
 
 urlpatterns = [
@@ -30,6 +31,7 @@ urlpatterns = [
     path('change-password/', change_password, name='user-change-password'),
     path('address-book/', address_book, name="address-book"),
     path("set-default-address/<address_id>/", set_default_address, name="set-default-address"),
+    path("profile/account-details/send-otp/", profile_send_otp, name="profile-send-otp"),
     
     # password reset paths
     # 1.enter email and button for sent link

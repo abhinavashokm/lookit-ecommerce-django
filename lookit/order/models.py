@@ -86,3 +86,28 @@ class OrderItems(models.Model):
             unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
             self.uuid = f"{prefix}-{year}-{unique_num}"
         super().save(*args, **kwargs)
+
+
+
+class ReturnRequest(models.Model):
+
+    class ReturnStatus(models.TextChoices):
+        REQUESTED = 'REQUESTED', 'Requested'
+        APPROVED = 'APPROVED', 'Approved'
+        REJECTED = 'REJECTED', 'Rejected'
+        PICKUP_SCHEDULED = 'PICKUP_SCHEDULED', 'Pickup Scheduled'
+        PICKED_UP = 'PICKED_UP', 'Picked Up'
+        REFUND_INITIATED = 'REFUND_INITIATED', 'Refund Initiated'
+        REFUNDED = 'REFUNDED', 'Refund Completed'
+
+    order_item = models.OneToOneField(OrderItems, on_delete=models.CASCADE, related_name="return_request")
+
+    reason = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+
+
+    status = models.CharField(max_length=30, choices=ReturnStatus.choices, default=ReturnStatus.REQUESTED)
+
+    request_date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
