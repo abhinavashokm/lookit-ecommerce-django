@@ -1,20 +1,38 @@
+const fileUpload = document.getElementById('fileUpload');
+const fileInput = document.getElementById('productImages');
+const uploadText = document.getElementById('uploadText');
+const uploadIcon = document.getElementById('uploadIcon');
 
-// Handle file upload UI
-document.getElementById('fileUpload').addEventListener('click', function () {
-    document.getElementById('productImages').click();
+// Clicking the upload area triggers file input
+fileUpload.addEventListener('click', () => fileInput.click());
+
+// When user selects files
+fileInput.addEventListener('change', function (e) {
+  const files = e.target.files;
+
+  // Restrict max 3 files
+  if (files.length > 3) {
+    alert('You can only upload a maximum of 3 images.');
+    fileInput.value = ''; // Clear the input
+    uploadIcon.className = 'fas fa-cloud-upload-alt'; // Reset icon
+    uploadIcon.style.color = ''; // Reset color
+    uploadText.textContent = 'Upload images to show the reason for return';
+    return;
+  }
+
+  // Update UI based on selection
+  if (files.length > 0) {
+    uploadIcon.className = 'fas fa-check-circle';
+    uploadIcon.style.color = '#4CAF50';
+    uploadText.textContent = `${files.length} file(s) selected — click to change`;
+  } else {
+    uploadIcon.className = 'fas fa-cloud-upload-alt';
+    uploadIcon.style.color = '';
+    uploadText.textContent = 'Upload images to show the reason for return';
+  }
 });
 
-document.getElementById('productImages').addEventListener('change', function (e) {
-    const files = e.target.files;
-    if (files.length > 0) {
-        const fileUpload = document.getElementById('fileUpload');
-        fileUpload.innerHTML = `
-            <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
-            <p>${files.length} file(s) selected</p>
-            <small>Click to change</small>
-        `;
-    }
-});
+
 
 // Handle address card selection
 document.querySelectorAll('.address-card').forEach(card => {
@@ -61,4 +79,15 @@ document.querySelectorAll('.address-card').forEach(card => {
 //     console.log('Form data:', formData);
 //     alert('Your return request has been submitted successfully!');
 //     // window.location.href = 'return-confirmation.html';
+// });
+
+
+// //can upload only 3 images max
+// const fileInput = document.getElementById('productImages');
+
+// fileInput.addEventListener('change', function () {
+//     if (this.files.length > 3) {
+//         alert('You can only upload a maximum of 3 images.');
+//         this.value = ''; // Clear selected files
+//     }
 // });

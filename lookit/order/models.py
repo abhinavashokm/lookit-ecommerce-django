@@ -107,6 +107,10 @@ class ReturnRequest(models.Model):
 
     reason = models.CharField(max_length=255)
     comments = models.TextField()
+    
+    product_image1 = models.URLField(null=True, blank=True)
+    product_image2 = models.URLField(null=True, blank=True)
+    product_image3 = models.URLField(null=True, blank=True)
 
     status = models.CharField(max_length=30, choices=ReturnStatus.choices, default=ReturnStatus.REQUESTED)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2) # what user paid on purchase

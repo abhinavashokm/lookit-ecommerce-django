@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <form action="{% url 'return-request-form' order.uuid %}" method="post" id="returnForm">
+        <form action="{% url 'return-request-form' order.uuid %}" method="post" enctype="multipart/form-data" id="returnForm">
             {% csrf_token %}
             <div class="form-group">
                 <label for="returnReason">Reason for Return *</label>
@@ -51,10 +51,10 @@
             <div class="form-group">
                 <label>Add Image(s) of Product (Optional)</label>
                 <div class="file-upload" id="fileUpload">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <p>Upload images to show the reason for return</p>
+                    <i id="uploadIcon" class="fas fa-cloud-upload-alt"></i>
+                    <p id="uploadText">Upload images to show the reason for return</p>
                     <small>Supports JPG, PNG up to 5MB</small>
-                    <input name="images" type="file" id="productImages" style="display: none;" multiple accept="image/*">
+                    <input name="product_images" type="file" id="productImages" style="display: none;" multiple accept="image/*">
                 </div>
             </div>
 
@@ -62,7 +62,7 @@
                 <label>Select Pickup Address *</label>
                 <div class="address-cards">
                     {% for address in address_list %}
-                    <label class="address-card selected-address">
+                    <label class="address-card  {% if address.is_default %}selected-address{% endif %}">
                         <input type="radio" name="pickup_address_id" value="{{ address.id }}" required {% if address.is_default %}checked{% endif %}>
                         <div class="address-content">
                             <div class="address-header">

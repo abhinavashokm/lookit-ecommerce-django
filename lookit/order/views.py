@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import date, timedelta
-
+from cloudinary.uploader import upload
 
 @login_required
 def checkout(request):
@@ -247,23 +247,88 @@ def return_request_form(request, order_uuid):
 
         reason = request.POST.get('reason')
         comments = request.POST.get('comments')
+        
+        images = request.FILES.getlist('product_images',0)
+        print(request.FILES)
+        print("images",images)
 
+        #---fetch pick up address--------------------------------
         pickup_address_id = request.POST.get('pickup_address_id')
         pickup_address = None
         if pickup_address_id:
             pickup_address = Address.objects.get(id=pickup_address_id)
         else:
             messages.error(request, "Please Select A Pick Up Address")
+            
         try:
-            ReturnRequest.objects.create(
-                order_item=order_item,
-                reason=reason,
-                comments=comments,
-                pickup_address=pickup_address,
-                amount_paid=order_item.total
-            )
-            messages.success(request, "Return Request Submitted Successfully")
+            with transaction.atomic():
+                return_request = ReturnRequest.objects.create(
+                    order_item=order_item,
+                    reason=reason,
+                    comments=comments,
+                    pickup_address=pickup_address,
+                    amount_paid=order_item.total
+                )
+                # Assign images to available fields (up to 3)
+                if len(images) > 0:
+                    result = upload(
+                            images[0],
+                            folder=f"return_product_images/{request.user.id}",
+                            transformation=[
+                                {
+                                    'width': 500,
+                                    'height': 500,
+                                    'crop': 'fill',
+                                    'gravity': 'face',
+                                },
+                                {
+                                    'quality': 'auto',
+                                    'fetch_format': 'auto',
+                                },
+                            ],
+                        )
+                    return_request.product_image1 = result['secure_url']
+                if len(images) > 1:
+                    result = upload(
+                            images[1],
+                            folder=f"return_product_images/{request.user.id}",
+                            transformation=[
+                                {
+                                    'width': 500,
+                                    'height': 500,
+                                    'crop': 'fill',
+                                    'gravity': 'face',
+                                },
+                                {
+                                    'quality': 'auto',
+                                    'fetch_format': 'auto',
+                                },
+                            ],
+                        )
+                    return_request.product_image2 = result['secure_url']
+                if len(images) > 2:
+                    result = upload(
+                            images[2],
+                            folder=f"return_product_images/{request.user.id}",
+                            transformation=[
+                                {
+                                    'width': 500,
+                                    'height': 500,
+                                    'crop': 'fill',
+                                    'gravity': 'face',
+                                },
+                                {
+                                    'quality': 'auto',
+                                    'fetch_format': 'auto',
+                                },
+                            ],
+                        )
+                    return_request.product_image3 = result['secure_url']
+                return_request.save()
+                messages.success(request, "Return Request Submitted Successfully")
+            
         except Exception as e:
+            print(e)
             messages.error(request, e)
 
         return redirect('return-request-form', order_uuid=order_uuid)
