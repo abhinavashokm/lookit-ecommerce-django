@@ -11,6 +11,8 @@ from .views import (
     admin_order_details,
     admin_update_delivery_status,
     cancel_order,
+    admin_list_return_requests,
+    return_request_form,
 )
 
 urlpatterns = [
@@ -24,5 +26,7 @@ urlpatterns = [
     path("admin/list-orders/", admin_list_orders, name="admin-list-orders"),
     path("admin/order-details/<order_item_id>/", admin_order_details, name="admin-order-details"),
     path("admin/update-delivery-status/<order_item_id>/", admin_update_delivery_status, name="update-delivery-status"),
-    path("cancel-order/<order_item_id>/", cancel_order, name="cancel-order")
+    path("cancel-order/<order_item_id>/", cancel_order, name="cancel-order"),
+    path("admin/return-request/list/", admin_list_return_requests, name="admin-list-return-requests"),
+    path("return-request-form/<order_uuid>/", return_request_form, name="return-request-form"),
 ]

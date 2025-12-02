@@ -101,13 +101,27 @@ class ReturnRequest(models.Model):
         REFUNDED = 'REFUNDED', 'Refund Completed'
 
     order_item = models.OneToOneField(OrderItems, on_delete=models.CASCADE, related_name="return_request")
+    
+    pickup_address = models.ForeignKey(Address, on_delete=models.PROTECT)
+    pickup_date = models.DateField(blank=True, null=True)
 
     reason = models.CharField(max_length=255)
-    description = models.TextField(blank=True, null=True)
-
+    comments = models.TextField()
 
     status = models.CharField(max_length=30, choices=ReturnStatus.choices, default=ReturnStatus.REQUESTED)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2) # what user paid on purchase
+    refunded_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    stock_updated = models.BooleanField(default=False)
 
     request_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    @property
+    def order(self):
+        return self.order_item.order
+    
+    @property
+    def product(self):
+        return self.order_item.variant.product
 

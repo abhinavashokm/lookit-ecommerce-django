@@ -1,17 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Count, Value
+from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Value
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from django.db import transaction
 from cart.models import Cart
 from user.models import Address
-from .models import Order, OrderItems
+from .models import Order, OrderItems, ReturnRequest
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import date, timedelta
+
 
 @login_required
 def checkout(request):
@@ -219,11 +220,12 @@ def track_order(request, order_item_id):
         "order/track_order.html",
         {"order": order_item, "address": delivery_address},
     )
-    
+
+
 @login_required
 def cancel_order(request, order_item_id):
     try:
-        order_item = OrderItems.objects.get(id = order_item_id)
+        order_item = OrderItems.objects.get(id=order_item_id)
         if order_item.order.user == request.user:
             order_item.order_status = 'CANCELLED'
             order_item.cancelled_at = timezone.now()
@@ -233,7 +235,48 @@ def cancel_order(request, order_item_id):
             messages.error(request, "Unauthorized Access")
     except Exception as e:
         messages.error(request, e)
-    return redirect('track-order',order_item_id=order_item_id)
+    return redirect('track-order', order_item_id=order_item_id)
+
+
+@login_required
+def return_request_form(request, order_uuid):
+    if request.method == "POST":
+        print(request.POST)
+
+        order_item = OrderItems.objects.get(uuid=order_uuid)
+
+        reason = request.POST.get('reason')
+        comments = request.POST.get('comments')
+
+        pickup_address_id = request.POST.get('pickup_address_id')
+        pickup_address = None
+        if pickup_address_id:
+            pickup_address = Address.objects.get(id=pickup_address_id)
+        else:
+            messages.error(request, "Please Select A Pick Up Address")
+        try:
+            ReturnRequest.objects.create(
+                order_item=order_item,
+                reason=reason,
+                comments=comments,
+                pickup_address=pickup_address,
+                amount_paid=order_item.total
+            )
+            messages.success(request, "Return Request Submitted Successfully")
+        except Exception as e:
+            messages.error(request, e)
+
+        return redirect('return-request-form', order_uuid=order_uuid)
+
+    order = OrderItems.objects.get(uuid=order_uuid)
+    address_list = Address.objects.filter(user=request.user, is_active=True).order_by(
+        '-is_default', '-created_at'
+    )
+    return render(
+        request,
+        "order/return_request_form.html",
+        {"order": order, "address_list": address_list},
+    )
 
 
 """
@@ -249,22 +292,22 @@ def admin_list_orders(request):
     payment_status = request.GET.get('payment_status')
     order_status = request.GET.get('order_status')
     date_range = request.GET.get('date_range')
-    
+
     if search:
         order_items = order_items.filter(
             Q(order__user__full_name__icontains=search)
             | Q(variant__product__name__icontains=search)
         )
-    
+
     if payment_method:
         order_items = order_items.filter(order__payment_method=payment_method.upper())
-        
+
     if payment_status:
-        order_items = order_items.filter(payment_status = payment_status.upper())
-        
+        order_items = order_items.filter(payment_status=payment_status.upper())
+
     if order_status:
-        order_items = order_items.filter(order_status = order_status.upper())
-        
+        order_items = order_items.filter(order_status=order_status.upper())
+
         # ---- DATE filter ----
     if date_range:
         today = date.today()
@@ -335,3 +378,8 @@ def admin_update_delivery_status(request, order_item_id):
             messages.error(request, e)
 
     return redirect('admin-order-details', order_item_id=order_item_id)
+
+
+def admin_list_return_requests(request):
+    return_request_list = ReturnRequest.objects.all().select_related('order_item').order_by("-request_date")
+    return render(request, 'order/admin/return_request_list.html',{"return_request_list":return_request_list})

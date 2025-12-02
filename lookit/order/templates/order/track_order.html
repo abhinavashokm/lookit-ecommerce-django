@@ -186,7 +186,7 @@
                     <button onclick="openDangerModal()" class="btn btn-danger">Cancel Order</button>
                 {% endif %}
                 {% if order.order_status == "DELIVERED" %}
-                    <a href="#" class="btn btn-danger">Return Order</a>
+                    <a href="{% url 'return-request-form' order.uuid %}" class="btn btn-danger">Return Order</a>
                 {% endif %}
             </div>
         </div>
