@@ -461,3 +461,15 @@ def admin_update_delivery_status(request, order_item_id):
 def admin_list_return_requests(request):
     return_request_list = ReturnRequest.objects.all().select_related('order_item').order_by("-request_date")
     return render(request, 'order/admin/return_request_list.html',{"return_request_list":return_request_list})
+
+
+
+def admin_return_details(request, order_uuid):
+    order_item = OrderItems.objects.get(uuid=order_uuid)
+    customer = order_item.order.user
+    address = order_item.order.address
+    return render(
+        request,
+        "order/admin/return_details.html",
+        {"order": order_item, "customer": customer, "address": address},
+    )
