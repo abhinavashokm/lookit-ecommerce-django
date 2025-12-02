@@ -1246,3 +1246,38 @@ textarea.form-control {
         font-size: 0.9rem;
     }
 }
+
+
+
+/* ==============================
+   ❌ Rejected Timeline Step
+   ============================== */
+.timeline-item.rejected {
+    position: relative;
+}
+
+.timeline-item.rejected .timeline-dot {
+    background: #dc2626; /* deep red */
+    box-shadow: 0 0 0 3px #fecaca; /* soft red halo */
+    border: 2px solid #fff;
+}
+
+.timeline-item.rejected .timeline-content {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 1px solid #fecaca;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.15);
+}
+
+.timeline-item.rejected .timeline-content h4 {
+    color: #b91c1c;
+    font-weight: 700;
+}
+
+.timeline-item.rejected .timeline-content p {
+    color: #991b1b;
+}
+
+/* Optional: subtle vertical connector line styling */
+.timeline-item.rejected::after {
+    background-color: #fecaca; /* soft red line */
+}

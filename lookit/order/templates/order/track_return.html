@@ -59,7 +59,7 @@
                 </div>
             </div>
 
-            {% if return_request.status != 'CANCELLED' %}
+            {% if return_request.status != 'REJECTED' %}
             <!-- ORDER PROGRESS TRACKER -->
             <div class="order-progress 
                 {% if return_request.status == 'REQUESTED' %}progress-1
@@ -115,13 +115,13 @@
 
                 </div>
             </div>
-            {% elif return_request.status == 'CANCELLED' %}
+            {% elif return_request.status == 'REJECTED' %}
 
             <div class="order-status-cancelled">
                 <i class="fas fa-times-circle"></i>
                 <div>
-                    <h3>Order Cancelled</h3>
-                    <p>This order was cancelled on <strong>{{ order.cancelled_at|date:"M d, Y h:i A" }}</strong>.</p>
+                    <h3>Return Request Rejected</h3>
+                    <p>Your return request has been rejected</p>
                 </div>
             </div>
             {% endif %}
