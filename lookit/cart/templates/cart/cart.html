@@ -61,7 +61,7 @@
                 </div>
                 <div class="item-price">
                     ₹{{ item.product.price }}
-                    <div class="item-sub-total">{{ item.quantity }}x = ₹{{ item.sub_total_per_product }}</div>
+                    <div id="product_summary{{item.id}}" class="item-sub-total">{{ item.quantity }}x = ₹{{ item.sub_total_per_product }}</div>
                     <!-- <div class="item-original-price">₹39.99</div> -->
                 </div>
 
@@ -84,15 +84,15 @@
                 <h3 class="summary-title">Order Summary</h3>
                 <div class="summary-row">
                     <span>Subtotal</span>
-                    <span>₹{{ cart_summary.sub_total }}</span>
+                    <span id="sub_total">₹{{ cart_summary.sub_total }}</span>
                 </div>
                 <div class="summary-row">
                     <span>Shipping</span>
                     <span>Free</span>
                 </div>
                 <div class="summary-row">
-                    <span>Tax</span>
-                    <span>₹{{ cart_summary.tax }}</span>
+                    <span >Tax</span>
+                    <span id="tax_amount">₹{{ cart_summary.tax }}</span>
                 </div>
                 <!-- Applied Coupon Row -->
                 <div id="appliedCouponRow" class="summary-row" style="display: none;">
@@ -100,8 +100,8 @@
                     <span class="discount-amount">-₹<span id="appliedCouponDiscount">0.00</span></span>
                 </div>
                 <div class="summary-total">
-                    <span>Total</span>
-                    <span>₹{{ cart_summary.grand_total }}</span>
+                    <span >Total</span>
+                    <span id="total_amount">₹{{ cart_summary.grand_total }}</span>
                 </div>
 
                 <!-- Toggle Button for Coupon Section -->

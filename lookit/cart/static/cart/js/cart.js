@@ -51,8 +51,15 @@ function submitQuantity(cartId, variantId, quantity, csrfToken, quantityElement)
                 showToast("#toastError");
 
             }else{
+                cartSummary = data.cart_summary
                 quantityElement.textContent = data.new_quantity;
-                console.log(data)
+                document.getElementById('sub_total').innerText = cartSummary.sub_total
+                document.getElementById('tax_amount').innerText = cartSummary.tax
+                document.getElementById('total_amount').innerText = cartSummary.grand_total
+                //update subtotal of each product
+                Object.values(data.cart_items).forEach(value => {
+                    document.getElementById('product_summary'+value.id).innerText = value.quantity+"x = ₹"+value.sub_total_per_product
+                });     
             }
             
             
