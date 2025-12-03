@@ -474,10 +474,10 @@ def explore(request):
     )
 
 
-def product_details(request, product_id):
+def product_details(request, product_uuid):
 
     product = (
-        Product.objects.filter(id=product_id)
+        Product.objects.filter(uuid=product_uuid)
         .annotate(
             total_stock=Coalesce(Sum('variant__stock'), 0),
             total_additional_images=Coalesce(Count('productimages'), 0),
@@ -531,22 +531,22 @@ def add_to_cart(request):
         product_id = request.POST.get('product_id')
         variant_id = request.POST.get('variant_id')
         qunatity = request.POST.get('quantity')
-        print("quantity is " ,qunatity)
+        product = Product.objects.get(id=product_id)
         
         #restrict if not authenticated
         if not user.is_authenticated:
             messages.error(request, f"PLEASE LOG IN TO USE CART, id = {variant_id}")
-            return redirect('product-details', product_id = product_id)
+            return redirect('product-details', product_uuid = product.uuid)
         
         #if size not selected
         if not variant_id:
             messages.error(request, "PLEASE SELECT A SIZE")
-            return redirect('product-details', product_id = product_id)
+            return redirect('product-details', product_uuid = product.uuid)
         
         is_already_exist = Cart.objects.filter(user=user, variant_id=variant_id)
         if is_already_exist:
             messages.error(request, "PRODUCT IS ALREADY IN CART")
-            return redirect('product-details', product_id = product_id)
+            return redirect('product-details', product_uuid = product.uuid)
         
         try:
             Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
@@ -555,4 +555,4 @@ def add_to_cart(request):
             print(e)
             messages.error(request, e)
             
-    return redirect('product-details', product_id = product_id)
+    return redirect('product-details', product_uuid = product.uuid)

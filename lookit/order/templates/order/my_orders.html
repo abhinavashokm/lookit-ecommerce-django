@@ -60,7 +60,7 @@
                 <p class="item-size">Size: M</p>
                 <p class="item-color">Ordered at: {{ item.created_at.date }}</p>
                 <div class="item-actions">
-                    <a href="{% url 'product-details' item.product.id %}">
+                    <a href="{% url 'product-details' item.product.uuid %}">
                         <button class="btn btn-view">View Product</button>
                     </a>
                     <a href="{% url 'track-order' item.uuid %}">

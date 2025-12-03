@@ -343,7 +343,7 @@
     <div class="related-grid">
 
         {% for product in related_products %}
-        <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+        <a style="text-decoration: none;" href="{% url 'product-details' product.uuid %}">
             <div class="related-card">
                 {% if product.image_url != ' ' %}
                 <img class="related-image" src="{{ product.image_url }}" alt="">

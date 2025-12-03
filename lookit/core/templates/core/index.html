@@ -23,7 +23,7 @@
     <div class="product-grid">
 
         {% for product in featured %}
-        <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+        <a style="text-decoration: none;" href="{% url 'product-details' product.uuid %}">
             <div class="product-card">
                 <!-- <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
                 <img class="product-image" src="{{ product.image_url }}" alt="">
@@ -80,7 +80,7 @@
     <div class="product-grid">
 
         {% for product in new_arrivals %}
-        <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+        <a style="text-decoration: none;" href="{% url 'product-details' product.uuid %}">
             <div class="product-card">
                 {% if product.image_url != ' ' %}
                 <img class="product-image" src="{{ product.image_url }}" alt="">

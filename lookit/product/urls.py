@@ -41,7 +41,7 @@ urlpatterns = [
     path("admin/category/restore-style/<style_id>", admin_restore_category, name="admin-restore-category"),
     path("admin/category/edit-style/", admin_edit_category, name="admin-edit-category"),
     
-    path("product-details/<product_id>/",product_details, name="product-details"),
+    path("product-details/<product_uuid>/",product_details, name="product-details"),
     path("explore/", explore, name="explore"),
     path("add-to-cart/", add_to_cart, name="add-to-cart")
 

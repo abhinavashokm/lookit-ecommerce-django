@@ -1,5 +1,5 @@
 from django.db import models
-
+import uuid
 
 class Style(models.Model):
     name = models.CharField(max_length=50)
@@ -18,6 +18,7 @@ class Product(models.Model):
         KIDS = 'KIDS', 'Kids'
         UNISEX = 'UNISEX', 'Unisex'
 
+    uuid = models.CharField(max_length=20, blank=True)
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=50, blank=True)
     description = models.TextField(blank=True)
@@ -42,6 +43,14 @@ class Product(models.Model):
     
     class Meta:
         ordering = ['-is_active','-created_at']
+        
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            prefix = "PRD"
+            # Pad database ID estimate — better to use random unique portion before first save
+            unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
+            self.uuid = f"{prefix}-{unique_num}"
+        super().save(*args, **kwargs)
         
         
 class Variant(models.Model): 

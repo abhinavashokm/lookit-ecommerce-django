@@ -307,7 +307,7 @@
         <div class="product-grid">
 
             {% for product in page_obj %}
-            <a style="text-decoration: none;" href="{% url 'product-details' product.id %}">
+            <a style="text-decoration: none;" href="{% url 'product-details' product.uuid %}">
             <div class="product-card">
                 {% if product.image_url != ' ' %}
                 <img class="product-image" src="{{ product.image_url }}" alt="">
