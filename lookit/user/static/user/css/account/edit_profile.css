@@ -1131,3 +1131,52 @@ label.error {
     font-size: 0.75rem;
     margin-top: 4px;
 }
+
+        /* Spinner Animation */
+        .spinner {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .spinner-svg {
+            width: 100%;
+            height: 100%;
+            animation: rotate 1.4s linear infinite;
+        }
+        
+        .spinner-svg .path {
+            stroke: #ffffff;
+            stroke-linecap: round;
+            animation: dash 1.5s ease-in-out infinite;
+            stroke-width: 3;
+            stroke-dasharray: 80, 200;
+            stroke-dashoffset: 0;
+            fill: none;
+        }
+        
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes dash {
+            0% {
+                stroke-dasharray: 1, 150;
+                stroke-dashoffset: 0;
+            }
+            50% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -35;
+            }
+            100% {
+                stroke-dasharray: 90, 150;
+                stroke-dashoffset: -124;
+            }
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }

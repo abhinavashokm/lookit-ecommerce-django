@@ -338,3 +338,144 @@ function closeOTPModel() {
     otpModal.classList.remove('active')
     document.body.style.overflow = 'auto';
 }
+// Email Change Modal Functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Email change modal elements
+    const changeEmailBtn = document.getElementById('changeEmailBtn');
+    const emailModal = document.getElementById('emailChangeModal');
+    const closeEmailModal = document.querySelectorAll('.close-email-modal');
+    const emailChangeForm = document.getElementById('emailChangeForm');
+    const newEmailInput = document.getElementById('newEmail');
+    const sendLinkBtn = document.getElementById('sendLinkBtn');
+    const emailSpinner = document.getElementById('emailSpinner');
+
+    // Show email change modal
+    if (changeEmailBtn) {
+        changeEmailBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (emailModal) {
+                emailModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                if (newEmailInput) newEmailInput.focus();
+            }
+        });
+    }
+
+    // Close email change modal
+    if (closeEmailModal.length > 0) {
+        closeEmailModal.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (emailModal) {
+                    emailModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    if (emailChangeForm) emailChangeForm.reset();
+                }
+            });
+        });
+    }
+
+    // Close modal when clicking outside
+    if (emailModal) {
+        emailModal.addEventListener('click', function(e) {
+            if (e.target === emailModal) {
+                emailModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                if (emailChangeForm) emailChangeForm.reset();
+            }
+        });
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && emailModal && emailModal.style.display === 'flex') {
+            emailModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            if (emailChangeForm) emailChangeForm.reset();
+        }
+    });
+
+    // Handle email change form submission
+    if (emailChangeForm) {
+        emailChangeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newEmail = newEmailInput ? newEmailInput.value.trim() : '';
+            
+            if (newEmail) {
+                // Show loading state
+                if (sendLinkBtn) sendLinkBtn.disabled = true;
+                if (emailSpinner) emailSpinner.style.display = 'inline-block';
+            }
+        });
+    }
+});
+
+// Email change modal elements
+const changeEmailBtn = document.getElementById('changeEmailBtn');
+const emailModal = document.getElementById('emailChangeModal');
+const closeEmailModal = document.querySelectorAll('.close-email-modal');
+const emailChangeForm = document.getElementById('emailChangeForm');
+const newEmailInput = document.getElementById('newEmail');
+const sendLinkBtn = document.getElementById('sendLinkBtn');
+const emailSpinner = document.getElementById('emailSpinner');
+
+// Function to show email modal
+function showEmailModal() {
+    if (emailModal) {
+        emailModal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        newEmailInput.focus();
+    }
+}
+
+// Function to hide email modal
+function hideEmailModal() {
+    if (emailModal) {
+        emailModal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+        if (emailChangeForm) emailChangeForm.reset();
+    }
+}
+
+// Show email change modal
+if (changeEmailBtn) {
+    changeEmailBtn.addEventListener('click', showEmailModal);
+}
+
+// Close email change modal when clicking close button or overlay
+if (closeEmailModal.length > 0) {
+    closeEmailModal.forEach(btn => {
+        btn.addEventListener('click', hideEmailModal);
+    });
+}
+
+// Close modal when clicking on overlay (outside the modal content)
+if (emailModal) {
+    emailModal.addEventListener('click', function(e) {
+        if (e.target === emailModal) {
+            hideEmailModal();
+        }
+    });
+}
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && emailModal && !emailModal.classList.contains('hidden')) {
+        hideEmailModal();
+    }
+});
+
+// Handle email change form submission
+if (emailChangeForm) {
+    emailChangeForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newEmail = newEmailInput.value.trim();
+        
+        if (newEmail) {
+            // Show loading state
+            sendLinkBtn.disabled = true;
+            emailSpinner.classList.remove('hidden');
+            
+        }
+    });
+}

@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'user/css/components/profile_sidebar.css' %}">
 <!-- Font Awesome for icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+<script src="https://cdn.tailwindcss.com"></script>
 {% endblock %}
 
 
@@ -61,6 +61,9 @@
                         <button type="button" class="btn btn-outline" id="changePhotoBtn">
                             <i class="fas fa-camera"></i> Change Photo
                         </button>
+                        <button id="changeEmailBtn" type="button" class="btn btn-outline change-email-btn">
+                            <i class="fas fa-inbox"></i> Change Email
+                        </button>
                         <button type="button" class="btn btn-outline change-password-btn">
                             <i class="fas fa-key"></i> Change Password
                         </button>
@@ -74,13 +77,13 @@
                         placeholder="Enter your full name">
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <label for="email">Email Address</label>
                     <input type="email" name="email" value="{{ user.email }}" id="email" class="form-control"
                         placeholder="Enter your email">
                     <input type="hidden" id="originalEmail" value="{{ user.email }}">
 
-                </div>
+                </div> -->
 
                 <div class="form-group">
                     <label for="phone">Phone</label>
@@ -177,13 +180,52 @@
     </div>
 </div>
 
-<form id="otpSendForm" action="" method="POST">
+    <!-- Email Change Modal -->
+    <div class="modal-overlay" id="emailChangeModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Change Email Address</h3>
+                <button class="close-modal close-email-modal" aria-label="Close">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <form id="emailChangeForm" class="modal-form">
+                <div class="form-group">
+                    <label for="newEmail">New Email Address</label>
+                    <input type="email" id="newEmail" name="newEmail" class="form-control" required 
+                           placeholder="name@example.com"
+                           autocomplete="email"
+                           inputmode="email">
+                    <div class="form-hint">We'll send a verification link to your new email address</div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline close-email-modal">
+                        Cancel
+                    </button>
+                    <button type="submit" id="sendLinkBtn" class="btn btn-primary">
+                        <span id="emailSpinner" class="spinner" style="display: none;">
+                            <svg class="spinner-svg" viewBox="0 0 50 50">
+                                <circle class="path" cx="25" cy="25" r="20" fill="none"></circle>
+                            </svg>
+                        </span>
+                        <span class="btn-text">Send Verification Link</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+<!-- <form id="otpSendForm" action="" method="POST">
     {% csrf_token %}
     <input type="hidden" name="new_email" id="new_email" value="">
-</form>
+</form> -->
 
 
-<!-- OTP Verification Modal -->
+<!-- OTP Verification Modal
 <div class="modal-overlay" id="otpModal">
     <div class="otp-modal-content">
         <div class="otp-modal-header">
@@ -249,7 +291,7 @@
             </form>
         </div>
     </div>
-</div>
+</div> -->
 
 {% endblock %}
 
