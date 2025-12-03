@@ -482,3 +482,72 @@
     max-width: 400px;
     line-height: 1.6;
 }
+
+/* ----------------------------------------------------
+   DISABLED CART ITEM STYLES
+---------------------------------------------------- */
+
+.cart-item.disabled {
+    opacity: 0.90;
+    filter: grayscale(0.6);
+    pointer-events: none;         /* prevents clicking */
+    position: relative;
+}
+
+/* Optional blur overlay */
+.cart-item.disabled::after {
+    content: "Unavailable";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.65);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #9a4d72;
+    border-radius: 10px;
+}
+
+/* Disable buttons inside */
+.cart-item.disabled .quantity-btn,
+.cart-item.disabled .remove-btn {
+    cursor: not-allowed !important;
+    opacity: 0.5;
+}
+/* -----------------------------------------
+   OUT OF STOCK CART ITEM STYLES
+----------------------------------------- */
+.cart-item.out-of-stock {
+    opacity: 0.90;
+    filter: grayscale(0.4);
+    position: relative;
+}
+
+/* Out of stock banner */
+.cart-item.out-of-stock .stock-badge {
+    position: absolute;
+    top: 10px;
+    left: -8px;
+    background: #d9534f;              /* red tone */
+    color: white;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    border-radius: 0 6px 6px 0;
+    text-transform: uppercase;
+    z-index: 10;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Disable interaction */
+.cart-item.out-of-stock .quantity-btn,
+.cart-item.out-of-stock .remove-btn {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}

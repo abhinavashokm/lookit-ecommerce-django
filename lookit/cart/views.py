@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Cart
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, F, ExpressionWrapper, DecimalField
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField, Case, When, Value, BooleanField
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 import json
@@ -19,12 +19,18 @@ def cart(request):
             sub_total_per_product=ExpressionWrapper(
                 F('variant__product__price') * F('quantity'),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
-            )
+            ),
+            stock_available = Case(
+                When(variant__stock__gt = 0, then = Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            ),
+            is_product_active = F('variant__product__is_active')
         )
     )
     # cart price summary
     sub_total = (
-        cart_items.aggregate(
+        cart_items.filter(is_product_active=True, stock_available=True).aggregate(
             sub_total=Sum(F('variant__product__price') * F('quantity'))
         )['sub_total']
         or 0
@@ -34,6 +40,7 @@ def cart(request):
     tax = tax.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
     cart_summary = {"sub_total": sub_total, "tax": tax, "grand_total": sub_total + tax}
+    print(cart_items[1].stock_available)
     return render(
         request,
         'cart/cart.html',

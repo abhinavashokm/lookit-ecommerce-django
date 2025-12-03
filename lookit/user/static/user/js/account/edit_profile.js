@@ -360,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
+//here
     // Close email change modal
     if (closeEmailModal.length > 0) {
         closeEmailModal.forEach(btn => {
@@ -369,6 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (emailModal) {
                     emailModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
+                  //  if (emailSpinner) emailSpinner.style.display = 'none';
                     if (emailChangeForm) emailChangeForm.reset();
                 }
             });
@@ -485,7 +486,7 @@ if (emailChangeForm) {
             //messageBox.innerHTML = `<p style="color:green;">${data.message}</p>`;
         })
         .catch(err => {
-            messageBox.innerHTML = `<p style="color:red;">Something went wrong!</p>`;
+            // messageBox.innerHTML = `<p style="color:red;">Something went wrong!</p>`;
         });
         });
 }

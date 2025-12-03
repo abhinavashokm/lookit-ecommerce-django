@@ -29,7 +29,10 @@
             {% endif %}
             
             {% for item in cart_items %}
-            <div class="cart-item">
+            <div class="cart-item {% if not item.is_product_active %}disabled{% elif not item.stock_available %}out-of-stock{% endif %}">
+                {% if not item.stock_available %}
+                    <div class="stock-badge">OUT OF STOCK</div>
+                {% endif %}
                 <img src="{{ item.product.image_url }}" alt="Product" class="item-image">
                 <div class="item-details">
                     <h3 class="item-title">{{ item.product.name }}</h3>
