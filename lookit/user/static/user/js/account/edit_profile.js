@@ -147,197 +147,197 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// OTP Verification Functionality
-document.addEventListener('DOMContentLoaded', function () {
-    const otpModal = document.getElementById('otpModal');
-    const otpInputs = document.querySelectorAll('.otp-input');
-    const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-    const resendOtpBtn = document.getElementById('resendOtp');
-    const countdownElement = document.getElementById('countdown');
-    const closeModalBtns = document.querySelectorAll('.close-modal');
-    const saveChangesBtn = document.querySelector('.save-changes-btn');
+// // OTP Verification Functionality
+// document.addEventListener('DOMContentLoaded', function () {
+//     const otpModal = document.getElementById('otpModal');
+//     const otpInputs = document.querySelectorAll('.otp-input');
+//     const verifyOtpBtn = document.getElementById('verifyOtpBtn');
+//     const resendOtpBtn = document.getElementById('resendOtp');
+//     const countdownElement = document.getElementById('countdown');
+//     const closeModalBtns = document.querySelectorAll('.close-modal');
+//     const saveChangesBtn = document.querySelector('.save-changes-btn');
 
-    let countdown = 30;
-    let countdownInterval;
+//     let countdown = 30;
+//     let countdownInterval;
 
-    // Start the countdown timer
-    function startCountdown() {
-        countdown = 30;
-        countdownElement.textContent = countdown;
-        resendOtpBtn.disabled = true;
+//     // Start the countdown timer
+//     function startCountdown() {
+//         countdown = 30;
+//         countdownElement.textContent = countdown;
+//         resendOtpBtn.disabled = true;
 
-        clearInterval(countdownInterval);
-        countdownInterval = setInterval(() => {
-            countdown--;
-            countdownElement.textContent = countdown;
+//         clearInterval(countdownInterval);
+//         countdownInterval = setInterval(() => {
+//             countdown--;
+//             countdownElement.textContent = countdown;
 
-            if (countdown <= 0) {
-                clearInterval(countdownInterval);
-                resendOtpBtn.disabled = false;
-            }
-        }, 1000);
-    }
+//             if (countdown <= 0) {
+//                 clearInterval(countdownInterval);
+//                 resendOtpBtn.disabled = false;
+//             }
+//         }, 1000);
+//     }
 
-    // Handle OTP input
-    otpInputs.forEach((input, index) => {
-        // Focus on the first input when modal opens
-        if (index === 0) {
-            input.focus();
-        }
+//     // Handle OTP input
+//     otpInputs.forEach((input, index) => {
+//         // Focus on the first input when modal opens
+//         if (index === 0) {
+//             input.focus();
+//         }
 
-        // Move to next input on number input
-        input.addEventListener('input', (e) => {
-            if (e.target.value && index < otpInputs.length - 1) {
-                otpInputs[index + 1].focus();
-            }
-        });
+//         // Move to next input on number input
+//         input.addEventListener('input', (e) => {
+//             if (e.target.value && index < otpInputs.length - 1) {
+//                 otpInputs[index + 1].focus();
+//             }
+//         });
 
-        // Handle backspace
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && !e.target.value && index > 0) {
-                otpInputs[index - 1].focus();
-            }
-        });
-    });
+//         // Handle backspace
+//         input.addEventListener('keydown', (e) => {
+//             if (e.key === 'Backspace' && !e.target.value && index > 0) {
+//                 otpInputs[index - 1].focus();
+//             }
+//         });
+//     });
 
-    // Verify OTP
-    verifyOtpBtn.addEventListener('click', () => {
-        const otp = Array.from(otpInputs).map(input => input.value).join('');
+//     // Verify OTP
+//     verifyOtpBtn.addEventListener('click', () => {
+//         const otp = Array.from(otpInputs).map(input => input.value).join('');
 
-        if (otp.length !== 6) {
-            alert('Please enter a valid 6-digit OTP');
-            return;
-        }
+//         if (otp.length !== 6) {
+//             alert('Please enter a valid 6-digit OTP');
+//             return;
+//         }
 
-        // Here you would verify the OTP with your backend
-        console.log('Verifying OTP:', otp);
+//         // Here you would verify the OTP with your backend
+//         console.log('Verifying OTP:', otp);
 
-        // Simulate API call
-        verifyOtpBtn.disabled = true;
-        verifyOtpBtn.textContent = 'Verifying...';
+//         // Simulate API call
+//         verifyOtpBtn.disabled = true;
+//         verifyOtpBtn.textContent = 'Verifying...';
 
-        // In a real application, you would verify the OTP with your backend here
-        // For this example, we'll simulate a successful verification
-        setTimeout(() => {
-            // Simulate successful verification
-            alert('Email verified successfully! Your changes have been saved.');
-            otpModal.classList.remove('active');
-            document.body.style.overflow = '';
-            resetOtpForm();
+//         // In a real application, you would verify the OTP with your backend here
+//         // For this example, we'll simulate a successful verification
+//         setTimeout(() => {
+//             // Simulate successful verification
+//             alert('Email verified successfully! Your changes have been saved.');
+//             otpModal.classList.remove('active');
+//             document.body.style.overflow = '';
+//             resetOtpForm();
 
-            // Submit the form with the stored form data
-            if (editProfileForm && formData) {
-                // In a real application, you would send the form data to your server
-                console.log('Submitting form with data:', Object.fromEntries(formData));
-                // Uncomment the line below to actually submit the form
-                // editProfileForm.submit();
+//             // Submit the form with the stored form data
+//             if (editProfileForm && formData) {
+//                 // In a real application, you would send the form data to your server
+//                 console.log('Submitting form with data:', Object.fromEntries(formData));
+//                 // Uncomment the line below to actually submit the form
+//                 // editProfileForm.submit();
 
-                // For demo purposes, show the form data in the console
-                const formDataObj = {};
-                formData.forEach((value, key) => {
-                    formDataObj[key] = value;
-                });
-                console.log('Form data:', formDataObj);
+//                 // For demo purposes, show the form data in the console
+//                 const formDataObj = {};
+//                 formData.forEach((value, key) => {
+//                     formDataObj[key] = value;
+//                 });
+//                 console.log('Form data:', formDataObj);
 
-                // Show success message
-                alert('Profile updated successfully!');
-            }
-        }, 1500);
-    });
+//                 // Show success message
+//                 alert('Profile updated successfully!');
+//             }
+//         }, 1500);
+//     });
 
-    // Resend OTP
-    resendOtpBtn.addEventListener('click', () => {
-        // Here you would typically resend the OTP via your backend
-        console.log('Resending OTP...');
-        startCountdown();
-        alert('A new verification code has been sent to your email.');
-    });
+//     // Resend OTP
+//     resendOtpBtn.addEventListener('click', () => {
+//         // Here you would typically resend the OTP via your backend
+//         console.log('Resending OTP...');
+//         startCountdown();
+//         alert('A new verification code has been sent to your email.');
+//     });
 
-    // Close modal
-    closeModalBtns.forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            if (e.target === this || e.target.classList.contains('close-modal')) {
-                otpModal.classList.remove('active');
-                document.body.style.overflow = '';
-                resetOtpForm();
-            }
-        });
-    });
+//     // Close modal
+//     closeModalBtns.forEach(btn => {
+//         btn.addEventListener('click', function (e) {
+//             if (e.target === this || e.target.classList.contains('close-modal')) {
+//                 otpModal.classList.remove('active');
+//                 document.body.style.overflow = '';
+//                 resetOtpForm();
+//             }
+//         });
+//     });
 
-    // Reset OTP form
-    function resetOtpForm() {
-        otpInputs.forEach(input => {
-            input.value = '';
-        });
-        if (otpInputs.length > 0) {
-            otpInputs[0].focus();
-        }
-        verifyOtpBtn.disabled = false;
-        verifyOtpBtn.textContent = 'Verify & Save Changes';
-        clearInterval(countdownInterval);
-        resendOtpBtn.disabled = true;
-        countdownElement.textContent = '30';
-    }
+//     // Reset OTP form
+//     function resetOtpForm() {
+//         otpInputs.forEach(input => {
+//             input.value = '';
+//         });
+//         if (otpInputs.length > 0) {
+//             otpInputs[0].focus();
+//         }
+//         verifyOtpBtn.disabled = false;
+//         verifyOtpBtn.textContent = 'Verify & Save Changes';
+//         clearInterval(countdownInterval);
+//         resendOtpBtn.disabled = true;
+//         countdownElement.textContent = '30';
+//     }
 
-    // Show OTP modal when save changes is clicked
-    const editProfileForm = document.querySelector('.edit-profile-form');
-    let formData = null;
+//     // Show OTP modal when save changes is clicked
+//     const editProfileForm = document.querySelector('.edit-profile-form');
+//     let formData = null;
 
-});
+// });
 
 
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
 
-    const form = document.getElementById("edit-profile-form");
-    const emailField = document.getElementById("email");
-    const originalEmail = document.getElementById("originalEmail").value;
+//     const form = document.getElementById("edit-profile-form");
+//     const emailField = document.getElementById("email");
+//     const originalEmail = document.getElementById("originalEmail").value;
 
-    form.addEventListener("submit", function (e) {
-        if (emailField.value.trim() !== originalEmail.trim()) {
-            e.preventDefault(); // Stop form submit
+//     form.addEventListener("submit", function (e) {
+//         if (emailField.value.trim() !== originalEmail.trim()) {
+//             e.preventDefault(); // Stop form submit
 
-            $.ajax({
-                url: url,   // your Django URL
-                type: "POST",
-                data: {
-                    email: emailField.value.trim(),
-                    csrfmiddlewaretoken: document.querySelector("[name=csrfmiddlewaretoken]").value
-                },
-                success: function (response) {
-                    if (response.success) {
-                        console.log("OTP sent!");
-                        // Step 1: Send AJAX to request OTP
-                        openOTPModel(emailField.value.trim());
-                    } else {
-                        showErrorToast(response.error || "Failed to send OTP");
-                    }
-                },
-                error: function (xhr) {
-                    // showErrorToast("Something went wrong!");
-                }
-            });
+//             $.ajax({
+//                 url: url,   // your Django URL
+//                 type: "POST",
+//                 data: {
+//                     email: emailField.value.trim(),
+//                     csrfmiddlewaretoken: document.querySelector("[name=csrfmiddlewaretoken]").value
+//                 },
+//                 success: function (response) {
+//                     if (response.success) {
+//                         console.log("OTP sent!");
+//                         // Step 1: Send AJAX to request OTP
+//                         openOTPModel(emailField.value.trim());
+//                     } else {
+//                         showErrorToast(response.error || "Failed to send OTP");
+//                     }
+//                 },
+//                 error: function (xhr) {
+//                     // showErrorToast("Something went wrong!");
+//                 }
+//             });
 
             
-        }
-        // else → allow normal submit
-    });
-});
+//         }
+//         // else → allow normal submit
+//     });
+// });
 
 
-function openOTPModel(newEmail) {
-    otpModel = document.getElementById("otpModal")
-    otpModal.classList.add('active')
-    document.body.style.overflow = 'hidden';
-    // document.getElementById("otpSendForm").value = newEmail
-    // document.getElementById("otpSendForm").submit();
+// function openOTPModel(newEmail) {
+//     otpModel = document.getElementById("otpModal")
+//     otpModal.classList.add('active')
+//     document.body.style.overflow = 'hidden';
+//     // document.getElementById("otpSendForm").value = newEmail
+//     // document.getElementById("otpSendForm").submit();
 
-}
+// }
 
-function closeOTPModel() {
-    otpModel = document.getElementById("otpModal")
-    otpModal.classList.remove('active')
-    document.body.style.overflow = 'auto';
-}
+// function closeOTPModel() {
+//     otpModel = document.getElementById("otpModal")
+//     otpModal.classList.remove('active')
+//     document.body.style.overflow = 'auto';
+// }
 // Email Change Modal Functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Email change modal elements
@@ -352,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Show email change modal
     if (changeEmailBtn) {
         changeEmailBtn.addEventListener('click', function(e) {
-            e.preventDefault();
+            // e.preventDefault();
             if (emailModal) {
                 emailModal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (closeEmailModal.length > 0) {
         closeEmailModal.forEach(btn => {
             btn.addEventListener('click', function(e) {
-                e.preventDefault();
+                // e.preventDefault();
                 if (emailModal) {
                     emailModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
@@ -398,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle email change form submission
     if (emailChangeForm) {
         emailChangeForm.addEventListener('submit', function(e) {
-            e.preventDefault();
+            // e.preventDefault();
             const newEmail = newEmailInput ? newEmailInput.value.trim() : '';
             
             if (newEmail) {
@@ -471,11 +471,38 @@ if (emailChangeForm) {
         e.preventDefault();
         const newEmail = newEmailInput.value.trim();
         
-        if (newEmail) {
-            // Show loading state
-            sendLinkBtn.disabled = true;
-            emailSpinner.classList.remove('hidden');
-            
+        fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')  // required for Django POST
+                },
+                body: JSON.stringify({ email: newEmail })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log(data)
+            //messageBox.innerHTML = `<p style="color:green;">${data.message}</p>`;
+        })
+        .catch(err => {
+            messageBox.innerHTML = `<p style="color:red;">Something went wrong!</p>`;
+        });
+        });
+}
+
+
+// Helper to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
         }
-    });
+    }
+    return cookieValue;
 }

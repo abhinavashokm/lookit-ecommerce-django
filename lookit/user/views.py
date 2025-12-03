@@ -4,13 +4,15 @@ from .models import User, OTP, Address
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from .utils import generate_otp, generate_referral_code, send_otp_email
+from .utils import generate_otp, generate_referral_code, send_otp_email, send_email_verification
 from datetime import timedelta
 from django.utils import timezone
 from cloudinary.uploader import upload
 from django.db import transaction
 from django.http import JsonResponse
-
+import json
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import  urlsafe_base64_decode
 
 def user_login(request):
     if request.method == 'POST':
@@ -401,3 +403,43 @@ def change_password(request):
 def address_book(request):
     address_list = Address.objects.filter(user = request.user, is_active = True).order_by("-is_default", "-created_at")
     return render(request, "user/profile/address_book.html", {"address_list": address_list})
+
+
+"""
+---EMAIL VERIFICATION-------------------------------
+"""
+
+@login_required
+def change_user_email(request):
+    print("call is here.....")
+    data = json.loads(request.body)
+    new_email = data.get('email')  # ✅ Works here
+
+    # Store temporarily
+    request.session['pending_new_email']= new_email
+
+    # Send verification mail
+    send_email_verification(request.user, new_email, request)
+    
+    return JsonResponse({'message': 'Verification email sent!'})
+
+
+
+def verify_email(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    new_email = request.GET.get('new_email')
+
+    if user and default_token_generator.check_token(user, token):
+        user.email = new_email
+        user.pending_email = None
+        user.save()
+        messages.success(request, "Email updated successfully!")
+    else:
+        messages.error(request, "Invalid or expired verification link.")
+
+    return redirect("account-details")  # redirect to profile page

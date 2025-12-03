@@ -15,6 +15,8 @@ from .views import (
     address_book,
     set_default_address,
     profile_send_otp,
+    change_user_email,
+    verify_email,
 )
 
 urlpatterns = [
@@ -32,6 +34,8 @@ urlpatterns = [
     path('address-book/', address_book, name="address-book"),
     path("set-default-address/<address_id>/", set_default_address, name="set-default-address"),
     path("profile/account-details/send-otp/", profile_send_otp, name="profile-send-otp"),
+    path("profile/account-details/change-email/", change_user_email, name="change-user-email"),
+    path('verify-email/<uidb64>/<token>/', verify_email, name='verify_email'),
     
     # password reset paths
     # 1.enter email and button for sent link

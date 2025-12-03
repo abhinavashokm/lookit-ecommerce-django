@@ -192,10 +192,12 @@
                     </svg>
                 </button>
             </div>
-            <form id="emailChangeForm" class="modal-form">
+
+            <form action="{% url 'change-user-email' %}" id="emailChangeForm" class="modal-form">
+                {% csrf_token %}
                 <div class="form-group">
                     <label for="newEmail">New Email Address</label>
-                    <input type="email" id="newEmail" name="newEmail" class="form-control" required 
+                    <input type="email" id="newEmail" name="new_email" class="form-control" required 
                            placeholder="name@example.com"
                            autocomplete="email"
                            inputmode="email">
@@ -215,6 +217,7 @@
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 
@@ -396,6 +399,6 @@ $(document).ready(function () {
 })
 </script>
 <script>
-    url = "{% url 'profile-send-otp' %}"
+    url = "{% url 'change-user-email' %}"
 </script>
 {% endblock %}
