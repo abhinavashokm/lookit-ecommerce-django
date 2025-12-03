@@ -41,11 +41,18 @@ def cart(request):
     tax = tax.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
     cart_summary = {"sub_total": sub_total, "tax": tax, "grand_total": sub_total + tax}
+    
+    #--for disabling checkout button if a product is unavailable or out of stock
+    checkout_block = False
+    for item in cart_items:
+        if not item.stock_available or not item.is_product_active:
+            checkout_block = True
+            break
 
     return render(
         request,
         'cart/cart.html',
-        {"cart_items": cart_items, "cart_summary": cart_summary},
+        {"cart_items": cart_items, "cart_summary": cart_summary, "checkout_block":checkout_block},
     )
 
 

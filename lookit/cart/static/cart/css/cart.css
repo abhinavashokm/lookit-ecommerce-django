@@ -259,6 +259,17 @@
     background: #7a3d5a;
 }
 
+.checkout-btn:disabled {
+    background: #c7b0bb;        /* faded purple */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.checkout-btn:disabled:hover {
+    background: #c7b0bb;        /* prevent hover effect */
+}
+
+
 .continue-shopping {
     display: inline-block;
     margin-top: 1.5rem;
@@ -487,14 +498,27 @@
    DISABLED CART ITEM STYLES
 ---------------------------------------------------- */
 
+/* Disabled Cart Item */
 .cart-item.disabled {
     opacity: 0.90;
     filter: grayscale(0.6);
-    pointer-events: none;         /* prevents clicking */
+    pointer-events: none;         /* disable all clicks */
     position: relative;
 }
 
-/* Optional blur overlay */
+/* Allow ONLY Remove button to work */
+.cart-item.disabled form {
+    pointer-events: auto;
+}
+
+.cart-item.disabled .remove-btn {
+    pointer-events: auto;
+    cursor: pointer !important;
+    opacity: 1 !important;
+    color: #ff4d4f !important;   /* restore original color */
+}
+
+/* Overlay — but allow pointer events to pass through */
 .cart-item.disabled::after {
     content: "Unavailable";
     position: absolute;
@@ -502,7 +526,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.151);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -510,14 +534,15 @@
     font-size: 1.1rem;
     color: #9a4d72;
     border-radius: 10px;
+    pointer-events: none; /* ensures remove button works */
 }
 
-/* Disable buttons inside */
-.cart-item.disabled .quantity-btn,
-.cart-item.disabled .remove-btn {
+/* Disable quantity buttons */
+.cart-item.disabled .quantity-btn {
     cursor: not-allowed !important;
     opacity: 0.5;
 }
+
 /* -----------------------------------------
    OUT OF STOCK CART ITEM STYLES
 ----------------------------------------- */
@@ -545,8 +570,7 @@
 }
 
 /* Disable interaction */
-.cart-item.out-of-stock .quantity-btn,
-.cart-item.out-of-stock .remove-btn {
+.cart-item.out-of-stock .quantity-btn{
     opacity: 0.5;
     cursor: not-allowed;
     pointer-events: none;

@@ -145,7 +145,7 @@
                 </div>
 
                 <a href="{% url 'checkout' %}">
-                    <button class="checkout-btn">Proceed to Checkout</button>
+                    <button class="checkout-btn" {% if checkout_block %}disabled{% endif %}>Proceed to Checkout</button>
                 </a>
 
                 <p style="text-align: center; color: #666; font-size: 0.9rem; margin-top: 1rem;">
