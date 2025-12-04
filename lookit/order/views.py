@@ -8,6 +8,7 @@ from django.db import transaction
 from cart.models import Cart
 from user.models import Address
 from .models import Order, OrderItems, ReturnRequest
+from product.models import Variant
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django.utils import timezone
@@ -32,6 +33,10 @@ def checkout(request):
     if not cart_item_count:
         messages.error(request, "PLEASE ADD ITEMS TO CONTINUE")
         return redirect('cart')
+    for item in order_items:
+        if item.quantity < 1 or item.quantity > 4:
+            messages.error(request, "Cart Quantity Need to be alteast 1 and atmost 4")
+            return redirect('cart')
 
     # ---address list of user, (default address first order)---
     address_list = Address.objects.filter(user=request.user, is_active=True).order_by(
@@ -178,6 +183,15 @@ def place_order(request, order_id):
                     payment_status=Order.PaymentMethod.COD,
                     placed_at=timezone.now(),
                 )
+                #--handle stock count of the product---
+                order_items = OrderItems.objects.filter(order_id=order_id)
+                print(order_items)
+                for item in order_items:
+                    print(item.product.name,item.variant.stock)
+                    item.variant.stock -= item.quantity
+                    print(item.product.name,item.variant.stock)
+                    item.variant.save() 
+
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
         except Exception as e:
             messages.error(request, e)
@@ -405,11 +419,16 @@ def download_invoice_pdf(request, order_uuid):
 def cancel_order(request, order_item_uuid):
     try:
         order_item = OrderItems.objects.get(uuid=order_item_uuid)
+        variant = Variant.objects.get(id=order_item.variant.id)
+        
         if order_item.order.user == request.user:
-            order_item.order_status = 'CANCELLED'
-            order_item.cancelled_at = timezone.now()
-            order_item.save()
-            messages.success(request, "Order Cancelled.")
+            with transaction.atomic():
+                order_item.order_status = 'CANCELLED'
+                order_item.cancelled_at = timezone.now()
+                variant.stock += 1
+                order_item.save()
+                variant.save()
+                messages.success(request, "Order Cancelled.")
         else:
             messages.error(request, "Unauthorized Access")
     except Exception as e:
@@ -685,6 +704,11 @@ def admin_update_return_status(request, return_request_uuid):
             elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
                 return_request.pickedup_at = timezone.now()
                 return_request.refunded_at = None
+                #--handle stock------------------
+                quantity_returned = return_request.order_item.quantity
+                variant = return_request.variant
+                variant.stock += quantity_returned
+                variant.save()
             elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
                 return_request.refunded_at = timezone.now()
  

@@ -3,6 +3,7 @@ from user.models import User, Address
 from product.models import Variant
 import uuid
 from django.utils import timezone
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Order(models.Model):
@@ -53,7 +54,12 @@ class OrderItems(models.Model):
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
     payment_status = models.CharField(max_length=30, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
     
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(4)
+        ]
+    )
     unit_price = models.DecimalField(max_digits=10, decimal_places=2) #base price without tax
     sub_total = models.DecimalField(max_digits=10, decimal_places=2) #quantity x unit_price
     delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -134,6 +140,10 @@ class ReturnRequest(models.Model):
     @property
     def product(self):
         return self.order_item.variant.product
+    
+    @property
+    def variant(self):
+        return self.order_item.variant
     
     def save(self, *args, **kwargs):
         if not self.uuid:
