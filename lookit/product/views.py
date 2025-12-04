@@ -321,8 +321,10 @@ def admin_update_stock(request):
 def admin_delete_variant(request, variant_id):
     if request.method == "POST":
         product_id = request.POST.get('product_id')
-        Variant.objects.get(id=variant_id).delete()
-        messages.success(request, f"VARIANT DELETED")
+        variant = Variant.objects.get(id=variant_id)
+        variant.stock=0
+        variant.save()
+        messages.success(request, f"Size {variant.size} Stocks Removed")
         return redirect('admin-manage-stocks', product_id=product_id)
 
 @admin_required

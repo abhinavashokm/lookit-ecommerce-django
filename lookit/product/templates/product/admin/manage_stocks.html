@@ -90,7 +90,7 @@
 
                             <button class="btn-remove" onclick="openRemoveModal('{{ variant.id }}')">
                                 <span>🗑️</span>
-                                <span>Remove</span>
+                                <span>Empty</span>
                             </button>
 
                         </td>
@@ -103,7 +103,7 @@
                                 <h2 class="modal-title">Remove Variant</h2>
                             </div>
                             <div class="modal-body">
-                                <p class="modal-message">Are you sure you want to remove size {{ variant.size }} variant? All stocks of this variant will be permanently removed from the product.</p>
+                                <p class="modal-message">Are you sure you want to remove all stocks of size {{ variant.size }} variant?</p>
                             </div>
                             <div class="modal-actions">
                                 <button class="modal-btn modal-btn-cancel" onclick="closeRemoveModal()">Cancel</button>

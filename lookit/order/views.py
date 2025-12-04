@@ -36,18 +36,39 @@ def checkout(request):
             sub_total_per_product=ExpressionWrapper(
                 F('variant__product__price') * F('quantity'),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
-            )
+            ),
+            stock_available=F('variant__stock'),
         )
     )
 
+    # --check cart empty---
     cart_item_count = order_items.count()
     if not cart_item_count:
         messages.error(request, "PLEASE ADD ITEMS TO CONTINUE")
         return redirect('cart')
+
+    # --stock and availability validations--------------------
     for item in order_items:
-        if item.quantity < 1 or item.quantity > 4:
-            messages.error(request, "Cart Quantity Need to be alteast 1 and atmost 4")
-            return redirect('cart')
+        error = None
+        if not item.product.is_active:
+            error = "Product Is Unavailable"
+            break
+        elif item.quantity < 1 or item.quantity > 4:
+            # --min and max quantity validation. min 1 and max 4.
+            error = "Cart Quantity Need to be alteast 1 and atmost 4"
+            break
+        elif item.stock_available == 0:
+            error = "Out of stock products in cart."
+            break
+        elif item.stock_available < item.quantity:
+            error = "Requested quantity not available for some products."
+            item.quantity = item.stock_available
+            item.save()
+            break
+
+    if error:
+        messages.error(request, error)
+        return redirect('cart')
 
     # ---address list of user, (default address first order)---
     address_list = Address.objects.filter(user=request.user, is_active=True).order_by(
@@ -259,19 +280,23 @@ def my_orders(request):
 def track_order(request, order_uuid):
     order_item = OrderItems.objects.get(uuid=order_uuid)
     delivery_address = order_item.order.address
-    
-    #--for checking return eligibility if delivered
+
+    # --for checking return eligibility if delivered
     seven_days_ago = timezone.now() - timedelta(days=7)
     delivered_date = order_item.delivered_at
     if delivered_date > seven_days_ago and delivered_date:
-        eligible_for_return = True #7 days not passed
+        eligible_for_return = True  # 7 days not passed
     else:
-        eligible_for_return = False #7 days passed
-    
+        eligible_for_return = False  # 7 days passed
+
     return render(
         request,
         "order/track_order.html",
-        {"order": order_item, "address": delivery_address, "eligible_for_return": eligible_for_return},
+        {
+            "order": order_item,
+            "address": delivery_address,
+            "eligible_for_return": eligible_for_return,
+        },
     )
 
 
@@ -488,21 +513,19 @@ def cancel_order(request, order_item_uuid):
 @login_required
 def return_request_form(request, order_uuid):
     if request.method == "POST":
-        
+
         order_item = OrderItems.objects.get(uuid=order_uuid)
-        
-        #--for checking return eligibility if delivered
+
+        # --for checking return eligibility if delivered
         seven_days_ago = timezone.now() - timedelta(days=7)
         delivered_date = order_item.delivered_at
         eligible_for_return = False
         if delivered_date > seven_days_ago and delivered_date:
-            eligible_for_return = True #7 days not passed
-            
+            eligible_for_return = True  # 7 days not passed
+
         if not eligible_for_return:
             messages.error(request, "Not Eligible For Return")
             return redirect('return-request-form', order_uuid=order_uuid)
-
-        
 
         reason = request.POST.get('reason')
         comments = request.POST.get('comments')
@@ -731,7 +754,7 @@ def admin_list_return_requests(request):
         .order_by("-request_date")
     )
 
-    #---search filter-----------------
+    # ---search filter-----------------
     search = request.GET.get('search')
     print(search, "hello")
     if search:
@@ -739,11 +762,11 @@ def admin_list_return_requests(request):
             Q(order_item__variant__product__name__icontains=search)
             | Q(order_item__order__user__full_name__icontains=search)
         )
-        
+
     return_status = request.GET.get("return_status")
     if return_status:
         return_request_list = return_request_list.filter(status=return_status.upper())
-        
+
     # ---- DATE filter ----
     date_range = request.GET.get('date_range')
     if date_range:
@@ -754,14 +777,18 @@ def admin_list_return_requests(request):
 
         elif date_range == 'week':
             start_of_week = today - timedelta(days=today.weekday())
-            return_request_list = return_request_list.filter(request_date__date__gte=start_of_week)
+            return_request_list = return_request_list.filter(
+                request_date__date__gte=start_of_week
+            )
 
         elif date_range == 'month':
             return_request_list = return_request_list.filter(
                 request_date__year=today.year, request_date__month=today.month
             )
         elif date_range == 'year':
-            return_request_list = return_request_list.filter(request_date__year=today.year)
+            return_request_list = return_request_list.filter(
+                request_date__year=today.year
+            )
 
     paginator = Paginator(return_request_list, 5)
     page_number = request.GET.get('page')
