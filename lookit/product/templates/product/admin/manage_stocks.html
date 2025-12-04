@@ -82,8 +82,8 @@
 
                         </td>
                         <td class="actions-cell">
-                            <button class="btn-update" id="update-btn-1"
-                                onclick="submitStock('{{ variant.id }}', '{{ csrf_token }}')">
+                            <button id="{{variant.id}}-submitBtn" class="btn-update" id="update-btn-1"
+                                onclick="submitStock('{{ variant.id }}', '{{ csrf_token }}')" disabled>
                                 <span>✓</span>
                                 <span>Update</span>
                             </button>

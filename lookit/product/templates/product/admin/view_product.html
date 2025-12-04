@@ -20,6 +20,9 @@
         <h1 class="page-title">Product Details</h1>
         <div class="page-actions">
             {% if product.is_active %}
+            <a style="text-decoration: none;" href="{% url 'admin-manage-stocks' product.id %}">
+                <button class="btn-primary">Manage Stocks</button>
+            </a>
             <a href="{% url 'admin-edit-product' product.id %}">
                 <button class="btn-secondary">Edit</button>
             </a>

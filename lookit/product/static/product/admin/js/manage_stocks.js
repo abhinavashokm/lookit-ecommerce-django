@@ -404,8 +404,13 @@ function changePage(page) {
 function updateStock(variantId, change) {
     stock = document.getElementById(variantId).innerText
     stock = parseInt(stock) + change
-    document.getElementById(variantId).innerHTML = stock
+    if(stock >= 0){
+        document.getElementById(variantId).innerHTML = stock
 
+        //make submit stock button active
+        sumbitBtn = document.getElementById(variantId+'-submitBtn')
+        sumbitBtn.disabled = false
+    }
 }
 
 function submitStock(variantId, csrfToken) {
@@ -424,6 +429,8 @@ function submitStock(variantId, csrfToken) {
     })
         .then(response => response.json())
         .then(data => {
+            sumbitBtn = document.getElementById(variantId+'-submitBtn')
+            sumbitBtn.disabled = true
             document.getElementById('totalStock').innerHTML = data.new_stock;
         });
 }

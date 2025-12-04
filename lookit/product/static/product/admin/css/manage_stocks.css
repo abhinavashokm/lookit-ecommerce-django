@@ -724,3 +724,23 @@
           text-overflow: ellipsis;
           vertical-align: middle;
       }
+
+
+.btn-update:disabled {
+    background: #e5e7eb !important;        /* Light gray */
+    border-color: #d1d5db !important;      /* Slightly darker border */
+    color: #9ca3af !important;             /* Muted text/icon */
+    cursor: not-allowed !important;
+    opacity: 0.7;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Prevent hover effect when disabled */
+.btn-update:disabled:hover {
+    background: #e5e7eb !important;
+    border-color: #d1d5db !important;
+    color: #9ca3af !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
