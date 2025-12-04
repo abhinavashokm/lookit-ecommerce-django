@@ -45,7 +45,7 @@
                 </div>
                 <div class="order-meta">
                     <p class="meta-label">Order ID</p>
-                    <p class="meta-value">{{ order.order_item_id }}</p>
+                    <p class="meta-value">{{ order.uuid }}</p>
                 </div>
             </div>
 
@@ -213,7 +213,7 @@
         </div>
         <div class="danger_modal-actions">
             <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDangerModal()">Cancel</button>
-            <form action="{% url 'cancel-order' order.id %}" method="post">
+            <form action="{% url 'cancel-order' order.uuid %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="danger_modal-btn danger_modal-btn-confirm">Confirm</button>
             </form>

@@ -41,6 +41,12 @@ function openModal() {
     document.body.style.overflow = 'hidden';
 }
 
+function closeModalHandler() {
+    addressModal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+    addressForm.reset();
+}
+
 function openEditAddressModal(address_id){
     const editAddressModal = document.getElementById('editAddressModal'+address_id);
     editAddressModal.style.display = 'block'
@@ -52,29 +58,6 @@ function closeEditAddressModal(address_id){
     editAddressModal.style.display = 'none'
     document.body.style.overflow = 'auto';
 }
-
-function closeModalHandler() {
-    addressModal.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    addressForm.reset();
-}
-
-function getCountryName(countryCode) {
-    const countries = {
-        'US': 'United States',
-        'CA': 'Canada',
-        'UK': 'United Kingdom',
-        'AU': 'Australia',
-        'IN': 'India',
-        'JP': 'Japan',
-        'DE': 'Germany',
-        'FR': 'France',
-        'BR': 'Brazil',
-        'CN': 'China'
-    };
-    return countries[countryCode] || countryCode;
-}
-
 
 // ==============================
 // Delete Modal Functions

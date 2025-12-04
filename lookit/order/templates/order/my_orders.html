@@ -52,7 +52,14 @@
         {% endif %}
         {% for order in orders %}
         {% for item in order.items.all %}
-        <div class="cart-item">
+        <div class="cart-item {% if item.order_status == 'CANCELLED' %}order-cancelled{% elif item.return_request.status == 'PICKED_UP' %}order-returned {% elif item.return_request.status == 'REFUNDED'  %}order-refunded{% endif %}">
+            {% if item.order_status == 'CANCELLED' %}
+              <div class="cancelled-badge">CANCELLED</div>
+            {% elif item.return_request.status == 'PICKED_UP' %}
+              <div class="order-badge returned-badge">RETURNED</div>
+            {% elif item.return_request.status == 'REFUNDED'  %}
+                <div class="order-badge refunded-badge">REFUNDED</div>
+            {% endif %}
             <img src="{{ item.product.image_url }}" alt="Product" class="item-image">
             <div class="item-details">
                 <h3 class="item-title">{{ item.product.name }}</h3>

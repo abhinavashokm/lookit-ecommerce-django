@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Value
+from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Value, When, Case, Min, IntegerField
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from django.db import transaction
@@ -206,7 +206,21 @@ def my_orders(request):
     orders = (
         Order.objects.filter(user=request.user)
         .prefetch_related('items')
-        .order_by('-created_at')
+        .annotate(
+        status_priority=Min(
+            Case(
+                When(items__order_status='OUT_FOR_DELIVERY', then=Value(1)),
+                When(items__order_status='SHIPPED', then=Value(2)),
+                When(items__order_status='PLACED', then=Value(3)),
+                When(items__order_status='DELIVERED', then=Value(4)),
+                When(items__order_status='RETURNED', then=Value(5)),
+                When(items__order_status='CANCELLED', then=Value(6)),
+                default=Value(7),
+                output_field=IntegerField(),
+            )
+        )
+    )
+        .order_by('status_priority' ,'-created_at')
     )
     return render(request, "order/my_orders.html", {"orders": orders})
 
@@ -223,9 +237,9 @@ def track_order(request, order_uuid):
 
 
 @login_required
-def cancel_order(request, order_item_id):
+def cancel_order(request, order_item_uuid):
     try:
-        order_item = OrderItems.objects.get(id=order_item_id)
+        order_item = OrderItems.objects.get(uuid=order_item_uuid)
         if order_item.order.user == request.user:
             order_item.order_status = 'CANCELLED'
             order_item.cancelled_at = timezone.now()
@@ -235,7 +249,7 @@ def cancel_order(request, order_item_id):
             messages.error(request, "Unauthorized Access")
     except Exception as e:
         messages.error(request, e)
-    return redirect('track-order', order_item_id=order_item_id)
+    return redirect('track-order', order_uuid=order_item_uuid)
 
 
 @login_required

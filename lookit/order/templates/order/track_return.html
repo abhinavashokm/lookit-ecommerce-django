@@ -232,7 +232,7 @@
         </div>
         <div class="danger_modal-actions">
             <button class="danger_modal-btn danger_modal-btn-cancel" onclick="closeDangerModal()">Cancel</button>
-            <form action="{% url 'cancel-order' order.id %}" method="post">
+            <form action="{% url 'cancel-order' order.uuid %}" method="post">
                 {% csrf_token %}
                 <button type="submit" class="danger_modal-btn danger_modal-btn-confirm">Confirm</button>
             </form>

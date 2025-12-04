@@ -67,7 +67,7 @@
                     <p>{{ address.city }}, Pin: {{ address.pincode }}</p>
                     <p>{{ address.state }}</p>
                     <p class="address-phone">
-                        <i class="fas fa-phone-alt"></i> {{ address.phone }}, {{ address.second_phone }}
+                        <i class="fas fa-phone-alt"></i> {{ address.phone }}{% if address.second_phone %}, {{ address.second_phone }}{% endif %}
                     </p>
                 </div>
             </div>
@@ -125,8 +125,8 @@
                                             <input type="tel" id="phoneNumber" name="phone" value="{{ address.phone }}" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="phoneNumber">Second Phone Number *</label>
-                                            <input type="tel" id="phoneNumber" name="second_phone" value="{{ address.second_phone }}" required>
+                                            <label for="phoneNumber">Second Phone Number (Optional)</label>
+                                            <input type="tel" id="phoneNumber" name="second_phone" value="{{ address.second_phone }}">
                                         </div>
                                     </div>
                                 </div>
@@ -222,7 +222,7 @@
     <div class="modal-content">
         <div class="modal-header">
             <h3><i class="fas fa-map-marker-alt"></i> <span id="modalTitle">Add New Address</span></h3>
-            <button class="close-modal" id="closeModal">&times;</button>
+            <button onclick="closeModalHandler()" class="close-modal" id="closeModal">&times;</button>
         </div>
         <div class="modal-body">
 
@@ -245,8 +245,8 @@
                             <input type="tel" id="phoneNumber" name="phone" required>
                         </div>
                         <div class="form-group">
-                            <label for="phoneNumber">Second Phone Number *</label>
-                            <input type="tel" id="phoneNumber" name="second_phone" required>
+                            <label for="phoneNumber">Second Phone Number (Optional)</label>
+                            <input type="tel" id="phoneNumber" name="second_phone">
                         </div>
                     </div>
                 </div>
@@ -320,7 +320,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
+                    <button onclick="closeModalHandler()"  type="button" class="btn btn-outline" id="cancelBtn">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Address</button>
                 </div>
             </form>
