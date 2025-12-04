@@ -147,7 +147,7 @@ function increaseQuantity() {
     const quantityInputForForm = document.getElementById('hiddenQuantityInput')
 
     let currentValue = parseInt(quantityInput.value);
-    if (currentValue < 10) {
+    if (currentValue < 4) {
         let new_quantity = currentValue + 1;
         quantityInput.value = new_quantity
         quantityInputForForm.value = new_quantity

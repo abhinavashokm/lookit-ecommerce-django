@@ -9,6 +9,16 @@
 
 <!-- Return Request Form -->
 <div class="return-container">
+
+            <!-- Breadcrumb Navigation -->
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+            <ol>
+                <li><a href="{% url 'my-orders' %}">My Orders</a></li>
+                <li><a href="{% url 'track-order' order.uuid %}">{{ order.product.name }}</a></li>
+                <li aria-current="page">Return Order</li>
+            </ol>
+        </nav>
+
     <div class="return-header">
         <h1>Return Order</h1>
         <p>You can return your product within 7 days of delivery. Please ensure the product is unused and in its original packaging.</p>
@@ -89,7 +99,9 @@
             </div>
 
             <div class="action-buttons">
+                <a href="{% url 'track-order' order.uuid %}">
                 <button type="button" class="btn btn-outline">Cancel</button>
+                </a>
                 <button type="submit" class="btn btn-primary">Submit Return Request</button>
             </div>
         </form>

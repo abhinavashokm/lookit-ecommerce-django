@@ -475,7 +475,7 @@ def explore(request):
 
 
 def product_details(request, product_uuid):
-
+    #--fetch product----------------------------
     product = (
         Product.objects.filter(uuid=product_uuid)
         .annotate(
@@ -496,7 +496,7 @@ def product_details(request, product_uuid):
         output_field=IntegerField(),
     )
     # ---fetch all available sizes of this product-----------------------
-    sizes = Variant.objects.filter(product=product).order_by(size_order)
+    variants = Variant.objects.filter(product=product).order_by(size_order)
 
     # ---redirect to product listing page if product is not active-------
     if not product.is_active:
@@ -519,7 +519,7 @@ def product_details(request, product_uuid):
             "product": product,
             'old_price': old_price,
             'additional_product_images': product_images,
-            'sizes': sizes,
+            'variants': variants,
             "related_products": related_products,
         },
     )
@@ -548,9 +548,22 @@ def add_to_cart(request):
             messages.error(request, "PRODUCT IS ALREADY IN CART")
             return redirect('product-details', product_uuid = product.uuid)
         
+        #--stock validation---
+        stock_mismatch = None
+        variant = Variant.objects.get(id=variant_id)
+        if int(variant.stock) == 0:
+            messages.error(request, "")
+            return redirect('product-details', product_uuid = product.uuid)
+        elif int(variant.stock) < int(qunatity):
+            stock_mismatch = f"Product Added to Cart. (note: only {variant.stock} stocks are available.)"
+            qunatity = variant.stock
+        
         try:
             Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
-            messages.success(request, "PRODUCT ADDED TO CART")
+            if stock_mismatch:
+                messages.success(request, stock_mismatch)
+            else:
+                messages.success(request, "Product Added to Cart")
         except Exception as e:
             print(e)
             messages.error(request, e)

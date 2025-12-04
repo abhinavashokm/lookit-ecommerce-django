@@ -144,8 +144,8 @@
                 <h2 class="section-heading">Select Size</h2>
 
                 <div class="size-options" id="sizeOptions">
-                    {% for size in sizes %}
-                    <button class="size-btn {% if forloop.first %}active{% endif %}" value="{{ size.id }}" onclick="selectSize(this, '{{ size.id }}')">{{ size.size }}</button>
+                    {% for variant in variants %}
+                    <button class="size-btn {% if forloop.first %}active{% endif %}" value="{{ variant.id }}" onclick="selectSize(this, '{{ variant.id }}')">{{ variant.size }}</button>
                     {% endfor %}
                     <!-- <button class="size-btn" onclick="selectSize(this)">S</button>
                     <button class="size-btn active" onclick="selectSize(this)">M</button> -->
