@@ -348,7 +348,7 @@
             <h3>Change Order Status</h3>
             <button class="close-btn" onclick="closeStatusModal()">&times;</button>
         </div>
-        <form action="{% url 'update-delivery-status' order.id %}" method="post">
+        <form action="{% url 'update-delivery-status' order.uuid %}" method="post">
             {% csrf_token %}
             <div class="modal-body">
                 <div class="order-info">

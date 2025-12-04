@@ -37,7 +37,7 @@
 
             <div class="search-container">
                 <div class="search-bar">
-                    <input type="text" name="search" placeholder="Search Orders.." id="searchInput"
+                    <input type="text" name="search" placeholder="Search Orders by product name or customer name.." id="searchInput"
                         value="{{ request.GET.search }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
@@ -180,7 +180,7 @@
                         {{ order.created_at.date }}
                     </td>
                     <td>
-                        <a href="{% url 'admin-order-details' order.id %}">
+                        <a href="{% url 'admin-order-details' order.uuid %}">
                             <button class="btn-view">View</button>
                         </a>
                     </td>

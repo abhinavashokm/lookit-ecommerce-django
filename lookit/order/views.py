@@ -248,7 +248,7 @@ def return_request_form(request, order_uuid):
         reason = request.POST.get('reason')
         comments = request.POST.get('comments')
         
-        images = request.FILES.getlist('product_images',0)
+        images = request.FILES.getlist('product_images')
         print(request.FILES)
         print("images",images)
 
@@ -331,8 +331,9 @@ def return_request_form(request, order_uuid):
         except Exception as e:
             print(e)
             messages.error(request, e)
+            return redirect('return-request-form', order_uuid=order_uuid)
 
-        return redirect('return-request-form', order_uuid=order_uuid)
+        return redirect('track_return_request', order_uuid=order_uuid)
 
     order = OrderItems.objects.get(uuid=order_uuid)
     address_list = Address.objects.filter(user=request.user, is_active=True).order_by(
@@ -412,8 +413,8 @@ def admin_list_orders(request):
     return render(request, "order/admin/list.html", {"page_obj": page_obj})
 
 
-def admin_order_details(request, order_item_id):
-    order_item = OrderItems.objects.get(id=order_item_id)
+def admin_order_details(request, order_item_uuid):
+    order_item = OrderItems.objects.get(uuid=order_item_uuid)
     customer = order_item.order.user
     address = order_item.order.address
     return render(
@@ -423,11 +424,11 @@ def admin_order_details(request, order_item_id):
     )
 
 
-def admin_update_delivery_status(request, order_item_id):
+def admin_update_delivery_status(request, order_item_uuid):
     if request.method == "POST":
         order_status = request.POST.get("order_status")
         try:
-            order_item = OrderItems.objects.get(id=order_item_id)
+            order_item = OrderItems.objects.get(uuid=order_item_uuid)
             if order_status.upper() in OrderItems.OrderStatus.values:
                 order_item.order_status = order_status.upper()
 
@@ -455,7 +456,7 @@ def admin_update_delivery_status(request, order_item_id):
         except Exception as e:
             messages.error(request, e)
 
-    return redirect('admin-order-details', order_item_id=order_item_id)
+    return redirect('admin-order-details', order_item_uuid=order_item_uuid)
 
 
 def admin_list_return_requests(request):
@@ -464,8 +465,8 @@ def admin_list_return_requests(request):
 
 
 
-def admin_return_details(request, return_request_id):
-    return_request = ReturnRequest.objects.get(id=return_request_id)
+def admin_return_details(request, return_request_uuid):
+    return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
     order_item = return_request.order_item
     customer = order_item.order.user
     address = order_item.order.address
@@ -477,12 +478,12 @@ def admin_return_details(request, return_request_id):
     )
     
 
-def admin_update_return_status(request, return_request_id):
+def admin_update_return_status(request, return_request_uuid):
     if request.method == "POST":
         return_status = request.POST.get("return_status")
 
         if return_status in ReturnRequest.ReturnStatus.values:
-            return_request = ReturnRequest.objects.get(id=return_request_id)
+            return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
             return_request.status = return_status
 
             # Set relevant timestamp based on new status
@@ -514,4 +515,4 @@ def admin_update_return_status(request, return_request_id):
         else:
             messages.error(request, "Invalid return status.")
 
-    return redirect("admin-return-details", return_request_id=return_request_id)
+    return redirect("admin-return-details", return_request_uuid=return_request_uuid)

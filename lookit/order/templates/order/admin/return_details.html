@@ -201,7 +201,7 @@
       <button class="btn btn-primary" onclick="openStatusModal()">
         <i class="fas fa-edit"></i> Update Return Status
       </button>
-      <form action="{% url 'admin-update-return-status' return_request.id %}" method="post">
+      <form action="{% url 'admin-update-return-status' return_request.uuid %}" method="post">
         {% csrf_token %}
         <input  type="hidden" name="return_status" value="REJECTED">
         <button type="submit" class="btn btn-danger">
@@ -219,7 +219,7 @@
       <button class="close-btn" onclick="closeStatusModal()">&times;</button>
     </div>
 
-    <form action="{% url 'admin-update-return-status' return_request.id %}" method="post">
+    <form action="{% url 'admin-update-return-status' return_request.uuid %}" method="post">
       {% csrf_token %}
       <div class="modal-body">
         <div class="order-info">

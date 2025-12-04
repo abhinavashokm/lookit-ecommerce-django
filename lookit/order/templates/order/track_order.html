@@ -115,6 +115,16 @@
                 </div>
             </div>
             {% endif %}
+
+            {% if order.return_request %}
+            <div class="order-status-cancelled">
+                <i class="fas fa-times-circle"></i>
+                <div>
+                    <h3>Return Request Submitted.</h3>
+                    <p>Request for return submitted at <strong>{{ order.return_request.request_date|date:"M d, Y h:i A" }}</strong>.</p>
+                </div>
+            </div>
+            {% endif %}
             
             <div class="order-details">
                 <!-- Product Info - Full Width -->
@@ -185,7 +195,7 @@
                 {% if order.order_status == "PLACED" or order.order_status == "SHIPPED" or order.order_status == "SHIPPED" %}
                     <button onclick="openDangerModal()" class="btn btn-danger">Cancel Order</button>
                 {% endif %}
-                {% if order.order_status == "DELIVERED" %}
+                {% if order.order_status == "DELIVERED" and not order.return_request %}
                     <a href="{% url 'return-request-form' order.uuid %}" class="btn btn-danger">Return Order</a>
                 {% endif %}
             </div>

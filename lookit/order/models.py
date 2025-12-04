@@ -47,7 +47,7 @@ class OrderItems(models.Model):
         COD = 'COD', 'Cash on Delivery'
         REFUNDED = 'REFUNDED', 'Refunded'
         
-    uuid = models.CharField(max_length=20, blank=True, null=True) # add unique True
+    uuid = models.CharField(max_length=20, unique=True, blank=True, null=True)
         
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
     variant = models.ForeignKey(Variant, on_delete=models.CASCADE)
@@ -99,6 +99,7 @@ class ReturnRequest(models.Model):
         PICKED_UP = 'PICKED_UP', 'Picked Up'
         REFUNDED = 'REFUNDED', 'Refund Completed'
 
+    uuid = models.CharField(max_length=20, blank=True, null=True)
     order_item = models.OneToOneField(OrderItems, on_delete=models.CASCADE, related_name="return_request")
     
     pickup_address = models.ForeignKey(Address, on_delete=models.PROTECT)
@@ -133,4 +134,12 @@ class ReturnRequest(models.Model):
     @property
     def product(self):
         return self.order_item.variant.product
+    
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            year = timezone.now().year
+            prefix = "RTN"
+            unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
+            self.uuid = f"{prefix}-{year}-{unique_num}"
+        super().save(*args, **kwargs)
 

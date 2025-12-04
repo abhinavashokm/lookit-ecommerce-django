@@ -64,7 +64,7 @@
                         <button class="btn btn-view">View Product</button>
                     </a>
                     <a href="{% url 'track-order' item.uuid %}">
-                        <button class="btn btn-track">Track Order</button>
+                        <button class="btn btn-track">{% if not item.return_request %}Track Order{% else %}Order Details{% endif %}</button>
                     </a>
                     {% if item.return_request %}
                     <a href="{% url 'track_return_request' item.uuid %}">
