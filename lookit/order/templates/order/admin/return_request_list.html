@@ -17,7 +17,7 @@
     <!-- Search and Filters -->
     <div class="filters-section">
         <!-- Search Form -->
-        <form method="GET" action="{% url 'admin-list-orders' %}" id="searchForm" class="search-form">
+        <form method="GET" action="{% url 'admin-list-return-requests' %}" id="searchForm" class="search-form">
 
 
             <!--to preserve filter query params-->
@@ -37,7 +37,7 @@
 
             <div class="search-container">
                 <div class="search-bar">
-                    <input type="text" name="search" placeholder="Search Orders.." id="searchInput"
+                    <input type="text" name="search" placeholder="Search Orders By Product Name or Customer Name.." id="searchInput"
                         value="{{ request.GET.search }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
@@ -48,7 +48,7 @@
 
                     <!--search field clear button-->
                     <div class="search-actions">
-                        <a href="{% url 'admin-list-orders' %}??{% for key, value in request.GET.items %}{% if key != 'search' %}{{ key }}={{ value }}&{% endif %}{% endfor %}">
+                        <a href="{% url 'admin-list-return-requests' %}??{% for key, value in request.GET.items %}{% if key != 'search' %}{{ key }}={{ value }}&{% endif %}{% endfor %}">
                             <button type="button" class="clear-btn" id="clearBtn">
                                 <svg viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -57,7 +57,6 @@
                             </button>
                         </a>
                     </div>
-
                 </div>
                 <button type="submit" class="search-btn" id="searchBtn">
                     <svg viewBox="0 0 24 24">
@@ -77,7 +76,7 @@
             {% if request.GET.search %}
             <input type="hidden" value="{{ request.GET.search }}" name="search">
             {% endif %}
-            <div class="filters-container {% if request.GET.date_range or request.GET.payment_method or request.GET.payment_status or request.GET.order_status %}show{% endif %}" id="filtersContainer">
+            <div class="filters-container {% if request.GET.date_range or request.GET.return_status %}show{% endif %}" id="filtersContainer">
                 <div class="filters-row">
 
                     <div class="filter-group">
@@ -96,22 +95,46 @@
 
 
                     <div class="filter-group">
-                        <select name="order_status" id="priceSelect" class="filter-select">
+                        <select name="return_status" id="returnStatusSelect" class="filter-select">
                             <option value="">Return Status</option>
-                            <option value="initiated" {% if request.GET.order_status == 'initiated' %}selected{% endif %}>INITIATED</option>
-                            <option value="placed" {% if request.GET.order_status == 'placed' %}selected{% endif %}>PLACED</option>
-                            <option value="shipped" {% if request.GET.order_status == 'shipped' %}selected{% endif %}>SHIPPED</option>
-                            <option value="out_for_delivery" {% if request.GET.order_status == 'out_for_delivery' %}selected{% endif %}>OUT FOR DELIVERY</option>
-                            <option value="delivered" {% if request.GET.order_status == 'delivered' %}selected{% endif %}>DELIVERED</option>
-                            <option value="cancelled" {% if request.GET.order_status == 'cancelled' %}selected{% endif %}>CANCELLED</option>
-                            <option value="returned" {% if request.GET.order_status == 'returned' %}selected{% endif %}>RETURNED</option>
+
+                            <option value="REQUESTED"
+                                {% if request.GET.return_status == 'REQUESTED' %}selected{% endif %}>
+                                Requested
+                            </option>
+
+                            <option value="APPROVED"
+                                {% if request.GET.return_status == 'APPROVED' %}selected{% endif %}>
+                                Approved
+                            </option>
+
+                            <option value="REJECTED"
+                                {% if request.GET.return_status == 'REJECTED' %}selected{% endif %}>
+                                Rejected
+                            </option>
+
+                            <option value="PICKUP_SCHEDULED"
+                                {% if request.GET.return_status == 'PICKUP_SCHEDULED' %}selected{% endif %}>
+                                Pickup Scheduled
+                            </option>
+
+                            <option value="PICKED_UP"
+                                {% if request.GET.return_status == 'PICKED_UP' %}selected{% endif %}>
+                                Picked Up
+                            </option>
+
+                            <option value="REFUNDED"
+                                {% if request.GET.return_status == 'REFUNDED' %}selected{% endif %}>
+                                Refund Completed
+                            </option>
                         </select>
                     </div>
+
 
                 </div>
                 <div class="filter-actions">
                     <button type="submit" class="btn btn-apply" id="applyFiltersBtn">Apply Filters</button>
-                    <a href="{% url 'admin-list-orders' %}">
+                    <a href="{% url 'admin-list-return-requests' %}">
                         <button type="button" class="btn btn-reset" id="resetFiltersBtn">Rest Filters</button>
                     </a>
                 </div>
@@ -136,7 +159,7 @@
             </thead>
             <tbody>
 
-                {% for return_request in return_request_list %}
+                {% for return_request in page_obj %}
                 <tr>
                     <td class="product-id">{{ return_request.order_item.uuid }}</td>
                     <td>

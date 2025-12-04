@@ -1,7 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.db.models import ExpressionWrapper, DecimalField, F, Sum, Value, When, Case, Min, IntegerField
+from django.db.models import (
+    ExpressionWrapper,
+    DecimalField,
+    F,
+    Sum,
+    Value,
+    When,
+    Case,
+    Min,
+    IntegerField,
+)
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from django.db import transaction
@@ -14,6 +24,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import date, timedelta
 from cloudinary.uploader import upload
+
 
 @login_required
 def checkout(request):
@@ -183,14 +194,14 @@ def place_order(request, order_id):
                     payment_status=Order.PaymentMethod.COD,
                     placed_at=timezone.now(),
                 )
-                #--handle stock count of the product---
+                # --handle stock count of the product---
                 order_items = OrderItems.objects.filter(order_id=order_id)
                 print(order_items)
                 for item in order_items:
-                    print(item.product.name,item.variant.stock)
+                    print(item.product.name, item.variant.stock)
                     item.variant.stock -= item.quantity
-                    print(item.product.name,item.variant.stock)
-                    item.variant.save() 
+                    print(item.product.name, item.variant.stock)
+                    item.variant.save()
 
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
         except Exception as e:
@@ -221,26 +232,26 @@ def my_orders(request):
         Order.objects.filter(user=request.user)
         .prefetch_related('items')
         .annotate(
-        status_priority=Min(
-            Case(
-                When(items__order_status='OUT_FOR_DELIVERY', then=Value(1)),
-                When(items__order_status='SHIPPED', then=Value(2)),
-                When(items__order_status='PLACED', then=Value(3)),
-                When(items__order_status='DELIVERED', then=Value(4)),
-                When(items__order_status='RETURNED', then=Value(5)),
-                When(items__order_status='CANCELLED', then=Value(6)),
-                default=Value(7),
-                output_field=IntegerField(),
+            status_priority=Min(
+                Case(
+                    When(items__order_status='OUT_FOR_DELIVERY', then=Value(1)),
+                    When(items__order_status='SHIPPED', then=Value(2)),
+                    When(items__order_status='PLACED', then=Value(3)),
+                    When(items__order_status='DELIVERED', then=Value(4)),
+                    When(items__order_status='RETURNED', then=Value(5)),
+                    When(items__order_status='CANCELLED', then=Value(6)),
+                    default=Value(7),
+                    output_field=IntegerField(),
+                )
             )
         )
+        .order_by('status_priority', '-created_at')
     )
-        .order_by('status_priority' ,'-created_at')
-    )
-    #--search functionality----------
+    # --search functionality----------
     search = request.GET.get('search')
     if search:
-        orders = orders.filter(items__variant__product__name__icontains = search)
-        
+        orders = orders.filter(items__variant__product__name__icontains=search)
+
     return render(request, "order/my_orders.html", {"orders": orders})
 
 
@@ -253,7 +264,8 @@ def track_order(request, order_uuid):
         "order/track_order.html",
         {"order": order_item, "address": delivery_address},
     )
-    
+
+
 from django.http import HttpResponse
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -286,7 +298,7 @@ def download_invoice_pdf(request, order_uuid):
         textColor=colors.HexColor("#9a4d72"),
         alignment=1,  # center
         spaceAfter=10,
-        fontName="Helvetica-Bold"
+        fontName="Helvetica-Bold",
     )
 
     section_title = ParagraphStyle(
@@ -323,22 +335,33 @@ def download_invoice_pdf(request, order_uuid):
     order_info = [
         ["Invoice No:", order_item.uuid],
         ["Order Date:", order_item.placed_at.strftime("%d %b %Y")],
-        ["Delivered Date:", order_item.delivered_at.strftime("%d %b %Y") if order_item.delivered_at else "-"],
+        [
+            "Delivered Date:",
+            (
+                order_item.delivered_at.strftime("%d %b %Y")
+                if order_item.delivered_at
+                else "-"
+            ),
+        ],
         ["Customer Name:", order_item.order.user.full_name],
         ["Payment Method:", order_item.order.payment_method],
     ]
 
     info_table = Table(order_info, colWidths=[110, 360])
-    info_table.setStyle(TableStyle([
-        ("BOX", (0, 0), (-1, -1), 0.8, colors.black),
-        ("INNERGRID", (0, 0), (-1, -1), 0.4, colors.grey),
-        ("BACKGROUND", (0, 0), (1, 0), colors.whitesmoke),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("PADDING", (0, 0), (-1, -1), 6),
-    ]))
+    info_table.setStyle(
+        TableStyle(
+            [
+                ("BOX", (0, 0), (-1, -1), 0.8, colors.black),
+                ("INNERGRID", (0, 0), (-1, -1), 0.4, colors.grey),
+                ("BACKGROUND", (0, 0), (1, 0), colors.whitesmoke),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("PADDING", (0, 0), (-1, -1), 6),
+            ]
+        )
+    )
 
     elements.append(info_table)
     elements.append(Spacer(1, 18))
@@ -348,29 +371,33 @@ def download_invoice_pdf(request, order_uuid):
     # -------------------------------------------
     elements.append(Paragraph("<b>Order Item Details</b>", section_title))
 
-    items_data = [
-        ["Product Name", "Qty", "Price", "Subtotal"]
-    ]
+    items_data = [["Product Name", "Qty", "Price", "Subtotal"]]
 
-    items_data.append([
-        order_item.product.name,
-        str(order_item.quantity),
-        f"₹{order_item.unit_price}",
-        f"₹{order_item.sub_total}",
-    ])
+    items_data.append(
+        [
+            order_item.product.name,
+            str(order_item.quantity),
+            f"₹{order_item.unit_price}",
+            f"₹{order_item.sub_total}",
+        ]
+    )
 
     items_table = Table(items_data, colWidths=[260, 60, 80, 90])
-    items_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f2f2f2")),
-        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
-        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("BOX", (0, 0), (-1, -1), 1, colors.black),
-        ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.grey),
-        ("PADDING", (0, 0), (-1, -1), 8),
-    ]))
+    items_table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f2f2f2")),
+                ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+                ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("BOX", (0, 0), (-1, -1), 1, colors.black),
+                ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("PADDING", (0, 0), (-1, -1), 8),
+            ]
+        )
+    )
 
     elements.append(items_table)
     elements.append(Spacer(1, 20))
@@ -388,12 +415,16 @@ def download_invoice_pdf(request, order_uuid):
     ]
 
     totals_table = Table(totals_data, colWidths=[150, 120])
-    totals_table.setStyle(TableStyle([
-        ("FONTNAME", (0, 0), (-1, 2), "Helvetica"),
-        ("FONTNAME", (0, 3), (-1, 3), "Helvetica-Bold"),
-        ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
-        ("PADDING", (0, 0), (-1, -1), 6),
-    ]))
+    totals_table.setStyle(
+        TableStyle(
+            [
+                ("FONTNAME", (0, 0), (-1, 2), "Helvetica"),
+                ("FONTNAME", (0, 3), (-1, 3), "Helvetica-Bold"),
+                ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                ("PADDING", (0, 0), (-1, -1), 6),
+            ]
+        )
+    )
 
     elements.append(totals_table)
     elements.append(Spacer(1, 20))
@@ -402,16 +433,25 @@ def download_invoice_pdf(request, order_uuid):
     # 🔶 FOOTER
     # -------------------------------------------
     elements.append(Spacer(1, 30))
-    elements.append(Paragraph("<b>Thank you for shopping with LookIt!</b>", styles["Italic"]))
-    elements.append(Paragraph("This is a system-generated invoice and does not require a signature.", styles["Normal"]))
+    elements.append(
+        Paragraph("<b>Thank you for shopping with LookIt!</b>", styles["Italic"])
+    )
+    elements.append(
+        Paragraph(
+            "This is a system-generated invoice and does not require a signature.",
+            styles["Normal"],
+        )
+    )
 
     # Build PDF
     doc.build(elements)
 
     buffer.seek(0)
-    
+
     response = HttpResponse(buffer, content_type="application/pdf")
-    response['Content-Disposition'] = f'inline; filename="Invoice-{order_item.uuid}.pdf"'
+    response['Content-Disposition'] = (
+        f'inline; filename="Invoice-{order_item.uuid}.pdf"'
+    )
     return response
 
 
@@ -420,7 +460,7 @@ def cancel_order(request, order_item_uuid):
     try:
         order_item = OrderItems.objects.get(uuid=order_item_uuid)
         variant = Variant.objects.get(id=order_item.variant.id)
-        
+
         if order_item.order.user == request.user:
             with transaction.atomic():
                 order_item.order_status = 'CANCELLED'
@@ -445,19 +485,19 @@ def return_request_form(request, order_uuid):
 
         reason = request.POST.get('reason')
         comments = request.POST.get('comments')
-        
+
         images = request.FILES.getlist('product_images')
         print(request.FILES)
-        print("images",images)
+        print("images", images)
 
-        #---fetch pick up address--------------------------------
+        # ---fetch pick up address--------------------------------
         pickup_address_id = request.POST.get('pickup_address_id')
         pickup_address = None
         if pickup_address_id:
             pickup_address = Address.objects.get(id=pickup_address_id)
         else:
             messages.error(request, "Please Select A Pick Up Address")
-            
+
         try:
             with transaction.atomic():
                 return_request = ReturnRequest.objects.create(
@@ -465,67 +505,67 @@ def return_request_form(request, order_uuid):
                     reason=reason,
                     comments=comments,
                     pickup_address=pickup_address,
-                    amount_paid=order_item.total
+                    amount_paid=order_item.total,
                 )
                 # Assign images to available fields (up to 3)
                 if len(images) > 0:
                     result = upload(
-                            images[0],
-                            folder=f"return_product_images/{request.user.id}",
-                            transformation=[
-                                {
-                                    'width': 500,
-                                    'height': 500,
-                                    'crop': 'fill',
-                                    'gravity': 'face',
-                                },
-                                {
-                                    'quality': 'auto',
-                                    'fetch_format': 'auto',
-                                },
-                            ],
-                        )
+                        images[0],
+                        folder=f"return_product_images/{request.user.id}",
+                        transformation=[
+                            {
+                                'width': 500,
+                                'height': 500,
+                                'crop': 'fill',
+                                'gravity': 'face',
+                            },
+                            {
+                                'quality': 'auto',
+                                'fetch_format': 'auto',
+                            },
+                        ],
+                    )
                     return_request.product_image1 = result['secure_url']
                 if len(images) > 1:
                     result = upload(
-                            images[1],
-                            folder=f"return_product_images/{request.user.id}",
-                            transformation=[
-                                {
-                                    'width': 500,
-                                    'height': 500,
-                                    'crop': 'fill',
-                                    'gravity': 'face',
-                                },
-                                {
-                                    'quality': 'auto',
-                                    'fetch_format': 'auto',
-                                },
-                            ],
-                        )
+                        images[1],
+                        folder=f"return_product_images/{request.user.id}",
+                        transformation=[
+                            {
+                                'width': 500,
+                                'height': 500,
+                                'crop': 'fill',
+                                'gravity': 'face',
+                            },
+                            {
+                                'quality': 'auto',
+                                'fetch_format': 'auto',
+                            },
+                        ],
+                    )
                     return_request.product_image2 = result['secure_url']
                 if len(images) > 2:
                     result = upload(
-                            images[2],
-                            folder=f"return_product_images/{request.user.id}",
-                            transformation=[
-                                {
-                                    'width': 500,
-                                    'height': 500,
-                                    'crop': 'fill',
-                                    'gravity': 'face',
-                                },
-                                {
-                                    'quality': 'auto',
-                                    'fetch_format': 'auto',
-                                },
-                            ],
-                        )
+                        images[2],
+                        folder=f"return_product_images/{request.user.id}",
+                        transformation=[
+                            {
+                                'width': 500,
+                                'height': 500,
+                                'crop': 'fill',
+                                'gravity': 'face',
+                            },
+                            {
+                                'quality': 'auto',
+                                'fetch_format': 'auto',
+                            },
+                        ],
+                    )
                     return_request.product_image3 = result['secure_url']
                 return_request.save()
-                
+
                 messages.success(request, "Return Request Submitted Successfully")
-            
+
         except Exception as e:
             print(e)
             messages.error(request, e)
@@ -543,16 +583,21 @@ def return_request_form(request, order_uuid):
         {"order": order, "address_list": address_list},
     )
 
+
 @login_required
 def track_return_request(request, order_uuid):
     order_item = OrderItems.objects.get(uuid=order_uuid)
     return_request = order_item.return_request
-    
+
     delivery_address = order_item.order.address
     return render(
         request,
         "order/track_return.html",
-        {"order": order_item, "address": delivery_address, "return_request": return_request},
+        {
+            "order": order_item,
+            "address": delivery_address,
+            "return_request": return_request,
+        },
     )
 
 
@@ -658,9 +703,51 @@ def admin_update_delivery_status(request, order_item_uuid):
 
 
 def admin_list_return_requests(request):
-    return_request_list = ReturnRequest.objects.all().select_related('order_item').order_by("-request_date")
-    return render(request, 'order/admin/return_request_list.html',{"return_request_list":return_request_list})
+    return_request_list = (
+        ReturnRequest.objects.all()
+        .select_related('order_item')
+        .order_by("-request_date")
+    )
 
+    #---search filter-----------------
+    search = request.GET.get('search')
+    print(search, "hello")
+    if search:
+        return_request_list = return_request_list.filter(
+            Q(order_item__variant__product__name__icontains=search)
+            | Q(order_item__order__user__full_name__icontains=search)
+        )
+        
+    return_status = request.GET.get("return_status")
+    if return_status:
+        return_request_list = return_request_list.filter(status=return_status.upper())
+        
+    # ---- DATE filter ----
+    date_range = request.GET.get('date_range')
+    if date_range:
+        today = date.today()
+
+        if date_range == 'today':
+            return_request_list = return_request_list.filter(request_date__date=today)
+
+        elif date_range == 'week':
+            start_of_week = today - timedelta(days=today.weekday())
+            return_request_list = return_request_list.filter(request_date__date__gte=start_of_week)
+
+        elif date_range == 'month':
+            return_request_list = return_request_list.filter(
+                request_date__year=today.year, request_date__month=today.month
+            )
+        elif date_range == 'year':
+            return_request_list = return_request_list.filter(request_date__year=today.year)
+
+    paginator = Paginator(return_request_list, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request, 'order/admin/return_request_list.html', {"page_obj": page_obj}
+    )
 
 
 def admin_return_details(request, return_request_uuid):
@@ -672,9 +759,14 @@ def admin_return_details(request, return_request_uuid):
     return render(
         request,
         "order/admin/return_details.html",
-        {"return_request": return_request,"order": order_item, "customer": customer, "address": address},
+        {
+            "return_request": return_request,
+            "order": order_item,
+            "customer": customer,
+            "address": address,
+        },
     )
-    
+
 
 def admin_update_return_status(request, return_request_uuid):
     if request.method == "POST":
@@ -704,14 +796,13 @@ def admin_update_return_status(request, return_request_uuid):
             elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
                 return_request.pickedup_at = timezone.now()
                 return_request.refunded_at = None
-                #--handle stock------------------
+                # --handle stock------------------
                 quantity_returned = return_request.order_item.quantity
                 variant = return_request.variant
                 variant.stock += quantity_returned
                 variant.save()
             elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
                 return_request.refunded_at = timezone.now()
- 
 
             return_request.save()
             messages.success(request, "Return status updated successfully.")
@@ -719,5 +810,3 @@ def admin_update_return_status(request, return_request_uuid):
             messages.error(request, "Invalid return status.")
 
     return redirect("admin-return-details", return_request_uuid=return_request_uuid)
-
-
