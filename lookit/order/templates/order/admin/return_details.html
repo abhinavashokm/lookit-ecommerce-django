@@ -134,7 +134,7 @@
         <div class="card-body">
           <div class="info-item"><span class="info-label">Name</span><span class="info-value">{{ customer.full_name }}</span></div>
           <div class="info-item"><span class="info-label">Email</span><span class="info-value">{{ customer.email }}</span></div>
-          <div class="info-item"><span class="info-label">Phone</span><span class="info-value">{{ customer.phone }}</span></div>
+          <div class="info-item"><span class="info-label">Phone</span><span class="info-value">{% if customer.phone %}{{ customer.phone }}{% else %}Not Provided{% endif %}</span></div>
         </div>
       </div>
     </div>
@@ -231,13 +231,13 @@
           <label for="statusSelect">New Status</label>
           <select name="return_status" id="statusSelect" class="form-control" required>
             <option value="" disabled selected>Select status</option>
-            <option value="REQUESTED">Requested</option>
-            <option value="APPROVED">Approved</option>
-            <option value="PICKUP_SCHEDULED">Pickup Scheduled</option>
-            <option value="PICKED_UP">Picked Up</option>
-            <option value="REFUND_INITIATED">Refund Initiated</option>
-            <option value="REFUNDED">Refund Completed</option>
-            <option value="REJECTED">Rejected</option>
+            <option value="REQUESTED" {% if return_request.status  == 'REQUESTED' %}selected{% endif %}>Requested</option>
+            <option value="APPROVED" {% if return_request.status  == 'APPROVED' %}selected{% endif %}>Approved</option>
+            <option value="PICKUP_SCHEDULED" {% if return_request.status  == 'PICKUP_SCHEDULED' %}selected{% endif %}>Pickup Scheduled</option>
+            <option value="PICKED_UP" {% if return_request.status  == 'PICKED_UP' %}selected{% endif %}>Picked Up</option>
+            <option value="REFUND_INITIATED" {% if return_request.status  == 'REFUND_INITIATED' %}selected{% endif %}>Refund Initiated</option>
+            <option value="REFUNDED" {% if return_request.status  == 'REFUNDED' %}selected{% endif %}>Refund Completed</option>
+            <option value="REJECTED" {% if return_request.status  == 'REJECTED' %}selected{% endif %}>Rejected</option>
           </select>
         </div>
       </div>

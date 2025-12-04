@@ -196,7 +196,11 @@
                         </div>
                         {% else %}
                         <div class="price-row total pending">
+                            {% if return_request.status == 'REFUNDED' %}
+                            <span>Refund Amount </span>
+                            {% else %}
                             <span>Refund Amount (Pending)</span>
+                            {% endif %}
                             <span>₹{{ return_request.amount_paid }}</span>
                         </div>
                         {% endif %}

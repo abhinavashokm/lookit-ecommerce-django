@@ -284,10 +284,11 @@ def track_order(request, order_uuid):
     # --for checking return eligibility if delivered
     seven_days_ago = timezone.now() - timedelta(days=7)
     delivered_date = order_item.delivered_at
-    if delivered_date > seven_days_ago and delivered_date:
-        eligible_for_return = True  # 7 days not passed
-    else:
-        eligible_for_return = False  # 7 days passed
+    eligible_for_return = False
+    if delivered_date:
+        if delivered_date > seven_days_ago:
+            eligible_for_return = True  # 7 days not passed
+
 
     return render(
         request,
@@ -520,8 +521,9 @@ def return_request_form(request, order_uuid):
         seven_days_ago = timezone.now() - timedelta(days=7)
         delivered_date = order_item.delivered_at
         eligible_for_return = False
-        if delivered_date > seven_days_ago and delivered_date:
-            eligible_for_return = True  # 7 days not passed
+        if delivered_date:
+            if delivered_date > seven_days_ago:
+                eligible_for_return = True  # 7 days not passed
 
         if not eligible_for_return:
             messages.error(request, "Not Eligible For Return")

@@ -499,6 +499,8 @@
 }
 
 .no-orders-card {
+    display: flex;
+    flex-direction: column;
     text-align: center;
     background: white;
     border-radius: 16px;
@@ -510,16 +512,6 @@
     transform: translateY(0);
     position: relative;
     overflow: hidden;
-}
-
-.no-orders-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #9a4d72, #d4a5c0);
 }
 
 .no-orders-card h3 {
@@ -534,17 +526,6 @@
     margin-right: auto;
 }
 
-.no-orders-card h3::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, #9a4d72, #d4a5c0);
-    border-radius: 3px;
-}
 
 .shop-now-btn {
     display: inline-flex;
@@ -621,15 +602,8 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* Disable all buttons inside cancelled order */
-.cart-item.order-cancelled .btn {
-    pointer-events: none;
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 /* Allow only VIEW PRODUCT button (optional) */
-.cart-item.order-cancelled .btn-view {
+.cart-item.order-cancelled .btn-view, .btn-track {
     pointer-events: auto;
     opacity: 1;
     cursor: pointer;
@@ -642,11 +616,11 @@
     pointer-events: none;
 }
 
+
 /* RETURNED ORDER */
 .cart-item.order-returned {
     opacity: 0.82;
     filter: grayscale(0.4);
-    pointer-events: none;
     position: relative;
 }
 
@@ -667,12 +641,8 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* disable all buttons */
-.cart-item.order-returned .btn {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-}
+
+
 
 /* REFUNDED ORDER */
 .cart-item.order-refunded {
@@ -706,3 +676,24 @@
     pointer-events: none;
 }
 
+/* ON RETURN PROGRESS ORDER */
+.cart-item.return-requested {
+    position: relative;
+}
+
+/* Purple banner */
+.cart-item.return-requested .returned-badge {
+    position: absolute;
+    top: 10px;
+    left: -8px;
+    background: #7b1fa2; /* deep purple */
+    color: #fff;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 0 6px 6px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    z-index: 20;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}

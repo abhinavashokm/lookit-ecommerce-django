@@ -57,11 +57,11 @@
                         </div>
                         <div class="info-item status-row">
                             <span class="info-label">Status</span>
-                            <span class="status-badge status-delivered">{{ order.payment_status }}</span>
+                            <span class="status-badge status-delivered">{% if order.payment_status == 'COD' %}Cash On Delivery{% else %}{{ order.payment_status }}{% endif %}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Method</span>
-                            <span class="info-value">{{ order.order.payment_method }}</span>
+                            <span class="info-value">{% if order.payment_status == 'COD' %}Cash On Delivery{% else %}{{ order.payment_status }}{% endif %}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Total Amount</span>
@@ -96,7 +96,7 @@
                         </div>
                         <div class="info-item">
                             <span class="info-label">Phone</span>
-                            <span class="info-value">{{ customer.phone }}</span>
+                            <span class="info-value">{% if customer.phone %}{{ customer.phone }}{% else %}Not Provided{% endif %}</span>
                         </div>
                         </div>
                     </div>
@@ -313,16 +313,16 @@
                         </div>
                         <div class="info-item status-row">
                             <span class="info-label">Status</span>
-                            <span class="status-badge status-delivered">{{ order.payment_status }}</span>
+                            <span class="status-badge status-delivered">{% if order.payment_status == 'COD' %}Cash On Delivery{% else %}{{ order.payment_status }}{% endif %}</span>
                         </div>
-                        <div class="info-item">
+                        <!-- <div class="info-item">
                             <span class="info-label">Paid Date</span>
                             <span class="info-value">July 15, 2024</span>
-                        </div>
-                        <div class="info-item">
+                        </div> -->
+                        <!-- <div class="info-item">
                             <span class="info-label">Mode</span>
                             <span class="info-value">Online</span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
@@ -352,7 +352,7 @@
             {% csrf_token %}
             <div class="modal-body">
                 <div class="order-info">
-                    <p><strong>Order ID:</strong> #ORD-{{ order.id|stringformat:'04d' }}</p>
+                    <p><strong>Order ID:</strong> {{ order.uuid }}</p>
                     <p><strong>Product:</strong> {{ order.product.name }}</p>
                 </div>
             
@@ -360,12 +360,12 @@
                     <label for="statusSelect">New Status</label>
                     <select name="order_status" id="statusSelect" class="form-control">
                         <option value="" disabled selected>select status</option>
-                        <option value="placed" >Placed</option>
-                        <option value="shipped">Shipped</option>
-                        <option value="out_for_delivery">Out For Delivery</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                        <option value="returned">Returned</option>
+                        <option value="placed" {% if order.order_status == 'PLACED' %}selected{% endif %}>Placed</option>
+                        <option value="shipped" {% if order.order_status == 'SHIPPED' %}selected{% endif %}>Shipped</option>
+                        <option value="out_for_delivery" {% if order.order_status == 'OUT_fOR_DELIVERY' %}selected{% endif %}>Out For Delivery</option>
+                        <option value="delivered" {% if order.order_status == 'DELIVERED' %}selected{% endif %}>Delivered</option>
+                        <option value="cancelled" {% if order.order_status == 'CANCELLED' %}selected{% endif %}>Cancelled</option>
+                        <option value="returned" {% if order.order_status == 'RETURNED' %}selected{% endif %}>Returned</option>
                     </select>
                 </div>
             </div>

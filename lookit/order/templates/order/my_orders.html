@@ -58,18 +58,23 @@
         {% endif %}
         {% for order in orders %}
         {% for item in order.items.all %}
-        <div class="cart-item {% if item.order_status == 'CANCELLED' %}order-cancelled{% elif item.return_request.status == 'PICKED_UP' %}order-returned {% elif item.return_request.status == 'REFUNDED'  %}order-refunded{% endif %}">
+        <div class="cart-item {% if item.order_status == 'CANCELLED' %}order-cancelled{% elif item.return_request.status == 'PICKED_UP' %}order-returned {% elif item.return_request.status == 'REFUNDED'  %}order-refunded{% elif item.return_request.status %}return-requested{% endif %}">
+
+            <!--banner for return or cancel-->
             {% if item.order_status == 'CANCELLED' %}
               <div class="cancelled-badge">CANCELLED</div>
-            {% elif item.return_request.status == 'PICKED_UP' %}
-              <div class="order-badge returned-badge">RETURNED</div>
             {% elif item.return_request.status == 'REFUNDED'  %}
-                <div class="order-badge refunded-badge">REFUNDED</div>
+              <div class="order-badge refunded-badge">REFUNDED</div>
+            {% elif item.return_request.status == 'PICKED_UP'  %}
+                <div class="order-badge returned-badge">RETURNED</div>
+            {% elif item.return_request.status %}
+                <div class="order-badge returned-badge">Return Pending</div>
             {% endif %}
+
             <img src="{{ item.product.image_url }}" alt="Product" class="item-image">
             <div class="item-details">
                 <h3 class="item-title">{{ item.product.name }}</h3>
-                <p class="item-sku">Order #OR{{ item.id|stringformat:'04d' }}</p>
+                <p class="item-sku">ID: {{ item.uuid }}</p>
                 <p class="item-size">Size: M</p>
                 <p class="item-color">Ordered at: {{ item.created_at.date }}</p>
                 <div class="item-actions">
@@ -77,7 +82,7 @@
                         <button class="btn btn-view">View Product</button>
                     </a>
                     <a href="{% url 'track-order' item.uuid %}">
-                        <button class="btn btn-track">{% if not item.return_request %}Track Order{% else %}Order Details{% endif %}</button>
+                        <button class="btn btn-track">{% if item.return_request or item.order_status == 'CANCELLED' %}Order Details{% else %}Track Order{% endif %}</button>
                     </a>
                     {% if item.return_request %}
                     <a href="{% url 'track_return_request' item.uuid %}">
