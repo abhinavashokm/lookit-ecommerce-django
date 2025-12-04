@@ -239,6 +239,166 @@ def track_order(request, order_uuid):
         "order/track_order.html",
         {"order": order_item, "address": delivery_address},
     )
+    
+from django.http import HttpResponse
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.pagesizes import A4
+from reportlab.lib import colors
+from reportlab.lib.units import mm
+from io import BytesIO
+
+
+def download_invoice_pdf(request, order_uuid):
+    order_item = OrderItems.objects.get(uuid=order_uuid)
+
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=30,
+        leftMargin=30,
+        topMargin=30,
+        bottomMargin=30,
+    )
+
+    styles = getSampleStyleSheet()
+
+    # Custom Title Style
+    header_style = ParagraphStyle(
+        "HeaderStyle",
+        fontSize=18,
+        leading=22,
+        textColor=colors.HexColor("#9a4d72"),
+        alignment=1,  # center
+        spaceAfter=10,
+        fontName="Helvetica-Bold"
+    )
+
+    section_title = ParagraphStyle(
+        "SectionTitle",
+        fontSize=13,
+        textColor=colors.HexColor("#444"),
+        spaceBefore=12,
+        spaceAfter=6,
+        fontName="Helvetica-Bold",
+    )
+
+    normal_bold = ParagraphStyle(
+        "NormalBold",
+        parent=styles["Normal"],
+        fontName="Helvetica-Bold",
+    )
+
+    elements = []
+
+    # -------------------------------------------
+    # 🔶 BRAND HEADER
+    # -------------------------------------------
+    elements.append(Paragraph("LookIt Private Limited", header_style))
+    elements.append(Paragraph("GSTIN: 22AAAAA0000A1Z5", styles["Normal"]))  # Optional
+    elements.append(Paragraph("support@lookit.com | www.lookit.com", styles["Normal"]))
+    elements.append(Spacer(1, 12))
+
+    elements.append(Paragraph(f"<b>Invoice</b>", section_title))
+    elements.append(Spacer(1, 5))
+
+    # -------------------------------------------
+    # 🔶 ORDER INFORMATION BLOCK
+    # -------------------------------------------
+    order_info = [
+        ["Invoice No:", order_item.uuid],
+        ["Order Date:", order_item.placed_at.strftime("%d %b %Y")],
+        ["Delivered Date:", order_item.delivered_at.strftime("%d %b %Y") if order_item.delivered_at else "-"],
+        ["Customer Name:", order_item.order.user.full_name],
+        ["Payment Method:", order_item.order.payment_method],
+    ]
+
+    info_table = Table(order_info, colWidths=[110, 360])
+    info_table.setStyle(TableStyle([
+        ("BOX", (0, 0), (-1, -1), 0.8, colors.black),
+        ("INNERGRID", (0, 0), (-1, -1), 0.4, colors.grey),
+        ("BACKGROUND", (0, 0), (1, 0), colors.whitesmoke),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("PADDING", (0, 0), (-1, -1), 6),
+    ]))
+
+    elements.append(info_table)
+    elements.append(Spacer(1, 18))
+
+    # -------------------------------------------
+    # 🔶 PRODUCT ITEM TABLE
+    # -------------------------------------------
+    elements.append(Paragraph("<b>Order Item Details</b>", section_title))
+
+    items_data = [
+        ["Product Name", "Qty", "Price", "Subtotal"]
+    ]
+
+    items_data.append([
+        order_item.product.name,
+        str(order_item.quantity),
+        f"₹{order_item.unit_price}",
+        f"₹{order_item.sub_total}",
+    ])
+
+    items_table = Table(items_data, colWidths=[260, 60, 80, 90])
+    items_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#f2f2f2")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.black),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+        ("ALIGN", (1, 1), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("BOX", (0, 0), (-1, -1), 1, colors.black),
+        ("INNERGRID", (0, 0), (-1, -1), 0.5, colors.grey),
+        ("PADDING", (0, 0), (-1, -1), 8),
+    ]))
+
+    elements.append(items_table)
+    elements.append(Spacer(1, 20))
+
+    # -------------------------------------------
+    # 🔶 TOTAL SUMMARY
+    # -------------------------------------------
+    elements.append(Paragraph("<b>Payment Summary</b>", section_title))
+
+    totals_data = [
+        ["Subtotal:", f"₹{order_item.sub_total}"],
+        ["Tax:", f"₹{order_item.tax_amount}"],
+        ["Delivery Fee:", f"₹{order_item.delivery_fee}"],
+        ["Grand Total:", f"₹{order_item.total}"],
+    ]
+
+    totals_table = Table(totals_data, colWidths=[150, 120])
+    totals_table.setStyle(TableStyle([
+        ("FONTNAME", (0, 0), (-1, 2), "Helvetica"),
+        ("FONTNAME", (0, 3), (-1, 3), "Helvetica-Bold"),
+        ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+        ("PADDING", (0, 0), (-1, -1), 6),
+    ]))
+
+    elements.append(totals_table)
+    elements.append(Spacer(1, 20))
+
+    # -------------------------------------------
+    # 🔶 FOOTER
+    # -------------------------------------------
+    elements.append(Spacer(1, 30))
+    elements.append(Paragraph("<b>Thank you for shopping with LookIt!</b>", styles["Italic"]))
+    elements.append(Paragraph("This is a system-generated invoice and does not require a signature.", styles["Normal"]))
+
+    # Build PDF
+    doc.build(elements)
+
+    buffer.seek(0)
+    
+    response = HttpResponse(buffer, content_type="application/pdf")
+    response['Content-Disposition'] = f'inline; filename="Invoice-{order_item.uuid}.pdf"'
+    return response
 
 
 @login_required

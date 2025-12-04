@@ -16,6 +16,7 @@ from .views import (
     track_return_request,
     admin_return_details,
     admin_update_return_status,
+    download_invoice_pdf,
 )
 
 urlpatterns = [
@@ -26,6 +27,7 @@ urlpatterns = [
     path("order-success/<order_id>/", order_success_page, name="order-success"),
     path("my-orders/", my_orders, name="my-orders"),
     path("track-order/<order_uuid>/", track_order, name="track-order"),
+    path('invoice/<order_uuid>/', download_invoice_pdf, name='invoice'),
     
     path("admin/list-orders/", admin_list_orders, name="admin-list-orders"),
     path("admin/order-details/<order_item_uuid>/", admin_order_details, name="admin-order-details"),

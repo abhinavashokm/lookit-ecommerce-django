@@ -190,7 +190,7 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 {% if order.order_status == "DELIVERED" %}
-                <a href="#" class="btn btn-primary">Download Invoice</a>
+                <a href="{% url 'invoice' order.uuid %}" target="_blank" class="btn btn-primary">Download Invoice</a>
                 {% endif %}
                 {% if order.order_status == "PLACED" or order.order_status == "SHIPPED" or order.order_status == "SHIPPED" %}
                     <button onclick="openDangerModal()" class="btn btn-danger">Cancel Order</button>
