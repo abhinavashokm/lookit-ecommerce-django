@@ -163,9 +163,9 @@
                     <td>
                         {{ order.order.user.full_name }}
                     </td>
-                    <td class="product-name">{{ order.product.name }}</td>
-                    <td class="product-price">₹{{ order.total }}</td>
-                    <td class="product-stock">{{ order.order.payment_method }}</td>
+                    <td >{{ order.product.name }}</td>
+                    <td class="product-stock">₹{{ order.total }}</td>
+                    <td >{{ order.order.payment_method }}</td>
                     <td>
 
                         <span class="status-badge status-active">{{ order.payment_status }}</span>

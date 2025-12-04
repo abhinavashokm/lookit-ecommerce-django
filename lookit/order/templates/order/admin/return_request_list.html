@@ -92,8 +92,6 @@
                         </select>
                     </div>
 
-
-
                     <div class="filter-group">
                         <select name="return_status" id="returnStatusSelect" class="filter-select">
                             <option value="">Return Status</option>
@@ -130,7 +128,6 @@
                         </select>
                     </div>
 
-
                 </div>
                 <div class="filter-actions">
                     <button type="submit" class="btn btn-apply" id="applyFiltersBtn">Apply Filters</button>
@@ -147,7 +144,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>ORDER ID</th>
+                    <th>Return ID</th>
                     <th>Customer</th>
                     <th>Product</th>
                     <th>Refund Amount</th>
@@ -161,13 +158,13 @@
 
                 {% for return_request in page_obj %}
                 <tr>
-                    <td class="product-id">{{ return_request.order_item.uuid }}</td>
+                    <td class="product-id">{{ return_request.uuid }}</td>
                     <td>
                         {{ return_request.order.user.full_name }}
                     </td>
-                    <td class="product-name">{{ return_request.product.name }}</td>
-                    <td class="product-price">₹{{ return_request.amount_paid }}</td>
-                    <td class="product-stock">{{ return_request.reason }}</td>
+                    <td >{{ return_request.product.name }}</td>
+                    <td class="product-stock " >₹{{ return_request.amount_paid }}</td>
+                    <td class="product-price">{{ return_request.reason }}</td>
                     <td>
 
                         <span class="status-badge status-active">{{ return_request.status }}</span>

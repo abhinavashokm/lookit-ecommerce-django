@@ -195,7 +195,7 @@
                 {% if order.order_status == "PLACED" or order.order_status == "SHIPPED" or order.order_status == "SHIPPED" %}
                     <button onclick="openDangerModal()" class="btn btn-danger">Cancel Order</button>
                 {% endif %}
-                {% if order.order_status == "DELIVERED" and not order.return_request %}
+                {% if order.order_status == "DELIVERED" and not order.return_request and eligible_for_return %}
                     <a href="{% url 'return-request-form' order.uuid %}" class="btn btn-danger">Return Order</a>
                 {% endif %}
             </div>

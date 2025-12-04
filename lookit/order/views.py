@@ -259,10 +259,19 @@ def my_orders(request):
 def track_order(request, order_uuid):
     order_item = OrderItems.objects.get(uuid=order_uuid)
     delivery_address = order_item.order.address
+    
+    #--for checking return eligibility if delivered
+    seven_days_ago = timezone.now() - timedelta(days=7)
+    delivered_date = order_item.delivered_at
+    if delivered_date > seven_days_ago and delivered_date:
+        eligible_for_return = True #7 days not passed
+    else:
+        eligible_for_return = False #7 days passed
+    
     return render(
         request,
         "order/track_order.html",
-        {"order": order_item, "address": delivery_address},
+        {"order": order_item, "address": delivery_address, "eligible_for_return": eligible_for_return},
     )
 
 
@@ -479,9 +488,21 @@ def cancel_order(request, order_item_uuid):
 @login_required
 def return_request_form(request, order_uuid):
     if request.method == "POST":
-        print(request.POST)
-
+        
         order_item = OrderItems.objects.get(uuid=order_uuid)
+        
+        #--for checking return eligibility if delivered
+        seven_days_ago = timezone.now() - timedelta(days=7)
+        delivered_date = order_item.delivered_at
+        eligible_for_return = False
+        if delivered_date > seven_days_ago and delivered_date:
+            eligible_for_return = True #7 days not passed
+            
+        if not eligible_for_return:
+            messages.error(request, "Not Eligible For Return")
+            return redirect('return-request-form', order_uuid=order_uuid)
+
+        
 
         reason = request.POST.get('reason')
         comments = request.POST.get('comments')
@@ -497,6 +518,7 @@ def return_request_form(request, order_uuid):
             pickup_address = Address.objects.get(id=pickup_address_id)
         else:
             messages.error(request, "Please Select A Pick Up Address")
+            return redirect('return-request-form', order_uuid=order_uuid)
 
         try:
             with transaction.atomic():
