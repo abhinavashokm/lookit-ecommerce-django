@@ -222,6 +222,11 @@ def my_orders(request):
     )
         .order_by('status_priority' ,'-created_at')
     )
+    #--search functionality----------
+    search = request.GET.get('search')
+    if search:
+        orders = orders.filter(items__variant__product__name__icontains = search)
+        
     return render(request, "order/my_orders.html", {"orders": orders})
 
 
@@ -530,3 +535,5 @@ def admin_update_return_status(request, return_request_uuid):
             messages.error(request, "Invalid return status.")
 
     return redirect("admin-return-details", return_request_uuid=return_request_uuid)
+
+
