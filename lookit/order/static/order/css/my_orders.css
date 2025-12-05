@@ -580,7 +580,7 @@
 
 .cart-item.order-cancelled {
     opacity: 0.75;
-    filter: grayscale(0.4);
+    filter: grayscale(0.30);
     position: relative;
     pointer-events: none; /* disable all interactions */
 }
@@ -620,7 +620,7 @@
 /* RETURNED ORDER */
 .cart-item.order-returned {
     opacity: 0.82;
-    filter: grayscale(0.4);
+    filter: grayscale(0.30);
     position: relative;
 }
 
@@ -647,8 +647,7 @@
 /* REFUNDED ORDER */
 .cart-item.order-refunded {
     opacity: 0.82;
-    filter: grayscale(0.35);
-    pointer-events: none;
+    filter: grayscale(0.30);
     position: relative;
 }
 
@@ -669,12 +668,6 @@
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
-/* disable all buttons */
-.cart-item.order-refunded .btn {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-}
 
 /* ON RETURN PROGRESS ORDER */
 .cart-item.return-requested {

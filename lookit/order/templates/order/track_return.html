@@ -63,7 +63,7 @@
             <!-- ORDER PROGRESS TRACKER -->
             <div class="order-progress 
                 {% if return_request.status == 'REQUESTED' %}progress-1
-                {% elif return_request.status == 'APPROVED' %}progress-2
+                {% elif return_request.status == 'APPROVED' or return_request.status == 'PICKUP_SCHEDULED' %}progress-2
                 {% elif return_request.status == 'PICKED_UP' %}progress-3
                 {% elif return_request.status == 'REFUNDED' %}progress-4{% endif %}">
                 <div class="progress-inner">
@@ -81,7 +81,7 @@
                     <div class="connector c1"></div>
 
                     <!-- Step 2 -->
-                    <div class="step step-shipped {% if return_request.status == 'APPROVED' %}active{% endif %}">
+                    <div class="step step-shipped {% if return_request.status == 'APPROVED' or return_request.status == 'PICKUP_SCHEDULED'  %}active{% endif %}">
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Approved</div>
@@ -97,7 +97,7 @@
                         <div class="step-circle"><span class="inner">✓</span></div>
                         <div class="step-text">
                             <div class="title">Picked Up</div>
-                            <div class="date">{{ return_request.pickedup_at|date:"d M Y, h:i A"|default:"—" }}</div>
+                            <div class="date">{% if return_request.pickedup_at %}{{ return_request.pickedup_at|date:"d M Y, h:i A"|default:"—" }}{% elif return_request.pickup_scheduled_for %}Scheduled For: {{ return_request.pickup_scheduled_for|date:"d M Y"|default:"—" }}{% else %}—{% endif %}</div>
                         </div>
                     </div>
 
@@ -204,7 +204,9 @@
                             <span>₹{{ return_request.amount_paid }}</span>
                         </div>
                         {% endif %}
-
+                        {% if return_request.status == 'PICKED_UP' %}
+                         <span>(money will be refunded within 7 days of return)</span>
+                         {% endif %}
                     </div>
 
                 </div>

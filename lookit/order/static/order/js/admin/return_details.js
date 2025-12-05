@@ -76,3 +76,25 @@ document.addEventListener('keydown', function(e) {
         }
     });
 
+
+  // Show pickup date only if "Pickup Scheduled" is selected
+  document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.getElementById('statusSelect');
+    const pickupDateGroup = document.getElementById('pickupDateGroup');
+
+    function togglePickupDate() {
+      if (statusSelect.value === 'PICKUP_SCHEDULED') {
+        pickupDateGroup.style.display = 'block';
+        document.getElementById('pickupDate').setAttribute('required', 'required');
+      } else {
+        pickupDateGroup.style.display = 'none';
+        document.getElementById('pickupDate').removeAttribute('required');
+      }
+    }
+
+    // Initial check on page load (in case status is already set)
+    togglePickupDate();
+
+    // Add event listener for change
+    statusSelect.addEventListener('change', togglePickupDate);
+  });

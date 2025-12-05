@@ -128,7 +128,9 @@ class ReturnRequest(models.Model):
     rejected_at = models.DateTimeField(null=True, blank=True)
     pickedup_at = models.DateTimeField(null=True, blank=True)
     refunded_at = models.DateTimeField(null=True, blank=True)
-    pickup_scheduled_at = models.DateTimeField(null=True, blank=True)
+    
+    pickup_scheduled_on = models.DateTimeField(null=True, blank=True) #The date the pickup was scheduled
+    pickup_scheduled_for = models.DateTimeField(null=True, blank=True) #The date the pickup is planned to happen
 
     request_date = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

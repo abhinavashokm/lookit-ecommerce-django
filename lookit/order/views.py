@@ -822,6 +822,7 @@ def admin_return_details(request, return_request_uuid):
 def admin_update_return_status(request, return_request_uuid):
     if request.method == "POST":
         return_status = request.POST.get("return_status")
+        pickup_date = request.POST.get("pickup_date")
 
         if return_status in ReturnRequest.ReturnStatus.values:
             return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
@@ -831,19 +832,25 @@ def admin_update_return_status(request, return_request_uuid):
             if return_status == ReturnRequest.ReturnStatus.APPROVED:
                 return_request.approved_at = timezone.now()
                 return_request.rejected_at = None
-                return_request.pickup_scheduled_at = None
+                return_request.pickup_scheduled_on = None
+                return_request.pickup_scheduled_for = None
                 return_request.pickedup_at = None
                 return_request.refunded_at = None
             elif return_status == ReturnRequest.ReturnStatus.REJECTED:
                 return_request.rejected_at = timezone.now()
                 return_request.approved_at = None
-                return_request.pickup_scheduled_at = None
+                return_request.pickup_scheduled_on = None
+                return_request.pickup_scheduled_for = None
                 return_request.pickedup_at = None
                 return_request.refunded_at = None
             elif return_status == ReturnRequest.ReturnStatus.PICKUP_SCHEDULED:
-                return_request.pickup_scheduled_at = timezone.now()
-                return_request.pickedup_at = None
-                return_request.refunded_at = None
+                if pickup_date:
+                    return_request.pickup_scheduled_on = timezone.now()
+                    return_request.pickup_scheduled_for = pickup_date
+                    return_request.pickedup_at = None
+                    return_request.refunded_at = None
+                else:
+                    messages.error(request, "Please Provide Pickup Date.")
             elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
                 return_request.pickedup_at = timezone.now()
                 return_request.refunded_at = None
