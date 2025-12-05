@@ -13,6 +13,7 @@ from django.http import JsonResponse
 import json
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import  urlsafe_base64_decode
+from django.urls import reverse
 
 def user_login(request):
     if request.method == 'POST':
@@ -136,9 +137,7 @@ def account_details(request):
 def edit_profile(request):
     if request.method == "POST":
         try:
-
             full_name = request.POST.get('full_name').strip()
-            email = request.POST.get('email').strip().lower()
             phone = request.POST.get('phone').strip()
             gender = request.POST.get('gender')
             profile_pic = request.FILES.get('profile_image')
@@ -201,28 +200,7 @@ def edit_profile(request):
                 img_url = request.user.profile_img_url
                 image_public_id = request.user.profile_img_public_id
 
-            # ---if email is same just update the rest of the details------
-            if email == request.user.email:
-                user = User.objects.filter(email=request.user.email).update(
-                    full_name=full_name,
-                    phone=phone,
-                    dob=dob,
-                    gender=gender,
-                    profile_img_url=img_url,
-                    profile_img_public_id=image_public_id,
-                )
-                messages.success(request, "PROFILE UPDATED")
-                return redirect('account-details')
-
-            # ---check email already exist----------------------------------
-            email_already_exist = User.objects.filter(email=email).exists()
-            if email_already_exist:
-                messages.error(request, "AN ACCOUNT WITH THIS EMAIL ALREADY EXIST")
-                return redirect('edit-profile')
-
-            # ---update details including email-------------------------
             user = User.objects.filter(email=request.user.email).update(
-                email=email,
                 full_name=full_name,
                 phone=phone,
                 dob=dob,
@@ -232,6 +210,7 @@ def edit_profile(request):
             )
             messages.success(request, "PROFILE UPDATED")
             return redirect('account-details')
+
         # ---catch any exceptions
         except Exception as e:
             messages.error(request, e)
@@ -413,15 +392,24 @@ def address_book(request):
 def change_user_email(request):
     print("call is here.....")
     data = json.loads(request.body)
-    new_email = data.get('email')  # ✅ Works here
-
+    new_email = data.get('email') 
+    
+    #check if it already exist
+    email_exist = User.objects.filter(email=new_email).exists()
+    if email_exist:
+        #error response - will reload page using js
+        messages.error(request, "Email already exist")
+        return JsonResponse({'error_redirect_url': reverse('edit-profile')})
+    
     # Store temporarily
     request.session['pending_new_email']= new_email
 
     # Send verification mail
     send_email_verification(request.user, new_email, request)
     
-    return JsonResponse({'message': 'Verification email sent!'})
+    #success response - will reload page using js
+    messages.success(request, "Verification Link Sent")
+    return JsonResponse({'message': 'Verification email sent!', 'success_redirect_url':reverse('edit-profile')})
 
 
 
@@ -435,6 +423,10 @@ def verify_email(request, uidb64, token):
     new_email = request.GET.get('new_email')
 
     if user and default_token_generator.check_token(user, token):
+        #check if session active
+        if not request.user.is_authenticated:
+            messages.error(request, "Session Expired! Please Try Again.")
+            return redirect("account-details")  # redirect to profile page
         user.email = new_email
         user.pending_email = None
         user.save()

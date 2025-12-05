@@ -369,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (emailModal) {
                     emailModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
-                  //  if (emailSpinner) emailSpinner.style.display = 'none';
+                    if (emailSpinner) emailSpinner.style.display = 'none';
                     if (emailChangeForm) emailChangeForm.reset();
                 }
             });
@@ -482,12 +482,12 @@ if (emailChangeForm) {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            //messageBox.innerHTML = `<p style="color:green;">${data.message}</p>`;
+            if (data.error_redirect_url) {
+                window.location.href = data.error_redirect_url;  // manually redirect
+            }else if(data.success_redirect_url){
+                window.location.href = data.success_redirect_url;  // manually redirect
+            }
         })
-        .catch(err => {
-            // messageBox.innerHTML = `<p style="color:red;">Something went wrong!</p>`;
-        });
         });
 }
 
@@ -506,4 +506,32 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+
+// ============================================
+// TOAST NOTIFICATION FUNCTIONALITY - OVERRIDE Component
+// ============================================
+
+/**
+ * Show a toast notification
+ * @param {HTMLElement|string} toastElement - Toast element or selector
+ */
+function showToast(selector) {
+    const toast = document.querySelector(selector);
+    console.log("call is here")
+    if (!toast) return;
+
+    toast.classList.remove("hidden");
+    toast.classList.remove("hiding");
+
+    // Auto hide after 3 sec
+    setTimeout(() => {
+        toast.classList.add("hiding");
+
+        setTimeout(() => {
+            toast.classList.add("hidden");
+            toast.classList.remove("hiding");
+        }, 300);
+    }, 3000);
 }

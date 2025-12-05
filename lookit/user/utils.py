@@ -39,5 +39,4 @@ def send_email_verification(user, new_email, request):
         message=f"Click this link to verify: {verify_url}",
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[new_email],
-        #fail_silently=False,
     )
