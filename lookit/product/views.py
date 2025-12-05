@@ -550,9 +550,19 @@ def add_to_cart(request):
             messages.error(request, "Product Is Currently Unavailble")
             return redirect('explore')
         
-        is_already_exist = Cart.objects.filter(user=user, variant_id=variant_id)
-        if is_already_exist:
-            messages.error(request, "PRODUCT IS ALREADY IN CART")
+        #if product already in cart increase quantity
+        variant_in_cart = Cart.objects.filter(user=user, variant_id=variant_id).first()
+        if variant_in_cart:
+            variant_in_cart.quantity += int(qunatity)
+            if variant_in_cart.quantity > 4:
+                variant_in_cart.quantity = 4
+                msg = "Product already in cart — maximum 4 quantity allowed."
+            else:
+                msg = "Product already in cart — quantity updated."
+                
+            messages.success(request, msg)
+            variant_in_cart.save()
+            
             return redirect('product-details', product_uuid = product.uuid)
         
         #--stock validation---
