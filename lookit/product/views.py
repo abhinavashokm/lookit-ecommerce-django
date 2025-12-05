@@ -545,6 +545,11 @@ def add_to_cart(request):
             messages.error(request, "PLEASE SELECT A SIZE")
             return redirect('product-details', product_uuid = product.uuid)
         
+        #check if product is active
+        if not product.is_active:
+            messages.error(request, "Product Is Currently Unavailble")
+            return redirect('explore')
+        
         is_already_exist = Cart.objects.filter(user=user, variant_id=variant_id)
         if is_already_exist:
             messages.error(request, "PRODUCT IS ALREADY IN CART")
