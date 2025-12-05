@@ -15,7 +15,7 @@ class Order(models.Model):
         UPI = 'UPI', 'UPI'
         WALLET = 'WALLET', 'Wallet'
 
-
+    uuid = models.CharField(max_length=20, blank=True, null=True) # add unique is true
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=30, choices=PaymentMethod.choices, blank=True)
@@ -29,6 +29,16 @@ class Order(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            # Example: ORDM-2025-000123
+            year = timezone.now().year
+            prefix = "ORDM"
+            # Pad database ID estimate — better to use random unique portion before first save
+            unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
+            self.uuid = f"{prefix}-{year}-{unique_num}"
+        super().save(*args, **kwargs)
 
 class OrderItems(models.Model):
     

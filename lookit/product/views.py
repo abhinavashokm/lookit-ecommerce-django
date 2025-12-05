@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from cloudinary.uploader import upload, destroy
 from django.db.models import Case, When, Value, IntegerField
+from django.db import transaction
 
 from .models import Style, Product, Variant, ProductImages
 from cart.models import Cart
@@ -75,7 +76,11 @@ def admin_list_products(request):
 @admin_required
 def admin_add_product(request):
     if request.method == "POST":
-
+        
+        print(request.POST)
+        print(request.FILES)
+        
+        print("call is here")
         # ---retrive-all-post-data-------------------
         name = request.POST.get('name')
         description = request.POST.get('description')
@@ -111,40 +116,45 @@ def admin_add_product(request):
             img_url = result.get('secure_url')
             image_public_id = result['public_id']
 
-        # ---create-new-product-
-        product = Product.objects.create(
-            name=name,
-            description=description,
-            brand=brand,
-            base_color=base_color,
-            category=category.lower(),
-            style=style,
-            material=material,
-            fit=fit,
-            care_instructions=care_instructions,
-            price=price,
-            image_url=img_url,
-            image_public_id=image_public_id,
-        )
+        try:
+            with transaction.atomic():
+                # ---create-new-product-
+                product = Product.objects.create(
+                    name=name,
+                    description=description,
+                    brand=brand,
+                    base_color=base_color,
+                    category=category.lower(),
+                    style=style,
+                    material=material,
+                    fit=fit,
+                    care_instructions=care_instructions,
+                    price=price,
+                    image_url=img_url,
+                    image_public_id=image_public_id,
+                )
 
-        # ---upload-additional-images-------
-        if additional_images:
-            for file in additional_images:
-                result = upload(
-                    file,
-                    folder=f"products/{product.name}/additional-images/",
-                    transformation=[
-                        {'width': 1080, 'height': 1080, 'crop': 'limit'},
-                        {'quality': 'auto'},
-                        {'fetch_format': 'auto'},
-                    ],
-                )
-                ProductImages.objects.create(
-                    product=product,
-                    image_url=result['secure_url'],
-                    image_public_id=result['public_id'],
-                )
-        messages.success(request, "NEW PRODUCT CREATED")
+                # ---upload-additional-images-------
+                if additional_images:
+                    for file in additional_images:
+                        result = upload(
+                            file,
+                            folder=f"products/{product.name}/additional-images/",
+                            transformation=[
+                                {'width': 1080, 'height': 1080, 'crop': 'limit'},
+                                {'quality': 'auto'},
+                                {'fetch_format': 'auto'},
+                            ],
+                        )
+                        ProductImages.objects.create(
+                            product=product,
+                            image_url=result['secure_url'],
+                            image_public_id=result['public_id'],
+                        )
+                    messages.success(request, "NEW PRODUCT CREATED")
+        except Exception as e:
+            messages.error(request,e)
+        
         return redirect('admin-list-products')
 
     # ---redner-add-product-page------------------------------------------------
