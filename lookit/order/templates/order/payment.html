@@ -70,7 +70,7 @@
                     <p>You will pay ₹{{ order.grand_total }} at the time of delivery.</p>
                     <p>COD orders may require OTP confirmation.</p>
                 </div>
-                <form action="{% url 'place-order' order.id %}" method="post">
+                <form action="{% url 'place-order' order.uuid %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="payment_method" value="COD">
                     <button class="btn-pay">Place Order</button>

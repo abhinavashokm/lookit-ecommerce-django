@@ -22,9 +22,9 @@ from .views import (
 urlpatterns = [
     path("checkout/", checkout, name="checkout"),
     path("create-order/", create_order, name="create_order"),
-    path("payment/<order_id>/", payment_page, name="payment-page"),
-    path("place-order/<order_id>/", place_order, name="place-order"),
-    path("order-success/<order_id>/", order_success_page, name="order-success"),
+    path("payment/<order_uuid>/", payment_page, name="payment-page"),
+    path("place-order/<order_uuid>/", place_order, name="place-order"),
+    path("order-success/<order_uuid>/", order_success_page, name="order-success"),
     path("my-orders/", my_orders, name="my-orders"),
     path("track-order/<order_uuid>/", track_order, name="track-order"),
     path('invoice/<order_uuid>/', download_invoice_pdf, name='invoice'),

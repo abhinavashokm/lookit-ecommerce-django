@@ -185,18 +185,20 @@ def create_order(request):
         print(e)
         return redirect('checkout')
 
-    return redirect('payment-page', order_id=order.id)
+    return redirect('payment-page', order_uuid=order.uuid)
 
 
 @login_required
-def payment_page(request, order_id):
-    order = Order.objects.get(id=order_id)
+def payment_page(request, order_uuid):
+    order = Order.objects.get(uuid=order_uuid)
     address = order.address
     return render(request, "order/payment.html/", {"order": order, "address": address})
 
 
 @login_required
-def place_order(request, order_id):
+def place_order(request, order_uuid):
+    order = Order.objects.get(uuid = order_uuid)
+    order_id = order.id
     if request.method == "POST":
         payment_method = request.POST.get('payment_method')
 
@@ -232,13 +234,13 @@ def place_order(request, order_id):
         # ---empty the cart of user--------------------
         Cart.objects.filter(user=request.user).delete()
         # ---redirect to order success page---------------
-        return redirect('order-success', order_id=order_id)
+        return redirect('order-success', order_uuid=order_uuid)
 
 
 @login_required
-def order_success_page(request, order_id):
-    order = Order.objects.get(id=order_id)
-    order_items = OrderItems.objects.filter(order_id=order_id)
+def order_success_page(request, order_uuid):
+    order = Order.objects.get(uuid=order_uuid)
+    order_items = OrderItems.objects.filter(order__uuid=order_uuid)
     address = order.address
     return render(
         request,
@@ -250,7 +252,7 @@ def order_success_page(request, order_id):
 @login_required
 def my_orders(request):
     orders = (
-        Order.objects.filter(user=request.user)
+        Order.objects.filter(user=request.user).exclude(items__order_status='INITIATED')
         .prefetch_related('items')
         .annotate(
             status_priority=Min(
@@ -654,7 +656,7 @@ def track_return_request(request, order_uuid):
 
 
 def admin_list_orders(request):
-    order_items = OrderItems.objects.all().order_by('-created_at')
+    order_items = OrderItems.objects.exclude(order_status='INITIATED').order_by('-created_at')
 
     search = request.GET.get('search')
     payment_method = request.GET.get('payment_method')
