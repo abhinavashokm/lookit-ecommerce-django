@@ -5,7 +5,7 @@
         <div class="toast {{ message.tags }}" id="{% if 'success' in message.tags %}toastSuccess{% elif 'error' in message.tags %}toastError{%endif%}">
             <div class="toast-icon">{% if 'success' in message.tags %}✓{% elif 'error' in message.tags %}✕{%endif%}</div>
             <div class="toast-content">
-                <div class="toast-title">{% if 'success' in message.tags %}Success{% elif 'error' in message.tags %}Failed{%endif%}</div>
+                <!-- <div class="toast-title">{% if 'success' in message.tags %}Success{% elif 'error' in message.tags %}Failed{%endif%}</div> -->
                 <div class="toast-message">{{ message }}</div>
             </div>
             <button class="toast-close" onclick="closeToast(this)">

@@ -1,20 +1,12 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from django.contrib.auth.decorators import user_passes_test
 from user.models import User
 from django.db.models import Q
 from datetime import date, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
-
-# custom decorator
-def admin_required(view_func):
-    decorated_view_func = user_passes_test(
-        lambda u: u.is_authenticated and u.is_staff,
-        login_url='/admin/login/',  # your custom login
-    )(view_func)
-    return decorated_view_func
+from core.decorators import admin_required
 
 
 def admin_login(request):

@@ -24,6 +24,7 @@ from django.core.paginator import Paginator
 from django.utils import timezone
 from datetime import date, timedelta
 from cloudinary.uploader import upload
+from core.decorators import admin_required
 
 
 @login_required
@@ -654,7 +655,7 @@ def track_return_request(request, order_uuid):
 ---------ADMIN SIDE------------------------------------------------------------------------- 
 """
 
-
+@admin_required
 def admin_list_orders(request):
     order_items = OrderItems.objects.exclude(order_status='INITIATED').order_by('-created_at')
 
@@ -704,7 +705,7 @@ def admin_list_orders(request):
 
     return render(request, "order/admin/list.html", {"page_obj": page_obj})
 
-
+@admin_required
 def admin_order_details(request, order_item_uuid):
     order_item = OrderItems.objects.get(uuid=order_item_uuid)
     customer = order_item.order.user
@@ -715,7 +716,7 @@ def admin_order_details(request, order_item_uuid):
         {"order": order_item, "customer": customer, "address": address},
     )
 
-
+@admin_required
 def admin_update_delivery_status(request, order_item_uuid):
     if request.method == "POST":
         order_status = request.POST.get("order_status")
@@ -750,7 +751,7 @@ def admin_update_delivery_status(request, order_item_uuid):
 
     return redirect('admin-order-details', order_item_uuid=order_item_uuid)
 
-
+@admin_required
 def admin_list_return_requests(request):
     return_request_list = (
         ReturnRequest.objects.all()
@@ -802,7 +803,7 @@ def admin_list_return_requests(request):
         request, 'order/admin/return_request_list.html', {"page_obj": page_obj}
     )
 
-
+@admin_required
 def admin_return_details(request, return_request_uuid):
     return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
     order_item = return_request.order_item
@@ -820,7 +821,7 @@ def admin_return_details(request, return_request_uuid):
         },
     )
 
-
+@admin_required
 def admin_update_return_status(request, return_request_uuid):
     if request.method == "POST":
         return_status = request.POST.get("return_status")

@@ -13,18 +13,12 @@ from django.db import transaction
 
 from .models import Style, Product, Variant, ProductImages
 from cart.models import Cart
+from core.decorators import admin_required
 
 """ ============================================
     ADMIN SIDE
 ============================================ """
 
-# custom decorator
-def admin_required(view_func):
-    decorated_view_func = user_passes_test(
-        lambda u: u.is_authenticated and u.is_staff,
-        login_url='/admin/login/',  # your custom login
-    )(view_func)
-    return decorated_view_func
 
 @admin_required
 def admin_list_products(request):
@@ -444,7 +438,7 @@ def admin_view_product(request, product_uuid):
         {"product": product, "product_images": product_images},
     )
 
-
+@admin_required
 def admin_toggle_product_active(request, product_uuid):
     product = Product.objects.get(uuid=product_uuid)
     product.is_active = not product.is_active
@@ -601,7 +595,7 @@ def product_details(request, product_uuid):
         output_field=IntegerField(),
     )
     # ---fetch all available sizes of this product-----------------------
-    variants = Variant.objects.filter(product=product).order_by(size_order)
+    variants = Variant.objects.filter(product=product, stock__gt = 0).order_by(size_order)
 
     # ---redirect to product listing page if product is not active-------
     if not product.is_active:
@@ -672,7 +666,7 @@ def add_to_cart(request):
         stock_mismatch = None
         variant = Variant.objects.get(id=variant_id)
         if int(variant.stock) == 0:
-            messages.error(request, "")
+            messages.error(request, f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.")
             return redirect('product-details', product_uuid = product.uuid)
         elif int(variant.stock) < int(qunatity):
             stock_mismatch = f"Product Added to Cart. (note: only {variant.stock} stocks are available.)"
