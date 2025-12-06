@@ -147,10 +147,45 @@
                     </div>
                 </div>
 
+
+                 <!-- 3️⃣ RETURN REASON & EVIDENCE -->
+                <div class="return-order-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-info-circle"></i> Return Reason</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-quote-left"></i> Reason</span>
+                            <span class="info-value important">{{ return_request.reason }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-comment"></i> Your Comments</span>
+                            <span class="info-value">“{{ return_request.comments }}”</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label"><i class="fas fa-images"></i> Uploaded Images</span>
+                            <div class="return-images">
+                                {% if return_request.product_image1 %}
+                                    <img src="{{ return_request.product_image1 }}" alt="Return Image 1">
+                                {% endif %}
+
+                                {% if return_request.product_image2 %}
+                                    <img src="{{ return_request.product_image2 }}" alt="Return Image 2">
+                                {% endif %}
+
+                                {% if return_request.product_image3 %}
+                                    <img src="{{ return_request.product_image3 }}" alt="Return Image 3">
+                                {% endif %}
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Delivery Address and Price Summary - Side by Side -->
                 <div class="details-row">
                     <div class="delivery-address">
-                        <h4 class="section-title">Delivery Address</h4>
+                        <h4 class="section-title">Pickup Address</h4>
                         <div class="address-details">
                             <p><strong>{{ address.full_name }}</strong></p>
                             <p>{{ address.address_line }}</p>

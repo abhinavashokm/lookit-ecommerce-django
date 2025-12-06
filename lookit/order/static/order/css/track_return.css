@@ -90,7 +90,7 @@
     border: 1px solid transparent;
     text-transform: capitalize;
     transition: all 0.3s ease;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .order-status i {
@@ -105,6 +105,7 @@
     color: #b28704;
     border-color: #ffecb3;
 }
+
 .order-status.requested i {
     color: #b28704;
 }
@@ -117,6 +118,7 @@
     color: #2e7d32;
     border-color: #c8e6c9;
 }
+
 .order-status.approved i {
     color: #2e7d32;
 }
@@ -129,6 +131,7 @@
     color: #1565c0;
     border-color: #bbdefb;
 }
+
 .order-status.pickup-scheduled i {
     color: #1565c0;
 }
@@ -141,6 +144,7 @@
     color: #1b5e20;
     border-color: #a5d6a7;
 }
+
 .order-status.picked-up i {
     color: #1b5e20;
 }
@@ -153,6 +157,7 @@
     color: #6a1b9a;
     border-color: #e1bee7;
 }
+
 .order-status.refunded i {
     color: #6a1b9a;
 }
@@ -165,6 +170,7 @@
     color: #c62828;
     border-color: #ffcdd2;
 }
+
 .order-status.rejected i {
     color: #c62828;
 }
@@ -200,7 +206,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 2.5rem;
-    margin: 0 -1.5rem 2.5rem;
+    /* margin: 0 -1.5rem 2.5rem; */
     padding: 2rem 1.5rem;
     background: #fafafa;
     border-radius: 12px;
@@ -212,7 +218,7 @@
     height: 170px;
     border-radius: 10px;
     object-fit: cover;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .product-details {
@@ -255,10 +261,10 @@
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
     gap: 2.5rem;
-    margin: 0 -1.5rem;
+    /* margin: 0 -1.5rem; */
 }
 
-.delivery-address{
+.delivery-address {
     background: #f9fafb;
     padding: 1.75rem;
     border-radius: 12px;
@@ -391,17 +397,21 @@
         width: 100%;
     }
 }
+
 /* =========================================================
    💼 PROFESSIONAL PROGRESS TRACKER (Blue Active + Green Completed)
 ========================================================= */
 
 /* Core color palette */
 :root {
-    --blue: #2563eb;            /* Active step color */
+    --blue: #2563eb;
+    /* Active step color */
     --blue-light: #3b82f6;
-    --green: #16a34a;           /* Completed step color */
+    --green: #16a34a;
+    /* Completed step color */
     --green-light: #4ade80;
-    --gray: #e5e7eb;            /* Inactive connector */
+    --gray: #e5e7eb;
+    /* Inactive connector */
     --text-gray: #6b7280;
 }
 
@@ -502,21 +512,32 @@
 .progress-4 .step-placed .inner,
 .progress-4 .step-shipped .inner,
 .progress-4 .step-out .inner,
-.progress-4 .step-delivered .inner  {
+.progress-4 .step-delivered .inner {
     color: #fff;
 }
 
 /* Connectors filled for completed */
-.progress-2 .c1::before { width: 100%; }
-.progress-3 .c1::before, .progress-3 .c2::before { width: 100%; }
-.progress-4 .c1::before, .progress-4 .c2::before, .progress-4 .c3::before { width: 100%; }
+.progress-2 .c1::before {
+    width: 100%;
+}
+
+.progress-3 .c1::before,
+.progress-3 .c2::before {
+    width: 100%;
+}
+
+.progress-4 .c1::before,
+.progress-4 .c2::before,
+.progress-4 .c3::before {
+    width: 100%;
+}
 
 /* ===========================
    🔵 Active Step (Blue Highlight)
 =========================== */
 .step.active .step-circle {
     background: #fff;
-    border: 4px solid var(--green); 
+    border: 4px solid var(--green);
     box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
     animation: pulseRingBlue 1.5s infinite ease-in-out;
 }
@@ -540,9 +561,11 @@
     0% {
         box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
     }
+
     70% {
         box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
     }
@@ -554,9 +577,11 @@
 .step:not(.active) .step-circle {
     border-color: var(--gray);
 }
+
 .step:not(.active) .title {
     color: #374151;
 }
+
 .step:not(.active) .date {
     color: var(--text-gray);
 }
@@ -596,9 +621,20 @@
         height: 0%;
     }
 
-    .progress-2 .c1::before { height: 100%; }
-    .progress-3 .c1::before, .progress-3 .c2::before { height: 100%; }
-    .progress-4 .c1::before, .progress-4 .c2::before, .progress-4 .c3::before { height: 100%; }
+    .progress-2 .c1::before {
+        height: 100%;
+    }
+
+    .progress-3 .c1::before,
+    .progress-3 .c2::before {
+        height: 100%;
+    }
+
+    .progress-4 .c1::before,
+    .progress-4 .c2::before,
+    .progress-4 .c3::before {
+        height: 100%;
+    }
 }
 
 
@@ -823,4 +859,199 @@ Modal Styles (Danger Modal)
 
 .danger_modal-btn-confirm:hover {
     background: #dc2626;
+}
+
+
+
+
+/* ==============================
+   RETURN REASON & EVIDENCE
+   ============================== */
+
+/* Main card body adjustments */
+.return-order-card {
+    /* margin: 0 -1.5rem 2.5rem; */
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    padding: 2.5rem 3rem;
+    border: 1px solid #f0f0f0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.card-header h2{
+    font-size: 1.3rem;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.75rem;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1.3rem;
+}
+
+.order-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Info item layout */
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.info-label i {
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #f3f4f6;
+}
+
+/* Highlighted reason type */
+.info-value.important {
+    background-color: #fff7ed;
+    border-color: #fed7aa;
+    color: #92400e;
+    font-weight: 500;
+}
+
+/* ==============================
+   EVIDENCE IMAGES (MAX 3)
+   ============================== */
+.return-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.return-images img {
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+}
+
+.return-images img:hover {
+    transform: scale(1.05);
+    border-color: #6366f1;
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.25);
+}
+
+/* If no images */
+.return-images.empty::before {
+    content: "No images uploaded";
+    color: #9ca3af;
+    font-size: 0.9rem;
+    padding: 1rem 0;
+}
+
+/* ==============================
+   RESPONSIVE DESIGN
+   ============================== */
+@media (max-width: 768px) {
+    .return-images img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .info-value {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.7rem;
+    }
+
+    .info-label {
+        font-size: 0.85rem;
+    }
+}
+
+/* =========================================================
+   UNIFORM CARD WIDTH + ALIGNMENT
+========================================================= */
+
+/* Shared layout container for product and return details */
+.order-details {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 12px;
+}
+
+/* Product info and return reason cards — same width, same alignment */
+.product-info,
+.return-order-card {
+    width: 100%;
+    background: #fafafa !important;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    padding: 2rem 1.5rem;
+    box-sizing: border-box;
+}
+
+/* Return reason card visual tweak */
+.return-order-card {
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Consistent spacing below each card */
+.product-info {
+    margin-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .order-details {
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .product-info,
+    .return-order-card {
+        padding: 1.25rem;
+    }
+}
+
+.return-order-card {
+    margin-top: -1rem;
+    border-top: none;
+    border-radius: 12px;
 }

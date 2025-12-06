@@ -207,14 +207,18 @@
     <!-- 6️⃣ ADMIN ACTIONS -->
     <div class="action-buttons">
       <button class="btn btn-primary" onclick="openStatusModal()">
-        <i class="fas fa-edit"></i> Update Return Status
+        <i class="fas fa-edit"></i> Change Return Status
       </button>
       <form action="{% url 'admin-update-return-status' return_request.uuid %}" method="post">
         {% csrf_token %}
         <input  type="hidden" name="return_status" value="REJECTED">
+
+        {% if return_request.status != 'REJECTED'  %}
         <button type="submit" class="btn btn-danger">
           <i class="fas fa-times"></i> Reject Return
         </button>
+        {% endif %}
+
       </form>
     </div>
   </div>
