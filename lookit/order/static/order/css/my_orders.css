@@ -205,15 +205,6 @@
         flex-direction: column;
     }
 
-    .sidebar {
-        width: 100%;
-        max-width: 100%;
-        position: static;
-        margin-bottom: 2rem;
-        border-right: none;
-        border-bottom: 1px solid #e5e5e5;
-    }
-
     .main-content {
         padding: 1.5rem;
     }

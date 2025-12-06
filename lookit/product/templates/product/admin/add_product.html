@@ -191,8 +191,9 @@
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <button type="button" class="btn-cancel"
-                    onclick="window.location.href='product_management.html'">Cancel</button>
+                <a href="{% url 'admin-list-products' %}">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                </a>
                 <button type="submit" class="btn-save">Save Product</button>
             </div>
         </form>

@@ -76,24 +76,18 @@ def admin_list_products(request):
 @admin_required
 def admin_add_product(request):
     if request.method == "POST":
-        
-        print(request.POST)
-        print(request.FILES)
-        
-        print("call is here")
+
         # ---retrive-all-post-data-------------------
-        name = request.POST.get('name')
-        description = request.POST.get('description')
-        brand = request.POST.get('brand')
-        base_color = request.POST.get('base_color')
-        category = request.POST.get('category')
+        name = request.POST.get('name','').strip()
+        description = request.POST.get('description','').strip()
+        brand = request.POST.get('brand','').strip()
+        base_color = request.POST.get('base_color','').strip()
+        category = request.POST.get('category','').strip().lower()
+        style_name = request.POST.get('style','').strip()
 
-        style_name = request.POST.get('style')
-        style = Style.objects.get(name=style_name)
-
-        material = request.POST.get('material')
-        fit = request.POST.get('fit')
-        care_instructions = request.POST.get('care_instructions')
+        material = request.POST.get('material','').strip()
+        fit = request.POST.get('fit','').strip()
+        care_instructions = request.POST.get('care_instructions','').strip()
 
         price = request.POST.get('price')
 
@@ -101,8 +95,47 @@ def admin_add_product(request):
         additional_images = request.FILES.getlist('additional_images')
         img_url = None
         image_public_id = None
+        
+        #---check if all required fields exists-----------------------
+        required_fields = [name, description, brand, base_color, category, style_name, price, image, additional_images]
+        if not all(required_fields):
+            messages.error(request, "Some Required Fields are missing")
+            return redirect('admin-add-product')
+        
+        #---check if product name already exists-----------------------
+        if Product.objects.filter(name__iexact=name).exists():
+            messages.error(request, f"Product '{name}' already exists.")
+            return redirect('admin-add-product')
 
-        # --upload-image-to-cloudinary-----------------------------
+        
+        #---price validation-----------------------------------------
+        if int(price) <= 0:
+            messages.error(request, "Price must be greater than zero.")
+            return redirect('admin-add-product')
+        
+        #---category validation--------------------------------------
+        ALLOWED_CATEGORIES = ['men', 'women', 'kids','unisex']
+        if category.lower() not in ALLOWED_CATEGORIES:
+            messages.error(request, "Invalid category selected.")
+            return redirect('admin-add-product')
+        
+        #---validate style category------------------------------------
+        try:
+            style = Style.objects.get(name=style_name)
+        except Style.DoesNotExist:
+            messages.error(request, "Selected style does not exist.")
+            return redirect('admin-add-product')
+        
+        #---validate additional images count-----------------------------
+        additional_images_count = len(additional_images)
+        if additional_images_count < 2:
+            messages.error(request, "Please upload at least 2 additional images.")
+            return redirect('admin-add-product')
+        if additional_images_count > 5:
+             messages.error(request, "You can upload a maximum of 5 additional images.")
+             return redirect('admin-add-product')
+
+        #---upload-image-to-cloudinary---------------------------------------
         if image:
             result = upload(
                 image,
@@ -115,6 +148,10 @@ def admin_add_product(request):
             )
             img_url = result.get('secure_url')
             image_public_id = result['public_id']
+            #---check if file upload succeded--------------------
+            if not img_url:
+                messages.error(request, "Image upload failed.")
+                return redirect('admin-add-product')
 
         try:
             with transaction.atomic():
@@ -124,7 +161,7 @@ def admin_add_product(request):
                     description=description,
                     brand=brand,
                     base_color=base_color,
-                    category=category.lower(),
+                    category=category,
                     style=style,
                     material=material,
                     fit=fit,
@@ -153,8 +190,10 @@ def admin_add_product(request):
                         )
                     messages.success(request, "NEW PRODUCT CREATED")
         except Exception as e:
-            messages.error(request,e)
-        
+            messages.error(request, "Something went wrong while creating the product.")
+            print("Error creating product:", e)
+            return redirect('admin-add-product')
+            
         return redirect('admin-list-products')
 
     # ---redner-add-product-page------------------------------------------------
