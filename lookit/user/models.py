@@ -93,12 +93,12 @@ class OTP(models.Model):
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     full_name = models.CharField()
-    phone = models.CharField(max_length=15)
-    second_phone = models.CharField(max_length=15, blank=True, null=True)
+    phone = models.CharField(max_length=30)
+    second_phone = models.CharField(max_length=30, blank=True, null=True)
     address_line = models.TextField()
     city = models.CharField()
     state = models.CharField()
-    pincode = models.CharField(max_length=6)
+    pincode = models.CharField(max_length=15)
     type = models.CharField(max_length=15)
     is_default = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -107,7 +107,7 @@ class Address(models.Model):
     
     def save(self, *args, **kwargs):
         #if it's the only one set it as default
-        if not Address.objects.filter(user=self.user).exists():
+        if not Address.objects.filter(user=self.user, is_active=True).exists():
             self.is_default = True
             
         super().save(*args,**kwargs)

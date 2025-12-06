@@ -275,7 +275,7 @@ def admin_edit_product(request, product_uuid):
             return redirect('admin-edit-product', product_uuid=product_uuid)
         if total_images < 2:
             messages.error(request, "Please upload at least 2 additional images.")
-            return redirect('admin-add-product')
+            return redirect('admin-edit-product', product_uuid=product_uuid)
 
         # ---replace main image if changed--------------------------
         if main_image:

@@ -14,6 +14,7 @@ import json
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import  urlsafe_base64_decode
 from django.urls import reverse
+from django.db import transaction
 
 def user_login(request):
     if request.method == 'POST':
@@ -346,8 +347,19 @@ def delete_address(request):
         address_id = request.POST.get('address_id')
         request_from = request.POST.get('request_from')
         try:
-            Address.objects.filter(id=address_id).update(is_active=False)
-            messages.success(request, "ADDRESS DELETED")
+            with transaction.atomic():
+                address = Address.objects.get(id=address_id)
+                address.is_active = False
+                
+                #if default address set new one
+                if address.is_default:
+                    latest_address = Address.objects.exclude(id=address.id).filter(is_active=True).order_by('-created_at').first()
+                    if latest_address:
+                        latest_address.is_default = True
+                        latest_address.save()
+                address.is_default = False
+                address.save()
+                messages.success(request, "ADDRESS DELETED")
         except Exception as e:
             messages.error(request, e)
 
