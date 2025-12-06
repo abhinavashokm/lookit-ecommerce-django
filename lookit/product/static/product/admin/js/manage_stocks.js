@@ -431,6 +431,6 @@ function submitStock(variantId, csrfToken) {
         .then(data => {
             sumbitBtn = document.getElementById(variantId+'-submitBtn')
             sumbitBtn.disabled = true
-            document.getElementById('totalStock').innerHTML = data.new_stock;
+            document.getElementById('totalStock').innerHTML = data.new_total_stock;
         });
 }

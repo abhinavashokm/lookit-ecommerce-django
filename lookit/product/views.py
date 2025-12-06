@@ -384,7 +384,7 @@ def admin_manage_stocks(request, product_uuid):
         messages.success(request, f"NEW VARIANT ADDED")
         return redirect('admin-manage-stocks', product_uuid=product_uuid)
 
-    variants = Variant.objects.filter(product=product)
+    variants = Variant.objects.filter(product=product).order_by('-updated_at')
     return render(
         request,
         "product/admin/manage_stocks.html",
@@ -406,10 +406,15 @@ def admin_update_stock(request):
         variant = Variant.objects.get(id=variant_id)
         variant.stock = new_stock
         variant.save()
+        
+        #fetch total stock of product
+        product_id = variant.product.id
+        product = Product.objects.filter(id=product_id).aggregate(total_stock = Sum('variant__stock'))
+        total_stock = product['total_stock']
 
-    return JsonResponse(
-        {"status": "success", "message": "Stock updated", "new_stock": new_stock}
-    )
+        return JsonResponse(
+            {"status": "success", "message": "Stock updated", "new_stock": new_stock, "new_total_stock":total_stock}
+        )
 
 @admin_required
 def admin_delete_variant(request, variant_id):

@@ -55,7 +55,20 @@
                     </tr>
                 </thead>
                 <tbody>
-
+                    {% if not variants %}
+                            <tr>
+                                <td colspan="5" class="no-variants-message">
+                                    <div class="no-variants-container">
+                                        <p class="no-variants-text">
+                                            No variants have been added for this product yet.
+                                        </p>
+                                        <p class="no-variants-subtext">
+                                            To make this product available for listing, please add at least one size variant.
+                                        </p>
+                                    </div>
+                                </td>
+                            </tr>
+                    {% endif %}
                     {% for variant in variants %}
                     <tr>
                         <td>{{ variant.size }}</td>
