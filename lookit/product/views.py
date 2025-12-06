@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from cloudinary.uploader import upload, destroy
 from django.db.models import Case, When, Value, IntegerField
+from decimal import Decimal
 from django.db import transaction
 
 from .models import Style, Product, Variant, ProductImages
@@ -193,8 +194,9 @@ def admin_add_product(request):
             messages.error(request, "Something went wrong while creating the product.")
             print("Error creating product:", e)
             return redirect('admin-add-product')
-            
-        return redirect('admin-list-products')
+        
+        #if product created
+        return redirect('admin-view-product',product_uuid = product.uuid)
 
     # ---redner-add-product-page------------------------------------------------
     styles = Style.objects.all()
@@ -205,18 +207,18 @@ def admin_edit_product(request, product_uuid):
     product = Product.objects.get(uuid=product_uuid)
     if request.method == 'POST':
         # ---retrive-all-data
-        name = request.POST.get('name').strip()
-        description = request.POST.get('description')
-        brand = request.POST.get('brand')
-        base_color = request.POST.get('base_color')
-        category = request.POST.get('category')
+        name = request.POST.get('name','').strip()
+        description = request.POST.get('description','').strip()
+        brand = request.POST.get('brand','').strip()
+        base_color = request.POST.get('base_color','').strip()
+        category = request.POST.get('category','').strip().lower()
 
-        style_name = request.POST.get('style')
+        style_name = request.POST.get('style','').strip()
         style = Style.objects.get(name=style_name)
 
-        material = request.POST.get('material')
-        fit = request.POST.get('fit')
-        care_instructions = request.POST.get('care_instructions')
+        material = request.POST.get('material','').strip()
+        fit = request.POST.get('fit','').strip()
+        care_instructions = request.POST.get('care_instructions','').strip()
         price = request.POST.get('price')
 
         main_image = request.FILES.get('image')
@@ -224,6 +226,56 @@ def admin_edit_product(request, product_uuid):
 
         additional_images = request.FILES.getlist('additional_images')
         img_url = None
+        
+        #---check if all required fields exists-----------------------
+        required_fields = [name, description, brand, base_color, category, style_name, price]
+        if not all(required_fields):
+            messages.error(request, "Some Required Fields are missing")
+            return redirect('admin-edit-product', product_uuid=product_uuid)
+        
+        #---check if product name already exists-----------------------
+        if name and Product.objects.exclude(uuid=product_uuid).filter(name__iexact=name).exists():
+            messages.error(request, f"Product '{name}' already exists.")
+            return redirect('admin-edit-product', product_uuid=product_uuid)
+
+        
+        #---price validation-----------------------------------------
+        if  Decimal(price) <= 0: 
+            messages.error(request, "Price must be greater than zero.")
+            return redirect('admin-edit-product', product_uuid=product_uuid)
+        
+        #---category validation--------------------------------------
+        ALLOWED_CATEGORIES = ['men', 'women', 'kids','unisex']
+        if category.lower() not in ALLOWED_CATEGORIES:
+            messages.error(request, "Invalid category selected.")
+            return redirect('admin-edit-product', product_uuid=product_uuid)
+        
+        #---validate style category------------------------------------
+        try:
+            style = Style.objects.get(name=style_name)
+        except Style.DoesNotExist:
+            messages.error(request, "Selected style does not exist.")
+            return redirect('admin-edit-product', product_uuid=product_uuid)
+        
+        #---take count of additional images removed-----------------------------
+        current_additional_images = ProductImages.objects.filter(product=product)
+        removed_count = 0
+        for current_img in current_additional_images:
+            # If hidden input is missing => image removed in UI
+            if not request.POST.get(str(current_img.id)):
+                removed_count += 1
+            
+        #---validate count of additional images---------------------------------
+        count_of_current_additional_images = current_additional_images.count() - removed_count
+        count_of_new_images = len(additional_images)
+        total_images = count_of_current_additional_images + count_of_new_images
+        
+        if total_images > 5:
+            messages.error(request, "You can upload a maximum of 5 additional images.")
+            return redirect('admin-edit-product', product_uuid=product_uuid)
+        if total_images < 2:
+            messages.error(request, "Please upload at least 2 additional images.")
+            return redirect('admin-add-product')
 
         # ---replace main image if changed--------------------------
         if main_image:
@@ -255,18 +307,17 @@ def admin_edit_product(request, product_uuid):
                 img_url = result.get('secure_url')
         else:
             img_url = request.POST.get('old_image_url')
+            
 
         # ---manage-additional-images using hidden input( delete if missing)-----
-        current_additional_images = ProductImages.objects.filter(product=product)
         for current_img in current_additional_images:
             # If hidden input is missing => image removed in UI
             if not request.POST.get(str(current_img.id)):
-                print(current_img.id)
                 # Remove from Cloudinary using public_id
                 destroy(current_img.image_public_id)
                 # Remove from db
                 current_img.delete()
-
+        
         # ---manage-additional-images( upload new ones )-------------------------
         if additional_images:
             for file in additional_images:
@@ -290,7 +341,7 @@ def admin_edit_product(request, product_uuid):
             description=description,
             brand=brand,
             base_color=base_color,
-            category=category.lower(),
+            category=category,
             style=style,
             material=material,
             fit=fit,

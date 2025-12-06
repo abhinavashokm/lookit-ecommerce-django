@@ -104,7 +104,7 @@
                         <select id="type" class="select2" name="style" required>
                             <option value="" disabled>Select Style</option>
                             {% for style in styles %}
-                            <option value="{{ style.name }}">{{ style.name }}</option>
+                            <option value="{{ style.name }}" {% if product.style.id == style.id %}selected{% endif %}>{{ style.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -126,7 +126,7 @@
                     </div>
                     <div class="form-group full-width">
                         <label for="careInstructions">Care Instructions</label>
-                        <input type="text" id="careInstructions" name="careInstructions"
+                        <input type="text" id="careInstructions" name="care_instructions"
                             value="{{ product.care_instructions }}">
                     </div>
                 </div>
