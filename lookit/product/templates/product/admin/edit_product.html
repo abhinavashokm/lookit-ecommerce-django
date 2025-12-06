@@ -30,7 +30,7 @@
     <div class="breadcrumbs">
         <a href="{% url 'admin-list-products' %}">Products</a>
         <span>/</span>
-        <a href="{% url 'admin-view-product' product.id %}">{{ product.name }}</a>
+        <a href="{% url 'admin-view-product' product.uuid %}">{{ product.name }}</a>
         <span>/</span>
         <span>Edit Product</span>
     </div>
@@ -41,7 +41,7 @@
     <!-- Form Container -->
     <div class="form-container">
 
-        <form action="{% url 'admin-edit-product' product.id %}"  method="post" enctype="multipart/form-data"  id="editProductForm">
+        <form action="{% url 'admin-edit-product' product.uuid %}"  method="post" enctype="multipart/form-data"  id="editProductForm">
             {% csrf_token %}
             <!-- Basic Information -->
             <div class="form-section">
@@ -212,7 +212,7 @@
 
             <!-- Form Actions -->
             <div class="form-actions">
-                <a href="{% url 'admin-view-product' product.id %}">
+                <a href="{% url 'admin-view-product' product.uuid %}">
                     <button type="button" class="btn-cancel">Cancel</button>
                 </a>
                 <button type="submit" class="btn-save">Save Changes</button>

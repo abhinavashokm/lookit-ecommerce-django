@@ -190,18 +190,24 @@
                     <span class="detail-label">Style:</span>
                     <span class="detail-value">{{ product.style.name }}</span>
                 </div>
+                {% if product.material %}
                 <div class="detail-item">
                     <span class="detail-label">Material:</span>
                     <span class="detail-value">{{ product.material }}</span>
                 </div>
+                {% endif %}
+                {% if product.fit %}
                 <div class="detail-item">
                     <span class="detail-label">Fit:</span>
                     <span class="detail-value">{{ product.fit }}</span>
                 </div>
+                {% endif %}
+                {% if product.care_instructions %}
                 <div class="detail-item">
                     <span class="detail-label">Care Instructions:</span>
                     <span class="detail-value">{{ product.care_instructions }}</span>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

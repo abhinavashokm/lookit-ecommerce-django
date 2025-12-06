@@ -23,10 +23,10 @@ from .views import (
 urlpatterns = [
     path("admin/list/", admin_list_products, name="admin-list-products"),
     path("admin/add-product/", admin_add_product, name="admin-add-product"),
-    path("admin/edit-product/<product_id>/", admin_edit_product, name="admin-edit-product"),
-    path("admin/view-product/<product_id>", admin_view_product, name="admin-view-product"),
-    path("admin/toggle-product-active/<product_id>/", admin_toggle_product_active, name="admin_toggle_product_active"),
-    path("admin/manage-stocks/<product_id>", admin_manage_stocks, name="admin-manage-stocks"),
+    path("admin/edit-product/<product_uuid>/", admin_edit_product, name="admin-edit-product"),
+    path("admin/view-product/<product_uuid>", admin_view_product, name="admin-view-product"),
+    path("admin/toggle-product-active/<product_uuid>/", admin_toggle_product_active, name="admin_toggle_product_active"),
+    path("admin/manage-stocks/<product_uuid>", admin_manage_stocks, name="admin-manage-stocks"),
     path("admin/update-stocks", admin_update_stock, name="admin-update-stock"),
     path("admin/delete_variant/<variant_id>", admin_delete_variant, name="admin-delete-variant"),
     

@@ -162,8 +162,8 @@ def admin_add_product(request):
     return render(request, "product/admin/add_product.html", {"styles": styles})
 
 @admin_required
-def admin_edit_product(request, product_id):
-    product = Product.objects.get(id=product_id)
+def admin_edit_product(request, product_uuid):
+    product = Product.objects.get(uuid=product_uuid)
     if request.method == 'POST':
         # ---retrive-all-data
         name = request.POST.get('name').strip()
@@ -246,7 +246,7 @@ def admin_edit_product(request, product_id):
                     image_public_id=result['public_id'],
                 )
         # ---update-modal-----------------------------
-        product = Product.objects.filter(id=product_id).update(
+        product = Product.objects.filter(uuid=product_uuid).update(
             name=name,
             description=description,
             brand=brand,
@@ -261,7 +261,7 @@ def admin_edit_product(request, product_id):
             image_public_id=image_public_id,
         )
         messages.success(request, f"PRODUCT DETAILS UPDATED")
-        return redirect('admin-view-product', product_id=product_id)
+        return redirect('admin-view-product', product_uuid=product_uuid)
 
     else:
         # ---prefill-and-render-edit-page--------------------------------
@@ -280,9 +280,9 @@ def admin_edit_product(request, product_id):
 
 # --stock_management-------------------------
 @admin_required
-def admin_manage_stocks(request, product_id):
+def admin_manage_stocks(request, product_uuid):
     product = (
-        Product.objects.filter(id=product_id)
+        Product.objects.filter(uuid=product_uuid)
         .annotate(total_stock=Coalesce(Sum('variant__stock'), Value(0)))
         .first()
     )
@@ -294,11 +294,11 @@ def admin_manage_stocks(request, product_id):
         size_already_exist = Variant.objects.filter(product=product, size=size).exists()
         if size_already_exist:
             messages.error(request, f"SIZE VARIANT ALREADY EXIST")
-            return redirect('admin-manage-stocks', product_id=product_id)
+            return redirect('admin-manage-stocks', product_uuid=product_uuid)
 
         Variant.objects.create(product=product, size=size, stock=stock)
         messages.success(request, f"NEW VARIANT ADDED")
-        return redirect('admin-manage-stocks', product_id=product_id)
+        return redirect('admin-manage-stocks', product_uuid=product_uuid)
 
     variants = Variant.objects.filter(product=product)
     return render(
@@ -330,24 +330,24 @@ def admin_update_stock(request):
 @admin_required
 def admin_delete_variant(request, variant_id):
     if request.method == "POST":
-        product_id = request.POST.get('product_id')
+        product_uuid = request.POST.get('product_uuid')
         variant = Variant.objects.get(id=variant_id)
         variant.stock=0
         variant.save()
         messages.success(request, f"Size {variant.size} Stocks Removed")
-        return redirect('admin-manage-stocks', product_id=product_id)
+        return redirect('admin-manage-stocks', product_uuid=product_uuid)
 
 @admin_required
-def admin_view_product(request, product_id):
+def admin_view_product(request, product_uuid):
     product = (
-        Product.objects.filter(id=product_id)
+        Product.objects.filter(uuid=product_uuid)
         .annotate(
             total_stocks=Coalesce(Sum('variant__stock'), Value(0)),
             total_variants=Coalesce(Count('variant'), Value(0)),
         )
         .first()
     )
-    product_images = ProductImages.objects.filter(product__id=product_id)
+    product_images = ProductImages.objects.filter(product__uuid=product_uuid)
     return render(
         request,
         "product/admin/view_product.html",
@@ -355,8 +355,8 @@ def admin_view_product(request, product_id):
     )
 
 
-def admin_toggle_product_active(request, product_id):
-    product = Product.objects.get(id=product_id)
+def admin_toggle_product_active(request, product_uuid):
+    product = Product.objects.get(uuid=product_uuid)
     product.is_active = not product.is_active
     product.save()
     print(product.is_active)
@@ -364,7 +364,7 @@ def admin_toggle_product_active(request, product_id):
         messages.success(request, f"PRODUCT RESTORED")
     else:
         messages.success(request, f"PRODUCT DELETED")
-    return redirect('admin-view-product', product_id=product_id)
+    return redirect('admin-view-product', product_uuid=product_uuid)
 
 @admin_required
 def admin_list_categories(request):
@@ -459,7 +459,10 @@ def explore(request):
     if sort_name:
         order_fields.append(sort_name)
     # if both sort exists first order by price then name
-    products = products.order_by(*order_fields)
+    if order_fields:
+        products = products.order_by(*order_fields)
+    else:
+        products = products.order_by('-created_at')
 
     # ----filter---------------------
     style = request.GET.get('style')

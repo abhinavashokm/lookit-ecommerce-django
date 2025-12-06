@@ -167,7 +167,7 @@
 
                 {% for product in page_obj %}
                 <tr>
-                    <td class="product-id">PRD-{{product.id|stringformat:'04d'}}</td>
+                    <td class="product-id">{{product.uuid}}</td>
                     <td>
                         {% if product.image_url != ' ' %}
                         <img class="product-image" src="{{ product.image_url }}" alt="">
@@ -186,11 +186,11 @@
                         {% endif %}
                     </td>
                     <td>
-                        <a href="{% url 'admin-manage-stocks' product.id %}" class="manage-stocks-link">Manage
+                        <a href="{% url 'admin-manage-stocks' product.uuid %}" class="manage-stocks-link">Manage
                             Stocks</a>
                     </td>
                     <td>
-                        <a href="{% url 'admin-view-product' product.id %}">
+                        <a href="{% url 'admin-view-product' product.uuid %}">
                             <button class="btn-view">View</button>
                         </a>
                     </td>

@@ -20,10 +20,10 @@
         <h1 class="page-title">Product Details</h1>
         <div class="page-actions">
             {% if product.is_active %}
-            <a style="text-decoration: none;" href="{% url 'admin-manage-stocks' product.id %}">
+            <a style="text-decoration: none;" href="{% url 'admin-manage-stocks' product.uuid %}">
                 <button class="btn-primary">Manage Stocks</button>
             </a>
-            <a href="{% url 'admin-edit-product' product.id %}">
+            <a href="{% url 'admin-edit-product' product.uuid %}">
                 <button class="btn-secondary">Edit</button>
             </a>
             <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
@@ -60,7 +60,7 @@
             <div class="product-meta">
                 <div class="product-meta-item">
                     <span class="product-meta-label">Product ID:</span>
-                    <span class="product-meta-value">PRD-{{ product.id | stringformat:'04d' }}</span>
+                    <span class="product-meta-value">{{ product.uuid }}</span>
                 </div>
             </div>
         </div>
@@ -72,7 +72,7 @@
     <!-- Mobile Actions (shown only on small devices) -->
     <div class="mobile-actions">
         {% if product.is_active %}
-        <a href="{% url 'admin-edit-product' product.id %}">
+        <a href="{% url 'admin-edit-product' product.uuid %}">
             <button class="btn-secondary">Edit</button>
         </a>
         <button class="btn-danger" onclick="openDeleteModal()">Delete</button>
@@ -122,15 +122,15 @@
             <div class="details-grid">
                 <div class="detail-item">
                     <span class="detail-label">Material</span>
-                    <span class="detail-value">{{ product.material }}</span>
+                    <span class="detail-value">{{ product.material|default:'Not Provided' }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="detail-label">Fit</span>
-                    <span class="detail-value">{{ product.fit }}</span>
+                    <span class="detail-value">{{ product.fit|default:'Not Provided' }}</span>
                 </div>
                 <div class="detail-item full-width">
                     <span class="detail-label">Care Instructions</span>
-                    <span class="detail-value">{{ product.care_instructions }}</span>
+                    <span class="detail-value">{{ product.care_instructions|default:'Not Provided' }}</span>
                 </div>
             </div>
         </div>
@@ -168,7 +168,7 @@
         </div>
         <div class="modal-actions">
             <button class="modal-btn modal-btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-            <form action="{% url 'admin_toggle_product_active' product.id %}" method="post">
+            <form action="{% url 'admin_toggle_product_active' product.uuid %}" method="post">
                 {% csrf_token %}
                 <button class="modal-btn modal-btn-confirm">Delete</button>
             </form>
@@ -188,7 +188,7 @@
         </div>
         <div class="modal-actions">
             <button class="modal-btn modal-btn-cancel" onclick="closeRestoreModal()">Cancel</button>
-            <form action="{% url 'admin_toggle_product_active' product.id %}" method="post">
+            <form action="{% url 'admin_toggle_product_active' product.uuid %}" method="post">
                 {% csrf_token %}
                 <button class="modal-btn modal-btn-warning">Restore</button>
             </form>
