@@ -37,7 +37,7 @@
 
             <div class="search-container">
                 <div class="search-bar">
-                    <input type="text" name="search" placeholder="Search Orders By Product Name or Customer Name.." id="searchInput"
+                    <input type="text" name="search" placeholder="Search Returns By ID, Product Name, Customer Name.." id="searchInput"
                         value="{{ request.GET.search }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
@@ -158,21 +158,19 @@
 
                 {% for return_request in page_obj %}
                 <tr>
-                    <td class="product-id">{{ return_request.uuid }}</td>
-                    <td>
+                    <td class="return-id">{{ return_request.uuid }}</td>
+                    <td class="customer-name">
                         {{ return_request.order.user.full_name }}
                     </td>
-                    <td >{{ return_request.product.name }}</td>
-                    <td class="product-stock " >₹{{ return_request.amount_paid }}</td>
-                    <td class="product-price">{{ return_request.reason }}</td>
+                    <td class="product-name">{{ return_request.product.name }}</td>
+                    <td class="return-amount " >₹{{ return_request.amount_paid }}</td>
+                    <td class="return-reason">{{ return_request.reason }}</td>
                     <td>
-
-                        <span class="status-badge status-active">{{ return_request.status }}</span>
-
-                        <!-- <span class="status-badge status-inactive">Deleted</span> -->
-
+                        <span class="status-badge status-{{ return_request.status|lower|slugify }}">
+                            {{ return_request.status }}
+                        </span>
                     </td>
-                    <td>{{ return_request.request_date.date }}</td>
+                    <td class="return-date">{{ return_request.request_date.date }}</td>
                     <td>
                         <a href="{% url 'admin-return-details' return_request.uuid %}">
                             <button class="btn-view">Manage</button>

@@ -450,34 +450,89 @@
           font-weight: 600;
       }
 
-      .status-active {
+      /* 🟨 Requested */
+      .status-requested {
+          background: #fef3c7;
+          color: #92400e;
+      }
+
+      /* 🟢 Approved */
+      .status-approved {
           background: #d1fae5;
           color: #065f46;
       }
 
-      .status-inactive {
+      /* 🔴 Rejected */
+      .status-rejected {
           background: #fee2e2;
           color: #991b1b;
       }
 
-      .product-id {
+      /* 🟣 Pickup Scheduled */
+      .status-pickup-scheduled {
+          background: #ede9fe;
+          color: #5b21b6;
+      }
+
+      /* 🔵 Picked Up */
+      .status-picked-up {
+          background: #dbeafe;
+          color: #1e40af;
+      }
+
+      /* 💚 Refunded */
+      .status-refunded {
+          background: #ecfdf5;
+          color: #047857;
+      }
+
+
+      .return-id {
+          /* ID Column */
+          font-size: 0.85rem;
           font-weight: 600;
           color: #6366f1;
-          font-size: 0.9rem;
+
       }
 
-      .manage-stocks-link {
-          color: #6366f1;
-          text-decoration: none;
-          font-weight: 500;
-          font-size: 0.9rem;
-          transition: all 0.2s ease;
+      /* Reason */
+      .return-reason {
+          max-width: 260px;
+          font-size: 0.85rem;
+          color: #4b5563;
           white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
       }
 
-      .manage-stocks-link:hover {
-          color: #4f46e5;
-          text-decoration: underline;
+      .return-date {
+          font-size: 0.82rem;
+          color: #6b7280;
+      }
+
+      .return-amount {
+          font-size: 0.9rem;
+          font-weight: 700;
+      }
+
+      .product-name {
+          max-width: 220px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
+
+      .customer-name {
+          font-weight: 600;
+          color: #111827;
+      }
+
+      /* Status Badge Text Balance */
+      .status-badge {
+          font-size: 0.7rem;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          font-weight: 700;
       }
 
       .btn-view {
@@ -673,5 +728,3 @@
               overflow: visible;
           }
       }
-
-     

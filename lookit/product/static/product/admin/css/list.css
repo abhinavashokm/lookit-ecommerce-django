@@ -461,9 +461,10 @@
       }
 
       .product-id {
-          font-weight: 600;
-          color: #6366f1;
-          font-size: 0.9rem;
+        /* ID Column */
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6366f1;
       }
 
       .manage-stocks-link {

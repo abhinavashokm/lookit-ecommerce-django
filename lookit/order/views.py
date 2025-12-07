@@ -198,20 +198,23 @@ def payment_page(request, order_uuid):
 
 @login_required
 def place_order(request, order_uuid):
-    order = Order.objects.get(uuid = order_uuid)
+    order = Order.objects.get(uuid=order_uuid)
     order_id = order.id
     if request.method == "POST":
         payment_method = request.POST.get('payment_method')
 
         # ---check if payment method is valid
         if payment_method not in Order.PaymentMethod.values:
-            messages.error(request,"Invalid Payment Method")
+            messages.error(request, "Invalid Payment Method")
             return redirect('payment-page', order_id=order_id)
-        
-        #--handle reclicking place order multiple time cases-------
+
+        # --handle reclicking place order multiple time cases-------
         cart_count = Cart.objects.filter(user=request.user).count()
-        if(cart_count == 0):
-            messages.error(request,"Your cart is empty because this order has already been placed.")
+        if cart_count == 0:
+            messages.error(
+                request,
+                "Your cart is empty because this order has already been placed.",
+            )
             return redirect('my-orders')
 
         try:
@@ -259,7 +262,8 @@ def order_success_page(request, order_uuid):
 @login_required
 def my_orders(request):
     orders = (
-        Order.objects.filter(user=request.user).exclude(items__order_status='INITIATED')
+        Order.objects.filter(user=request.user)
+        .exclude(items__order_status='INITIATED')
         .prefetch_related('items')
         .annotate(
             status_priority=Min(
@@ -297,7 +301,6 @@ def track_order(request, order_uuid):
     if delivered_date:
         if delivered_date > seven_days_ago:
             eligible_for_return = True  # 7 days not passed
-
 
     return render(
         request,
@@ -661,9 +664,12 @@ def track_return_request(request, order_uuid):
 ---------ADMIN SIDE------------------------------------------------------------------------- 
 """
 
+
 @admin_required
 def admin_list_orders(request):
-    order_items = OrderItems.objects.exclude(order_status='INITIATED').order_by('-created_at')
+    order_items = OrderItems.objects.exclude(order_status='INITIATED').order_by(
+        '-created_at'
+    )
 
     search = request.GET.get('search')
     payment_method = request.GET.get('payment_method')
@@ -673,7 +679,8 @@ def admin_list_orders(request):
 
     if search:
         order_items = order_items.filter(
-            Q(order__user__full_name__icontains=search)
+            Q(uuid=search)
+            | Q(order__user__full_name__icontains=search)
             | Q(variant__product__name__icontains=search)
         )
 
@@ -711,6 +718,7 @@ def admin_list_orders(request):
 
     return render(request, "order/admin/list.html", {"page_obj": page_obj})
 
+
 @admin_required
 def admin_order_details(request, order_item_uuid):
     order_item = OrderItems.objects.get(uuid=order_item_uuid)
@@ -721,6 +729,7 @@ def admin_order_details(request, order_item_uuid):
         "order/admin/order_details.html",
         {"order": order_item, "customer": customer, "address": address},
     )
+
 
 @admin_required
 def admin_update_delivery_status(request, order_item_uuid):
@@ -757,6 +766,7 @@ def admin_update_delivery_status(request, order_item_uuid):
 
     return redirect('admin-order-details', order_item_uuid=order_item_uuid)
 
+
 @admin_required
 def admin_list_return_requests(request):
     return_request_list = (
@@ -770,7 +780,8 @@ def admin_list_return_requests(request):
     print(search, "hello")
     if search:
         return_request_list = return_request_list.filter(
-            Q(order_item__variant__product__name__icontains=search)
+            Q(uuid=search)
+            | Q(order_item__variant__product__name__icontains=search)
             | Q(order_item__order__user__full_name__icontains=search)
         )
 
@@ -809,6 +820,7 @@ def admin_list_return_requests(request):
         request, 'order/admin/return_request_list.html', {"page_obj": page_obj}
     )
 
+
 @admin_required
 def admin_return_details(request, return_request_uuid):
     return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
@@ -826,6 +838,7 @@ def admin_return_details(request, return_request_uuid):
             "address": address,
         },
     )
+
 
 @admin_required
 def admin_update_return_status(request, return_request_uuid):

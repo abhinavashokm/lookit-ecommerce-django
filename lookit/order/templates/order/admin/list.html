@@ -1,7 +1,7 @@
 {% extends 'admin_base/base.html' %}
 {% load static %}
 {% block styles %}
-<link rel="stylesheet" href="{% static 'product/admin/css/list.css' %}">
+<link rel="stylesheet" href="{% static 'order/css/admin/list.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
 {% endblock %}
 
@@ -37,7 +37,7 @@
 
             <div class="search-container">
                 <div class="search-bar">
-                    <input type="text" name="search" placeholder="Search Orders by product name or customer name.." id="searchInput"
+                    <input type="text" name="search" placeholder="Search Orders by ID, Product name, Customer name.." id="searchInput"
                         value="{{ request.GET.search }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
@@ -159,24 +159,22 @@
 
                 {% for order in page_obj %}
                 <tr>
-                    <td class="product-id">{{ order.uuid }}</td>
-                    <td>
+                    <td class="order-id">{{ order.uuid }}</td>
+                    <td class="customer-name">
                         {{ order.order.user.full_name }}
                     </td>
-                    <td >{{ order.product.name }}</td>
-                    <td class="product-stock">₹{{ order.total }}</td>
-                    <td >{{ order.order.payment_method }}</td>
-                    <td>
-
+                    <td class="product-name">{{ order.product.name }}</td>
+                    <td class="total-amount">₹{{ order.total }}</td>
+                    <td class="payment_method">{{ order.order.payment_method }}</td>
+                    <td class="payment_status">
                         <span class="status-badge status-active">{{ order.payment_status }}</span>
-
-                        <!-- <span class="status-badge status-inactive">Deleted</span> -->
-
                     </td>
-                    <td>
-                        <span class="status-badge status-active">{{ order.order_status }}</span>
+                    <td class="order-status">
+                        <span class="status-badge status-{{ order.order_status|lower|slugify }}">
+                            {{ order.order_status }}
+                        </span>
                     </td>
-                    <td>
+                    <td class="order-date">
                         {{ order.created_at.date }}
                     </td>
                     <td>

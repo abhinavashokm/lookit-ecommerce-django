@@ -442,30 +442,59 @@
           color: #6b7280;
       }
 
-      .status-badge {
-          display: inline-block;
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 0.75rem;
-          font-weight: 600;
+
+
+      .order-id {
+        /* ID Column */
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #6366f1;
       }
 
-      .status-active {
-          background: #d1fae5;
-          color: #065f46;
-      }
+      /* Customer name */
+.customer-name {
+    font-weight: 600;
+    color: #111827;
+}
 
-      .status-inactive {
-          background: #fee2e2;
-          color: #991b1b;
-      }
+/* Product name - prevent messy overflow */
+.product-name {
+    max-width: 220px;
+    font-weight: 500;
+    color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
-      .product-id {
-          font-weight: 600;
-          color: #6366f1;
-          font-size: 0.9rem;
-      }
+/* Total amount */
+.total-amount {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #111827;
+}
 
+/* Payment method */
+.payment_method {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+}
+.status-badge {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* Date */
+.order-date {
+    font-size: 0.82rem;
+    color: #6b7280;
+    font-weight: 500;
+    white-space: nowrap;
+}
       .manage-stocks-link {
           color: #6366f1;
           text-decoration: none;
@@ -674,4 +703,59 @@
           }
       }
 
-     
+
+      .status-badge {
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 0.75rem;
+          font-weight: 600;
+      }
+
+      /* 🟦 Order Started */
+      .status-initiated {
+          background: #e0f2fe;
+          color: #0369a1;
+      }
+
+      /* 🟨 Order Placed */
+      .status-placed {
+          background: #fef3c7;
+          color: #92400e;
+      }
+
+      /* 🟣 Shipped */
+      .status-shipped {
+          background: #ede9fe;
+          color: #5b21b6;
+      }
+
+      /* 🔵 Out for Delivery */
+      .status-out-for-delivery {
+          background: #dbeafe;
+          color: #1e40af;
+      }
+
+      /* 🟢 Delivered */
+      .status-delivered {
+          background: #d1fae5;
+          color: #065f46;
+      }
+
+      /* 🔴 Cancelled */
+      .status-cancelled {
+          background: #fee2e2;
+          color: #991b1b;
+      }
+
+      /* 🟠 Returned */
+      .status-returned {
+          background: #ffedd5;
+          color: #9a3412;
+      }
+
+      /* 💚 Refunded */
+      .status-refunded {
+          background: #ecfdf5;
+          color: #047857;
+      }
