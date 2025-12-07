@@ -481,7 +481,7 @@
 /* Order cards row layout */
 .order-cards-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* grid-template-columns: 1fr 1fr; */
     gap: 20px;
 }
 
@@ -935,6 +935,10 @@ textarea.form-control {
 
 .timeline-item.completed::after {
     background-color: #10b981;
+}
+
+.timeline-item.return-completed::after {
+    background-color: #e05d5d !important;
 }
 
 .timeline-item:last-child::after {

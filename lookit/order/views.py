@@ -205,8 +205,14 @@ def place_order(request, order_uuid):
 
         # ---check if payment method is valid
         if payment_method not in Order.PaymentMethod.values:
-            messages.error("Invalid Payment Method")
+            messages.error(request,"Invalid Payment Method")
             return redirect('payment-page', order_id=order_id)
+        
+        #--handle reclicking place order multiple time cases-------
+        cart_count = Cart.objects.filter(user=request.user).count()
+        if(cart_count == 0):
+            messages.error(request,"Your cart is empty because this order has already been placed.")
+            return redirect('my-orders')
 
         try:
             with transaction.atomic():
@@ -857,6 +863,10 @@ def admin_update_return_status(request, return_request_uuid):
             elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
                 return_request.pickedup_at = timezone.now()
                 return_request.refunded_at = None
+                # --update order status ----------
+                order = return_request.order_item
+                order.order_status = order.OrderStatus.RETURNED
+                order.save()
                 # --handle stock------------------
                 quantity_returned = return_request.order_item.quantity
                 variant = return_request.variant
@@ -864,6 +874,10 @@ def admin_update_return_status(request, return_request_uuid):
                 variant.save()
             elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
                 return_request.refunded_at = timezone.now()
+                # --update order status ----------
+                order = return_request.order_item
+                order.order_status = order.OrderStatus.REFUNDED
+                order.save()
 
             return_request.save()
             messages.success(request, "Return status updated successfully.")

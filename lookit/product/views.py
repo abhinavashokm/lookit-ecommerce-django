@@ -277,6 +277,12 @@ def admin_edit_product(request, product_uuid):
             return redirect('admin-edit-product', product_uuid=product_uuid)
 
         # ---take count of additional images removed-----------------------------
+        '''
+        in client side edit product form hidden input fields are added to show exising additional 
+        images. user can view it's preview and remove it (which will remove the hidden input field). 
+        those input field's name is the corresponding db id of additional image. 
+        if any hidden input field is missing that means the image is removed.
+        '''
         current_additional_images = ProductImages.objects.filter(product=product)
         removed_count = 0
         for current_img in current_additional_images:
