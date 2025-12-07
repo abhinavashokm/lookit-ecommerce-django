@@ -1,5 +1,6 @@
 // Store uploaded images
 let thumbnailImage = null;
+// all preview additional images are stored inside here
 let additionalImages = [];
 
 // Validate thumbnail (exactly 1 required)
@@ -33,7 +34,7 @@ function validateAdditionalImages() {
     const uploadArea = document.getElementById('additionalUpload');
     const count = additionalImages.length;
 
-    if (count >= 2) {
+    if (count >= 2 && count <= 5) {
         uploadArea.classList.remove('error');
         validationMessage.classList.remove('error');
         validationMessage.classList.add('success');
@@ -44,7 +45,7 @@ function validateAdditionalImages() {
         uploadArea.classList.add('error');
         validationMessage.classList.remove('success');
         validationMessage.classList.add('error');
-        validationMessage.textContent = `Please upload minimum 2 additional images. Currently: ${count} image${count !== 1 ? 's' : ''}`;
+        validationMessage.textContent = `Please upload between 2 and 5 additional images. Currently: ${count} image${count !== 1 ? 's' : ''}`;
         validationMessage.style.color = '#ef4444';
         return false;
     }
@@ -68,7 +69,6 @@ function displayAdditionalImages() {
         imageItem.className = 'image-preview-item';
         imageItem.innerHTML = `
                     <img src="${imageData.preview}" alt="Additional Image ${index + 1}">
-                    <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(${index})" title="Remove image">×</button>
                 `;
         grid.appendChild(imageItem);
     });
@@ -93,18 +93,16 @@ function handleThumbnailUpload(event) {
             validateThumbnail();
         };
         reader.readAsDataURL(file);
-    } else if (file) {
-        alert('Please select an image file');
     }
-
-    // Reset input to allow uploading same file again
-    //event.target.value = '';
 }
 
 function handleAdditionalUpload(event) {
     const files = Array.from(event.target.files || []);
 
     if (files.length === 0) return;
+
+    //replace existing additional images
+    additionalImages = []
 
     files.forEach(file => {
         if (file.type.startsWith('image/')) {
@@ -120,23 +118,6 @@ function handleAdditionalUpload(event) {
             reader.readAsDataURL(file);
         }
     });
-
-    // Reset input to allow uploading same files again
-   // event.target.value = '';
-}
-
-// Remove thumbnail
-function removeThumbnail() {
-        thumbnailImage = null;
-        const previewImg = document.getElementById('thumbnailPreviewImg');
-        previewImg.src = '';
-        validateThumbnail();
-}
-
-// Remove additional image
-function removeAdditionalImage(index) {
-        additionalImages.splice(index, 1);
-        displayAdditionalImages();
 }
 
 // Drag and drop functionality
@@ -208,20 +189,20 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSelectStyling();
 });
 
-// Form submission
-// document.getElementById('addProductForm').addEventListener('submit', (e) => {
-//     // Validate thumbnail
-//     if (!validateThumbnail()) {
-//         alert('Please upload exactly one thumbnail image.');
-//         return;
-//     }
-
-//     // Validate additional images
-//     if (!validateAdditionalImages()) {
-//         alert('Please upload minimum 2 additional images.');
-//         return;
-//     }
-// });
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
+    }
+  }
+  return cookieValue;
+}
 
 
 //SELECT 2 SCRIPT

@@ -582,7 +582,7 @@
     background: #c62828;
     color: white;
     padding: 6px 14px;
-    font-size: 0.50rem;
+    font-size: 0.5rem;
     font-weight: 400;
     border-radius: 0 6px 6px 0;
     text-transform: uppercase;
@@ -621,8 +621,8 @@
     background: #7b1fa2; /* deep purple */
     color: #fff;
     padding: 6px 14px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.5rem;
+    font-weight: 400;
     border-radius: 0 6px 6px 0;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -648,8 +648,8 @@
     background: #2e7d32; /* success green */
     color: #fff;
     padding: 6px 14px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.5rem;
+    font-weight: 400;
     border-radius: 0 6px 6px 0;
     text-transform: uppercase;
     letter-spacing: 0.8px;
@@ -671,8 +671,8 @@
     background: #7b1fa2; /* deep purple */
     color: #fff;
     padding: 6px 14px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.5rem;
+    font-weight: 400;
     border-radius: 0 6px 6px 0;
     text-transform: uppercase;
     letter-spacing: 0.8px;

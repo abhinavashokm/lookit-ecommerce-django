@@ -68,21 +68,23 @@ def admin_list_products(request):
         request, "product/admin/list.html", {"page_obj": page_obj, "styles": styles}
     )
 
+
 @admin_required
 def admin_add_product(request):
     if request.method == "POST":
-
+        print("call is here")
+        print(request.POST)
         # ---retrive-all-post-data-------------------
-        name = request.POST.get('name','').strip()
-        description = request.POST.get('description','').strip()
-        brand = request.POST.get('brand','').strip()
-        base_color = request.POST.get('base_color','').strip()
-        category = request.POST.get('category','').strip().lower()
-        style_name = request.POST.get('style','').strip()
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+        brand = request.POST.get('brand', '').strip()
+        base_color = request.POST.get('base_color', '').strip()
+        category = request.POST.get('category', '').strip().lower()
+        style_name = request.POST.get('style', '').strip()
 
-        material = request.POST.get('material','').strip()
-        fit = request.POST.get('fit','').strip()
-        care_instructions = request.POST.get('care_instructions','').strip()
+        material = request.POST.get('material', '').strip()
+        fit = request.POST.get('fit', '').strip()
+        care_instructions = request.POST.get('care_instructions', '').strip()
 
         price = request.POST.get('price')
 
@@ -90,47 +92,57 @@ def admin_add_product(request):
         additional_images = request.FILES.getlist('additional_images')
         img_url = None
         image_public_id = None
-        
-        #---check if all required fields exists-----------------------
-        required_fields = [name, description, brand, base_color, category, style_name, price, image, additional_images]
-        if not all(required_fields):
-            messages.error(request, "Some Required Fields are missing")
+
+        # ---check if all required fields exists-----------------------
+        field_map = {
+            'name': name,
+            'description': description,
+            'brand': brand,
+            'base color': base_color,
+            'category': category,
+            'style': style_name,
+            'price': price,
+            'thumbnail image': image,
+            'additional images': additional_images,
+        }
+        missing_fields = [key for key, value in field_map.items() if not value]
+        if missing_fields:
+            messages.error(request, f"Missing fields: {', '.join(missing_fields)}")
             return redirect('admin-add-product')
-        
-        #---check if product name already exists-----------------------
+
+        # ---check if product name already exists-----------------------
         if Product.objects.filter(name__iexact=name).exists():
             messages.error(request, f"Product '{name}' already exists.")
             return redirect('admin-add-product')
 
-        
-        #---price validation-----------------------------------------
+        # ---price validation-----------------------------------------
         if int(price) <= 0:
             messages.error(request, "Price must be greater than zero.")
             return redirect('admin-add-product')
-        
-        #---category validation--------------------------------------
-        ALLOWED_CATEGORIES = ['men', 'women', 'kids','unisex']
+
+        # ---category validation--------------------------------------
+        ALLOWED_CATEGORIES = ['men', 'women', 'kids', 'unisex']
         if category.lower() not in ALLOWED_CATEGORIES:
             messages.error(request, "Invalid category selected.")
             return redirect('admin-add-product')
-        
-        #---validate style category------------------------------------
+
+        # ---validate style category------------------------------------
         try:
             style = Style.objects.get(name=style_name)
         except Style.DoesNotExist:
             messages.error(request, "Selected style does not exist.")
             return redirect('admin-add-product')
-        
-        #---validate additional images count-----------------------------
+
+        # ---validate additional images count-----------------------------
         additional_images_count = len(additional_images)
         if additional_images_count < 2:
             messages.error(request, "Please upload at least 2 additional images.")
             return redirect('admin-add-product')
         if additional_images_count > 5:
-             messages.error(request, "You can upload a maximum of 5 additional images.")
-             return redirect('admin-add-product')
+            messages.error(request, "You can upload a maximum of 5 additional images.")
+            return redirect('admin-add-product')
 
-        #---upload-image-to-cloudinary---------------------------------------
+        # ---upload-image-to-cloudinary---------------------------------------
         if image:
             result = upload(
                 image,
@@ -143,7 +155,7 @@ def admin_add_product(request):
             )
             img_url = result.get('secure_url')
             image_public_id = result['public_id']
-            #---check if file upload succeded--------------------
+            # ---check if file upload succeded--------------------
             if not img_url:
                 messages.error(request, "Image upload failed.")
                 return redirect('admin-add-product')
@@ -188,31 +200,32 @@ def admin_add_product(request):
             messages.error(request, "Something went wrong while creating the product.")
             print("Error creating product:", e)
             return redirect('admin-add-product')
-        
-        #if product created
-        return redirect('admin-view-product',product_uuid = product.uuid)
+
+        # if product created
+        return redirect('admin-view-product', product_uuid=product.uuid)
 
     # ---redner-add-product-page------------------------------------------------
     styles = Style.objects.all()
     return render(request, "product/admin/add_product.html", {"styles": styles})
+
 
 @admin_required
 def admin_edit_product(request, product_uuid):
     product = Product.objects.get(uuid=product_uuid)
     if request.method == 'POST':
         # ---retrive-all-data
-        name = request.POST.get('name','').strip()
-        description = request.POST.get('description','').strip()
-        brand = request.POST.get('brand','').strip()
-        base_color = request.POST.get('base_color','').strip()
-        category = request.POST.get('category','').strip().lower()
+        name = request.POST.get('name', '').strip()
+        description = request.POST.get('description', '').strip()
+        brand = request.POST.get('brand', '').strip()
+        base_color = request.POST.get('base_color', '').strip()
+        category = request.POST.get('category', '').strip().lower()
 
-        style_name = request.POST.get('style','').strip()
+        style_name = request.POST.get('style', '').strip()
         style = Style.objects.get(name=style_name)
 
-        material = request.POST.get('material','').strip()
-        fit = request.POST.get('fit','').strip()
-        care_instructions = request.POST.get('care_instructions','').strip()
+        material = request.POST.get('material', '').strip()
+        fit = request.POST.get('fit', '').strip()
+        care_instructions = request.POST.get('care_instructions', '').strip()
         price = request.POST.get('price')
 
         main_image = request.FILES.get('image')
@@ -220,50 +233,64 @@ def admin_edit_product(request, product_uuid):
 
         additional_images = request.FILES.getlist('additional_images')
         img_url = None
-        
-        #---check if all required fields exists-----------------------
-        required_fields = [name, description, brand, base_color, category, style_name, price]
+
+        # ---check if all required fields exists-----------------------
+        required_fields = [
+            name,
+            description,
+            brand,
+            base_color,
+            category,
+            style_name,
+            price,
+        ]
         if not all(required_fields):
             messages.error(request, "Some Required Fields are missing")
             return redirect('admin-edit-product', product_uuid=product_uuid)
-        
-        #---check if product name already exists-----------------------
-        if name and Product.objects.exclude(uuid=product_uuid).filter(name__iexact=name).exists():
+
+        # ---check if product name already exists-----------------------
+        if (
+            name
+            and Product.objects.exclude(uuid=product_uuid)
+            .filter(name__iexact=name)
+            .exists()
+        ):
             messages.error(request, f"Product '{name}' already exists.")
             return redirect('admin-edit-product', product_uuid=product_uuid)
 
-        
-        #---price validation-----------------------------------------
-        if  Decimal(price) <= 0: 
+        # ---price validation-----------------------------------------
+        if Decimal(price) <= 0:
             messages.error(request, "Price must be greater than zero.")
             return redirect('admin-edit-product', product_uuid=product_uuid)
-        
-        #---category validation--------------------------------------
-        ALLOWED_CATEGORIES = ['men', 'women', 'kids','unisex']
+
+        # ---category validation--------------------------------------
+        ALLOWED_CATEGORIES = ['men', 'women', 'kids', 'unisex']
         if category.lower() not in ALLOWED_CATEGORIES:
             messages.error(request, "Invalid category selected.")
             return redirect('admin-edit-product', product_uuid=product_uuid)
-        
-        #---validate style category------------------------------------
+
+        # ---validate style category------------------------------------
         try:
             style = Style.objects.get(name=style_name)
         except Style.DoesNotExist:
             messages.error(request, "Selected style does not exist.")
             return redirect('admin-edit-product', product_uuid=product_uuid)
-        
-        #---take count of additional images removed-----------------------------
+
+        # ---take count of additional images removed-----------------------------
         current_additional_images = ProductImages.objects.filter(product=product)
         removed_count = 0
         for current_img in current_additional_images:
             # If hidden input is missing => image removed in UI
             if not request.POST.get(str(current_img.id)):
                 removed_count += 1
-            
-        #---validate count of additional images---------------------------------
-        count_of_current_additional_images = current_additional_images.count() - removed_count
+
+        # ---validate count of additional images---------------------------------
+        count_of_current_additional_images = (
+            current_additional_images.count() - removed_count
+        )
         count_of_new_images = len(additional_images)
         total_images = count_of_current_additional_images + count_of_new_images
-        
+
         if total_images > 5:
             messages.error(request, "You can upload a maximum of 5 additional images.")
             return redirect('admin-edit-product', product_uuid=product_uuid)
@@ -301,7 +328,6 @@ def admin_edit_product(request, product_uuid):
                 img_url = result.get('secure_url')
         else:
             img_url = request.POST.get('old_image_url')
-            
 
         # ---manage-additional-images using hidden input( delete if missing)-----
         for current_img in current_additional_images:
@@ -311,7 +337,7 @@ def admin_edit_product(request, product_uuid):
                 destroy(current_img.image_public_id)
                 # Remove from db
                 current_img.delete()
-        
+
         # ---manage-additional-images( upload new ones )-------------------------
         if additional_images:
             for file in additional_images:
@@ -406,25 +432,34 @@ def admin_update_stock(request):
         variant = Variant.objects.get(id=variant_id)
         variant.stock = new_stock
         variant.save()
-        
-        #fetch total stock of product
+
+        # fetch total stock of product
         product_id = variant.product.id
-        product = Product.objects.filter(id=product_id).aggregate(total_stock = Sum('variant__stock'))
+        product = Product.objects.filter(id=product_id).aggregate(
+            total_stock=Sum('variant__stock')
+        )
         total_stock = product['total_stock']
 
         return JsonResponse(
-            {"status": "success", "message": "Stock updated", "new_stock": new_stock, "new_total_stock":total_stock}
+            {
+                "status": "success",
+                "message": "Stock updated",
+                "new_stock": new_stock,
+                "new_total_stock": total_stock,
+            }
         )
+
 
 @admin_required
 def admin_delete_variant(request, variant_id):
     if request.method == "POST":
         product_uuid = request.POST.get('product_uuid')
         variant = Variant.objects.get(id=variant_id)
-        variant.stock=0
+        variant.stock = 0
         variant.save()
         messages.success(request, f"Size {variant.size} Stocks Removed")
         return redirect('admin-manage-stocks', product_uuid=product_uuid)
+
 
 @admin_required
 def admin_view_product(request, product_uuid):
@@ -443,6 +478,7 @@ def admin_view_product(request, product_uuid):
         {"product": product, "product_images": product_images},
     )
 
+
 @admin_required
 def admin_toggle_product_active(request, product_uuid):
     product = Product.objects.get(uuid=product_uuid)
@@ -455,6 +491,7 @@ def admin_toggle_product_active(request, product_uuid):
         messages.success(request, f"PRODUCT DELETED")
     return redirect('admin-view-product', product_uuid=product_uuid)
 
+
 @admin_required
 def admin_list_categories(request):
     styles = Style.objects.all()
@@ -465,6 +502,7 @@ def admin_list_categories(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'product/admin/list_categories.html', {"page_obj": page_obj})
+
 
 @admin_required
 def admin_add_style(request):
@@ -479,6 +517,7 @@ def admin_add_style(request):
         messages.success(request, f"CREATED NEW STYLE - {style.name}")
     return redirect('admin-category-management')
 
+
 @admin_required
 def admin_search_categories(request):
     search_key = request.GET.get('search', '')
@@ -486,6 +525,7 @@ def admin_search_categories(request):
     return render(
         request, 'product/admin/list_categories.html', {"page_obj": search_result}
     )
+
 
 @admin_required
 def admin_delete_category(request, style_id):
@@ -495,6 +535,7 @@ def admin_delete_category(request, style_id):
     messages.success(request, f"STYLE DELETED - {style.name}")
     return redirect('admin-category-management')
 
+
 @admin_required
 def admin_restore_category(request, style_id):
     style = Style.objects.get(id=style_id)
@@ -502,6 +543,7 @@ def admin_restore_category(request, style_id):
     style.save()
     messages.success(request, f"Restored style - {style.name}")
     return redirect('admin-category-management')
+
 
 @admin_required
 def admin_edit_category(request):
@@ -559,7 +601,7 @@ def explore(request):
     price_max = request.GET.get('price_max')
     color = request.GET.get('color')
     size = request.GET.get('size')
-    
+
     if style:
         products = products.filter(style__name__icontains=style)
     if price_min and price_max:
@@ -579,7 +621,7 @@ def explore(request):
 
 
 def product_details(request, product_uuid):
-    #--fetch product----------------------------
+    # --fetch product----------------------------
     product = (
         Product.objects.filter(uuid=product_uuid)
         .annotate(
@@ -600,7 +642,7 @@ def product_details(request, product_uuid):
         output_field=IntegerField(),
     )
     # ---fetch all available sizes of this product-----------------------
-    variants = Variant.objects.filter(product=product, stock__gt = 0).order_by(size_order)
+    variants = Variant.objects.filter(product=product, stock__gt=0).order_by(size_order)
 
     # ---redirect to product listing page if product is not active-------
     if not product.is_active:
@@ -609,9 +651,15 @@ def product_details(request, product_uuid):
 
     # ---fetch additional product images--------------------------
     product_images = ProductImages.objects.filter(product=product)
-    
-    #---fetch related products---------------------------------------------------------------
-    related_products = Product.objects.filter(category=product.category,is_active=True, variant__stock__gt=0).distinct().exclude(id=product.id)
+
+    # ---fetch related products---------------------------------------------------------------
+    related_products = (
+        Product.objects.filter(
+            category=product.category, is_active=True, variant__stock__gt=0
+        )
+        .distinct()
+        .exclude(id=product.id)
+    )
 
     # ---old price for showing offer temporarly---
     old_price = int(product.price) * 1.2
@@ -636,23 +684,23 @@ def add_to_cart(request):
         variant_id = request.POST.get('variant_id')
         qunatity = request.POST.get('quantity')
         product = Product.objects.get(id=product_id)
-        
-        #restrict if not authenticated
+
+        # restrict if not authenticated
         if not user.is_authenticated:
             messages.error(request, f"PLEASE LOG IN TO USE CART, id = {variant_id}")
-            return redirect('product-details', product_uuid = product.uuid)
-        
-        #if size not selected
+            return redirect('product-details', product_uuid=product.uuid)
+
+        # if size not selected
         if not variant_id:
             messages.error(request, "PLEASE SELECT A SIZE")
-            return redirect('product-details', product_uuid = product.uuid)
-        
-        #check if product is active
+            return redirect('product-details', product_uuid=product.uuid)
+
+        # check if product is active
         if not product.is_active:
             messages.error(request, "Product Is Currently Unavailble")
             return redirect('explore')
-        
-        #if product already in cart increase quantity
+
+        # if product already in cart increase quantity
         variant_in_cart = Cart.objects.filter(user=user, variant_id=variant_id).first()
         if variant_in_cart:
             variant_in_cart.quantity += int(qunatity)
@@ -661,22 +709,25 @@ def add_to_cart(request):
                 msg = "Product already in cart — maximum 4 quantity allowed."
             else:
                 msg = "Product already in cart — quantity updated."
-                
+
             messages.success(request, msg)
             variant_in_cart.save()
-            
-            return redirect('product-details', product_uuid = product.uuid)
-        
-        #--stock validation---
+
+            return redirect('product-details', product_uuid=product.uuid)
+
+        # --stock validation---
         stock_mismatch = None
         variant = Variant.objects.get(id=variant_id)
         if int(variant.stock) == 0:
-            messages.error(request, f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.")
-            return redirect('product-details', product_uuid = product.uuid)
+            messages.error(
+                request,
+                f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.",
+            )
+            return redirect('product-details', product_uuid=product.uuid)
         elif int(variant.stock) < int(qunatity):
             stock_mismatch = f"Product Added to Cart. (note: only {variant.stock} stocks are available.)"
             qunatity = variant.stock
-        
+
         try:
             Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
             if stock_mismatch:
@@ -686,5 +737,5 @@ def add_to_cart(request):
         except Exception as e:
             print(e)
             messages.error(request, e)
-            
-    return redirect('product-details', product_uuid = product.uuid)
+
+    return redirect('product-details', product_uuid=product.uuid)

@@ -157,10 +157,6 @@
                         <div class="thumbnail-preview-container" id="thumbnailPreviewContainer" style="display: none;">
                             <div class="thumbnail-preview">
                                 <img id="thumbnailPreviewImg" src="" alt="Thumbnail Preview">
-                                <button type="button" class="remove-thumbnail-btn" onclick="removeThumbnail()">
-                                    <span>×</span>
-                                    <span>Remove</span>
-                                </button>
                             </div>
                         </div>
 
@@ -179,7 +175,7 @@
                                 style="display: none;" onchange="handleAdditionalUpload(event)">
                         </div>
 
-                        <div class="validation-message" id="additionalValidationMessage">Please upload minimum 2
+                        <div class="validation-message" id="additionalValidationMessage">Please upload minimum 2 and maximum 5
                             additional images</div>
                         <div class="images-count" id="additionalImagesCount">0 images uploaded</div>
 
@@ -341,10 +337,20 @@
             submitHandler: function (form) {
                 // Custom validation for min additional images count
                 const additionalCount = document.getElementById('additionalInput').files.length;
-                console.log(additionalCount)
+
+                if (thumbnailInput.files && thumbnailInput.files.length > 0) {
+                    console.log("Thumbnail selected");
+                } else {
+                    console.log("No thumbnail selected");
+                    return false
+                }
+
                 if (additionalCount < 2) {
                     $("#additionalValidationMessage").text("Upload minimum 2 images").show();
                     return false;
+                }else if(additionalCount > 5){
+                    $("#additionalValidationMessage").text("You can upload a maximum of 5 additional images.").show();
+                    return false;       
                 }
 
                 form.submit();
