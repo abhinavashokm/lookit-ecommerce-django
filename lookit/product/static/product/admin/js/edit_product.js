@@ -4,6 +4,7 @@
 
 // Store original values
 let originalAdditionalImagesCount = 0;
+let newAdditionalImagesCount = 0;
 
 
 // Check if field value has changed
@@ -67,8 +68,11 @@ function handleThumbnailReplace(event) {
 function handleAdditionalImagesAdd(event) {
     const files = event.target.files;
     if (files.length > 0) {
-        const grid = document.getElementById('additionalImagesGrid');
+        const grid = document.getElementById('newAdditionalImagesGrid');
         const imagesGroup = grid.closest('.form-group');
+
+        //CLEAR PREVIOUS FILES SELECT
+        grid.innerHTML = "";
 
         Array.from(files).forEach(file => {
             const reader = new FileReader();
@@ -77,7 +81,7 @@ function handleAdditionalImagesAdd(event) {
                 imageItem.className = 'additional-image-item modified';
                 imageItem.innerHTML = `
                             <img src="${e.target.result}" alt="Additional Image">
-                            <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)" title="Remove image">×</button>
+
                         `;
                 grid.appendChild(imageItem);
 
@@ -88,6 +92,7 @@ function handleAdditionalImagesAdd(event) {
         });
 
         console.log(`${files.length} additional image(s) added`);
+        newAdditionalImagesCount = files.length;
         updateAdditionalImagesModifiedState();
     }
 }
@@ -103,6 +108,7 @@ function removeAdditionalImage(button) {
         console.log('Image removed');
         updateAdditionalImagesModifiedState();
 }
+
 
 // Update additional images modified state
 function updateAdditionalImagesModifiedState() {

@@ -186,13 +186,11 @@
                             </div>
                             {% endfor %}
 
-                            <!-- <div class="additional-image-item">
-                                <img src="https://via.placeholder.com/300x300/e5e7eb/6b7280?text=Image+2"
-                                    alt="Additional Image 2">
-                                <button type="button" class="remove-image-btn" onclick="removeAdditionalImage(this)"
-                                    title="Remove image">×</button>
-                            </div> -->
                         </div>
+
+                        <div class="additional-images-grid" id="newAdditionalImagesGrid">
+                        </div>
+
                         <div class="validation-message error" id="additionalErrorMsg" style="display:none;"></div>
 
 
@@ -361,7 +359,7 @@
 
         const preservedImages = document.querySelectorAll('.additional-image-item input[value="preserve"]').length;
         const newlyAddedImages = document.getElementById('additionalInput').files.length;
-        const totalAdditional = preservedImages + newlyAddedImages;
+        const totalAdditional = preservedImages + newAdditionalImagesCount;
 
         let isValid = true;
 
@@ -378,6 +376,12 @@
         // Additional images validation
         if (totalAdditional < 2) {
           $("#additionalErrorMsg").text("At least 2 additional images are required").show();
+          isValid = false;
+        }
+        console.log(preservedImages, newAdditionalImagesCount)
+        console.log(totalAdditional)
+        if (totalAdditional > 5) {
+          $("#additionalErrorMsg").text("You can upload a maximum of 5 additional images").show();
           isValid = false;
         }
 
