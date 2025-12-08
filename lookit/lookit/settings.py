@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     "product",
     "cart",
     "order",
+    "payment",
     
     #extensions
     'social_django',
@@ -208,3 +209,9 @@ cloudinary.config(
 
 # ⏰ Session expires after 2 hours (in seconds)
 SESSION_COOKIE_AGE = 60 * 60 * 2  # 2 hours
+
+# Razorpay Configurations
+RAZOR_KEY_ID = os.getenv('RAZORPAY_API_KEY')
+RAZOR_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'

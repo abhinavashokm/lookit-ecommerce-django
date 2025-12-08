@@ -23,20 +23,22 @@
             <h2>Payment Method</h2>
             
             <div class="payment-tabs">
-                <div class="tab" onclick="showTab('upi')">UPI</div>
-                <div class="tab " onclick="showTab('debit-card')">Debit Card</div>
+                <div class="tab" onclick="showTab('upi')">Online Payment</div>
+                <!-- <div class="tab " onclick="showTab('debit-card')">Debit Card</div> -->
                 <div class="tab active" onclick="showTab('cod')">Cash on Delivery</div>
                 <div class="tab" onclick="showTab('wallet')">Wallet</div>
             </div>
             
             <!-- UPI Payment -->
             <div id="upi" class="tab-content">
-                <p>Pay via any UPI app</p>
-                <button class="btn-pay" style="margin-top: 1rem;">Pay with UPI</button>
+                <p>Pay instantly using UPI, cards, or net banking with our secure online payment gateway.</p>
+                <a href="{% url 'online-payment' %}">
+                    <button class="btn-pay" style="margin-top: 1rem;">Pay Online</button>
+                </a>
             </div>
             
             <!-- Debit Card Payment -->
-            <div id="debit-card" class="tab-content">
+            <!-- <div id="debit-card" class="tab-content">
                 <form id="cardForm" class="card-form">
                     <div class="form-group">
                         <label for="cardNumber">Card Number</label>
@@ -61,7 +63,7 @@
                     
                     <button type="submit" class="btn-pay">Pay ₹82.00</button>
                 </form>
-            </div>
+            </div> -->
             
             <!-- Cash on Delivery -->
             <div id="cod" class="tab-content active">

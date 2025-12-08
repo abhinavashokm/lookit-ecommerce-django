@@ -7,6 +7,7 @@ urlpatterns = [
     path("product/", include('product.urls')),
     path("cart/", include('cart.urls')),
     path("order/", include('order.urls')),
+    path("payment/", include('payment.urls')),
         # continue with google
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
