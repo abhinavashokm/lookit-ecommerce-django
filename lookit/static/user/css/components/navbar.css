@@ -42,7 +42,7 @@
      }
 
      .active_category {
-        color: #B55E8A !important;
+         color: #B55E8A !important;
      }
 
      .header-right {
@@ -148,6 +148,41 @@
          fill: currentColor;
          transition: fill 0.3s;
      }
+
+     .cart-icon-wrapper {
+         position: relative;
+         display: inline-block;
+         flex-shrink: 0;
+         margin-right: 8px;
+     }
+
+     .cart-badge {
+         position: absolute;
+         top: -4px;
+         /* slightly higher */
+         right: -4px;
+         /* a bit outside the icon edge */
+         background-color: #B55E8A;
+         color: #fff;
+         border-radius: 50%;
+         font-size: 0.65rem;
+         font-weight: 600;
+         min-width: 17px;
+         height: 17px;
+         padding: 0 4px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         line-height: 1;
+         box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+         z-index: 5;
+     }
+
+     .cart-badge:empty,
+     .cart-badge:has(:empty) {
+         display: none;
+     }
+
 
      .login-btn {
          background-color: #B55E8A;
