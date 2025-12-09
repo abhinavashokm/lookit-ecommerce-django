@@ -251,3 +251,104 @@
         font-size: 0.85rem;
     }
 }
+
+/* ==============================
+   ONLINE PAYMENT ENHANCEMENTS
+============================== */
+
+.online-banner {
+    background: linear-gradient(135deg, rgba(154, 77, 114, 0.08), rgba(154, 77, 114, 0.02));
+    border: 1px solid rgba(154, 77, 114, 0.2);
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.secure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(154, 77, 114, 0.1);
+    color: #9a4d72;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.online-desc {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+}
+
+/* Supported Payment Methods */
+.payment-supported {
+    margin-bottom: 1.5rem;
+}
+
+.payment-supported h4 {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    color: #333;
+}
+
+.payment-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.payment-icons span {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555;
+}
+
+/* Trust Points */
+.payment-trust-points {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.75rem;
+}
+
+.payment-trust-points li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.payment-trust-points i {
+    color: #28a745;
+}
+
+/* Enhanced Pay Button */
+.online-pay-btn {
+    background: linear-gradient(135deg, #9a4d72, #7a3654);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    letter-spacing: 0.4px;
+}
+
+.online-pay-btn:hover {
+    background: linear-gradient(135deg, #883c62, #652947);
+}
+
+@media (min-width: 1024px) {
+    .online-pay-btn {
+    margin-top: 5rem;
+}
+}

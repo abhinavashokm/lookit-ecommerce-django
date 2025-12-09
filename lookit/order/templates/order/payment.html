@@ -23,22 +23,57 @@
             <h2>Payment Method</h2>
             
             <div class="payment-tabs">
-                <div class="tab" onclick="showTab('upi')">Online Payment</div>
+                <div class="tab active" onclick="showTab('upi')">Online Payment</div>
                 <!-- <div class="tab " onclick="showTab('debit-card')">Debit Card</div> -->
-                <div class="tab active" onclick="showTab('cod')">Cash on Delivery</div>
+                <div class="tab" onclick="showTab('cod')">Cash on Delivery</div>
                 <div class="tab" onclick="showTab('wallet')">Wallet</div>
             </div>
             
             <!-- Online Payment Payment -->
-            <div id="upi" class="tab-content">
-                <p>Pay instantly using UPI, cards, or net banking with our secure online payment gateway.</p>
- 
-                    <button onclick="createPaymentAjax()" class="btn-pay" style="margin-top: 1rem;">Pay Online</button>
- 
-            </div>       
+            <!-- Online Payment -->
+            <div id="upi" class="tab-content active">
+
+                <!-- Info Banner -->
+                <div class="online-banner">
+                    <div class="secure-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>100% Secure Payments</span>
+                    </div>
+                    <p class="online-desc">
+                        Pay instantly using UPI, debit/credit cards, or net banking through our encrypted payment gateway.
+                        Your transaction is processed safely in real time.
+                    </p>
+                </div>
+
+                <!-- Supported Methods -->
+                <div class="payment-supported">
+                    <h4>We Accept</h4>
+                    <div class="payment-icons">
+                        <span><i class="fab fa-google-pay"></i> GPay</span>
+                        <span><i class="fab fa-cc-visa"></i> Visa</span>
+                        <span><i class="fab fa-cc-mastercard"></i> MasterCard</span>
+                        <span><i class="fas fa-university"></i> Net Banking</span>
+                        <span><i class="fas fa-qrcode"></i> UPI</span>
+                    </div>
+                </div>
+
+                <!-- Trust Points -->
+                <ul class="payment-trust-points">
+                    <li><i class="fas fa-bolt"></i> Instant confirmation</li>
+                    <li><i class="fas fa-shield-alt"></i> Bank-grade encryption</li>
+                    <li><i class="fas fa-undo"></i> Easy refunds on failed payments</li>
+                </ul>
+
+                <!-- CTA -->
+                <button onclick="createPaymentAjax()" class="btn-pay online-pay-btn">
+                    <i class="fas fa-credit-card"></i> Pay ₹{{ order.grand_total }} Securely
+                </button>
+
+            </div>
+  
             
             <!-- Cash on Delivery -->
-            <div id="cod" class="tab-content active">
+            <div id="cod" class="tab-content">
                 <p>Pay in cash when your order is delivered.</p>
                 <div class="cod-message">
                     <p>You will pay ₹{{ order.grand_total }} at the time of delivery.</p>
