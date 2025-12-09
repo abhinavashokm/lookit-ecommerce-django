@@ -5,15 +5,15 @@ function showTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(tab => {
         tab.classList.remove('active');
     });
-    
+
     // Remove active class from all tabs
     document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
     });
-    
+
     // Show selected tab content
     document.getElementById(tabId).classList.add('active');
-    
+
     // Add active class to clicked tab
     event.currentTarget.classList.add('active');
 }
@@ -22,10 +22,10 @@ function showTab(tabId) {
 function formatCardNumber(input) {
     // Remove all non-digit characters
     let value = input.value.replace(/\D/g, '');
-    
+
     // Add space after every 4 digits
     value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
-    
+
     // Update input value
     input.value = value.trim();
 }
@@ -33,18 +33,50 @@ function formatCardNumber(input) {
 // Format expiry date with slash
 function formatExpiryDate(input) {
     let value = input.value.replace(/\D/g, '');
-    
+
     if (value.length > 2) {
         value = value.substring(0, 2) + '/' + value.substring(2, 4);
     }
-    
+
     input.value = value;
 }
 
-// Handle form submission
-document.getElementById('cardForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    // Here you would typically validate the form and process the payment
-    alert('Processing your payment...');
-    // In a real application, you would make an API call to your payment processor here
-});
+//CREATE RAZORPAY ORDER AND RETURN THE ORDER DETAILS USING AJAX
+function createPaymentAjax() {
+    fetch(create_razorpay_order_url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrf_token
+        }
+    }).then(response => response.json())
+        .then(data => {
+            console.log("ajax request success")
+            var options = {
+                // Enter the Key ID generated from the Dashboard
+                key: data.razorpay_merchant_key,
+
+                // Amount is in currency subunits.
+                // Default currency is INR. Hence, 
+                // 50000 refers to 50000 paise
+                amount: data.razorpay_amount,
+                currency: data.currency,
+
+                // Your/store name.
+                name: data.name,
+
+                // Pass the `id` obtained in the response of Step 1
+                order_id: data.razorpay_order_id,
+                callback_url: data.callback_url,
+
+            };
+            openRazorpayModal(options)
+        })
+}
+
+
+function openRazorpayModal(options) {
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+    rzp1.open();
+}

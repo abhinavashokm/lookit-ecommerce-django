@@ -1,14 +1,16 @@
 from django.shortcuts import render
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, JsonResponse
 import razorpay
 from .models import Payment
+from django.urls import reverse
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
-def homepage(request):
+def create_razorpay_order(request):
+
     amount = 20000  # Rs. 200 in paise
     currency = 'INR'
 
@@ -29,10 +31,11 @@ def homepage(request):
         'razorpay_merchant_key': settings.RAZOR_KEY_ID,
         'razorpay_amount': amount,
         'currency': currency,
-        'callback_url': '/paymenthandler/'
+        'callback_url': reverse('razorpay_paymenthandler'),
+        'name':'LookIt'
     }
-    return render(request, 'payment/razorpay.html', context)
-
+    
+    return JsonResponse(context)
 
 @csrf_exempt
 def paymenthandler(request):

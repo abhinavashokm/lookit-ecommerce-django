@@ -29,12 +29,12 @@
                 <div class="tab" onclick="showTab('wallet')">Wallet</div>
             </div>
             
-            <!-- UPI Payment -->
+            <!-- Online Payment Payment -->
             <div id="upi" class="tab-content">
                 <p>Pay instantly using UPI, cards, or net banking with our secure online payment gateway.</p>
-                <a href="{% url 'online-payment' %}">
-                    <button class="btn-pay" style="margin-top: 1rem;">Pay Online</button>
-                </a>
+ 
+                    <button onclick="createPaymentAjax()" class="btn-pay" style="margin-top: 1rem;">Pay Online</button>
+ 
             </div>
             
             <!-- Debit Card Payment -->
@@ -137,5 +137,12 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    csrf_token = '{{ csrf_token }}'
+    create_razorpay_order_url = "{% url 'create_razorpay_order' %}"
+</script>
+<!-- Razorpay's Javascript code. -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="{% static 'order/js/payment.js' %}"></script>
+
 {% endblock %}

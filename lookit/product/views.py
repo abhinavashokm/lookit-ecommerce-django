@@ -693,7 +693,7 @@ def add_to_cart(request):
 
         # restrict if not authenticated
         if not user.is_authenticated:
-            messages.error(request, f"PLEASE LOG IN TO USE CART, id = {variant_id}")
+            messages.error(request, f"PLEASE LOGIN TO USE CART")
             return redirect('product-details', product_uuid=product.uuid)
 
         # if size not selected
