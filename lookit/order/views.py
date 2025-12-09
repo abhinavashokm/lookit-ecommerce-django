@@ -26,9 +26,11 @@ from datetime import date, timedelta
 from cloudinary.uploader import upload
 from core.decorators import admin_required
 from .utils import reduce_stock_for_order
+from cart.decorators import cart_not_empty_required
 
 
 @login_required
+@cart_not_empty_required
 def checkout(request):
     # ---products in order------------------------------------------------
     order_items = (
@@ -42,12 +44,6 @@ def checkout(request):
             stock_available=F('variant__stock'),
         )
     )
-
-    # --check cart empty---
-    cart_item_count = order_items.count()
-    if not cart_item_count:
-        messages.error(request, "PLEASE ADD ITEMS TO CONTINUE")
-        return redirect('cart')
 
     # --stock and availability validations--------------------
     for item in order_items:
@@ -102,6 +98,7 @@ def checkout(request):
 
 @login_required
 @require_POST
+@cart_not_empty_required
 def create_order(request):
     user = request.user
     address_id = request.POST.get('address_id')
@@ -191,23 +188,15 @@ def create_order(request):
 
 
 @login_required
-def payment_page(request, order_uuid):
-    
-    # --redirect if cart is empty-------
-    cart_count = Cart.objects.filter(user=request.user).count()
-    if cart_count == 0:
-        messages.error(
-            request,
-            "Your cart is empty because this order has already been placed.",
-        )
-        return redirect('my-orders')
-    
+@cart_not_empty_required
+def payment_page(request, order_uuid): 
     order = Order.objects.get(uuid=order_uuid)
     address = order.address
     return render(request, "order/payment.html/", {"order": order, "address": address})
 
 
 @login_required
+@cart_not_empty_required
 def place_order(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
     order_id = order.id
@@ -218,15 +207,6 @@ def place_order(request, order_uuid):
         if payment_method not in Order.PaymentMethod.values:
             messages.error(request, "Invalid Payment Method")
             return redirect('payment-page', order_id=order_id)
-
-        # --handle reclicking place order multiple time cases-------
-        cart_count = Cart.objects.filter(user=request.user).count()
-        if cart_count == 0:
-            messages.error(
-                request,
-                "Your cart is empty because this order has already been placed.",
-            )
-            return redirect('my-orders')
 
         try:
             with transaction.atomic():

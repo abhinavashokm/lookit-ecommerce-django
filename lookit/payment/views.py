@@ -19,7 +19,7 @@ razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KE
 @login_required
 def create_razorpay_order(request):
     
-    # --handle reclicking payment for order after successful paymet-------
+    # --cart is empty validation------------------------------
     cart_count = Cart.objects.filter(user=request.user).count()
     if cart_count == 0:
         return JsonResponse({'cart_empty':True})
