@@ -208,6 +208,17 @@
                         </div>
                     </div>
                 </div>
+            {% empty %}
+            <div class="no-address">
+                <div class="no-address-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+
+                <div class="no-address-text">
+                    <h3>No address added yet</h3>
+                    <p>Add your delivery address to make checkout faster and smoother.</p>
+                </div>
+            </div>
             {% endfor %}
 
 
