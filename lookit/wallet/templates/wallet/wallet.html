@@ -1,0 +1,222 @@
+
+{% extends 'user_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'wallet/css/wallet.css' %}">
+<!--CSS for profile sidebar-->
+<link rel="stylesheet" href="{% static 'user/css/components/profile_sidebar.css' %}">
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Main Content -->
+<div class="profile-container">
+
+    <!-- Sidebar -->
+    {% include 'user_base/components/profile_sidebar.html' %}
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 class="page-title">My Wallet</h1>
+
+        <!-- Wallet Balance Card -->
+        <div class="wallet-balance-card" style="
+            background: linear-gradient(135deg, #2c3e50 0%, #9b59b6 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        ">
+            <div class="wallet-card-content" style="
+                position: relative;
+                z-index: 1;
+            ">
+                <div class="wallet-info">
+                    <h2 style="
+                        font-size: 1.5rem;
+                        font-weight: 600;
+                        margin: 0 0 1rem 0;
+                        color: white;
+                    ">Wallet Balance</h2>
+                    <div class="balance-amount" style="
+                        font-size: 2rem;
+                        font-weight: 700;
+                        margin-bottom: 1.5rem;
+                        display: flex;
+                        align-items: center;
+                    ">
+                        <span>₹</span>
+                        <span id="walletBalance">1,234.00</span>
+                    </div>
+                    
+                    <div class="balance-stats" style="
+                        display: flex;
+                        gap: 1.5rem;
+                        margin-bottom: 1.5rem;
+                        color: rgba(255, 255, 255, 0.9);
+                        font-size: 0.9rem;
+                    ">
+                        <div class="stat-item" style="
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                        ">
+                            <span style="opacity: 0.8; font-size: 0.85rem;">Total Added</span>
+                            <span style="font-weight: 600; font-size: 1rem;">₹5,000.00</span>
+                        </div>
+                        <div class="stat-item" style="
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                        ">
+                            <span style="opacity: 0.8; font-size: 0.85rem;">Total Spent</span>
+                            <span style="font-weight: 600; font-size: 1rem;">₹3,766.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="wallet-actions" style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                ">
+                    <button class="add-money-btn" style="
+                        background: rgba(255, 255, 255, 0.2);
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                        color: white;
+                        padding: 0.6rem 1.2rem;
+                        border-radius: 8px;
+                        font-weight: 500;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        transition: all 0.2s ease;
+                    ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add Money
+                    </button>
+                    <div class="wallet-image" style="
+                        width: 60px;
+                        height: 40px;
+                        background: rgba(255, 255, 255, 0.1);
+                        border-radius: 6px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        padding: 0.5rem;
+                    ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                            <line x1="5" y1="15" x2="5.01" y2="15"></line>
+                            <line x1="9" y1="15" x2="9.01" y2="15"></line>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <!-- Subtle pattern overlay -->
+            <div style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: 
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 40%),
+                    linear-gradient(45deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(-45deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+                background-size: 100% 100%, 20px 20px, 20px 20px;
+                z-index: 0;
+            "></div>
+        </div>
+
+        <!-- Transactions Section -->
+        <section class="transactions-section">
+            <h2>Recent Transactions</h2>
+            <div class="transactions-list">
+                <!-- Transaction 1 -->
+                <div class="transaction-item">
+                    <div class="transaction-icon credit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L4 12l8 10 8-10z"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Added to Wallet</div>
+                        <div class="transaction-meta">
+                            <span class="transaction-date">Today, 2:45 PM</span>
+                            <span class="transaction-type">Credit</span>
+                        </div>
+                    </div>
+                    <div class="transaction-amount credit">+$100.00</div>
+                </div>
+
+                <!-- Transaction 2 -->
+                <div class="transaction-item">
+                    <div class="transaction-icon debit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 22L4 12l8-10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Order #12345</div>
+                        <div class="transaction-meta">
+                            <span class="transaction-date">Jul 15, 3:30 PM</span>
+                            <span class="transaction-type">Shopping</span>
+                        </div>
+                    </div>
+                    <div class="transaction-amount debit">-$50.00</div>
+                </div>
+
+                <!-- Transaction 3 -->
+                <div class="transaction-item">
+                    <div class="transaction-icon credit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L4 12l8 10 8-10z"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Cashback Reward</div>
+                        <div class="transaction-meta">
+                            <span class="transaction-date">Jul 10, 10:15 AM</span>
+                            <span class="transaction-type">Reward</span>
+                        </div>
+                    </div>
+                    <div class="transaction-amount credit">+$10.00</div>
+                </div>
+
+                <!-- Transaction 4 -->
+                <div class="transaction-item">
+                    <div class="transaction-icon credit">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L4 12l8 10 8-10z"></path>
+                        </svg>
+                    </div>
+                    <div class="transaction-details">
+                        <div class="transaction-title">Wallet Top-up</div>
+                        <div class="transaction-meta">
+                            <span class="transaction-date">Jul 5, 4:20 PM</span>
+                            <span class="transaction-type">Bank Transfer</span>
+                        </div>
+                    </div>
+                    <div class="transaction-amount credit">+$200.00</div>
+                </div>
+            </div>
+        </section>
+        </section>
+    </main>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'user/js/account/account_details.js' %}"></script>
+{% endblock %}
+
