@@ -17,6 +17,7 @@ from .views import (
     admin_return_details,
     admin_update_return_status,
     download_invoice_pdf,
+    payment_failure_page,
 )
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     path("payment/<order_uuid>/", payment_page, name="payment-page"),
     path("place-order/<order_uuid>/", place_order, name="place-order"),
     path("order-success/<order_uuid>/", order_success_page, name="order-success"),
+    path("payment-failure/", payment_failure_page, name="payment-failed"),
     path("my-orders/", my_orders, name="my-orders"),
     path("track-order/<order_uuid>/", track_order, name="track-order"),
     path('invoice/<order_uuid>/', download_invoice_pdf, name='invoice'),

@@ -246,6 +246,9 @@ def order_success_page(request, order_uuid):
         {'order': order, "address": address, "order_items": order_items},
     )
 
+@login_required
+def payment_failure_page(request):
+    return render(request, 'order/payment_failed.html')
 
 @login_required
 def my_orders(request):

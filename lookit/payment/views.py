@@ -102,7 +102,7 @@ def paymenthandler(request):
             
             # Update payment as failed
             Payment.objects.filter(razorpay_order_id=razorpay_order_id).update(status='Failed')
-            return render(request, 'paymentfail.html')
+            return redirect('order-failed', order_uuid=order.uuid)
         
         except Exception as e:
             return HttpResponseBadRequest(str(e))

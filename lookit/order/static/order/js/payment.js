@@ -75,6 +75,12 @@ function createPaymentAjax() {
                     // Pass the `id` obtained in the response of Step 1
                     order_id: data.razorpay_order_id,
                     callback_url: data.callback_url,
+                    // modal: {
+                    //     ondismiss: function () {
+                    //         // ❌ Payment cancelled or failed
+                    //         window.location.href = `/order-failed/${order_uuid}/`;
+                    //     }
+                    // }
 
                 };
                 openRazorpayModal(options)
