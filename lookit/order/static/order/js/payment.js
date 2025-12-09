@@ -75,12 +75,6 @@ function createPaymentAjax() {
                     // Pass the `id` obtained in the response of Step 1
                     order_id: data.razorpay_order_id,
                     callback_url: data.callback_url,
-                    // modal: {
-                    //     ondismiss: function () {
-                    //         // ❌ Payment cancelled or failed
-                    //         window.location.href = `/order-failed/${order_uuid}/`;
-                    //     }
-                    // }
 
                 };
                 openRazorpayModal(options)
@@ -88,9 +82,19 @@ function createPaymentAjax() {
         })
 }
 
-
 function openRazorpayModal(options) {
+    console.log(payment_failed_url)
     // initialise razorpay with the options.
     var rzp1 = new Razorpay(options);
     rzp1.open();
+
+    //This captures hard failures like bank decline, invalid card, etc
+    rzp1.on('payment.failed', function (response) {
+        window.location.href = payment_failed_url;
+    });
+
 }
+
+
+
+

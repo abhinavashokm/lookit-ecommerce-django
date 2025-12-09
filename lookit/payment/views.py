@@ -99,7 +99,6 @@ def paymenthandler(request):
             return redirect('order-success', order_uuid=order.uuid)
         
         except razorpay.errors.SignatureVerificationError:
-            
             # Update payment as failed
             Payment.objects.filter(razorpay_order_id=razorpay_order_id).update(status='Failed')
             return redirect('order-failed', order_uuid=order.uuid)

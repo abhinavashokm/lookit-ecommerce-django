@@ -112,6 +112,7 @@
 <script>
     csrf_token = '{{ csrf_token }}'
     create_razorpay_order_url = "{% url 'create_razorpay_order' %}"
+    payment_failed_url = "{% url 'payment-failed' order.uuid %}"
     order_id = '{{ order.id }}'
 </script>
 <!-- Razorpay's Javascript code. -->
