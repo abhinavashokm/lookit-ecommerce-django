@@ -28,7 +28,11 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Payment Method:</span>
-                <span class="info-value">{% if order.payment_method == 'COD' %}Cash On Delivery{% endif %}</span>
+                <span class="info-value">{% if order.payment_method == 'COD' %}Cash On Delivery{% elif order.payment_method == 'ONLINE_PAYMENT' %}Online Payment{% endif %}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Payment Status:</span>
+                <span class="info-value">{% if order.payment_method == 'COD' %}Cash On Delivery{% elif order.payment_method == 'ONLINE_PAYMENT' %}Paid{% endif %}</span>
             </div>
         </div>
         

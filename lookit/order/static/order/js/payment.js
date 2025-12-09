@@ -48,29 +48,37 @@ function createPaymentAjax() {
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrf_token
-        }
+        },
+        body: JSON.stringify({
+            'order_id': order_id
+        })
     }).then(response => response.json())
         .then(data => {
             console.log("ajax request success")
-            var options = {
-                // Enter the Key ID generated from the Dashboard
-                key: data.razorpay_merchant_key,
+            if (data.cart_empty) {
+                console.log("cart is empty")
+                location.reload();
+            } else {
+                var options = {
+                    // Enter the Key ID generated from the Dashboard
+                    key: data.razorpay_merchant_key,
 
-                // Amount is in currency subunits.
-                // Default currency is INR. Hence, 
-                // 50000 refers to 50000 paise
-                amount: data.razorpay_amount,
-                currency: data.currency,
+                    // Amount is in currency subunits.
+                    // Default currency is INR. Hence, 
+                    // 50000 refers to 50000 paise
+                    amount: data.razorpay_amount,
+                    currency: data.currency,
 
-                // Your/store name.
-                name: data.name,
+                    // Your/store name.
+                    name: data.name,
 
-                // Pass the `id` obtained in the response of Step 1
-                order_id: data.razorpay_order_id,
-                callback_url: data.callback_url,
+                    // Pass the `id` obtained in the response of Step 1
+                    order_id: data.razorpay_order_id,
+                    callback_url: data.callback_url,
 
-            };
-            openRazorpayModal(options)
+                };
+                openRazorpayModal(options)
+            }
         })
 }
 

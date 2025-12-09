@@ -10,9 +10,7 @@ class Order(models.Model):
     
     class PaymentMethod(models.TextChoices):
         COD = 'COD', 'Cash on Delivery'
-        CREDIT_CARD = 'CREDIT', 'Credit Card'
-        DEBIT_CARD = 'DEBIT', 'Debit Card'
-        UPI = 'UPI', 'UPI'
+        ONLINE_PAYMENT = 'ONLINE_PAYMENT','Online Payment',
         WALLET = 'WALLET', 'Wallet'
 
     uuid = models.CharField(max_length=20, blank=True, null=True) # add unique is true

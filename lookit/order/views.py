@@ -25,6 +25,7 @@ from django.utils import timezone
 from datetime import date, timedelta
 from cloudinary.uploader import upload
 from core.decorators import admin_required
+from .utils import reduce_stock_for_order
 
 
 @login_required
@@ -191,6 +192,16 @@ def create_order(request):
 
 @login_required
 def payment_page(request, order_uuid):
+    
+    # --redirect if cart is empty-------
+    cart_count = Cart.objects.filter(user=request.user).count()
+    if cart_count == 0:
+        messages.error(
+            request,
+            "Your cart is empty because this order has already been placed.",
+        )
+        return redirect('my-orders')
+    
     order = Order.objects.get(uuid=order_uuid)
     address = order.address
     return render(request, "order/payment.html/", {"order": order, "address": address})
@@ -228,30 +239,27 @@ def place_order(request, order_uuid):
                     placed_at=timezone.now(),
                 )
                 # --handle stock count of the product---
-                order_items = OrderItems.objects.filter(order_id=order_id)
-                print(order_items)
-                for item in order_items:
-                    print(item.product.name, item.variant.stock)
-                    item.variant.stock -= item.quantity
-                    print(item.product.name, item.variant.stock)
-                    item.variant.save()
+                reduce_stock_for_order(order_id)
 
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
         except Exception as e:
             messages.error(request, e)
             return redirect('payment-page', order_id=order_id)
 
-        # ---empty the cart of user--------------------
-        Cart.objects.filter(user=request.user).delete()
         # ---redirect to order success page---------------
         return redirect('order-success', order_uuid=order_uuid)
 
 
 @login_required
 def order_success_page(request, order_uuid):
+    
+    # ---empty the cart of user--------------------
+    Cart.objects.filter(user=request.user).delete()
+    
     order = Order.objects.get(uuid=order_uuid)
     order_items = OrderItems.objects.filter(order__uuid=order_uuid)
     address = order.address
+    print(order.payment_method)
     return render(
         request,
         "order/order_success.html",

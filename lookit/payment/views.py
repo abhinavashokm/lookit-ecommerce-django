@@ -1,15 +1,35 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 import razorpay
 from .models import Payment
-from django.urls import reverse
+from order.models import Order, OrderItems
+from cart.models import Cart
+from order.utils import reduce_stock_for_order
+import json
+
 
 # Initialize Razorpay client
 razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
+@login_required
 def create_razorpay_order(request):
+    
+    # --handle reclicking payment for order after successful paymet-------
+    cart_count = Cart.objects.filter(user=request.user).count()
+    if cart_count == 0:
+        return JsonResponse({'cart_empty':True})
+    
+    data = json.loads(request.body)
+    order_id = data.get('order_id')
+    order = None
+    if order_id:
+        order = Order.objects.get(id=order_id)
+    
 
     amount = 20000  # Rs. 200 in paise
     currency = 'INR'
@@ -21,6 +41,8 @@ def create_razorpay_order(request):
     
     # Save order in database
     Payment.objects.create(
+        user = request.user,
+        order = order,
         razorpay_order_id=razorpay_order['id'],
         amount=amount,
         status='Created'
@@ -38,6 +60,7 @@ def create_razorpay_order(request):
     return JsonResponse(context)
 
 @csrf_exempt
+@login_required
 def paymenthandler(request):
     if request.method == "POST":
         payment_id = request.POST.get('razorpay_payment_id', '')
@@ -63,12 +86,24 @@ def paymenthandler(request):
             payment.razorpay_signature = signature
             payment.status = 'Success'
             payment.save()
+            
+            #fetch related order and update payment status
+            order = payment.order
+            order.payment_method = Order.PaymentMethod.ONLINE_PAYMENT
+            order.items.update(order_status = OrderItems.OrderStatus.PLACED, payment_status = OrderItems.PaymentStatus.PAID, placed_at=timezone.now())
+            order.save()
+            
+            # --handle stock count of the product---
+            reduce_stock_for_order(order.id)
 
-            return render(request, 'paymentsuccess.html')
+            return redirect('order-success', order_uuid=order.uuid)
+        
         except razorpay.errors.SignatureVerificationError:
+            
             # Update payment as failed
             Payment.objects.filter(razorpay_order_id=razorpay_order_id).update(status='Failed')
             return render(request, 'paymentfail.html')
+        
         except Exception as e:
             return HttpResponseBadRequest(str(e))
     else:

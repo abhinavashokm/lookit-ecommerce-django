@@ -35,35 +35,7 @@
  
                     <button onclick="createPaymentAjax()" class="btn-pay" style="margin-top: 1rem;">Pay Online</button>
  
-            </div>
-            
-            <!-- Debit Card Payment -->
-            <!-- <div id="debit-card" class="tab-content">
-                <form id="cardForm" class="card-form">
-                    <div class="form-group">
-                        <label for="cardNumber">Card Number</label>
-                        <input type="text" id="cardNumber" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)">
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="expiryDate">Expiry Date</label>
-                            <input type="text" id="expiryDate" class="form-control" placeholder="MM/YY" maxlength="5" oninput="formatExpiryDate(this)">
-                        </div>
-                        <div class="form-group">
-                            <label for="cvv">CVV</label>
-                            <input type="password" id="cvv" class="form-control" placeholder="•••" maxlength="3">
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="cardName">Name on Card</label>
-                        <input type="text" id="cardName" class="form-control" placeholder="John Doe">
-                    </div>
-                    
-                    <button type="submit" class="btn-pay">Pay ₹82.00</button>
-                </form>
-            </div> -->
+            </div>       
             
             <!-- Cash on Delivery -->
             <div id="cod" class="tab-content active">
@@ -140,6 +112,7 @@
 <script>
     csrf_token = '{{ csrf_token }}'
     create_razorpay_order_url = "{% url 'create_razorpay_order' %}"
+    order_id = '{{ order.id }}'
 </script>
 <!-- Razorpay's Javascript code. -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
