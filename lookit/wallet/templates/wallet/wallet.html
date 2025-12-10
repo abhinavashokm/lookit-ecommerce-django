@@ -76,7 +76,7 @@
                 {% for transaction in transactions %}
                 <!-- Transaction 1 -->
                 <div class="transaction-item">
-                    <div class="transaction-icon credit">
+                    <div class="transaction-icon {% if transaction.transaction_type == 'credit' %}credit{% elif transaction.transaction_type == 'debit' %}debit{% endif %}">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 2L4 12l8 10 8-10z"></path>
                         </svg>
@@ -88,7 +88,11 @@
                             <span class="transaction-type">{{ transaction.transaction_type }}</span>
                         </div>
                     </div>
+                    {% if transaction.transaction_type == 'credit' %}
                     <div class="transaction-amount credit">+ ₹{{ transaction.amount }}</div>
+                    {% elif transaction.transaction_type == 'debit' %}
+                    <div class="transaction-amount debit">- ₹{{ transaction.amount }}</div>
+                    {% endif %}
                 </div>
                 {% empty %}
                 <div class="no-transactions">
