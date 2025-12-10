@@ -445,56 +445,58 @@
 
 
       .order-id {
-        /* ID Column */
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #6366f1;
+          /* ID Column */
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #6366f1;
       }
 
       /* Customer name */
-.customer-name {
-    font-weight: 600;
-    color: #111827;
-}
+      .customer-name {
+          font-weight: 600;
+          color: #111827;
+      }
 
-/* Product name - prevent messy overflow */
-.product-name {
-    max-width: 220px;
-    font-weight: 500;
-    color: #374151;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+      /* Product name - prevent messy overflow */
+      .product-name {
+          max-width: 220px;
+          font-weight: 500;
+          color: #374151;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+      }
 
-/* Total amount */
-.total-amount {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #111827;
-}
+      /* Total amount */
+      .total-amount {
+          font-size: 0.9rem;
+          font-weight: 700;
+          color: #111827;
+      }
 
-/* Payment method */
-.payment_method {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #4b5563;
-    text-transform: uppercase;
-}
-.status-badge {
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    font-weight: 700;
-}
+      /* Payment method */
+      .payment_method {
+          font-size: 0.82rem;
+          font-weight: 600;
+          color: #4b5563;
+          text-transform: uppercase;
+      }
 
-/* Date */
-.order-date {
-    font-size: 0.82rem;
-    color: #6b7280;
-    font-weight: 500;
-    white-space: nowrap;
-}
+      .status-badge {
+          font-size: 0.7rem;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
+          font-weight: 700;
+      }
+
+      /* Date */
+      .order-date {
+          font-size: 0.82rem;
+          color: #6b7280;
+          font-weight: 500;
+          white-space: nowrap;
+      }
+
       .manage-stocks-link {
           color: #6366f1;
           text-decoration: none;
