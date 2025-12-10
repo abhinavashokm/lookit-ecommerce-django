@@ -88,9 +88,73 @@
             
             <!-- Wallet -->
             <div id="wallet" class="tab-content">
-                <p>Pay using your wallet balance</p>
-                <button class="btn-pay" style="margin-top: 1rem;">Pay with Wallet</button>
+
+                <!-- Wallet Info Banner -->
+                <div class="wallet-banner">
+                    <div class="wallet-secure-badge">
+                        <i class="fas fa-wallet"></i>
+                        <span>Fast & Secure Wallet Payment</span>
+                    </div>
+
+                    <p class="wallet-desc">
+                        Use your wallet balance for instant payments without entering any bank or card details.
+                        Wallet payments are processed immediately with zero additional charges.
+                    </p>
+                </div>
+
+                <!-- Wallet Balance Card -->
+                <div class="wallet-balance-card">
+                    <div class="wallet-balance-left">
+                        <p class="wallet-label">Available Balance</p>
+                        <h3 class="wallet-amount">₹{{ wallet.balance }}</h3>
+                    </div>
+
+                    <div class="wallet-balance-right">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+
+                <!-- Wallet Payment Breakdown -->
+                <div class="wallet-breakdown">
+                    <div class="wallet-row">
+                        <span>Order Total</span>
+                        <span>₹{{ order.grand_total }}</span>
+                    </div>
+
+                    <div class="wallet-row">
+                        <span>Wallet Deduction</span>
+                        <span>- ₹{{ order.grand_total }}</span>
+                    </div>
+
+                    <div class="wallet-row total">
+                        <span>Balance After Payment</span>
+                        <span>₹{{ wallet.balance|floatformat:2 }}</span>
+                    </div>
+                </div>
+
+                <!-- Wallet Trust Points -->
+                <ul class="wallet-trust-points">
+                    <li><i class="fas fa-check-circle"></i> Instant payment confirmation</li>
+                    <li><i class="fas fa-lock"></i> No card or UPI required</li>
+                    <li><i class="fas fa-undo"></i> Auto refund on cancellation</li>
+                </ul>
+
+                <!-- Warning (Optional: Show Only If Balance Is Low) -->
+                <!-- {% if wallet.balance < order.grand_total %}
+                <div class="wallet-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Insufficient wallet balance. Please add funds or choose another payment option.
+                </div>
+                {% endif %} -->
+
+                <!-- Wallet CTA -->
+                <button class="btn-pay wallet-pay-btn" {% if wallet.balance < order.grand_total %}disabled{% endif %}>
+                    <i class="fas fa-wallet"></i>
+                    Pay ₹{{ order.grand_total }} Using Wallet
+                </button>
+
             </div>
+            
         </div>
         
         <!-- Order Summary -->
