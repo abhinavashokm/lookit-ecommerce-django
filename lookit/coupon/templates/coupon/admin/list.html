@@ -1,0 +1,190 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'coupon/css/admin/list.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Coupon Management</h1>
+                <div class="header-actions">
+            <button class="btn btn-add-style" onclick="addNewStyle()">+ Add Coupon</button>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="filters-section">
+
+        <!-- Search Form -->
+        <form method="GET" action="" id="searchForm" class="search-form">
+
+            {% if request.GET.status %}
+            <input type="hidden" name="status" value="{{ request.GET.status }}">
+            {% endif %}
+            {% if request.GET.discount_type %}
+            <input type="hidden" name="discount_type" value="{{ request.GET.discount_type }}">
+            {% endif %}
+
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" name="search" placeholder="Search by coupon code..."
+                        value="{{ request.GET.search }}">
+                    <span class="search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </span>
+
+                    <div class="search-actions">
+                        <a href="{% url 'admin-list-coupons' %}">
+                            <button type="button" class="clear-btn">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </a>
+                    </div>
+                </div>
+
+                <button type="submit" class="search-btn">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <span>Search</span>
+                </button>
+
+                <button type="button" class="filter-toggle-btn" onclick="toggleFilters()">
+                    <span class="filter-icon"></span>
+                    <span>Filters</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- Filters -->
+        <form method="GET" action="" class="filter-form">
+            {% if request.GET.search %}
+            <input type="hidden" name="search" value="{{ request.GET.search }}">
+            {% endif %}
+
+            <div id="filtersContainer" class="filters-container {% if request.GET.status or request.GET.discount_type %}show{% endif %}">
+                <div class="filters-row">
+
+                    <div class="filter-group">
+                        <select name="discount_type" class="filter-select">
+                            <option value="">Discount Type</option>
+                            <option value="flat" {% if request.GET.discount_type == 'flat' %}selected{% endif %}>Flat</option>
+                            <option value="percentage" {% if request.GET.discount_type == 'percentage' %}selected{% endif %}>Percentage</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <select name="status" class="filter-select">
+                            <option value="">Coupon Status</option>
+                            <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="expired" {% if request.GET.status == 'expired' %}selected{% endif %}>Expired</option>
+                            <option value="disabled" {% if request.GET.status == 'disabled' %}selected{% endif %}>Disabled</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-apply">Apply Filters</button>
+                    <a href="{% url 'admin-list-coupons' %}">
+                        <button type="button" class="btn btn-reset">Reset Filters</button>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Coupon Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>COUPON CODE</th>
+                    <th>DISCOUNT VALUE</th>
+                    <th>MIN PURCHASE</th>
+                    <th>VALID FROM</th>
+                    <th>VALID TO</th>
+                    <th>USAGE LIMIT</th>
+                    <th>REMAINING</th>
+                    <th>STATUS</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- ✅ DUMMY ROW -->
+<tr>
+    <td class="coupon-code">
+        SAVE200
+        <span class="coupon-mini-badge flat">FLAT</span>
+    </td>
+
+    <td>₹200</td>
+    <td>₹999</td>
+    <td>01 Jan 2025</td>
+    <td>31 Jan 2025</td>
+    <td>500</td>
+    <td>325</td>
+    <td>
+        <span class="coupon-status-badge status-active">Active</span>
+    </td>
+    <td>
+        <button class="coupon-btn-view">Manage</button>
+    </td>
+</tr>
+
+                {% for coupon in page_obj %}
+                <tr>
+                    <td class="coupon-code">
+                        {{ coupon.code }}
+                        {% if coupon.discount_type == "flat" %}
+                            <span class="mini-badge flat">FLAT</span>
+                        {% else %}
+                            <span class="mini-badge percentage">%</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{ coupon.discount_type|title }}</td>
+                    <td>{{ coupon.discount_value }}</td>
+                    <td>₹{{ coupon.min_purchase_amount }}</td>
+                    <td>{{ coupon.valid_from|date:"d M Y" }}</td>
+                    <td>{{ coupon.valid_to|date:"d M Y" }}</td>
+                    <td>{{ coupon.usage_limit }}</td>
+                    <td>{{ coupon.remaining_usage_limit }}</td>
+
+                    <td>
+                        <span class="status-badge status-{{ coupon.status }}">
+                            {{ coupon.status|title }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <a href="{% url 'admin-manage-coupon' coupon.id %}">
+                            <button class="btn-view">Manage</button>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% include 'admin_base/components/pagination.html' %}
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'coupon/js/admin/list.js' %}"></script>
+{% endblock %}
