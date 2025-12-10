@@ -27,6 +27,7 @@ from cloudinary.uploader import upload
 from core.decorators import admin_required
 from .utils import reduce_stock_for_order
 from cart.decorators import cart_not_empty_required
+from wallet.models import Wallet
 
 
 @login_required
@@ -191,8 +192,9 @@ def create_order(request):
 @cart_not_empty_required
 def payment_page(request, order_uuid): 
     order = Order.objects.get(uuid=order_uuid)
+    wallet = Wallet.objects.get(user=request.user)
     address = order.address
-    return render(request, "order/payment.html/", {"order": order, "address": address})
+    return render(request, "order/payment.html/", {"order": order, "address": address, "wallet":wallet})
 
 
 @login_required
@@ -211,17 +213,34 @@ def place_order(request, order_uuid):
         try:
             with transaction.atomic():
                 Order.objects.filter(id=order_id).update(
-                    payment_method=Order.PaymentMethod.COD
+                    payment_method=payment_method
                 )
-                OrderItems.objects.filter(order_id=order_id).update(
+                if payment_method == 'WALLET':
+                    #--deduct amount from wallet--
+                    amount = order.grand_total
+                    wallet = Wallet.objects.get(user=request.user)
+                    wallet.balance -= amount
+                    wallet.save()
+                    #---place order------------------------------------
+                    OrderItems.objects.filter(order_id=order_id).update(
                     order_status=OrderItems.OrderStatus.PLACED,
-                    payment_status=Order.PaymentMethod.COD,
+                    payment_status=OrderItems.PaymentStatus.PAID,
                     placed_at=timezone.now(),
                 )
+                elif payment_method == 'COD':
+                    OrderItems.objects.filter(order_id=order_id).update(
+                        order_status=OrderItems.OrderStatus.PLACED,
+                        payment_status=OrderItems.PaymentStatus.COD,
+                        placed_at=timezone.now(),
+                    )
+                    
                 # --handle stock count of the product---
                 reduce_stock_for_order(order_id)
 
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
+                if payment_method == 'WALLET':
+                    messages.success(request, f"{order.grand_total} deducted from wallet")
+                    
         except Exception as e:
             messages.error(request, e)
             return redirect('payment-page', order_id=order_id)

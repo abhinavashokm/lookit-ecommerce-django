@@ -140,21 +140,21 @@
                 </ul>
 
                 <!-- Warning (Optional: Show Only If Balance Is Low) -->
-                <!-- {% if wallet.balance < order.grand_total %}
+                {% if wallet.balance < order.grand_total %}
                 <div class="wallet-warning">
                     <i class="fas fa-exclamation-triangle"></i>
                     Insufficient wallet balance. Please add funds or choose another payment option.
                 </div>
-                {% endif %} -->
+                {% endif %}
 
                 <!-- Wallet CTA -->
-                <button class="btn-pay wallet-pay-btn" {% if wallet.balance < order.grand_total %}disabled{% endif %}>
+                <button class="btn-pay wallet-pay-btn" onclick="openWalletConfirm()" {% if wallet.balance < order.grand_total %}disabled{% endif %}>
                     <i class="fas fa-wallet"></i>
                     Pay ₹{{ order.grand_total }} Using Wallet
                 </button>
 
             </div>
-            
+
         </div>
         
         <!-- Order Summary -->
@@ -204,6 +204,29 @@
         </div>
 
     </div>
+
+    <!-- Wallet Confirmation Modal -->
+<div class="wallet-confirm-overlay" id="walletConfirmModal">
+    <div class="wallet-confirm-box">
+        <h3>Confirm Wallet Payment</h3>
+
+        <p class="wallet-confirm-text">
+            You are about to pay <strong>₹{{ order.grand_total }}</strong> using your wallet balance.
+        </p>
+
+        <div class="wallet-confirm-actions">
+            <button class="wallet-cancel-btn" onclick="closeWalletConfirm()">Cancel</button>
+            <form action="{% url 'place-order' order.uuid %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="payment_method" value="WALLET">
+                <button type="submit" class="wallet-confirm-btn">
+                    Confirm Payment
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 </div>
 {% endblock %}
 

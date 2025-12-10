@@ -95,6 +95,18 @@ function openRazorpayModal(options) {
 
 }
 
+function openWalletConfirm() {
+    document.getElementById('walletConfirmModal').classList.add('active');
+    document.body.style.overflow = "hidden";
+}
+
+function closeWalletConfirm() {
+    document.getElementById('walletConfirmModal').classList.remove('active');
+    document.body.style.overflow = "";
+}
+
+
+
 
 
 

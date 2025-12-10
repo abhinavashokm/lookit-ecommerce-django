@@ -38,3 +38,10 @@ def wallet(request):
             'summary': transaction_summary,
         },
     )
+
+def wallet_payment(request):
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
+        wallet = Wallet.objects.get(user=request.user)
+        wallet.balance -= amount
+        wallet.save()
