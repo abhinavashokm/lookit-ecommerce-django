@@ -33,12 +33,12 @@
                     <div class="balance-stats">
                         <div class="stat-item">
                             <span class="stat-label">Total Added</span>
-                            <span class="stat-value">₹0.00</span>
+                            <span class="stat-value">₹{{ summary.total_credit }}</span>
                         </div>
 
                         <div class="stat-item">
                             <span class="stat-label">Total Spent</span>
-                            <span class="stat-value">₹0.00</span>
+                            <span class="stat-value">₹{{ summary.total_debit }}</span>
                         </div>
                     </div>
                 </div>
@@ -84,11 +84,11 @@
                     <div class="transaction-details">
                         <div class="transaction-title">{{ transaction.label }}</div>
                         <div class="transaction-meta">
-                            <span class="transaction-date">Today, 2:45 PM</span>
+                            <span class="transaction-date">{{ transaction.formatted_created_at }}</span>
                             <span class="transaction-type">{{ transaction.transaction_type }}</span>
                         </div>
                     </div>
-                    <div class="transaction-amount credit">+₹{{ transaction.amount }}</div>
+                    <div class="transaction-amount credit">+ ₹{{ transaction.amount }}</div>
                 </div>
                 {% empty %}
                 <div class="no-transactions">
@@ -213,5 +213,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+    csrf_token = '{{ csrf_token }}'
+    create_wallet_topup_razorpay_url = "{% url 'create-wallet-topup' %}"
+</script>
+<!-- Razorpay's Javascript code. -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="{% static 'wallet/js/wallet.js' %}"></script>
 {% endblock %}

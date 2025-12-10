@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, JsonResponse
@@ -9,7 +9,11 @@ import razorpay
 from .models import Payment
 from order.models import Order, OrderItems
 from cart.models import Cart
+from wallet.models import Wallet, WalletTransactions
 from order.utils import reduce_stock_for_order
+from django.contrib import messages
+from django.db import transaction
+from decimal import Decimal
 import json
 
 
@@ -102,6 +106,107 @@ def paymenthandler(request):
             # Update payment as failed
             Payment.objects.filter(razorpay_order_id=razorpay_order_id).update(status='Failed')
             return redirect('order-failed', order_uuid=order.uuid)
+        
+        except Exception as e:
+            return HttpResponseBadRequest(str(e))
+    else:
+        return HttpResponseBadRequest("Invalid request method")
+    
+#RAZORPAY FOR WALLET TOPUP
+@login_required
+def create_razorpay_wallet_topup(request):
+    data = json.loads(request.body)
+    amount_to_pay = data.get('amount')
+    
+    amount = amount_to_pay * 100  # convert to paise
+    currency = 'INR'
+
+    # Create Razorpay order
+    razorpay_order = razorpay_client.order.create(
+        dict(amount=amount, currency=currency, payment_capture='0')
+    )
+    
+    # Save order in database
+    Payment.objects.create(
+        user = request.user,
+        razorpay_order_id=razorpay_order['id'],
+        amount=amount,
+        status='Created'
+    )
+
+    context = {
+        'razorpay_order_id': razorpay_order['id'],
+        'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+        'razorpay_amount': amount,
+        'currency': currency,
+        'callback_url': reverse('wallet-topup-payment-handler'),
+        'failure_url': reverse('wallet'),
+        'name':'LookIt'
+    }
+    
+    return JsonResponse(context)
+
+
+
+@csrf_exempt
+@login_required
+def wallet_topup_paymenthandler(request):
+    if request.method == "POST":
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+
+        try:
+            # Verify payment signature
+            razorpay_client.utility.verify_payment_signature(params_dict)
+            
+            # Capture payment
+            payment = Payment.objects.get(razorpay_order_id=razorpay_order_id)
+            razorpay_client.payment.capture(payment_id, payment.amount)
+
+            # Update payment record
+            payment.razorpay_payment_id = payment_id
+            payment.razorpay_signature = signature
+            payment.status = 'Success'
+            payment.save()
+            
+            
+            #convert amount in paise to rupees
+            amount_in_paise = payment.amount
+            amount_in_rupees = amount_in_paise / 100
+            print(amount_in_rupees)
+            
+            #create a wallet transaction
+            try:
+                with transaction.atomic():
+                    wallet = Wallet.objects.get(user=request.user)
+                    WalletTransactions.objects.create(
+                        wallet=wallet,
+                        amount = amount_in_rupees,
+                        transaction_type = WalletTransactions.TransactionType.CREDIT,
+                        label = "Topup to Wallet",
+                        txn_source = WalletTransactions.TransactionSource.ONLINE,
+                    )
+                    wallet.balance += Decimal(amount_in_rupees)
+                    wallet.save()
+                    messages.success(request, f"Wallet toput of amount {amount_in_rupees} is success")
+            except Exception as e:
+                print(e)
+                messages.error(request, "Something went wrong")
+                
+            return redirect('wallet')
+        
+        except razorpay.errors.SignatureVerificationError:
+            # Update payment as failed
+            print("failed")
+            Payment.objects.filter(razorpay_order_id=razorpay_order_id).update(status='Failed')
+            return redirect('wallet')
         
         except Exception as e:
             return HttpResponseBadRequest(str(e))
