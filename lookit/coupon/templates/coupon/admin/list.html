@@ -13,7 +13,9 @@
     <div class="page-header">
         <h1 class="page-title">Coupon Management</h1>
                 <div class="header-actions">
-            <button class="btn btn-add-style" onclick="addNewStyle()">+ Add Coupon</button>
+            <a href="{% url 'admin-add-coupon' %}">
+                <button class="btn btn-add-style">+ Add Coupon</button>
+            </a>
         </div>
     </div>
 
@@ -125,26 +127,28 @@
 
             <tbody>
                 <!-- ✅ DUMMY ROW -->
-<tr>
-    <td class="coupon-code">
-        <span class="col-id">SAVE200</span>
-        <span class="coupon-mini-badge flat">FLAT</span>
-    </td>
+                <tr>
+                    <td class="coupon-code">
+                        <span class="col-id">SAVE200</span>
+                        <span class="coupon-mini-badge flat">FLAT</span>
+                    </td>
 
-    <td class="col-amount">₹200</td>
+                    <td class="col-amount">₹200</td>
 
-    <td class="col-date">01 Jan 2025</td>
-    <td class="col-date">31 Jan 2025</td>
-    <td>₹999</td>
-    <td>500</td>
-    <td>325</td>
-    <td>
-        <span class="coupon-status-badge status-active">Active</span>
-    </td>
-    <td>
-        <button class="coupon-btn-view">Manage</button>
-    </td>
-</tr>
+                    <td class="col-date">01 Jan 2025</td>
+                    <td class="col-date">31 Jan 2025</td>
+                    <td>₹999</td>
+                    <td>500</td>
+                    <td>325</td>
+                    <td>
+                        <span class="coupon-status-badge status-active">Active</span>
+                    </td>
+                    <td>
+                        <a href="{% url 'admin-edit-coupon' %}">
+                            <button class="coupon-btn-view">Manage</button>
+                        </a>
+                    </td>
+                </tr>
 
                 {% for coupon in page_obj %}
                 <tr>
