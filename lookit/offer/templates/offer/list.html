@@ -1,0 +1,185 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'offer/css/list.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Offer Management</h1>
+                <div class="header-actions">
+            <a href="{% url 'admin-add-offer' %}">
+                <button class="btn btn-add-style">+ Create Offer</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="filters-section">
+
+        <!-- Search Form -->
+        <form method="GET" id="searchForm" class="search-form">
+
+            {% if request.GET.status %}
+            <input type="hidden" name="status" value="{{ request.GET.status }}">
+            {% endif %}
+            {% if request.GET.discount_type %}
+            <input type="hidden" name="discount_type" value="{{ request.GET.discount_type }}">
+            {% endif %}
+
+            <div class="search-container">
+
+                <div class="search-bar">
+                    <input type="text" name="search" id="searchInput" placeholder="Search by Offer Name..."
+                        value="{{ request.GET.search }}">
+                    <span class="search-icon">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </span>
+
+                    <div class="search-actions">
+                        <a href="{% url 'admin-list-coupons' %}?{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.discount_type %}discount_type={{ request.GET.discount_type }}{% endif %}">
+                            <button type="button" class="clear-btn" id="clearBtn">
+                                <svg viewBox="0 0 24 24">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </a>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="search-btn">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <span>Search</span>
+                </button>
+
+                <button type="button" class="filter-toggle-btn" onclick="toggleFilters()">
+                    <span class="filter-icon"></span>
+                    <span>Filters</span>
+                </button>
+            </div>
+        </form>
+
+        <!-- Filters -->
+        <form method="GET" action="" class="filter-form">
+            {% if request.GET.search %}
+            <input type="hidden" name="search" value="{{ request.GET.search }}">
+            {% endif %}
+
+            <div id="filtersContainer" class="filters-container {% if request.GET.status or request.GET.discount_type %}show{% endif %}">
+                <div class="filters-row">
+
+                    <div class="filter-group">
+                        <select name="discount_type" class="filter-select">
+                            <option value="">Offer Type</option>
+                            <option value="FLAT" {% if request.GET.discount_type == 'FLAT' %}selected{% endif %}>Flat</option>
+                            <option value="PERCENTAGE" {% if request.GET.discount_type == 'PERCENTAGE' %}selected{% endif %}>Percentage</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <select name="status" class="filter-select">
+                            <option value="">Offer Status</option>
+                            <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active</option>
+                            <option value="EXPIRED" {% if request.GET.status == 'EXPIRED' %}selected{% endif %}>Expired</option>
+                            <option value="LIMIT_REACHED" {% if request.GET.status == 'LIMIT_REACHED' %}selected{% endif %}>Limit Reached</option>
+                            <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-apply">Apply Filters</button>
+                    <a href="{% url 'admin-list-coupons' %}">
+                        <button type="button" class="btn btn-reset">Reset Filters</button>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Coupon Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Offer Title</th>
+                    <th>Scope</th>
+                    <th>Target</th>
+                    <th>Discount</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            <!-- Dummy filled row for layout preview -->
+                <tr>
+                    <td class="col-id">
+                        Summer Sale
+                    </td>
+                            <!-- 🆕 Offer Scope Column -->
+                    <td class="offer-scope">
+                            <span class="offer-scope-badge category">
+                                <svg viewBox="0 0 24 24" class="badge-icon" fill="none" stroke="currentColor"
+                                    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                                    <circle cx="8" cy="6" r="1"></circle>
+                                    <circle cx="8" cy="12" r="1"></circle>
+                                    <circle cx="8" cy="18" r="1"></circle>
+                                </svg>
+                                Category
+                            </span>
+                                                        <!-- 🆕 Offer Scope Column -->
+                            <!-- <td class="offer-scope">
+                                    <span class="offer-scope-badge product">
+                                        <svg viewBox="0 0 24 24" class="badge-icon" fill="none" stroke="currentColor"
+                                            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M3 7h18M3 7l1.8 11.5a2 2 0 0 0 2 1.5h10.4a2 2 0 0 0 2-1.5L21 7"></path>
+                                            <path d="M16 11a4 4 0 1 1-8 0"></path>
+                                        </svg>
+                                        Product
+                                    </span>
+                            </td> -->
+                            <!-- <span class="offer-scope-badge none">—</span> -->
+                    </td>
+                    <td class="col-amount">Graphic Tee</td>
+                    <td class="col-amount">20%</td>
+                    <td class="col-date">01 Jan 2025</td>
+                    <td class="col-date">31 Jan 2025</td>
+
+                    <td>
+                        <span class="coupon-status-badge status-active">Active</span>
+                    </td>
+                    <td>
+                        <a href="#">
+                            <button class="coupon-btn-view">Edit</button>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% include 'admin_base/components/pagination.html' %}
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'coupon/js/admin/list.js' %}"></script>
+{% endblock %}

@@ -10,6 +10,7 @@ urlpatterns = [
     path("payment/", include('payment.urls')),
     path('wallet/', include('wallet.urls')),
     path('coupon/', include('coupon.urls')),
+    path('offer/', include('offer.urls')),
         # continue with google
     path('oauth/', include('social_django.urls', namespace='social')),
 ]
