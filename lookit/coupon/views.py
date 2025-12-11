@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from core.decorators import admin_required
 from django.contrib import messages
+from datetime import datetime, date
 from django.core.paginator import Paginator
 from .models import Coupon
 
@@ -8,7 +9,7 @@ from .models import Coupon
 # Create your views here.
 @admin_required
 def admin_list_coupon(request):
-    coupons = Coupon.objects.all()
+    coupons = Coupon.objects.all().order_by('-created_at')
     
     #--create pagination object-----
     paginator = Paginator(coupons, 5)
@@ -30,27 +31,58 @@ def admin_add_coupon(request):
         is_active = request.POST.get('is_active') in ['true', 'True', '1', 'on']
         start_date = request.POST.get('start_date', '').strip()
         end_date = request.POST.get('end_date', '').strip()
-
+        print("usage limit ", usage_limit)
         # --validation check: ensure all required fields exist--
         required_fields = {
             'code': code,
             'discount_type': discount_type,
             'discount_value': discount_value,
             'min_purchase_amount': min_purchase_amount,
-            'usage_limit': usage_limit,
-            'status': status,
             'start_date': start_date,
             'end_date': end_date,
         }
         missing_fields = [
             field for field, value in required_fields.items() if not value
         ]
-        print(request.POST)
         if missing_fields:
             messages.error(
                 request, f"Missing required fields: {', '.join(missing_fields)}"
             )
             return redirect('admin-add-coupon')
+        
+        #--coupon code validations--------------------------------------------
+        if 3 > len(code) > 50:
+            messages.error(
+                request, "Coupon code must be between 3 and 50 characters long"
+            )
+            return redirect('admin-add-coupon')
+        
+        if " " in code:
+            messages.error(request, "Coupon code cannot contain spaces")
+            return redirect('admin-add-coupon')
+        
+        #--date validations-----------------------------------------
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+        if start_date < date.today():
+            messages.error(request, "Start date cannot be before today.")
+            return redirect('admin-add-coupon')
+
+        if end_date and end_date < start_date:
+            messages.error(request, "End date cannot be before start date.")
+            return redirect('admin-add-coupon')
+        
+        #--set default values-------------------
+        if not usage_limit:
+            print(usage_limit)
+            usage_limit = -1 #(-1 for unlimited)
+            
+        if not status:
+            status = Coupon.CouponStatus.INACTIVE
+        else:
+            status = Coupon.CouponStatus.ACTIVE
+        
         try:
             Coupon.objects.create(
                 code=code,

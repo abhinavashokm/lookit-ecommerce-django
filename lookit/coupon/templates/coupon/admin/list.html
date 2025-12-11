@@ -131,18 +131,37 @@
                 <tr>
                     <td class="coupon-code">
                         <span class="col-id">{{ coupon.code }}</span>
-                        <span class="coupon-mini-badge flat">{{ coupon.discount_type }}</span>
+                        {% if coupon.discount_type == "FLAT" %}
+                            <span class="coupon-mini-badge flat">{{ coupon.discount_type|lower }}</span>
+                        {% else %}
+                            <span class="coupon-mini-badge percentage">{{ coupon.discount_type|lower }}</span>
+                        {% endif %}
                     </td>
 
-                    <td class="col-amount">₹{{ coupon.discount_value }}</td>
+                    <td class="col-amount">{% if coupon.discount_type == "FLAT" %}₹{{ coupon.discount_value }}{% else %}{{ coupon.discount_value }}%{% endif %}</td>
 
                     <td class="col-date">{{ coupon.start_date|date:"d M Y" }}</td>
                     <td class="col-date">{{ coupon.end_date|date:"d M Y" }}</td>
                     <td>₹{{ coupon.min_purchase_amount }}</td>
-                    <td>{{ coupon.usage_limit }}</td>
-                    <td>{{ coupon.usage_remaining }}</td>
                     <td>
-                        <span class="coupon-status-badge status-active">Active</span>
+                        {% if coupon.usage_limit == -1 %}
+                        <span style="color: green;">unlimited</span>
+                        {% else %}
+                        {{ coupon.usage_limit }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if coupon.usage_limit == -1 %}
+                         <span style="color: green;">unlimited</span>
+                        {% else %}
+                         {{ coupon.usage_remaining }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="coupon-status-badge status-{{ coupon.status|lower }}">
+                            {{ coupon.status|title }}
+                        </span>
+                        <!-- <span class="coupon-status-badge status-active">Active</span> -->
                     </td>
                     <td>
                         <a href="{% url 'admin-edit-coupon' %}">
