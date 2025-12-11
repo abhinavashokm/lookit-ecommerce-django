@@ -12,6 +12,20 @@ from .models import Coupon
 def admin_list_coupon(request):
     coupons = Coupon.objects.all().order_by('-created_at')
     
+    search = request.GET.get('search')
+    discount_type = request.GET.get('discount_type','').upper()
+    status = request.GET.get('status','').upper()
+    
+    #--search filter-------------------------------------
+    if search:
+        coupons = coupons.filter(code__icontains = search)
+    
+    #--other filters----------------------------------------
+    if discount_type:
+        coupons = coupons.filter(discount_type=discount_type)
+    if status:
+        coupons = coupons.filter(status=status)
+    
     #--create pagination object-----
     paginator = Paginator(coupons, 5)
     page_number = request.GET.get('page')

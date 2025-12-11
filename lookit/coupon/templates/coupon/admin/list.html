@@ -23,7 +23,7 @@
     <div class="filters-section">
 
         <!-- Search Form -->
-        <form method="GET" action="" id="searchForm" class="search-form">
+        <form method="GET" id="searchForm" class="search-form">
 
             {% if request.GET.status %}
             <input type="hidden" name="status" value="{{ request.GET.status }}">
@@ -33,8 +33,9 @@
             {% endif %}
 
             <div class="search-container">
+
                 <div class="search-bar">
-                    <input type="text" name="search" placeholder="Search by coupon code..."
+                    <input type="text" name="search" id="searchInput" placeholder="Search by coupon code..."
                         value="{{ request.GET.search }}">
                     <span class="search-icon">
                         <svg viewBox="0 0 24 24">
@@ -44,8 +45,8 @@
                     </span>
 
                     <div class="search-actions">
-                        <a href="{% url 'admin-list-coupons' %}">
-                            <button type="button" class="clear-btn">
+                        <a href="{% url 'admin-list-coupons' %}?{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.discount_type %}discount_type={{ request.GET.discount_type }}{% endif %}">
+                            <button type="button" class="clear-btn" id="clearBtn">
                                 <svg viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
                                     <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -53,6 +54,7 @@
                             </button>
                         </a>
                     </div>
+
                 </div>
 
                 <button type="submit" class="search-btn">
@@ -82,17 +84,18 @@
                     <div class="filter-group">
                         <select name="discount_type" class="filter-select">
                             <option value="">Discount Type</option>
-                            <option value="flat" {% if request.GET.discount_type == 'flat' %}selected{% endif %}>Flat</option>
-                            <option value="percentage" {% if request.GET.discount_type == 'percentage' %}selected{% endif %}>Percentage</option>
+                            <option value="FLAT" {% if request.GET.discount_type == 'FLAT' %}selected{% endif %}>Flat</option>
+                            <option value="PERCENTAGE" {% if request.GET.discount_type == 'PERCENTAGE' %}selected{% endif %}>Percentage</option>
                         </select>
                     </div>
 
                     <div class="filter-group">
                         <select name="status" class="filter-select">
                             <option value="">Coupon Status</option>
-                            <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
-                            <option value="expired" {% if request.GET.status == 'expired' %}selected{% endif %}>Expired</option>
-                            <option value="disabled" {% if request.GET.status == 'disabled' %}selected{% endif %}>Disabled</option>
+                            <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active</option>
+                            <option value="EXPIRED" {% if request.GET.status == 'EXPIRED' %}selected{% endif %}>Expired</option>
+                            <option value="LIMIT_REACHED" {% if request.GET.status == 'LIMIT_REACHED' %}selected{% endif %}>Limit Reached</option>
+                            <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>Inactive</option>
                         </select>
                     </div>
 
