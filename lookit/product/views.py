@@ -4,7 +4,6 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
-from django.contrib.auth.decorators import user_passes_test
 from django.contrib import messages
 from cloudinary.uploader import upload, destroy
 from django.db.models import Case, When, Value, IntegerField

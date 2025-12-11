@@ -127,19 +127,20 @@
 
             <tbody>
                 <!-- ✅ DUMMY ROW -->
+                 {% for coupon in page_obj %}
                 <tr>
                     <td class="coupon-code">
-                        <span class="col-id">SAVE200</span>
-                        <span class="coupon-mini-badge flat">FLAT</span>
+                        <span class="col-id">{{ coupon.code }}</span>
+                        <span class="coupon-mini-badge flat">{{ coupon.discount_type }}</span>
                     </td>
 
-                    <td class="col-amount">₹200</td>
+                    <td class="col-amount">₹{{ coupon.discount_value }}</td>
 
-                    <td class="col-date">01 Jan 2025</td>
-                    <td class="col-date">31 Jan 2025</td>
-                    <td>₹999</td>
-                    <td>500</td>
-                    <td>325</td>
+                    <td class="col-date">{{ coupon.start_date|date:"d M Y" }}</td>
+                    <td class="col-date">{{ coupon.end_date|date:"d M Y" }}</td>
+                    <td>₹{{ coupon.min_purchase_amount }}</td>
+                    <td>{{ coupon.usage_limit }}</td>
+                    <td>{{ coupon.usage_remaining }}</td>
                     <td>
                         <span class="coupon-status-badge status-active">Active</span>
                     </td>
@@ -149,8 +150,9 @@
                         </a>
                     </td>
                 </tr>
+                {% endfor %}
 
-                {% for coupon in page_obj %}
+                <!-- {% for coupon in page_obj %}
                 <tr>
                     <td class="coupon-code">
                         {{ coupon.code }}
@@ -176,12 +178,12 @@
                     </td>
 
                     <td>
-                        <a href="{% url 'admin-manage-coupon' coupon.id %}">
+                        <a href="{% url 'admin-edit-coupon' %}">
                             <button class="btn-view">Manage</button>
                         </a>
                     </td>
                 </tr>
-                {% endfor %}
+                {% endfor %} -->
             </tbody>
         </table>
 
