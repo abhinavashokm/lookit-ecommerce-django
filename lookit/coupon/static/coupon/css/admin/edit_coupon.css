@@ -203,3 +203,38 @@ input:checked+.slider:before {
     margin: 0 8px;
     color: #9ca3af;
 }
+
+/* jQuery validation error styling */
+label.error {
+    color: #ef4444;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/*coupon code cannot edit hint */
+.form-hint {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    color: #6b7280; /* soft gray */
+}
+
+#couponCode{
+    color: #311eeb;
+    font-weight: 600;
+}

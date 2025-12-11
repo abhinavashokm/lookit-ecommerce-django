@@ -3,7 +3,6 @@
      ============================================ */
 // Toggle filters functionality
 function toggleFilters() {
-    console.log('i ma here')
     const filtersContainer = document.getElementById('filtersContainer');
     const filterToggle = document.getElementById('filterToggle');
 

@@ -126,7 +126,6 @@
             </thead>
 
             <tbody>
-                <!-- ✅ DUMMY ROW -->
                  {% for coupon in page_obj %}
                 <tr>
                     <td class="coupon-code">
@@ -164,45 +163,26 @@
                         <!-- <span class="coupon-status-badge status-active">Active</span> -->
                     </td>
                     <td>
-                        <a href="{% url 'admin-edit-coupon' %}">
-                            <button class="coupon-btn-view">Manage</button>
+                        <a href="{% url 'admin-edit-coupon' coupon.code %}">
+                            <button class="coupon-btn-view">Edit</button>
                         </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" class="empty-icon" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="14" rx="2" ry="2"></rect>
+                                <path d="M8 21h8"></path>
+                                <path d="M12 17v4"></path>
+                                <line x1="3" y1="7" x2="21" y2="7"></line>
+                            </svg>
+                            <p class="empty-text">No coupons available</p>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
-
-                <!-- {% for coupon in page_obj %}
-                <tr>
-                    <td class="coupon-code">
-                        {{ coupon.code }}
-                        {% if coupon.discount_type == "flat" %}
-                            <span class="mini-badge flat">FLAT</span>
-                        {% else %}
-                            <span class="mini-badge percentage">%</span>
-                        {% endif %}
-                    </td>
-
-                    <td>{{ coupon.discount_type|title }}</td>
-                    <td>{{ coupon.discount_value }}</td>
-                    <td>₹{{ coupon.min_purchase_amount }}</td>
-                    <td>{{ coupon.valid_from|date:"d M Y" }}</td>
-                    <td>{{ coupon.valid_to|date:"d M Y" }}</td>
-                    <td>{{ coupon.usage_limit }}</td>
-                    <td>{{ coupon.remaining_usage_limit }}</td>
-
-                    <td>
-                        <span class="status-badge status-{{ coupon.status }}">
-                            {{ coupon.status|title }}
-                        </span>
-                    </td>
-
-                    <td>
-                        <a href="{% url 'admin-edit-coupon' %}">
-                            <button class="btn-view">Manage</button>
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %} -->
             </tbody>
         </table>
 

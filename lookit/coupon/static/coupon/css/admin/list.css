@@ -706,62 +706,6 @@ tbody tr:hover {
 }
 
 
-.status-badge {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-/* 🟦 Order Started */
-.status-initiated {
-    background: #e0f2fe;
-    color: #0369a1;
-}
-
-/* 🟨 Order Placed */
-.status-placed {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-/* 🟣 Shipped */
-.status-shipped {
-    background: #ede9fe;
-    color: #5b21b6;
-}
-
-/* 🔵 Out for Delivery */
-.status-out-for-delivery {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-/* 🟢 Delivered */
-.status-delivered {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-/* 🔴 Cancelled */
-.status-cancelled {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-/* 🟠 Returned */
-.status-returned {
-    background: #ffedd5;
-    color: #9a3412;
-}
-
-/* 💚 Refunded */
-.status-refunded {
-    background: #ecfdf5;
-    color: #047857;
-}
-
 /* =========================
 MAIN LAYOUT
 ========================= */
@@ -946,20 +890,29 @@ STATUS BADGES
     font-weight: 700;
 }
 
+/* 🟢 coupon active */
 .status-active {
     background: #d1fae5;
     color: #065f46;
 }
 
-.status-expired {
+/* coupon inactive */
+.status-inactive {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* 🟨 Coupon Expired */
+.status-expired  {
+    background: #fef3c7;
+    color: #92400e;
+}
+/* 🔴 coupon limit reached */
+.status-limit_reached {
     background: #fee2e2;
     color: #991b1b;
 }
 
-.status-disabled {
-    background: #f3f4f6;
-    color: #374151;
-}
 
 /* =========================
 MANAGE BUTTON
@@ -1040,6 +993,7 @@ MANAGE BUTTON
     font-size: 0.85rem;
     font-weight: 600;
     color: #6366f1;
+    padding-left: 5px;
 }
 
 .col-amount {
@@ -1047,3 +1001,45 @@ MANAGE BUTTON
     font-weight: 700;
     color: #111827;
 }
+
+/* no coupons state */
+    .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6b7280;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.empty-icon {
+    width: 60px;
+    height: 60px;
+    color: #9ca3af;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.empty-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+/* toggle smooth animation */
+/* Base container */
+#filtersContainer {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, opacity 0.5s ease;
+    will-change: max-height, opacity;
+}
+
+/* Expanded state */
+#filtersContainer.show {
+    opacity: 1;
+    max-height: 400px; /* adjust depending on your content height */
+}
+
