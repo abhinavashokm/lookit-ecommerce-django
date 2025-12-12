@@ -384,3 +384,30 @@ input:checked+.slider:before {
     color: #dc2626;
 }
 
+/* Select2 Search Input Styling */
+.select2-container--default .select2-search--dropdown {
+    padding: 10px;
+    background: white;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 15px;
+    font-size: 0.95rem;
+    width: 100%;
+    outline: none;
+}
+
+.select2-container--default .select2-search--dropdown .select2-search__field:focus {
+    border-color: #6366f1;
+}
+
+.select2-container--default .select2-search--inline .select2-search__field {
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: 0.95rem;
+}

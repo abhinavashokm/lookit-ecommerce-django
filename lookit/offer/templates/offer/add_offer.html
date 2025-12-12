@@ -4,6 +4,8 @@
 {% block styles %}
 <link rel="stylesheet" href="{% static 'offer/css/add_offer.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 {% endblock %}
 
 {% block content %}
@@ -22,19 +24,21 @@
 
     <!-- Offer Form -->
     <div class="form-container">
-        <form id="offerForm">
+
+        <form id="offerForm" action="{% url 'admin-add-offer' %}" method="POST">
+            {% csrf_token %}
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
                         <label for="offerTitle">Offer Title</label>
-                        <input type="text" id="offerTitle" class="form-control" placeholder="Enter offer title"
+                        <input type="text" name="name" id="offerTitle" class="form-control" placeholder="Enter offer title"
                             required>
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
                         <label for="offerScope">Scope</label>
-                        <select id="offerScope" class="form-control" required>
+                        <select id="offerScope" name="scope" class="form-control" required>
                             <option value="">Select scope</option>
                             <option value="product">Product Based</option>
                             <option value="category">Category Based</option>
@@ -43,6 +47,7 @@
                 </div>
             </div>
 
+            <!-- 1] FOR SELECT PRODUCTS-->
             <div class="form-row" id="productSelectRow" style="display: none;">
                 <div class="form-col">
                     <div class="form-group">
@@ -66,27 +71,29 @@
                 </div>
             </div>
 
+            <!-- 2] FOR SELECT CATEGORY-->
             <div class="form-row" id="categorySelectRow" style="display: none;">
                 <div class="form-col">
                     <div class="form-group">
-                        <label for="categorySelect">Select Category</label>
-                        <select id="categorySelect" class="form-control">
-                            <option value="">Select a category</option>
-                            <option value="electronics">Electronics</option>
-                            <option value="fashion">Fashion</option>
-                            <option value="home">Home & Living</option>
-                            <option value="sports">Sports</option>
-                            <option value="books">Books</option>
+                        <label for="type">Style</label>
+                        <select id="categorySelect" id="type" class="select2 form-control" name="style">
+                            <option value="" disabled selected>Select Style</option>
+                            {% for style in styles %}
+                            <option value="{{ style.name }}">{{ style.name }}</option>
+                            {% endfor %}
                         </select>
                     </div>
+
                 </div>
             </div>
+
+
 
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">
                         <label for="discountPercentage">Discount Percentage (%)</label>
-                        <input type="number" id="discountPercentage" class="form-control"
+                        <input type="number" name="discount" id="discountPercentage" class="form-control"
                             placeholder="Enter percentage" min="0" max="100" step="1" required>
                     </div>
                 </div>
@@ -96,13 +103,13 @@
                 <div class="form-col">
                     <div class="form-group">
                         <label for="startDate">Start Date</label>
-                        <input type="date" id="startDate" class="form-control" required>
+                        <input type="date" name="start_date" id="startDate" class="form-control" required>
                     </div>
                 </div>
                 <div class="form-col">
                     <div class="form-group">
                         <label for="endDate">End Date</label>
-                        <input type="date" id="endDate" class="form-control" required>
+                        <input type="date" name="end_date" id="endDate" class="form-control" required>
                     </div>
                 </div>
             </div>
@@ -113,7 +120,7 @@
                         <label>Status</label>
                         <div style="display: flex; align-items: center; height: 38px;">
                             <label class="toggle-switch">
-                                <input type="checkbox" id="status" checked>
+                                <input type="checkbox" name="status" id="status" checked>
                                 <span class="slider"></span>
                             </label>
                             <span id="statusText" style="margin-left: 10px;">Active</span>
@@ -127,10 +134,15 @@
                 <button type="submit" class="btn btn-primary">Save Offer</button>
             </div>
         </form>
+
     </div>
 </main>
 {% endblock %}
 
 {% block scripts %}
+<!-- jQuery (required for Select2, style searching) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{% static 'offer/js/add_offer.js' %}"></script>
 {% endblock %}

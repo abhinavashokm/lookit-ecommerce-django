@@ -129,12 +129,14 @@
 
             <tbody>
             <!-- Dummy filled row for layout preview -->
+             {% for offer in page_obj %}
                 <tr>
                     <td class="col-id">
-                        Summer Sale
+                        {{ offer.name }}
                     </td>
                             <!-- 🆕 Offer Scope Column -->
                     <td class="offer-scope">
+                        {% if offer.scope == 'CATEGORY_BASED' %}
                             <span class="offer-scope-badge category">
                                 <svg viewBox="0 0 24 24" class="badge-icon" fill="none" stroke="currentColor"
                                     stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -145,26 +147,30 @@
                                 </svg>
                                 Category
                             </span>
-                                                        <!-- 🆕 Offer Scope Column -->
-                            <!-- <td class="offer-scope">
-                                    <span class="offer-scope-badge product">
-                                        <svg viewBox="0 0 24 24" class="badge-icon" fill="none" stroke="currentColor"
-                                            stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                                            <path d="M3 7h18M3 7l1.8 11.5a2 2 0 0 0 2 1.5h10.4a2 2 0 0 0 2-1.5L21 7"></path>
-                                            <path d="M16 11a4 4 0 1 1-8 0"></path>
-                                        </svg>
-                                        Product
-                                    </span>
-                            </td> -->
-                            <!-- <span class="offer-scope-badge none">—</span> -->
+                        {% else %}
+                            <!-- 🆕 Offer Scope Column -->
+                            <span class="offer-scope-badge product">
+                                <svg viewBox="0 0 24 24" class="badge-icon" fill="none" stroke="currentColor"
+                                    stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 7h18M3 7l1.8 11.5a2 2 0 0 0 2 1.5h10.4a2 2 0 0 0 2-1.5L21 7"></path>
+                                    <path d="M16 11a4 4 0 1 1-8 0"></path>
+                                </svg>
+                                Product
+                            </span>
+                        {% endif %}
                     </td>
-                    <td class="col-amount">Graphic Tee</td>
-                    <td class="col-amount">20%</td>
-                    <td class="col-date">01 Jan 2025</td>
-                    <td class="col-date">31 Jan 2025</td>
+                    
+                    <td class="col-amount">{{ offer.style.name }}</td>
+                    <td class="col-amount">{{ offer.discount }}%</td>
+                    <td class="col-date">{{ offer.start_date|date:'d M Y' }}</td>
+                    <td class="col-date">{{ offer.end_date|date:'d M Y' }}</td>
 
                     <td>
+                        {% if offer.is_active %}
                         <span class="coupon-status-badge status-active">Active</span>
+                        {% else %}
+                        <span class="coupon-status-badge status-active">Inactive</span>
+                        {% endif %}
                     </td>
                     <td>
                         <a href="#">
@@ -172,6 +178,7 @@
                         </a>
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
 

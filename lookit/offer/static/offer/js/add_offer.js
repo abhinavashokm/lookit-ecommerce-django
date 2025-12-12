@@ -201,29 +201,56 @@ const today = new Date().toISOString().split('T')[0];
 startDateInput.min = today;
 startDateInput.value = today;
 
-// Form submission
-document.getElementById('offerForm').addEventListener('submit', function (e) {
-    e.preventDefault();
+// // Form submission
+// document.getElementById('offerForm').addEventListener('submit', function (e) {
+//     e.preventDefault();
 
-    // Custom Validation for Product Scope
-    const scope = document.getElementById('offerScope').value;
-    if (scope === 'product' && selectedProductIds.size === 0) {
-        alert('Please select at least one product.');
-        return;
-    }
+//     // Custom Validation for Product Scope
+//     const scope = document.getElementById('offerScope').value;
+//     if (scope === 'product' && selectedProductIds.size === 0) {
+//         alert('Please select at least one product.');
+//         return;
+//     }
 
-    // Get form values
-    const formData = {
-        offerTitle: document.getElementById('offerTitle').value,
-        scope: scope,
-        selectedProducts: Array.from(selectedProductIds),
-        selectedCategory: document.getElementById('categorySelect').value,
-        discountPercentage: document.getElementById('discountPercentage').value,
-        startDate: document.getElementById('startDate').value,
-        endDate: document.getElementById('endDate').value,
-        status: document.getElementById('status').checked ? 'active' : 'inactive'
-    };
+//     // Get form values
+//     const formData = {
+//         offerTitle: document.getElementById('offerTitle').value,
+//         scope: scope,
+//         selectedProducts: Array.from(selectedProductIds),
+//         selectedCategory: document.getElementById('categorySelect').value,
+//         discountPercentage: document.getElementById('discountPercentage').value,
+//         startDate: document.getElementById('startDate').value,
+//         endDate: document.getElementById('endDate').value,
+//         status: document.getElementById('status').checked ? 'active' : 'inactive'
+//     };
 
-    console.log('Form submitted:', formData);
-    alert('Offer saved successfully!');
-});
+//     console.log('Form submitted:', formData);
+//     alert('Offer saved successfully!');
+// });
+
+//SELECT 2 SCRIPT
+// Initialize Select2 for type field
+    $(document).ready(function () {
+        $('#categorySelect').select2({
+            placeholder: 'Select Type',
+            allowClear: false,
+            width: '100%',
+            minimumResultsForSearch: 0,
+            dropdownAutoWidth: false
+        });
+
+        // Make search input appear inside the field
+        $('#categorySelect').on('select2:open', function () {
+            $('.select2-search__field').attr('placeholder', 'Type to search...');
+        });
+
+        // Update Select2 styling when value changes
+        $('#categorySelect').on('select2:select', function () {
+            $(this).next('.select2-container').find('.select2-selection__rendered').css('color', '#1f2937');
+        });
+
+        // Set initial styling for Select2
+        if ($('#categorySelect').val() === '' || $('#categorySelect').val() === null) {
+            $('#categorySelect').next('.select2-container').find('.select2-selection__rendered').css('color', '#9ca3af');
+        }
+    });
