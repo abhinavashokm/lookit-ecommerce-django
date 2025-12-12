@@ -23,13 +23,13 @@
     <div class="filters-section">
 
         <!-- Search Form -->
-        <form method="GET" id="searchForm" class="search-form">
+        <form method="GET" action="{% url 'admin-list-offers' %}" id="searchForm" class="search-form">
 
             {% if request.GET.status %}
             <input type="hidden" name="status" value="{{ request.GET.status }}">
             {% endif %}
-            {% if request.GET.discount_type %}
-            <input type="hidden" name="discount_type" value="{{ request.GET.discount_type }}">
+            {% if request.GET.scope %}
+            <input type="hidden" name="scope" value="{{ request.GET.scope }}">
             {% endif %}
 
             <div class="search-container">
@@ -45,7 +45,7 @@
                     </span>
 
                     <div class="search-actions">
-                        <a href="{% url 'admin-list-coupons' %}?{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.discount_type %}discount_type={{ request.GET.discount_type }}{% endif %}">
+                        <a href="{% url 'admin-list-offers' %}?{% if request.GET.status %}status={{ request.GET.status }}&{% endif %}{% if request.GET.scope %}scope={{ request.GET.scope }}{% endif %}">
                             <button type="button" class="clear-btn" id="clearBtn">
                                 <svg viewBox="0 0 24 24">
                                     <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -54,7 +54,6 @@
                             </button>
                         </a>
                     </div>
-
                 </div>
 
                 <button type="submit" class="search-btn">
@@ -78,14 +77,14 @@
             <input type="hidden" name="search" value="{{ request.GET.search }}">
             {% endif %}
 
-            <div id="filtersContainer" class="filters-container {% if request.GET.status or request.GET.discount_type %}show{% endif %}">
+            <div id="filtersContainer" class="filters-container {% if request.GET.status or request.GET.scope %}show{% endif %}">
                 <div class="filters-row">
 
                     <div class="filter-group">
-                        <select name="discount_type" class="filter-select">
-                            <option value="">Offer Type</option>
-                            <option value="FLAT" {% if request.GET.discount_type == 'FLAT' %}selected{% endif %}>Flat</option>
-                            <option value="PERCENTAGE" {% if request.GET.discount_type == 'PERCENTAGE' %}selected{% endif %}>Percentage</option>
+                        <select name="scope" class="filter-select">
+                            <option value="">Offer Scope</option>
+                            <option value="PRODUCT_BASED" {% if request.GET.scope == 'PRODUCT_BASED' %}selected{% endif %}>Product Based</option>
+                            <option value="CATEGORY_BASED" {% if request.GET.scope == 'CATEGORY_BASED' %}selected{% endif %}>Category Based</option>
                         </select>
                     </div>
 
@@ -93,8 +92,6 @@
                         <select name="status" class="filter-select">
                             <option value="">Offer Status</option>
                             <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active</option>
-                            <option value="EXPIRED" {% if request.GET.status == 'EXPIRED' %}selected{% endif %}>Expired</option>
-                            <option value="LIMIT_REACHED" {% if request.GET.status == 'LIMIT_REACHED' %}selected{% endif %}>Limit Reached</option>
                             <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>Inactive</option>
                         </select>
                     </div>
@@ -103,11 +100,12 @@
 
                 <div class="filter-actions">
                     <button type="submit" class="btn btn-apply">Apply Filters</button>
-                    <a href="{% url 'admin-list-coupons' %}">
+                    <a href="{% url 'admin-list-offers' %}">
                         <button type="button" class="btn btn-reset">Reset Filters</button>
                     </a>
                 </div>
             </div>
+
         </form>
     </div>
 
@@ -180,6 +178,20 @@
                         <a href="{% url 'admin-edit-offer' offer.uuid %}">
                             <button class="coupon-btn-view">Edit</button>
                         </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" class="empty-icon" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="14" rx="2" ry="2"></rect>
+                                <path d="M8 21h8"></path>
+                                <path d="M12 17v4"></path>
+                                <line x1="3" y1="7" x2="21" y2="7"></line>
+                            </svg>
+                            <p class="empty-text">No Offers available</p>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

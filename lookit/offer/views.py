@@ -16,7 +16,25 @@ def admin_list_offers(request):
         .order_by('-created_at')
         .annotate(product_count=Count('products'))
     )
-
+    
+    search = request.GET.get('search')
+    scope = request.GET.get('scope')
+    status = request.GET.get('status')
+    
+    #--search filter-----------------------------------
+    if search:
+        offers = offers.filter(name__icontains = search)
+        
+    #--scope filter-----------------------
+    if scope:
+        offers = offers.filter(scope=scope)
+        
+    #--status filter----------------------------
+    if status == 'ACTIVE':
+        offers = offers.filter(is_active = True)
+    elif status == 'INACTIVE':
+        offers = offers.filter(is_active = False)
+        
     # --create pagination object-----
     paginator = Paginator(offers, 5)
     page_number = request.GET.get('page')
@@ -218,19 +236,18 @@ def admin_edit_offer(request, offer_uuid):
                 return redirect('admin-edit-offer', offer_uuid=offer_uuid)
 
         elif scope == 'product':
+            print(discount)
             #---atleast one product needed valiation---------------------------
             if len(selected_products) == 0:
                 messages.error(request, "Please select atleast one product to continue")
                 return redirect('admin-edit-offer', offer_uuid=offer_uuid)
             try:
-                Offer.objects.filter(uuid=offer_uuid).update(
-                    name=name,
-                    scope=Offer.Scopes.PRODUCT_BASED,
-                    discount=discount,
-                    start_date=start_date,
-                    end_date=end_date,
-                    is_active=is_active,
-                )
+                offer.name = name
+                offer.scope = Offer.Scopes.PRODUCT_BASED
+                offer.discount = discount
+                offer.start_date = start_date
+                offer.end_date = end_date
+                offer.is_active = is_active
                 offer.products.set(selected_products)
                 offer.save()
 
