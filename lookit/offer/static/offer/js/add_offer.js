@@ -100,12 +100,14 @@ function updateSelectedPreview() {
                         <button type="button" class="remove-btn" onclick="removeTag('${id}', event)">×</button>
                     `;
             selectedPreview.appendChild(tag);
+            document.getElementById('productEmptyError').classList.add('hidden')
         }
     });
 }
 
 // Remove Tag Callback (from preview)
 window.removeTag = function (id, event) {
+    id = Number(id)
     event.stopPropagation(); // Prevent affecting other elements
     selectedProductIds.delete(id);
 
@@ -202,56 +204,176 @@ const today = new Date().toISOString().split('T')[0];
 startDateInput.min = today;
 startDateInput.value = today;
 
-// // Form submission
-// document.getElementById('offerForm').addEventListener('submit', function (e) {
-//     e.preventDefault();
+// ==========================================
+// 🔹 JQUERY VALIDATION 
+// ==========================================
+$(document).ready(function () {
 
-//     // Custom Validation for Product Scope
-//     const scope = document.getElementById('offerScope').value;
-//     if (scope === 'product' && selectedProductIds.size === 0) {
-//         alert('Please select at least one product.');
-//         return;
-//     }
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayStr = `${yyyy}-${mm}-${dd}`;
 
-//     // Get form values
-//     const formData = {
-//         offerTitle: document.getElementById('offerTitle').value,
-//         scope: scope,
-//         selectedProducts: Array.from(selectedProductIds),
-//         selectedCategory: document.getElementById('categorySelect').value,
-//         discountPercentage: document.getElementById('discountPercentage').value,
-//         startDate: document.getElementById('startDate').value,
-//         endDate: document.getElementById('endDate').value,
-//         status: document.getElementById('status').checked ? 'active' : 'inactive'
-//     };
+    $('#startDate').attr('min', todayStr);
+    $('#endDate').attr('min', todayStr);
 
-//     console.log('Form submitted:', formData);
-//     alert('Offer saved successfully!');
-// });
+    // ==========================================
+    // 🔹 CUSTOM VALIDATION RULES
+    // ==========================================
+
+    // End date must be after start date
+    $.validator.addMethod("endDateAfterStart", function (value, element) {
+        const start = $('#startDate').val();
+        if (!start || !value) return true;
+        return new Date(value) >= new Date(start);
+    }, "End date must be after start date");
+
+    // Discount limit
+    $.validator.addMethod("percentageLimit", function (value, element) {
+        return parseFloat(value) <= 90;
+    }, "Discount percentage cannot exceed 90%");
+
+    // Require product(s) if product scope is selected
+    $.validator.addMethod("requireProducts", function (value, element) {
+        const scope = $('#offerScope').val();
+        if (scope === 'product') {
+            return selectedProductIds && selectedProductIds.size > 0;
+        }
+        return true;
+    }, "Please select at least one product.");
+
+    // Require category if category scope is selected
+    $.validator.addMethod("requireCategory", function (value, element) {
+        const scope = $('#offerScope').val();
+        if (scope === 'category') {
+            return value && value.trim() !== "";
+        }
+        return true;
+    }, "Please select a category.");
+
+    $.validator.addMethod("requireProducts", function () {
+        const scope = $('#offerScope').val();
+        if (scope === 'product') {
+            return selectedProductIds.size > 0;
+        }
+        return true;
+    }, "Please select at least one product.");
+
+    // ==========================================
+    // 🔹 INITIALIZE VALIDATION
+    // ==========================================
+    $("#offerForm").validate({
+        rules: {
+            name: {
+                required: true,
+                minlength: 3,
+                maxlength: 100
+            },
+            scope: {
+                required: true
+            },
+            discount: {
+                required: true,
+                number: true,
+                min: 1,
+                percentageLimit: true
+            },
+            start_date: {
+                required: true,
+                date: true
+            },
+            end_date: {
+                required: true,
+                date: true,
+                endDateAfterStart: true
+            },
+            style: {
+                requireCategory: true
+            },
+
+        },
+
+        messages: {
+            name: {
+                required: "Please enter an offer title",
+                minlength: "At least 3 characters required",
+                maxlength: "Maximum 100 characters allowed"
+            },
+            scope: {
+                required: "Please select a scope"
+            },
+            discount: {
+                required: "Enter discount percentage",
+                number: "Enter a valid number",
+                min: "Discount must be greater than 0",
+                percentageLimit: "Discount cannot exceed 90%"
+            },
+            start_date: {
+                required: "Start date is required"
+            },
+            end_date: {
+                required: "End date is required",
+                endDateAfterStart: "End date must be after start date"
+            },
+            style: {
+                requireCategory: "Please select a category"
+            }
+        },
+
+        errorClass: "error",
+        errorElement: "label",
+        errorPlacement: function (error, element) {
+            error.insertAfter(element);
+        },
+        highlight: function (element) {
+            $(element).addClass("is-invalid");
+        },
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid");
+        },
+
+        submitHandler: function (form) {
+            const scope = $('#offerScope').val();
+
+            // Extra client-side validation
+            if (scope === 'product' && (!selectedProductIds || selectedProductIds.size === 0)) {
+                document.getElementById('productEmptyError').classList.remove('hidden')
+                return false;
+            }else{
+                document.getElementById('productEmptyError').classList.add('hidden')
+            }
+
+            form.submit();
+        }
+    });
+});
+
+
 
 //SELECT 2 SCRIPT
 // Initialize Select2 for type field
-    $(document).ready(function () {
-        $('#categorySelect').select2({
-            placeholder: 'Select Type',
-            allowClear: false,
-            width: '100%',
-            minimumResultsForSearch: 0,
-            dropdownAutoWidth: false
-        });
-
-        // Make search input appear inside the field
-        $('#categorySelect').on('select2:open', function () {
-            $('.select2-search__field').attr('placeholder', 'Type to search...');
-        });
-
-        // Update Select2 styling when value changes
-        $('#categorySelect').on('select2:select', function () {
-            $(this).next('.select2-container').find('.select2-selection__rendered').css('color', '#1f2937');
-        });
-
-        // Set initial styling for Select2
-        if ($('#categorySelect').val() === '' || $('#categorySelect').val() === null) {
-            $('#categorySelect').next('.select2-container').find('.select2-selection__rendered').css('color', '#9ca3af');
-        }
+$(document).ready(function () {
+    $('#categorySelect').select2({
+        placeholder: 'Select Type',
+        allowClear: false,
+        width: '100%',
+        minimumResultsForSearch: 0,
+        dropdownAutoWidth: false
     });
+
+    // Make search input appear inside the field
+    $('#categorySelect').on('select2:open', function () {
+        $('.select2-search__field').attr('placeholder', 'Type to search...');
+    });
+
+    // Update Select2 styling when value changes
+    $('#categorySelect').on('select2:select', function () {
+        $(this).next('.select2-container').find('.select2-selection__rendered').css('color', '#1f2937');
+    });
+
+    // Set initial styling for Select2
+    if ($('#categorySelect').val() === '' || $('#categorySelect').val() === null) {
+        $('#categorySelect').next('.select2-container').find('.select2-selection__rendered').css('color', '#9ca3af');
+    }
+});

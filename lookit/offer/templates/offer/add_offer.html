@@ -67,6 +67,10 @@
                         <small class="text-muted"
                             style="display: block; margin-top: 5px; color: #6b7280; font-size: 0.85rem;">Search
                             and select multiple products.</small>
+                        <!--Product empty error-->
+                        <small id="productEmptyError" class="product-empty-error hidden">
+                            Please select alteast one product.
+                        </small>
                     </div>
                 </div>
             </div>
@@ -145,6 +149,8 @@
 </script>
 <!-- jQuery (required for Select2, style searching) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--form validation-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{% static 'offer/js/add_offer.js' %}"></script>

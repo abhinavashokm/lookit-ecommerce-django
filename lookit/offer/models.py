@@ -15,7 +15,7 @@ class Offer(models.Model):
     style = models.ForeignKey(Style, on_delete=models.CASCADE, null=True, blank=True)
     products = models.ManyToManyField(Product, related_name='offers')
     
-    discount = models.DecimalField(max_digits=5, decimal_places=2) #in percentage
+    discount = models.IntegerField() #in percentage
     
     start_date = models.DateField()
     end_date = models.DateField()

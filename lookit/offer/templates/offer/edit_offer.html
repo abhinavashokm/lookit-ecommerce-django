@@ -61,23 +61,15 @@
                             </div>
                         </div>
                         <div id="selectedPreview" class="selected-preview">
-
                             <!-- Selected items preview will be shown here -->
-                             <!-- {% for product in selected_products %}
-                             <div class="preview-item">
-                                <input type="hidden" name="selected_products" value="{{ product.id }}">
-                                <img src="{{product.image_url}}" alt="{{product.name}}" class="preview-img">
-                                <div class="preview-info">
-                                    <span class="preview-name">{{product.name}}</span>
-                                </div>
-                                <button type="button" class="remove-btn" onclick="removeTag('{{ product.id }}', event)">×</button>
-                             </div>
-                             {% endfor %} -->
-
                         </div>
                         <small class="text-muted"
                             style="display: block; margin-top: 5px; color: #6b7280; font-size: 0.85rem;">Search
                             and select multiple products.</small>
+                                                <!--Product empty error-->
+                        <small id="productEmptyError" class="product-empty-error hidden">
+                            Please select alteast one product.
+                        </small>
                     </div>
                 </div>
             </div>
@@ -154,12 +146,17 @@
 <script>
  const availableProducts = JSON.parse('{{ products_json|escapejs }}');
  let selectedProductIds = new Set();
-     {% for product in selected_products %}
-        selectedProductIds.add(Number('{{ product.id }}'));
-    {% endfor %}
+ let template = `
+{% for product in selected_products %}
+    selectedProductIds.add(Number('{{ product.id }}'));
+{% endfor %}
+`;
+eval(template);
 </script>
 <!-- jQuery (required for Select2, style searching) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--form validation-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <!-- Select2 JS -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{% static 'offer/js/edit_offer.js' %}"></script>
