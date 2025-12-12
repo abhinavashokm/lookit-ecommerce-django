@@ -11,16 +11,16 @@ statusToggle.addEventListener('change', function () {
 // ==========================================
 // MOCK DATA FOR PRODUCTS
 // ==========================================
-const availableProducts = [
-    { id: '1', name: 'Smartphone X Pro', image: 'https://via.placeholder.com/40', price: 999 },
-    { id: '2', name: 'Laptop Ultra Slim', image: 'https://via.placeholder.com/40', price: 1299 },
-    { id: '3', name: 'Wireless Noise Cancelling Headphones', image: 'https://via.placeholder.com/40', price: 299 },
-    { id: '4', name: 'Smart Watch Series 5', image: 'https://via.placeholder.com/40', price: 399 },
-    { id: '5', name: '4K Ultra HD Monitor', image: 'https://via.placeholder.com/40', price: 499 },
-    { id: '6', name: 'Gaming Mouse RGB', image: 'https://via.placeholder.com/40', price: 79 },
-    { id: '7', name: 'Mechanical Keyboard', image: 'https://via.placeholder.com/40', price: 149 },
-    { id: '8', name: 'USB-C Hub Multiport', image: 'https://via.placeholder.com/40', price: 59 },
-];
+// const availableProducts = [
+//     { id: '1', name: 'Smartphone X Pro', image: 'https://via.placeholder.com/40', price: 999 },
+//     { id: '2', name: 'Laptop Ultra Slim', image: 'https://via.placeholder.com/40', price: 1299 },
+//     { id: '3', name: 'Wireless Noise Cancelling Headphones', image: 'https://via.placeholder.com/40', price: 299 },
+//     { id: '4', name: 'Smart Watch Series 5', image: 'https://via.placeholder.com/40', price: 399 },
+//     { id: '5', name: '4K Ultra HD Monitor', image: 'https://via.placeholder.com/40', price: 499 },
+//     { id: '6', name: 'Gaming Mouse RGB', image: 'https://via.placeholder.com/40', price: 79 },
+//     { id: '7', name: 'Mechanical Keyboard', image: 'https://via.placeholder.com/40', price: 149 },
+//     { id: '8', name: 'USB-C Hub Multiport', image: 'https://via.placeholder.com/40', price: 59 },
+// ];
 
 let selectedProductIds = new Set();
 
@@ -48,7 +48,7 @@ function renderDropdownOptions(products) {
         };
 
         div.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="product-img">
+                    <img src="${product.image_url}" alt="${product.name}" class="product-img">
                     <div class="product-info">
                         <span class="product-name">${product.name}</span>
                         <span class="product-id">ID: ${product.id}</span>
@@ -92,7 +92,8 @@ function updateSelectedPreview() {
             const tag = document.createElement('div');
             tag.className = 'preview-item';
             tag.innerHTML = `
-                        <img src="${product.image}" alt="${product.name}" class="preview-img">
+                        <input type="hidden" name="selected_products" value="${id}">
+                        <img src="${product.image_url}" alt="${product.name}" class="preview-img">
                         <div class="preview-info">
                             <span class="preview-name">${product.name}</span>
                         </div>

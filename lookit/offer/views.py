@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.core.paginator import Paginator
-from product.models import Style
+from product.models import Style, Product
 from offer.models import Offer
+from django.db.models import Count
+import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 
 # Create your views here.
 def admin_list_offers(request):
-    offers = Offer.objects.all()
+    offers = Offer.objects.all().order_by('-created_at').annotate(product_count = Count('products'))
     
     #--create pagination object-----
     paginator = Paginator(offers, 5)
@@ -24,6 +27,7 @@ def admin_add_offer(request):
 
         style_name = request.POST.get('style', '').strip()
         selected_products = request.POST.getlist('selected_products')
+        print("selected products  ", selected_products)
 
         discount = request.POST.get('discount')
         start_date = request.POST.get('start_date')
@@ -52,6 +56,13 @@ def admin_add_offer(request):
             return redirect('admin-add-offer')
 
         if scope == 'category':
+            print("it is category")
+            #-- Style Validation------------
+            style_exists = Style.objects.filter(name=style_name).exists()
+            if style_name and not style_exists:
+                messages.error(request, "Invalid Selected Style")
+                return redirect('admin-add-offer')
+            
             try:
                 style = Style.objects.get(name=style_name)
                 Offer.objects.create(
@@ -64,7 +75,7 @@ def admin_add_offer(request):
                     is_active=is_active,
                 )
                 messages.success(request, "Offer Created Successfully")
-                print(request.POST)
+                
                 return redirect('admin-list-offers')
             except Exception as e:
                 print(e)
@@ -72,8 +83,30 @@ def admin_add_offer(request):
                 return redirect('admin-add-offer')
                 
         elif scope == 'product':
-            messages.error(request, "Product Based Offer Is Work In Progress")
-            return redirect('admin-add-offer')
-
+            try:
+                offer = Offer.objects.create(
+                    name=name,
+                    scope=Offer.Scopes.PRODUCT_BASED,
+                    discount=discount,
+                    start_date=start_date,
+                    end_date=end_date,
+                    is_active=is_active,
+                )
+                for product_id in selected_products:
+                    offer.products.add(product_id)
+                    
+                messages.success(request, "Offer Created Successfully")
+                return redirect('admin-list-offers')
+            except Exception as e:
+                print(e)
+                messages.error(e, "Something went wrong")
+                return redirect('admin-add-offer')
+                
     styles = Style.objects.all()
-    return render(request, 'offer/add_offer.html', {'styles': styles})
+    products = list(Product.objects.values('id', 'name', 'image_url', 'price'))
+    context = {
+        'products_json': json.dumps(products, cls=DjangoJSONEncoder),
+        'styles':styles,
+        'products':products,
+    }
+    return render(request, 'offer/add_offer.html', context)

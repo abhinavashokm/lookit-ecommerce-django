@@ -10,7 +10,7 @@ class Offer(models.Model):
     name = models.CharField(max_length=100)
     scope = models.CharField(max_length=20, choices=Scopes.choices)
     
-    style = models.ForeignKey(Style, on_delete=models.CASCADE)
+    style = models.ForeignKey(Style, on_delete=models.CASCADE, null=True, blank=True)
     products = models.ManyToManyField(Product, related_name='offers')
     
     discount = models.DecimalField(max_digits=5, decimal_places=2) #in percentage

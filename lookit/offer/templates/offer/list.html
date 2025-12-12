@@ -159,8 +159,12 @@
                             </span>
                         {% endif %}
                     </td>
-                    
+                    {% if offer.scope == 'CATEGORY_BASED' %}
                     <td class="col-amount">{{ offer.style.name }}</td>
+                    {% else %}
+                    <td class="col-amount">{{ offer.product_count }} Products</td>
+                    {% endif %}
+                    
                     <td class="col-amount">{{ offer.discount }}%</td>
                     <td class="col-date">{{ offer.start_date|date:'d M Y' }}</td>
                     <td class="col-date">{{ offer.end_date|date:'d M Y' }}</td>

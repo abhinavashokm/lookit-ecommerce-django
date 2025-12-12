@@ -140,6 +140,9 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+ const availableProducts = JSON.parse('{{ products_json|escapejs }}');
+</script>
 <!-- jQuery (required for Select2, style searching) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Select2 JS -->
