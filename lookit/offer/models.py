@@ -1,5 +1,6 @@
 from django.db import models
 from product.models import Style, Product
+import uuid
 
 # Create your models here.
 class Offer(models.Model):
@@ -7,6 +8,7 @@ class Offer(models.Model):
         PRODUCT_BASED = 'PRODUCT_BASED'
         CATEGORY_BASED = 'CATEGORY_BASED'
     
+    uuid = models.CharField(max_length=20, blank=True)
     name = models.CharField(max_length=100)
     scope = models.CharField(max_length=20, choices=Scopes.choices)
     
@@ -22,4 +24,12 @@ class Offer(models.Model):
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            prefix = "OFF"
+            # Pad database ID estimate — better to use random unique portion before first save
+            unique_num = str(uuid.uuid4().int)[:6]  # shorter unique piece
+            self.uuid = f"{prefix}-{unique_num}"
+        super().save(*args, **kwargs)
     

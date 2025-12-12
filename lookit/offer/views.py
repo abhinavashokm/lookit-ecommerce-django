@@ -110,3 +110,101 @@ def admin_add_offer(request):
         'products':products,
     }
     return render(request, 'offer/add_offer.html', context)
+
+def admin_edit_offer(request, offer_uuid):
+    offer = Offer.objects.get(uuid = offer_uuid)
+    
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        scope = request.POST.get('scope', '').strip()
+
+        style_name = request.POST.get('style', '').strip()
+        selected_products = request.POST.getlist('selected_products')
+
+        discount = request.POST.get('discount')
+        start_date = request.POST.get('start_date')
+        end_date = request.POST.get('end_date')
+
+        status = request.POST.get('status')
+        is_active = True if status == 'on' else False
+
+        # Required fields dictionary
+        required_fields = {
+            "Offer Name": name,
+            "Scope": scope,
+            "Discount Percentage": discount,
+            "Start Date": start_date,
+            "End Date": end_date,
+        }
+
+        # -- Required field vaidation ----------------------------------------------------
+        missing_fields = [
+            field for field, value in required_fields.items() if not value
+        ]
+        if missing_fields:
+            messages.error(
+                request, "Missing required fields: " + ", ".join(missing_fields)
+            )
+            return redirect('admin-edit-offer', offer_uuid=offer_uuid)
+
+        if scope == 'category':
+            print("it is category")
+            #-- Style Validation------------
+            style_exists = Style.objects.filter(name=style_name).exists()
+            if style_name and not style_exists:
+                messages.error(request, "Invalid Selected Style")
+                return redirect('admin-edit-offer', offer_uuid=offer_uuid)
+            
+            try:
+                style = Style.objects.get(name=style_name)
+                Offer.objects.filter(uuid=offer_uuid).update(
+                    name=name,
+                    scope=Offer.Scopes.CATEGORY_BASED,
+                    style=style,
+                    discount=discount,
+                    start_date=start_date,
+                    end_date=end_date,
+                    is_active=is_active,
+                )
+                messages.success(request, "Offer Updated Successfully")
+                
+                return redirect('admin-list-offers')
+            except Exception as e:
+                print(e)
+                messages.error(request, "Something went wrong")
+                return redirect('admin-edit-offer', offer_uuid=offer_uuid)
+                
+        elif scope == 'product':
+            print(selected_products)
+            try:
+                Offer.objects.filter(uuid=offer_uuid).update(
+                    name=name,
+                    scope=Offer.Scopes.PRODUCT_BASED,
+                    discount=discount,
+                    start_date=start_date,
+                    end_date=end_date,
+                    is_active=is_active,
+                )
+                offer.products.set(selected_products)
+                offer.save()
+                
+                messages.success(request, "Offer Updated Successfully")
+                return redirect('admin-list-offers')
+            except Exception as e:
+                print(e)
+                messages.error(e, "Something went wrong")
+                return redirect('admin-edit-offer', offer_uuid=offer_uuid)
+            
+    existing_selected_products = offer.products.all()
+    styles = Style.objects.all()
+    styles = Style.objects.all()
+    products = list(Product.objects.values('id', 'name', 'image_url', 'price'))
+    
+    context = {
+        'offer':offer,
+        'selected_products':existing_selected_products,
+        'products_json': json.dumps(products, cls=DjangoJSONEncoder),
+        'styles':styles,
+        'products':products,
+    }
+    return render(request, 'offer/edit_offer.html',context)
