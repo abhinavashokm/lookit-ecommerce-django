@@ -65,20 +65,21 @@
             <div class="item-price-block">
                 {% if  item.offer_price != item.product.price %}
                     <div class="price-row">
-                        <span class="discounted-price">₹{{ item.offer_price }}</span>
                         <span class="original-price">₹{{ item.product.price }}</span>
+                        <span class="discounted-price">₹{{ item.offer_price }}</span>
+                        
                     </div>
                     <div class="total-row">
-                        <span class="qty-text">{{ item.quantity }} × ₹{{ item.offer_price }}</span>
+                        <span class="qty-text">{{ item.quantity }}× </span>
                         <span class="item-total">₹{{ item.sub_total_per_product }}</span>
                     </div>
-                    <span class="discount-badge">Saved {{ item.offer_percentage }}%</span>
+                    <!-- <span class="discount-badge">Saved {{ item.offer_percentage }}%</span> -->
                 {% else %}
                     <div class="price-row">
                         <span class="normal-price">₹{{ item.product.price }}</span>
                     </div>
                     <div class="total-row">
-                        <span id="product_summary{{item.id}}" class="qty-text">{{ item.quantity }}× {{ item.product.price }} </span>
+                        <span id="product_summary{{item.id}}" class="qty-text">{{ item.quantity }}× </span>
                         <span class="item-total">₹{{ item.sub_total_per_product }}</span>
                     </div>
                 {% endif %}

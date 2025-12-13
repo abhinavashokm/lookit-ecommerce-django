@@ -11,13 +11,17 @@ from django.db.models import (
     Case,
     Min,
     IntegerField,
+    OuterRef,
+    Subquery,
+    Max,
 )
 from decimal import Decimal, ROUND_HALF_UP
 from django.contrib import messages
 from django.db import transaction
-from cart.models import Cart
+from cart.models import Cart, CartAppliedCoupon
 from user.models import Address
 from .models import Order, OrderItems, ReturnRequest
+from offer.models import Offer
 from product.models import Variant
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -28,11 +32,28 @@ from core.decorators import admin_required
 from .utils import reduce_stock_for_order
 from cart.decorators import cart_not_empty_required
 from wallet.models import Wallet, WalletTransactions
+from django.db.models.functions import Coalesce, Greatest, Round
 
 
 @login_required
 @cart_not_empty_required
 def checkout(request):
+
+    # sub queries for fetching offers
+    product_discount_sq = (
+        Offer.objects.filter(products=OuterRef('variant__product__id'))
+        .values('products')
+        .annotate(max_discount=Max('discount'))
+        .values('max_discount')[:1]
+    )
+
+    category_discount_sq = (
+        Offer.objects.filter(style=OuterRef('variant__product__style'))
+        .values('style')
+        .annotate(max_discount=Max('discount'))
+        .values('max_discount')[:1]
+    )
+
     # ---products in order------------------------------------------------
     order_items = (
         Cart.objects.filter(user=request.user)
@@ -43,6 +64,37 @@ def checkout(request):
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             ),
             stock_available=F('variant__stock'),
+        )
+        .annotate(
+            product_discount=Coalesce(
+                Subquery(product_discount_sq), Value(0), output_field=IntegerField()
+            ),
+            category_discount=Coalesce(
+                Subquery(category_discount_sq), Value(0), output_field=IntegerField()
+            ),
+        )
+        .annotate(
+            offer_percentage=Greatest(F('product_discount'), F('category_discount'))
+        )
+        .annotate(
+            discount_amount=ExpressionWrapper(
+                Round(
+                    (F('variant__product__price') * F('offer_percentage') / Value(100)),
+                    2,
+                ),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            )
+        )
+        .annotate(
+            offer_price=ExpressionWrapper(
+                (F('variant__product__price') - F('discount_amount')),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            )
+        ).annotate(
+            sub_total = ExpressionWrapper(
+                (F('offer_price') * F('quantity')),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            )
         )
     )
 
@@ -81,10 +133,30 @@ def checkout(request):
         )['sub_total']
         or 0
     )
+    
+    #--total discount applied-----------------------------------------------------------
+    total_discount_amount = order_items.aggregate(total = Sum('discount_amount'))['total']
+    
+    
     tax = sub_total * Decimal(0.05)
     # ROUND_HALF_UP -> ROUNDING METHOD USED - less than 0.5 then reduce, greater than or equal to 0.5 then increase(BANKERS STYLE)
     tax = tax.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
-    price_summary = {"sub_total": sub_total, "tax": tax, "grand_total": sub_total + tax}
+    grand_total = sub_total - total_discount_amount
+    
+    #--coupon discount if applied---------
+    coupon_discount = 0
+    cart_applied_exist = CartAppliedCoupon.objects.filter(user=request.user).first()
+    if cart_applied_exist:
+        applied_coupon = cart_applied_exist.coupon
+        if applied_coupon.discount_type == 'FLAT':
+            coupon_discount = applied_coupon.discount_value
+        elif applied_coupon.discount_type == 'PERCENTAGE':
+            coupon_discount = (
+                grand_total * applied_coupon.discount_value
+            ) / 100
+        grand_total -= coupon_discount
+    
+    price_summary = {"sub_total": sub_total, "product_discount":total_discount_amount , "coupon_discount": coupon_discount, "grand_total": grand_total }
 
     return render(
         request,

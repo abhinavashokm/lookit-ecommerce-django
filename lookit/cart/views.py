@@ -29,8 +29,7 @@ from offer.models import Offer
 
 @login_required
 def cart(request):
-
-    # sub queries for fetching offers
+    #-- sub queries for fetching offers ------------------------------
     product_discount_sq = (
         Offer.objects.filter(products=OuterRef('variant__product__id'))
         .values('products')
@@ -95,7 +94,7 @@ def cart(request):
         )['sub_total']
         or 0
     )
-    
+    #--total discount applied-----------------------------------------------------------
     total_discount_amount = cart_items.aggregate(total = Sum('discount_amount'))['total']
     
     tax = sub_total * Decimal(0.05)
@@ -115,7 +114,7 @@ def cart(request):
     user = request.user
     saved_coupons = user.saved_coupons.all()
 
-    # --fetch applied coupon----------------
+    # --fetch coupon discount details if applied-----------------------------------
     applied_coupon = None
     cart_applied_exist = CartAppliedCoupon.objects.filter(user=request.user).first()
     if cart_applied_exist:

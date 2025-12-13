@@ -19,36 +19,48 @@
     <!-- Order Summary -->
     <div class="order-summary">
         <h3>Order Summary</h3>
-        <table class="product-table">
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-
-                {% for item in order_items %}
-                <tr>
-                    <td>
-                        <div class="product-info">
-                            <img src="{{ item.product.image_url }}" alt="Classic White Tee" class="product-image">
-                            <div>
-                                <div class="product-name">{{ item.product.name }}</div>
-                                <div class="product-variant">Size: {{ item.variant.size }}</div>
-                            </div>
+<div class="product-table-container">
+    <table class="product-table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order_items %}
+            <tr>
+                <td data-label="Product">
+                    <div class="product-info">
+                        <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="product-image">
+                        <div>
+                            <div class="product-name">{{ item.product.name }}</div>
+                            <div class="product-variant">Size: {{ item.variant.size }}</div>
                         </div>
-                    </td>
-                    <td class="product-price">₹{{ item.product.price }}</td>
-                    <td class="product-quantity">{{ item.quantity }}</td>
-                    <td class="product-total">₹{{ item.sub_total_per_product }}</td>
-                </tr>
-                {% endfor %}
+                    </div>
+                </td>
+                <td class="product-price">
+                    {% if item.offer_price != item.product.price %}
+                        <div class="price-wrapper">
+                            <span class="price-current">₹{{ item.offer_price }}</span>
+                            <span class="price-old">₹{{ item.product.price }}</span>
+                        </div>
+                    {% else %}
+                        <div class="price-wrapper">
+                            <span class="price-current">₹{{ item.product.price }}</span>
+                        </div>
+                    {% endif %}
+                </td>
+                <td class="product-quantity" data-label="Qty">{{ item.quantity }}</td>
+                <td class="product-total" data-label="Total">₹{{ item.sub_total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
-            </tbody>
-        </table>
     </div>
 
     <div class="checkout-layout">
@@ -223,20 +235,24 @@
                 <span>Total</span>
                 <span class="price-value">₹{{ price_summary.sub_total }}</span>
             </div>
+            {% if price_summary.product_discount %}
+            <div class="price-row discount">
+                <span>Product Discounts</span>
+                <span class="price-value">-₹{{ price_summary.product_discount }}</span>
+            </div>
+            {% endif %}
+            {% if price_summary.coupon_discount != 0 %}
+            <div class="price-row discount">
+                <span>Coupon Savings</span>
+                <span class="price-value">-₹{{ price_summary.coupon_discount }}</span>
+            </div>
+            {% endif %}
             <div class="price-row">
                 <span>Delivery Fee</span>
                 <span class="price-value">₹0.00</span>
             </div>
-            {% if price_summary.discount %}
-            <div class="price-row discount">
-                <span>Discount</span>
-                <span class="price-value">-₹10.00</span>
-            </div>
-            {% endif %}
-            <div class="price-row">
-                <span>GST & Taxes</span>
-                <span class="price-value">₹{{ price_summary.tax }}</span>
-            </div>
+
+
             <div class="price-row total">
                 <span>Final Amount</span>
                 <span class="price-value">₹{{ price_summary.grand_total }}</span>
