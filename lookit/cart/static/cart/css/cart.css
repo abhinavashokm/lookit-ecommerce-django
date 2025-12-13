@@ -904,3 +904,65 @@
 .remove-coupon-btn:hover {
     color: #dc3545;
 }
+
+/* Cart Price Section — Refined */
+.item-price-block {
+    text-align: right;
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+/* Price line */
+.price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+/* Discounted vs Original */
+.discounted-price {
+    color: #1b5e20;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.original-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+/* Normal price (no discount) */
+.normal-price {
+    color: #333;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+/* Total row */
+.total-row {
+    font-size: 0.8rem;
+    color: #666;
+    display: flex;
+    gap: 8px;
+}
+
+.item-total {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Discount badge */
+.discount-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-top: 3px;
+    border: 1px solid #c8e6c9;
+}
