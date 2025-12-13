@@ -846,3 +846,29 @@
         font-size: 0.9rem;
     }
 }
+
+
+/* ==============================
+   PRODUCT CARD PRICE UPGRADE
+============================== */
+
+.price-stack {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.price-current {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #B55E8A;
+}
+
+.price-old {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #9ca3af;
+    text-decoration: line-through;
+    margin-top: 0.1rem;
+}

@@ -1647,3 +1647,77 @@
     background-color: rgba(200, 200, 200, 0.5);
     transform: translateY(-50%) scale(1);
 }
+
+/* ==============================
+   PRICE STACK (REFINED)
+============================== */
+
+.price-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+/* Main price */
+.price-current {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+/* Secondary row under price */
+.price-sub {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+/* Old price */
+.price-old {
+    font-size: 1.05rem;
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+
+/* Discount badge */
+.offer-badge {
+    background: #fff1f5;
+    color: #B55E8A;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* Optional context */
+.offer-meta {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Tooltip icon */
+.price-info-icon {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid #d1d5db;
+    font-size: 0.7rem;
+    color: #6b7280;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    transition: all 0.2s ease;
+}
+
+.price-info-icon:hover {
+    background: #fff5f9;
+    border-color: #B55E8A;
+    color: #B55E8A;
+}

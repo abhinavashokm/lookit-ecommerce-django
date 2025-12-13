@@ -107,14 +107,29 @@
                 <div class="price-special-label">{% if offer %}Special price{% else %}Price{% endif %}</div>
                 <div class="price-container">
                     {% if offer %}
-                    <div class="price">₹{{ offer.price }}</div>
-                    <div class="price-old">₹{{ product.price }}</div>
-                    <div class="price-offer-container">
-                        <div class="price-offer">{{ offer.percentage }}% off {% if offer.category_offer %}on {{ product.style.name | lower }} tees{% endif %}</div>
-                        <div class="price-info-icon" title="Discount information">i</div>
-                    </div>
+                        <!-- Main price -->
+                        <div class="price-current">₹{{ offer.price }}</div>
+
+                        <!-- Secondary price info -->
+                        <div class="price-sub">
+                            <span class="price-old">₹{{ product.price }}</span>
+
+                            <span class="offer-badge">
+                                {{ offer.percentage }}% OFF
+                            </span>
+
+                            {% if offer.category_offer %}
+                                <span class="offer-meta">
+                                    on {{ product.style.name|lower }} tees
+                                </span>
+                            {% endif %}
+
+                            <span class="price-info-icon" title="Offer applied automatically at checkout">
+                                ⓘ
+                            </span>
+                        </div>
                     {% else %}
-                    <div class="price">₹{{ product.price }}</div>
+                        <div class="price-current">₹{{ product.price }}</div>
                     {% endif %}
                 </div>
                 <div class="stock-info">
