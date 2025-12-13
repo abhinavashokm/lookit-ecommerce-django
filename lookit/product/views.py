@@ -622,7 +622,7 @@ def explore(request):
         )
         .distinct()
     )
-    print(products[0])
+
     # fetch only styles with minimum one product with minimum one stock
     styles = Style.objects.filter(product__variant__stock__gt=0).distinct()
 

@@ -27,11 +27,12 @@
                 <p>Looks like you haven't added anything to your cart yet. Start shopping to find amazing products!</p>
             </div>
             {% endif %}
-            
+
             {% for item in cart_items %}
-            <div class="cart-item {% if not item.is_product_active %}disabled{% elif not item.stock_available %}out-of-stock{% endif %}">
+            <div
+                class="cart-item {% if not item.is_product_active %}disabled{% elif not item.stock_available %}out-of-stock{% endif %}">
                 {% if not item.stock_available %}
-                    <div class="stock-badge">OUT OF STOCK</div>
+                <div class="stock-badge">OUT OF STOCK</div>
                 {% endif %}
                 <img src="{{ item.product.image_url }}" alt="Product" class="item-image">
                 <div class="item-details">
@@ -44,9 +45,11 @@
                     <div class="item-size">Size: {{ item.variant.size }}</div>
                     <div class="item-actions">
                         <div class="quantity-selector">
-                            <button class="quantity-btn" onclick="updateQuantity(this, '{{ item.id }}', '{{ item.variant.id }}', '{{ csrf_token }}')">-</button>
+                            <button class="quantity-btn"
+                                onclick="updateQuantity(this, '{{ item.id }}', '{{ item.variant.id }}', '{{ csrf_token }}')">-</button>
                             <span class="quantity">{{ item.quantity }}</span>
-                            <button class="quantity-btn" onclick="updateQuantity(this, '{{ item.id }}', '{{ item.variant.id }}', '{{ csrf_token }}')">+</button>
+                            <button class="quantity-btn"
+                                onclick="updateQuantity(this, '{{ item.id }}', '{{ item.variant.id }}', '{{ csrf_token }}')">+</button>
                         </div>
 
                         <form action="{% url 'remove_cart_item' %}" method="post">
@@ -91,7 +94,7 @@
                     <span>Free</span>
                 </div>
                 <div class="summary-row">
-                    <span >Tax</span>
+                    <span>Tax</span>
                     <span id="tax_amount">₹{{ cart_summary.tax }}</span>
                 </div>
                 <!-- Applied Coupon Row -->
@@ -100,7 +103,7 @@
                     <span class="discount-amount">-₹<span id="appliedCouponDiscount">0.00</span></span>
                 </div>
                 <div class="summary-total">
-                    <span >Total</span>
+                    <span>Total</span>
                     <span id="total_amount">₹{{ cart_summary.grand_total }}</span>
                 </div>
 
@@ -120,10 +123,16 @@
 
                     <div class="available-coupons">
                         <h4>Available Coupons</h4>
+                        <p class="coupon-note">
+                            Coupon may become unavailable before the expiry date if its usage limit is reached.
+                        </p>
+
+
                         <div class="coupon-item" data-code="WELCOME10" data-discount="10">
                             <div class="coupon-info">
                                 <span class="coupon-code">WELCOME10</span>
                                 <span class="coupon-desc">10% off on your first order</span>
+                                <span class="coupon-expiry">Valid till: 30 Sep 2025</span>
                             </div>
                             <button class="apply-coupon-btn">Apply</button>
                         </div>
@@ -131,6 +140,7 @@
                             <div class="coupon-info">
                                 <span class="coupon-code">FREESHIP</span>
                                 <span class="coupon-desc">Free shipping on orders over ₹50</span>
+                                <span class="coupon-expiry">Valid till: 30 Sep 2025</span>
                             </div>
                             <button class="apply-coupon-btn">Apply</button>
                         </div>
@@ -138,10 +148,35 @@
                             <div class="coupon-info">
                                 <span class="coupon-code">SUMMER25</span>
                                 <span class="coupon-desc">25% off on summer collection</span>
+                                <span class="coupon-expiry">Valid till: 30 Sep 2025</span>
                             </div>
                             <button class="apply-coupon-btn">Apply</button>
                         </div>
+
+                        <!--No saved coupons state-->
+                        <!-- <div class="no-coupons">
+                            <i class="fas fa-tag"></i>
+                            <p class="no-coupons-title">No saved coupons</p>
+                            <p class="no-coupons-text">
+                                You haven’t saved any coupons yet.
+                            </p>
+                        </div> -->
+                        
                     </div>
+                    <!--EXPIRED COUPONS-->
+                    <div class="expired-coupons">
+                        <h4>Expired Coupons</h4>
+
+                        <div class="coupon-item expired">
+                            <div class="coupon-info">
+                                <span class="coupon-code">OLDDEAL20</span>
+                                <span class="coupon-desc">20% off on select items</span>
+                                <span class="coupon-expiry">Expired on: 01 Aug 2025</span>
+                            </div>
+                            <span class="expired-label">Expired</span>
+                        </div>
+                    </div>
+
                 </div>
 
                 <a href="{% url 'checkout' %}">
@@ -157,23 +192,23 @@
     </div>
 </div>
 
- <!-- Toast Container for ajax qunatity update errors -->
+<!-- Toast Container for ajax qunatity update errors -->
 <div class="toast-container" id="toastContainer">
-        <!-- Success Toast Example (visible for design review - Django will control visibility) -->
+    <!-- Success Toast Example (visible for design review - Django will control visibility) -->
 
-        <div class="toast error hidden" id="toastError">
-            <div class="toast-icon">✕</div>
-            <div class="toast-content">
-                <div class="toast-title">Failed</div>
-                <div class="toast-message">Stock not available</div>
-            </div>
-            <button class="toast-close" onclick="closeToast(this)">
-                <svg viewBox="0 0 24 24">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
+    <div class="toast error hidden" id="toastError">
+        <div class="toast-icon">✕</div>
+        <div class="toast-content">
+            <div class="toast-title">Failed</div>
+            <div class="toast-message">Stock not available</div>
         </div>
+        <button class="toast-close" onclick="closeToast(this)">
+            <svg viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
 
 </div>
 

@@ -575,3 +575,257 @@
     cursor: not-allowed;
     pointer-events: none;
 }
+
+/* =========================
+   COUPON SECTION
+========================= */
+
+.coupon-section {
+    margin-top: 12px;
+    padding: 12px;
+    background: #fafafa;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+/* Input row */
+.coupon-input {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.coupon-input input {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+}
+
+.coupon-input input::placeholder {
+    font-size: 0.8rem;
+}
+
+/* Apply button */
+.apply-coupon-btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    background: #1b5e20;
+    color: #fff;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.apply-coupon-btn:hover {
+    background: #164a19;
+}
+
+/* Message */
+.coupon-message {
+    margin-top: 6px;
+    font-size: 0.78rem;
+    color: #dc2626;
+}
+
+/* =========================
+   AVAILABLE COUPONS
+========================= */
+
+.available-coupons {
+    margin-top: 12px;
+}
+
+.available-coupons h4 {
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #374151;
+}
+
+/* Coupon item */
+.coupon-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    background: #fff;
+}
+
+/* Coupon info */
+.coupon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.coupon-code {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #111827;
+    white-space: nowrap;
+}
+
+.coupon-desc {
+    font-size: 0.72rem;
+    color: #6b7280;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+/* Apply button inside list */
+.coupon-item .apply-coupon-btn {
+    padding: 6px 10px;
+    font-size: 0.72rem;
+    border-radius: 6px;
+}
+
+/* =========================
+   MOBILE FIX (iPhone SE)
+========================= */
+
+@media (max-width: 375px) {
+    .coupon-input {
+        flex-direction: column;
+    }
+
+    .coupon-input input,
+    .coupon-input .apply-coupon-btn {
+        width: 100%;
+    }
+
+    .coupon-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .coupon-item .apply-coupon-btn {
+        align-self: stretch;
+        text-align: center;
+    }
+}
+/* =========================
+   COUPON EXPIRY TEXT
+========================= */
+
+.coupon-expiry {
+    font-size: 0.7rem;
+    color: #9ca3af;
+}
+
+/* =========================
+   COUPON NOTE
+========================= */
+
+.coupon-note {
+    margin-bottom: 8px;
+    font-size: 0.7rem;
+    color: #6b7280;
+    line-height: 1.4;
+}
+
+/* =========================
+   EXPIRED COUPONS
+========================= */
+
+.expired-coupons {
+    margin-top: 14px;
+}
+
+.expired-coupons h4 {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 6px;
+}
+
+/* Expired coupon card */
+.coupon-item.expired {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    opacity: 0.7;
+}
+
+/* Expired label */
+.expired-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+/* Mobile safety */
+@media (max-width: 375px) {
+    .expired-label {
+        align-self: flex-end;
+    }
+}
+.coupon-expiry {
+    font-size: 0.7rem;
+    color: #dc2626;
+    opacity: 0.85;
+}
+
+/* =========================
+   NO SAVED COUPONS STATE
+========================= */
+
+.no-coupons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 18px 14px;
+    margin-top: 8px;
+    background: #f9fafb;
+    border: 1px dashed #e5e7eb;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.no-coupons i {
+    font-size: 1.4rem;
+    color: #9ca3af;
+}
+
+.no-coupons-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.no-coupons-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    line-height: 1.4;
+    max-width: 220px;
+}
+
+/* Small devices (iPhone SE safe) */
+@media (max-width: 375px) {
+    .no-coupons {
+        padding: 14px 10px;
+    }
+
+    .no-coupons i {
+        font-size: 1.25rem;
+    }
+
+    .no-coupons-title {
+        font-size: 0.8rem;
+    }
+
+    .no-coupons-text {
+        font-size: 0.72rem;
+    }
+}
