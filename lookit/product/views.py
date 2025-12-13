@@ -6,7 +6,19 @@ from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
 from django.contrib import messages
 from cloudinary.uploader import upload, destroy
-from django.db.models import Case, When, Value, IntegerField, Max
+from django.db.models import (
+    Case,
+    When,
+    Value,
+    IntegerField,
+    Max,
+    OuterRef,
+    Subquery,
+    F,
+    ExpressionWrapper,
+    DecimalField,
+)
+from django.db.models.functions import Coalesce, Greatest, Round
 from decimal import Decimal
 from django.db import transaction
 from core.decorators import admin_required
@@ -571,8 +583,46 @@ def admin_edit_category(request):
 
 
 def explore(request):
+    # sub queries for fetching offers
+    product_discount_sq = (
+        Offer.objects.filter(products=OuterRef('pk'))
+        .values('products')
+        .annotate(max_discount=Max('discount'))
+        .values('max_discount')[:1]
+    )
+
+    category_discount_sq = (
+        Offer.objects.filter(style=OuterRef('style'))
+        .values('style')
+        .annotate(max_discount=Max('discount'))
+        .values('max_discount')[:1]
+    )
+
     # fetch only products which are active and not out of stock
-    products = Product.objects.filter(is_active=True, variant__stock__gt=0).distinct()
+    products = (
+        Product.objects.filter(is_active=True, variant__stock__gt=0)
+        .annotate(
+            product_discount=Coalesce(
+                Subquery(product_discount_sq), Value(0), output_field=IntegerField()
+            ),
+            category_discount=Coalesce(
+                Subquery(category_discount_sq), Value(0), output_field=IntegerField()
+            ),
+        )
+        .annotate(
+            offer_percentage=Greatest(F('product_discount'), F('category_discount'))
+        )
+        .annotate(
+            offer_price=ExpressionWrapper(
+                Round(
+                    F('price') - (F('price') * F('offer_percentage') / Value(100)), 2
+                ),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            )
+        )
+        .distinct()
+    )
+    print(products[0])
     # fetch only styles with minimum one product with minimum one stock
     styles = Style.objects.filter(product__variant__stock__gt=0).distinct()
 
@@ -667,13 +717,21 @@ def product_details(request, product_uuid):
         .distinct()
         .exclude(id=product.id)
     )
-    #--fetch offers---------------------
-    max_product_offer = Offer.objects.filter(products=product).aggregate(maximum_offer = Max('discount')).get('maximum_offer', '')
-    max_category_offer = Offer.objects.filter(style=product.style).aggregate(maximum_offer = Max('discount')).get('maximum_offer', '')
+    # --fetch offers---------------------
+    max_product_offer = (
+        Offer.objects.filter(products=product)
+        .aggregate(maximum_offer=Max('discount'))
+        .get('maximum_offer', '')
+    )
+    max_category_offer = (
+        Offer.objects.filter(style=product.style)
+        .aggregate(maximum_offer=Max('discount'))
+        .get('maximum_offer', '')
+    )
     offer_discount = None
     category_offer = False
     offer = None
-    
+
     if max_category_offer and max_product_offer:
         if max_category_offer > max_product_offer:
             offer_discount = max_category_offer
@@ -685,14 +743,17 @@ def product_details(request, product_uuid):
         category_offer = True
     elif max_product_offer:
         offer_discount = max_product_offer
-        
-    #--calculate offer price----------------------------------
+
+    # --calculate offer price----------------------------------
     offer_price = None
     if offer_discount:
-        discount_amount = (product.price * offer_discount)/100
+        discount_amount = (product.price * offer_discount) / 100
         offer_price = product.price - discount_amount
-        offer = {'percentage':offer_discount, 'price':offer_price, 'category_offer':category_offer}
-        
+        offer = {
+            'percentage': offer_discount,
+            'price': offer_price,
+            'category_offer': category_offer,
+        }
 
     return render(
         request,

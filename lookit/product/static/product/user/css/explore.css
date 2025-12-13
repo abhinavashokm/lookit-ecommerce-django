@@ -567,19 +567,34 @@
     position: relative;
 }
 
-.product-title {
+/* .product-title {
     font-size: 1rem;
     font-weight: 600;
     color: #333;
     margin-bottom: 0.5rem;
-    height: calc(1.4em * 2);
+    height: calc(1.4em * 2); */
     /* 2 lines worth of space */
+    /* overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; */
+    /* limit to 2 visible lines */
+    /* -webkit-box-orient: vertical;
+} */
+
+.product-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151; /* neutral gray */
+    line-height: 1.35;
+    margin-bottom: 0.35rem;
+
+    height: calc(1.35em * 2);
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    /* limit to 2 visible lines */
     -webkit-box-orient: vertical;
 }
+
 
 .product-price {
     font-size: 1rem;
@@ -851,24 +866,64 @@
 /* ==============================
    PRODUCT CARD PRICE UPGRADE
 ============================== */
-
 .price-stack {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 0.4rem;
+    align-items: baseline;
+    gap: 0.35rem;
 }
 
+/* Primary price */
 .price-current {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #B55E8A;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937; /* neutral dark gray */
+    letter-spacing: -0.01em;
 }
 
+/* Old price */
 .price-old {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 500;
     color: #9ca3af;
     text-decoration: line-through;
-    margin-top: 0.1rem;
+}
+@media (max-width: 480px) {
+    .price-stack {
+        flex-direction: row;
+        gap: 0.3rem;
+    }
+
+    .price-current {
+        font-size: 0.9rem;
+    }
+
+    .price-old {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .price-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0em;
+    }
+
+    .price-current {
+        font-size: 0.9rem;
+    }
+
+    .price-old {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-title {
+        font-size: 0.85rem;
+        line-height: 1.3;
+        margin-bottom: 0.3rem;
+    }
 }
