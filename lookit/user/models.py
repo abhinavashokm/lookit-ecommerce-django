@@ -4,6 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager
 from .utils import generate_referral_code
 from datetime import timedelta
 from django.utils import timezone
+from coupon.models import Coupon
 
 #Creating custom user manager
 class UserManager(BaseUserManager):
@@ -57,6 +58,9 @@ class User(AbstractUser):
     status = models.CharField(max_length=10, default="Active")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
+    
+    #for keeping the saved coupons by user
+    saved_coupons = models.ManyToManyField(Coupon, related_name='saved_users')
     
     #Use email as the unique identifier for login instead of username.
     USERNAME_FIELD = 'email'

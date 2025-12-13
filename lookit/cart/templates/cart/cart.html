@@ -93,15 +93,44 @@
                     <span>Shipping</span>
                     <span>Free</span>
                 </div>
-                <div class="summary-row">
-                    <span>Tax</span>
-                    <span id="tax_amount">₹{{ cart_summary.tax }}</span>
-                </div>
+
+
+                <!-- Applied Coupon Display -->
+                 {% if applied_coupon %}
                 <!-- Applied Coupon Row -->
-                <div id="appliedCouponRow" class="summary-row" style="display: none;">
-                    <span>Discount (<span id="appliedCouponCode"></span>)</span>
-                    <span class="discount-amount">-₹<span id="appliedCouponDiscount">0.00</span></span>
+                <div id="appliedCouponRow" class="summary-row">
+                    <span>Coupon Discount</span>
+                    <span class="discount-amount">-₹<span id="appliedCouponDiscount">{{ cart_summary.coupon_discount }}</span></span>
                 </div>
+
+                <div id="appliedCouponBox" class="applied-coupon-box">
+                    <div class="applied-coupon-content">
+                        <div class="applied-coupon-left">
+                            <i class="fas fa-tag"></i>
+                            <div class="coupon-text">
+                                <span class="applied-label">Applied Coupon</span>
+                                <span class="applied-code" id="appliedCouponCodeText">{{ applied_coupon.code }}</span>
+                            </div>
+                        </div>
+                        <div class="applied-coupon-right">
+                            {% if applied_coupon.discount_type == 'FLAT' %}
+                            <span class="discount-amount">-₹<span id="appliedCouponDiscountText">{{ applied_coupon.discount_value }}</span></span>
+                            {% elif applied_coupon.discount_type == 'PERCENTAGE' %}
+                            <span class="discount-amount">-<span id="appliedCouponDiscountText">{{ applied_coupon.discount_value }}</span>%</span>
+                            {% endif %}
+                            
+                            <form action="{% url 'remove-coupon' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" id="removeCouponBtn" class="remove-coupon-btn" title="Remove coupon">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
                 <div class="summary-total">
                     <span>Total</span>
                     <span id="total_amount">₹{{ cart_summary.grand_total }}</span>
@@ -115,10 +144,15 @@
 
                 <!-- Hidden Coupon Section -->
                 <div id="couponSection" class="coupon-section" style="display: none;">
-                    <div class="coupon-input">
-                        <input type="text" id="couponCode" placeholder="Enter coupon code">
-                        <button id="applyCouponBtn" class="apply-coupon-btn">Apply</button>
-                    </div>
+
+                    <form action="{% url 'save-coupon' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="coupon-input">
+                            <input type="text" name="coupon_code" id="couponCode" placeholder="Enter coupon code">
+                            <button type="submit" id="applyCouponBtn" class="apply-coupon-btn">Add</button>
+                        </div>
+                    </form>
+
                     <div id="couponMessage" class="coupon-message"></div>
 
                     <div class="available-coupons">
@@ -127,42 +161,39 @@
                             Coupon may become unavailable before the expiry date if its usage limit is reached.
                         </p>
 
-
+                        {% for coupon in saved_coupons %}
+                        {% if coupon != applied_coupon %}
                         <div class="coupon-item" data-code="WELCOME10" data-discount="10">
                             <div class="coupon-info">
-                                <span class="coupon-code">WELCOME10</span>
-                                <span class="coupon-desc">10% off on your first order</span>
-                                <span class="coupon-expiry">Valid till: 30 Sep 2025</span>
+                                <span class="coupon-code">{{ coupon.code }}</span>
+                                {% if coupon.discount_type == 'FLAT' %}
+                                <span class="coupon-desc">Save <strong>₹{{ coupon.discount_value }}</strong> on your order</span>
+                                {% elif coupon.discount_type == 'PERCENTAGE' %}
+                                <span class="coupon-desc"><strong>{{ coupon.discount_value }}%</strong> off on your purchase</span>
+                                {% endif %}
+                                
+                                <span class="coupon-expiry">Valid till: {{ coupon.end_date|date:'d M Y' }}</span>
                             </div>
-                            <button class="apply-coupon-btn">Apply</button>
+                            <form action="{% url 'apply-coupon' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ coupon.code }}" name="coupon_code" id="">
+                                <button type="submit" class="apply-coupon-btn">Apply</button>
+                            </form>
                         </div>
-                        <div class="coupon-item" data-code="FREESHIP" data-discount="5">
-                            <div class="coupon-info">
-                                <span class="coupon-code">FREESHIP</span>
-                                <span class="coupon-desc">Free shipping on orders over ₹50</span>
-                                <span class="coupon-expiry">Valid till: 30 Sep 2025</span>
-                            </div>
-                            <button class="apply-coupon-btn">Apply</button>
-                        </div>
-                        <div class="coupon-item" data-code="SUMMER25" data-discount="25">
-                            <div class="coupon-info">
-                                <span class="coupon-code">SUMMER25</span>
-                                <span class="coupon-desc">25% off on summer collection</span>
-                                <span class="coupon-expiry">Valid till: 30 Sep 2025</span>
-                            </div>
-                            <button class="apply-coupon-btn">Apply</button>
-                        </div>
-
+                        {% endif %}
+                        {% empty %}
                         <!--No saved coupons state-->
-                        <!-- <div class="no-coupons">
+                        <div class="no-coupons">
                             <i class="fas fa-tag"></i>
                             <p class="no-coupons-title">No saved coupons</p>
                             <p class="no-coupons-text">
                                 You haven’t saved any coupons yet.
                             </p>
-                        </div> -->
-                        
+                        </div>
+                        {% endfor %}
                     </div>
+
+                    {% if expired_coupons %}
                     <!--EXPIRED COUPONS-->
                     <div class="expired-coupons">
                         <h4>Expired Coupons</h4>
@@ -176,6 +207,7 @@
                             <span class="expired-label">Expired</span>
                         </div>
                     </div>
+                    {% endif %}
 
                 </div>
 

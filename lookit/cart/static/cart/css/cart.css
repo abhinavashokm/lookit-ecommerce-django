@@ -829,3 +829,78 @@
         font-size: 0.72rem;
     }
 }
+
+/* Compact Applied Coupon Box */
+.applied-coupon-box {
+    background: #edf7ed;
+    border: 1px solid #b7deb8;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.applied-coupon-content {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.applied-coupon-left {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.applied-coupon-left i {
+    color: #2e7d32;
+    font-size: 0.9rem;
+}
+
+.coupon-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+    gap: 5px;
+}
+
+.applied-label {
+    font-size: 0.7rem;
+    color: #555;
+}
+
+.applied-code {
+    font-weight: 600;
+    color: #1b5e20;
+    font-size: 0.85rem;
+}
+
+.applied-coupon-right {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.applied-coupon-right .discount-amount {
+    color: #2e7d32;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.remove-coupon-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    transition: color 0.3s;
+}
+
+.remove-coupon-btn:hover {
+    color: #dc3545;
+}

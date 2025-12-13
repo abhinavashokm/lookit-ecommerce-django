@@ -112,3 +112,32 @@ function showToast(selector) {
         }, 300);
     }, 3000);
 }
+
+
+//Coupon related
+// Example JS for showing/removing applied coupon UI
+// document.addEventListener('DOMContentLoaded', () => {
+//     const appliedBox = document.getElementById('appliedCouponBox');
+//     const appliedCode = document.getElementById('appliedCouponCodeText');
+//     const appliedDiscount = document.getElementById('appliedCouponDiscountText');
+//     const removeBtn = document.getElementById('removeCouponBtn');
+
+//     // Simulate coupon applied
+//     function showAppliedCoupon(code, discount) {
+//         appliedCode.textContent = code;
+//         appliedDiscount.textContent = discount;
+//         appliedBox.style.display = 'flex';
+//     }
+
+//     // Remove coupon
+//     removeBtn.addEventListener('click', () => {
+//         appliedBox.style.display = 'none';
+//         document.getElementById('couponCode').value = '';
+//         document.getElementById('couponMessage').textContent = 'Coupon removed.';
+//         document.getElementById('couponMessage').className = 'coupon-message success';
+//         // TODO: Add your backend remove logic (AJAX or form submission)
+//     });
+
+//     // Example usage:
+//     // showAppliedCoupon("WELCOME10", "150");
+// });
