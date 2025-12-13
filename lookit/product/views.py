@@ -6,13 +6,15 @@ from django.db.models import Sum, Q, Value, Count
 from django.db.models.functions import Coalesce
 from django.contrib import messages
 from cloudinary.uploader import upload, destroy
-from django.db.models import Case, When, Value, IntegerField
+from django.db.models import Case, When, Value, IntegerField, Max
 from decimal import Decimal
 from django.db import transaction
+from core.decorators import admin_required
 
 from .models import Style, Product, Variant, ProductImages
 from cart.models import Cart
-from core.decorators import admin_required
+from offer.models import Offer
+
 
 """ ============================================
     ADMIN SIDE
@@ -665,16 +667,39 @@ def product_details(request, product_uuid):
         .distinct()
         .exclude(id=product.id)
     )
-
-    # ---old price for showing offer temporarly---
-    old_price = int(product.price) * 1.2
+    #--fetch offers---------------------
+    max_product_offer = Offer.objects.filter(products=product).aggregate(maximum_offer = Max('discount')).get('maximum_offer', '')
+    max_category_offer = Offer.objects.filter(style=product.style).aggregate(maximum_offer = Max('discount')).get('maximum_offer', '')
+    offer_discount = None
+    category_offer = False
+    offer = None
+    
+    if max_category_offer and max_product_offer:
+        if max_category_offer > max_product_offer:
+            offer_discount = max_category_offer
+            category_offer = True
+        else:
+            offer_discount = max_product_offer
+    elif max_category_offer:
+        offer_discount = max_category_offer
+        category_offer = True
+    elif max_product_offer:
+        offer_discount = max_product_offer
+        
+    #--calculate offer price----------------------------------
+    offer_price = None
+    if offer_discount:
+        discount_amount = (product.price * offer_discount)/100
+        offer_price = product.price - discount_amount
+        offer = {'percentage':offer_discount, 'price':offer_price, 'category_offer':category_offer}
+        
 
     return render(
         request,
         "product/user/product_details.html",
         {
             "product": product,
-            'old_price': old_price,
+            'offer': offer,
             'additional_product_images': product_images,
             'variants': variants,
             "related_products": related_products,
