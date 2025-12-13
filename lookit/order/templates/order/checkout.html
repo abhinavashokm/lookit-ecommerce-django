@@ -235,10 +235,10 @@
                 <span>Total</span>
                 <span class="price-value">₹{{ price_summary.sub_total }}</span>
             </div>
-            {% if price_summary.product_discount %}
+            {% if price_summary.offer_discount %}
             <div class="price-row discount">
                 <span>Product Discounts</span>
-                <span class="price-value">-₹{{ price_summary.product_discount }}</span>
+                <span class="price-value">-₹{{ price_summary.offer_discount }}</span>
             </div>
             {% endif %}
             {% if price_summary.coupon_discount != 0 %}
