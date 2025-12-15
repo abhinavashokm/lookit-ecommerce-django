@@ -167,20 +167,22 @@
             </div>
 
             <div class="summary-row">
+                <span>Discount Applied</span>
+                <span class="discount-price">-₹{{ order.discount_total }}</span>
+            </div>
+
+            {% if order.coupon_discount_amount %}
+            <div class="summary-row">
+                <span>Coupon Applied</span>
+                <span class="discount-price">-₹{{ order.coupon_discount_amount }}</span>
+            </div>
+            {% endif %}
+
+            <div class="summary-row">
                 <span>Shipping</span>
                 <span>₹{{ order.delivery_total }}</span>
             </div>
-            
-            <div class="summary-row">
-                <span>GST & Taxes</span>
-                <span>₹{{ order.tax_total }}</span>
-            </div>
 
-            <div class="summary-row">
-                <span>Discount Applied</span>
-                <span>₹{{ order.discount_total }}</span>
-            </div>
-            
             <div class="delivery-info">
                 <h4>Delivery Address</h4>
                 <div class="delivery-address">
@@ -193,7 +195,7 @@
                 <h4>Delivery Date</h4>
                 <div class="delivery-date">
                     <i class="fas fa-truck"></i>
-                    <span>Estimated Delivery: July 15, 2024</span>
+                    <span>Estimated Delivery: {{ estimated_delivery }}</span>
                 </div>
             </div>
             

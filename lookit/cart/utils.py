@@ -17,7 +17,7 @@ from django.db.models import (
 from cart.models import Cart, CartAppliedCoupon
 from offer.models import Offer
 from django.db.models.functions import Coalesce, Greatest, Round
-
+from decimal import Decimal
 
 def calculate_cart_summary(user):
     """
@@ -53,9 +53,11 @@ def calculate_cart_summary(user):
                 default=Value(False),
                 output_field=BooleanField(),
             ),
+            available_stock_count = F('variant__stock'),
             is_product_active=F('variant__product__is_active'),
         )
         .order_by('-stock_available', '-is_product_active')
+        #fetch product discount and offer discount percentage for calculation
         .annotate(
             product_discount=Coalesce(
                 Subquery(product_discount_sq), Value(0), output_field=IntegerField()
@@ -64,9 +66,11 @@ def calculate_cart_summary(user):
                 Subquery(category_discount_sq), Value(0), output_field=IntegerField()
             ),
         )
+        #take biggest discount from product or category
         .annotate(
             offer_percentage=Greatest(F('product_discount'), F('category_discount'))
         )
+        #discount amount per item
         .annotate(
             discount_amount=ExpressionWrapper(
                 Round(
@@ -76,12 +80,21 @@ def calculate_cart_summary(user):
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
+        #total discount applied considering quantity
+        .annotate(
+            discount_subtotal = ExpressionWrapper(
+                (F('discount_amount') * F('quantity')),
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            )
+        )
+        #price of item considering offer
         .annotate(
             offer_price=ExpressionWrapper(
                 (F('variant__product__price') - F('discount_amount')),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
+        #price of product considering quantity
         .annotate(
             sub_total=ExpressionWrapper(
                 (F('offer_price') * F('quantity')),
@@ -98,7 +111,7 @@ def calculate_cart_summary(user):
         or 0
     )
     # --total discount applied-----------------------------------------------------------
-    total_discount_amount = cart_items.aggregate(total=Sum('discount_amount'))['total']
+    total_discount_amount = cart_items.aggregate(total=Coalesce(Sum('discount_subtotal'), Decimal(0.00)))['total']
 
     grand_total = sub_total - total_discount_amount
 
@@ -116,6 +129,7 @@ def calculate_cart_summary(user):
 
     cart_summary = {
         "sub_total": sub_total,
+        "delivery_fee":Decimal(0.00),
         "offer_discount": total_discount_amount,
         "coupon_discount": coupon_discount,
         "grand_total": grand_total,

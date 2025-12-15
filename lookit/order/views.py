@@ -2,10 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.db.models import (
-    ExpressionWrapper,
-    DecimalField,
-    F,
-    Sum,
     Value,
     When,
     Case,
@@ -48,12 +44,14 @@ def checkout(request):
             # --min and max quantity validation. min 1 and max 4.
             error = "Cart Quantity Need to be alteast 1 and atmost 4"
             break
-        elif item.stock_available == 0:
+        elif item.available_stock_count == 0:
             error = "Out of stock products in cart."
             break
-        elif item.stock_available < item.quantity:
+        elif item.available_stock_count < item.quantity:
+            print("stock available: ",item.available_stock_count)
+            print("qunatity cart : ",item.quantity)
             error = "Requested quantity not available for some products."
-            item.quantity = item.stock_available
+            item.quantity = item.available_stock_count
             item.save()
             break
 
@@ -95,42 +93,10 @@ def create_order(request):
         messages.error(request, e)
         return redirect('checkout')
 
-    # ---products in order------------------------------------------------
-    cart_items = (
-        Cart.objects.filter(user=request.user)
-        .select_related('variant')
-        .annotate(
-            sub_total=ExpressionWrapper(
-                F('variant__product__price') * F('quantity'),
-                output_field=DecimalField(max_digits=10, decimal_places=2),
-            ),
-            delivery_fee=Value(
-                0, output_field=DecimalField(max_digits=10, decimal_places=2)
-            ),
-            discount=Value(
-                0, output_field=DecimalField(max_digits=10, decimal_places=2)
-            ),
-            tax=ExpressionWrapper(
-                (F('variant__product__price') * F('quantity')) * Decimal('0.05'),
-                output_field=DecimalField(max_digits=10, decimal_places=2),
-            ),
-        )
-        .annotate(
-            total_amount=ExpressionWrapper(
-                F('sub_total') + F('tax') + F('delivery_fee') - F('discount'),
-                output_field=DecimalField(max_digits=10, decimal_places=2),
-            )
-        )
-    )
-
-    # ---total price of all items in cart considering quantity---------
-    order_summary = cart_items.aggregate(
-        total_sub_total=Sum('sub_total'),
-        total_delivery_fee=Sum('delivery_fee'),
-        total_tax=Sum('tax'),
-        total_discount=Sum('discount'),
-        grand_total_amount=Sum('total_amount'),
-    )
+    # ---fetch cart summary------------------------------------------------
+    summary = calculate_cart_summary(request.user)
+    cart_items = summary.get('items')
+    order_summary = summary.get('cart_summary')
     total_items = cart_items.count()
 
     order = None
@@ -141,11 +107,11 @@ def create_order(request):
                 user=user,
                 address=address,
                 total_items=total_items,
-                sub_total=order_summary.get('total_sub_total'),
-                delivery_total=order_summary.get('total_delivery_fee'),
-                discount_total=order_summary.get('total_discount'),
-                tax_total=order_summary.get('total_tax'),
-                grand_total=order_summary.get('grand_total_amount'),
+                sub_total=order_summary.get('sub_total'),
+                delivery_total=order_summary.get('delivery_fee'),
+                discount_total=order_summary.get('offer_discount'),
+                coupon_discount_amount = order_summary.get('coupon_discount'),
+                grand_total=order_summary.get('grand_total'),
             )
             for item in cart_items:
                 OrderItems.objects.create(
@@ -153,16 +119,15 @@ def create_order(request):
                     variant=item.variant,
                     quantity=item.quantity,
                     unit_price=item.variant.product.price,
-                    sub_total=item.sub_total,
-                    delivery_fee=item.delivery_fee,
-                    discount_amount=item.discount,
-                    tax_amount=item.tax,
-                    total=item.total_amount,  # final line total
+                    sub_total=item.sub_total_per_product,
+                    delivery_fee=Decimal(0.00),
+                    discount_amount=item.discount_subtotal,
+                    total=item.sub_total,  # final line total
                 )
 
     except Exception as e:
         messages.error(request, e)
-        print(e)
+        print("Error: ",e)
         return redirect('checkout')
 
     return redirect('payment-page', order_uuid=order.uuid)
@@ -174,10 +139,13 @@ def payment_page(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
     wallet = Wallet.objects.get(user=request.user)
     address = order.address
+    #estimated delivery date - after 7 days from today
+    today = timezone.now().date()
+    estimated_delivery = today + timedelta(days=7)
     return render(
         request,
         "order/payment.html/",
-        {"order": order, "address": address, "wallet": wallet},
+        {"order": order, "address": address, "wallet": wallet, "estimated_delivery":estimated_delivery },
     )
 
 

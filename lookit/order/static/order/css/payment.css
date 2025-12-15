@@ -593,3 +593,7 @@
 .wallet-confirm-btn:hover {
     background: linear-gradient(135deg, #883c62, #652947);
 }
+
+.discount-price {
+    color: #28a745;
+}

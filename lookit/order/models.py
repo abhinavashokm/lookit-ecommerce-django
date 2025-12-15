@@ -4,6 +4,7 @@ from product.models import Variant
 import uuid
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
+from coupon.models import Coupon
 
 
 class Order(models.Model):
@@ -18,12 +19,16 @@ class Order(models.Model):
     address = models.ForeignKey(Address, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=30, choices=PaymentMethod.choices, blank=True)
     
-    total_items = models.PositiveIntegerField(default=0)
+    total_items = models.PositiveIntegerField(default=0) # number of products in order (not quantity)
     sub_total = models.DecimalField(max_digits=10, decimal_places=2) #sum of base price of all items
-    discount_total = models.DecimalField(max_digits=10, decimal_places=2)
-    tax_total = models.DecimalField(max_digits=10, decimal_places=2)
-    delivery_total = models.DecimalField(max_digits=10, decimal_places=2)
-    grand_total = models.DecimalField(max_digits=10, decimal_places=2)
+    discount_total = models.DecimalField(max_digits=10, decimal_places=2, default=0) #sum of all discount amount applied in all products
+    tax_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True) #sum of tax amount of all products
+    delivery_total = models.DecimalField(max_digits=10, decimal_places=2) #total delivery amount
+    
+    coupon_discount_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    coupon_applied = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    grand_total = models.DecimalField(max_digits=10, decimal_places=2) #grand total
     
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
@@ -73,7 +78,7 @@ class OrderItems(models.Model):
     sub_total = models.DecimalField(max_digits=10, decimal_places=2) #quantity x unit_price
     delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    tax_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # final line total
     
     order_status = models.CharField(max_length=30, choices=OrderStatus.choices, default=OrderStatus.INITIATED)
