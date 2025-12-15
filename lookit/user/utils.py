@@ -40,3 +40,6 @@ def send_email_verification(user, new_email, request):
         from_email=settings.EMAIL_HOST_USER,
         recipient_list=[new_email],
     )
+    
+
+    

@@ -6,7 +6,8 @@ from datetime import timedelta
 from django.utils import timezone
 from coupon.models import Coupon
 
-#Creating custom user manager
+
+# Creating custom user manager
 class UserManager(BaseUserManager):
     use_in_migrations = True
 
@@ -33,67 +34,73 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    username = None # remove username field
+    username = None  # remove username field
     email = models.EmailField(unique=True)
-    
-    #will not use these fields, just making them harmless
+
+    # will not use these fields, just making them harmless
     first_name = models.CharField(max_length=150, blank=True)
     last_name = models.CharField(max_length=150, blank=True)
 
-    
     full_name = models.CharField(max_length=100, blank=True)
-    phone = models.CharField(max_length=15, null=True, blank=True )
+    phone = models.CharField(max_length=15, null=True, blank=True)
     gender = models.CharField(max_length=10, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
-    
+
     profile_img_url = models.URLField(null=True, blank=True)
     profile_img_public_id = models.CharField(max_length=255, null=True, blank=True)
 
-    referral_code = models.CharField(max_length=50 ,unique=True, blank=True)
-    referred_by = models.CharField(max_length=50, null=True, blank=True)
-    referral_reward = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    
-    is_superadmin = models.BooleanField(default=False) #only a single super admin
-    
+    #--referral code will be generated automatically when user signup------
+    referral_code = models.CharField(max_length=50, unique=True, blank=True)
+    #--referred by which user
+    referred_by = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='referrals',
+    )
+
+    is_superadmin = models.BooleanField(default=False)  # only a single super admin
+
     status = models.CharField(max_length=10, default="Active")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
-    
-    #for keeping the saved coupons by user
+
+    # for keeping the saved coupons by user
     saved_coupons = models.ManyToManyField(Coupon, related_name='saved_users')
-    
-    #Use email as the unique identifier for login instead of username.
+
+    # Use email as the unique identifier for login instead of username.
     USERNAME_FIELD = 'email'
-    
-    #When creating superuser, don't ask for anything extra besides email + password
+
+    # When creating superuser, don't ask for anything extra besides email + password
     REQUIRED_FIELDS = []
-    
-    #set custom user manager, becuase we are using email for authentication
+
+    # set custom user manager, becuase we are using email for authentication
     objects = UserManager()
-    
+
     class Meta:
-        ordering = ['-is_active','-created_at']
-    
+        ordering = ['-is_active', '-created_at']
+
     def save(self, *args, **kwargs):
         if not self.referral_code:
             self.referral_code = generate_referral_code()
         if not self.full_name:
             self.full_name = f"{self.first_name} {self.last_name}".strip()
         super().save(*args, **kwargs)
-        
-    
-    
+
     def __str__(self):
         return self.email
-    
+
+
 class OTP(models.Model):
     email = models.EmailField()
     code = models.CharField(max_length=6)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def is_valid(self):
         return timezone.now() < self.created_at + timedelta(minutes=2)
-    
+
+
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     full_name = models.CharField()
@@ -108,14 +115,16 @@ class Address(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
-    
+
     def save(self, *args, **kwargs):
-        #if it's the only one set it as default
+        # if it's the only one set it as default
         if not Address.objects.filter(user=self.user, is_active=True).exists():
             self.is_default = True
-            
-        super().save(*args,**kwargs)
-        
-        #if it's default set is_default false for everything else
+
+        super().save(*args, **kwargs)
+
+        # if it's default set is_default false for everything else
         if self.is_default:
-            Address.objects.filter(user=self.user).exclude(id=self.id).update(is_default=False)
+            Address.objects.filter(user=self.user).exclude(id=self.id).update(
+                is_default=False
+            )

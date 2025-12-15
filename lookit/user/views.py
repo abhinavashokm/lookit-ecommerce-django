@@ -4,7 +4,12 @@ from .models import User, OTP, Address
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from .utils import generate_otp, generate_referral_code, send_otp_email, send_email_verification
+from .utils import (
+    generate_otp,
+    generate_referral_code,
+    send_otp_email,
+    send_email_verification,
+)
 from datetime import timedelta
 from django.utils import timezone
 from cloudinary.uploader import upload
@@ -12,9 +17,11 @@ from django.db import transaction
 from django.http import JsonResponse
 import json
 from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import  urlsafe_base64_decode
+from django.utils.http import urlsafe_base64_decode
 from django.urls import reverse
 from django.db import transaction
+from .services import validate_referral_code, give_referral_reward
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -54,11 +61,27 @@ def signup(request):
                     'referral_code': referral_code,
                 },
             )
+        # --validate referral code and fetch details----
+        referred_by = None
+        if referral_code:
+            user = validate_referral_code(request, referral_code)
+            if not user:
+                messages.error(request, "Invalid Referral Code!")
+                return render(
+                    request,
+                    "user/signup.html",
+                    {
+                        'full_name': full_name,
+                        'email': email,
+                    },
+                )
+            referred_by = user.id
 
         request.session['signup_data'] = {
             'full_name': full_name,
             'email': email,
             'referral_code': referral_code,
+            'referred_by': referred_by,
             'password': password,
         }
 
@@ -91,20 +114,41 @@ def otp_verification(request):
         raw_password = request.session['signup_data'].get('password')
 
         if otp_record and otp_record.is_valid():
-            new_user = User.objects.create_user(
-                email=request.session['signup_data'].get('email'),
-                password=raw_password,
-                full_name=request.session['signup_data'].get('full_name'),
-                referred_by=request.session['signup_data'].get('referral_code'),
-                referral_code=generate_referral_code(),
-            )
-            new_user.save()
-            auth_user = authenticate(
-                request, email=new_user.email, password=raw_password
-            )
-            login(request, auth_user)
-            messages.success(request, "ACCOUNT CREATED SUCCESSFULLY")
-            return redirect('index')
+            try:
+                with transaction.atomic():
+                    # --finally create user-------------
+                    referrer_id = request.session['signup_data'].get('referred_by')
+                    referred_by = User.objects.get(id=referrer_id)
+                    new_user = User.objects.create_user(
+                        email=request.session['signup_data'].get('email'),
+                        password=raw_password,
+                        full_name=request.session['signup_data'].get('full_name'),
+                        referred_by=referred_by,
+                        referral_code=generate_referral_code(),
+                    )
+                    new_user.save()
+                    auth_user = authenticate(
+                        request, email=new_user.email, password=raw_password
+                    )
+
+                    # give refferal reward if the user used referral code
+                    if referred_by:
+                        try:
+                            give_referral_reward(new_user, referrer=referred_by)
+                        except Exception as e:
+                            print("Error: ", e)
+                            # there is transaction.atomic() block inside give_referral_reward() method. 
+                            # when any exception occured inside the function the outer transaction block also need to rollback.
+                            # that's why i manually raised an exception when an exception occured inside the function.
+                            raise  #  forces full rollback
+
+                    login(request, auth_user)
+                    messages.success(request, "Your account is all set. Start exploring now!")
+                    return redirect('index')
+
+            except Exception as e:
+                print("Error : ", e)
+                messages.error(request, "Something went wrong!")
         else:
             messages.error(request, "Incorrect OTP. Please try again.")
 
@@ -220,9 +264,10 @@ def edit_profile(request):
     user = request.user
     return render(request, "user/profile/edit_profile.html", {"user": user})
 
+
 @login_required
 def profile_send_otp(request):
-     if request.method == "POST":
+    if request.method == "POST":
         email = request.POST.get("email")
 
         otp = generate_otp()
@@ -233,7 +278,7 @@ def profile_send_otp(request):
 
         return JsonResponse({"success": True})
 
-     return JsonResponse({"success": False, "error": "Invalid request"})
+    return JsonResponse({"success": False, "error": "Invalid request"})
 
 
 @login_required
@@ -248,7 +293,7 @@ def add_address(request):
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
         type = request.POST.get('type')
-        
+
         request_from = request.POST.get('page_from')
 
         # ---optional_fields-----------------------
@@ -274,10 +319,11 @@ def add_address(request):
         except Exception as e:
             print(e)
             messages.error(request, e)
-    #if request is from address book redirect to address book
+    # if request is from address book redirect to address book
     if request_from == 'address_book':
         return redirect('address-book')
     return redirect('checkout')
+
 
 @login_required
 def edit_address(request):
@@ -292,7 +338,7 @@ def edit_address(request):
         state = request.POST.get('state')
         pincode = request.POST.get('pincode')
         address_type = request.POST.get('type')
-        
+
         request_from = request.POST.get('page_from')
 
         # ---optional_fields-----------------------
@@ -300,7 +346,7 @@ def edit_address(request):
         if not is_default:
             is_default = False
         second_phone = request.POST.get('second_phone')
-        
+
         print(request.POST)
         try:
             Address.objects.filter(id=address_id).update(
@@ -315,30 +361,36 @@ def edit_address(request):
                 type=address_type,
                 is_default=is_default,
             )
-            #---if it is default address set all other address is_default = false---------------
+            # ---if it is default address set all other address is_default = false---------------
             if is_default:
-                Address.objects.filter(user=user).exclude(id=address_id).update(is_default=False)
-                
+                Address.objects.filter(user=user).exclude(id=address_id).update(
+                    is_default=False
+                )
+
             messages.success(request, "ADDRESS UPDATED")
         except Exception as e:
             print(e)
             messages.error(request, e)
 
-    #if request is from address book redirect to address book
+    # if request is from address book redirect to address book
     if request_from == 'address_book':
         return redirect('address-book')
     return redirect('checkout')
 
+
 @login_required
 def set_default_address(request, address_id):
     try:
-        Address.objects.filter(id=address_id, user=request.user).update(is_default = True)
+        Address.objects.filter(id=address_id, user=request.user).update(is_default=True)
         # set all other address is_default = false
-        Address.objects.filter(user=request.user).exclude(id=address_id).update(is_default=False)
+        Address.objects.filter(user=request.user).exclude(id=address_id).update(
+            is_default=False
+        )
         messages.success(request, "Default Address Updated.")
     except Exception as e:
         messages.error(request, e)
     return redirect('address-book')
+
 
 @login_required
 def delete_address(request):
@@ -350,10 +402,15 @@ def delete_address(request):
             with transaction.atomic():
                 address = Address.objects.get(id=address_id)
                 address.is_active = False
-                
-                #if default address set new one
+
+                # if default address set new one
                 if address.is_default:
-                    latest_address = Address.objects.exclude(id=address.id).filter(is_active=True).order_by('-created_at').first()
+                    latest_address = (
+                        Address.objects.exclude(id=address.id)
+                        .filter(is_active=True)
+                        .order_by('-created_at')
+                        .first()
+                    )
                     if latest_address:
                         latest_address.is_default = True
                         latest_address.save()
@@ -367,6 +424,7 @@ def delete_address(request):
         return redirect('address-book')
     return redirect('checkout')
 
+
 @login_required
 @require_POST
 def change_password(request):
@@ -374,7 +432,7 @@ def change_password(request):
     new_password = request.POST.get('new_password')
     email = request.user.email
     user = request.user
-    
+
     auth_user = authenticate(email=email, password=current_password)
     if auth_user:
         try:
@@ -392,37 +450,46 @@ def change_password(request):
 
 @login_required
 def address_book(request):
-    address_list = Address.objects.filter(user = request.user, is_active = True).order_by("-is_default", "-created_at")
-    return render(request, "user/profile/address_book.html", {"address_list": address_list})
+    address_list = Address.objects.filter(user=request.user, is_active=True).order_by(
+        "-is_default", "-created_at"
+    )
+    return render(
+        request, "user/profile/address_book.html", {"address_list": address_list}
+    )
 
 
 """
 ---EMAIL VERIFICATION-------------------------------
 """
 
+
 @login_required
 def change_user_email(request):
     print("call is here.....")
     data = json.loads(request.body)
-    new_email = data.get('email') 
-    
-    #check if it already exist
+    new_email = data.get('email')
+
+    # check if it already exist
     email_exist = User.objects.filter(email=new_email).exists()
     if email_exist:
-        #error response - will reload page using js
+        # error response - will reload page using js
         messages.error(request, "Email already exist")
         return JsonResponse({'error_redirect_url': reverse('edit-profile')})
-    
+
     # Store temporarily
-    request.session['pending_new_email']= new_email
+    request.session['pending_new_email'] = new_email
 
     # Send verification mail
     send_email_verification(request.user, new_email, request)
-    
-    #success response - will reload page using js
-    messages.success(request, "Verification Link Sent")
-    return JsonResponse({'message': 'Verification email sent!', 'success_redirect_url':reverse('edit-profile')})
 
+    # success response - will reload page using js
+    messages.success(request, "Verification Link Sent")
+    return JsonResponse(
+        {
+            'message': 'Verification email sent!',
+            'success_redirect_url': reverse('edit-profile'),
+        }
+    )
 
 
 def verify_email(request, uidb64, token):
@@ -435,7 +502,7 @@ def verify_email(request, uidb64, token):
     new_email = request.GET.get('new_email')
 
     if user and default_token_generator.check_token(user, token):
-        #check if session active
+        # check if session active
         if not request.user.is_authenticated:
             messages.error(request, "Session Expired! Please Try Again.")
             return redirect("account-details")  # redirect to profile page
