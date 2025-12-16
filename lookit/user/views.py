@@ -561,7 +561,7 @@ def add_to_wishlist(request):
             messages.error(request,"Something went wrong!")
         
         return redirect('product-details', product_uuid=product_uuid)
-    
+ 
 @login_required
 def remove_from_wishlist(request):
     if request.method == "POST":
@@ -605,6 +605,12 @@ def wishilst_move_to_cart(request):
                         f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.",
                     )
                     return redirect("wishlist")
+                
+                #check if variant already exist
+                already_exist = Cart.objects.filter(user=user, variant=variant).exists()
+                if already_exist:
+                    messages.error(request, f"Product with size {variant.size} is already in cart")
+                    return redirect('wishlist')
 
                 Cart.objects.create(user=user, variant_id=variant_id, quantity=1)
                 remove_wishlist_item(request.user, product_id)
@@ -614,4 +620,16 @@ def wishilst_move_to_cart(request):
             print("Error on remove from wishlist: ",e)
             messages.error(request, "Something went wrong!")
 
+    return redirect('wishlist')
+
+
+@login_required
+def clear_wishlist(request):
+    try:
+        Wishlist.objects.filter(user=request.user).delete()
+        messages.success(request, "Wishlist cleared")
+    except Exception as e:
+        print("Error while clearing wishlist: ",e)
+        messages.error(request, "Something went wrong!")
+        
     return redirect('wishlist')

@@ -507,46 +507,89 @@ h1, h2, h3, h4, h5, h6 {
     transform: translateY(0);
 }
 
-/* Empty State */
-.empty-state {
+/* Wishlist Empty State – New Design */
+.wishlist-empty-wrap {
     grid-column: 1 / -1;
-    border: 1px dashed #e0e0e0;
-    border-radius: 10px;
-    padding: 3rem 2rem;
-    text-align: center;
-    background: #fafafa;
+    min-height: 320px;
+    background: linear-gradient(135deg, #faf7f9, #ffffff);
+    border-radius: 14px;
+    border: 1px solid #eee;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 2.5rem;
 }
 
-.empty-state i {
-    width: 64px;
-    height: 64px;
+.wishlist-empty-illustration {
+    width: 90px;
+    height: 90px;
     border-radius: 50%;
-    background: #f1f1f1;
-    color: #9a4d72;
+    background: rgba(154, 77, 114, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-right: 2rem;
+    flex-shrink: 0;
 }
 
-.empty-state h3 {
-    font-size: 1.1rem;
+.wishlist-empty-illustration i {
+    font-size: 2.2rem;
+    color: #9a4d72;
+}
+
+.wishlist-empty-content {
+    max-width: 360px;
+}
+
+.wishlist-empty-content h2 {
+    font-size: 1.4rem;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 0.4rem;
+    color: #2d3748;
+    margin-bottom: 0.5rem;
 }
 
-.empty-state p {
-    font-size: 0.9rem;
-    color: #666;
-    max-width: 300px;
-    line-height: 1.5;
+.wishlist-empty-content p {
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 1.4rem;
 }
+
+.wishlist-empty-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.1rem;
+    border-radius: 6px;
+    background: #9a4d72;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(154, 77, 114, 0.25);
+}
+
+.wishlist-empty-cta:hover {
+    background: #7a3e5a;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(154, 77, 114, 0.3);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    .wishlist-empty-wrap {
+        flex-direction: column;
+        text-align: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .wishlist-empty-illustration {
+        margin-right: 0;
+        margin-bottom: 1.2rem;
+    }
+}
+
 
 /* Animations */
 @keyframes fadeIn {

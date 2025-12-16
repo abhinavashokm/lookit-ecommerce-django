@@ -26,6 +26,7 @@ from core.decorators import admin_required
 from .models import Style, Product, Variant, ProductImages
 from cart.models import Cart
 from offer.models import Offer
+from user.utils import remove_wishlist_item
 
 
 """ ============================================
@@ -827,6 +828,9 @@ def add_to_cart(request):
 
         try:
             Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
+            #--when product moved to cart remove from wishlist if it exist there--
+            remove_wishlist_item(user, product_id)
+            
             if stock_mismatch:
                 messages.success(request, stock_mismatch)
             else:

@@ -21,6 +21,7 @@ from .views import (
     add_to_wishlist,
     remove_from_wishlist,
     wishilst_move_to_cart,
+    clear_wishlist,
 )
 
 urlpatterns = [
@@ -45,6 +46,7 @@ urlpatterns = [
     path("wishlist/add-to-wishlist", add_to_wishlist, name="add-to-wishlist"),
     path("wishlist/remove-from-wishlist", remove_from_wishlist, name="remove-from-wishlist"),
     path("wishlist/move-to-cart/", wishilst_move_to_cart, name="move-to-cart"),
+    path("wishlist/clear-wishlist", clear_wishlist, name="clear-wishlist"),
     
     # password reset paths
     # 1.enter email and button for sent link
