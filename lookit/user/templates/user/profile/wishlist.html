@@ -49,20 +49,25 @@
                         ₹349.99
                     </div>
                     <div class="size-selection">
-                        <label for="size-wh1000">Size:</label>
-                        <select id="size-wh1000" class="size-dropdown">
-                            <option value="">Select Size</option>
-                            <option value="one-size">One Size</option>
-                            <option value="s">S</option>
-                            <option value="m">M</option>
-                            <option value="l">L</option>
+                        <label for="sizeOptions">Size:</label>
+                        <select id="sizeOptions" class="size-dropdown">
+                            <option value="" selected disabled>Select Size</option>
+                            {% for variant in item.product.variant_set.all %}
+                            <option value="{{ variant.id }}">{{ variant.size }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="card-actions">
-                        <button class="btn btn-primary" disabled>
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                            <span class="tooltip">Please select a size</span>
-                        </button>
+
+
+                        <form action="{% url 'move-to-cart' %}" method="post" id="moveToCartForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <button type="submit" class="btn btn-primary" disabled>
+                                <i class="fas fa-shopping-cart"></i> Move to Cart
+                                <span class="tooltip">Please select a size</span>
+                            </button>
+                        </form>
 
                         <form action="{% url 'remove-from-wishlist' %}" method="post">
                             {% csrf_token %}

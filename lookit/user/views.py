@@ -9,6 +9,7 @@ from .utils import (
     generate_referral_code,
     send_otp_email,
     send_email_verification,
+    remove_wishlist_item,
 )
 from datetime import timedelta
 from django.utils import timezone
@@ -22,7 +23,7 @@ from django.urls import reverse
 from django.db import transaction
 from .services import validate_referral_code, give_referral_reward
 from product.models import Product, Variant
-
+from cart.models import Cart
 
 def user_login(request):
     if request.method == 'POST':
@@ -521,8 +522,8 @@ def verify_email(request, uidb64, token):
 def wishlist(request):
     items = None
     try:
-        items = Wishlist.objects.filter(user=request.user)
-        
+        items = Wishlist.objects.filter(user=request.user, product__variant__stock__gt=0).prefetch_related('product__variant_set').distinct()
+
     except Exception as e:
         messages.error(request, "Something went wrong!")
         return redirect('explore')
@@ -566,8 +567,49 @@ def remove_from_wishlist(request):
     if request.method == "POST":
         product_id = request.POST.get("product_id")
         try:
-            Wishlist.objects.get(user=request.user, product_id=product_id).delete()
+            remove_wishlist_item(request.user, product_id)
             messages.success(request, "Item removed from wishlist")
+        except Exception as e:
+            print("Error on remove from wishlist: ",e)
+            messages.error(request, "Something went wrong!")
+
+    return redirect('wishlist')
+
+@login_required
+def wishilst_move_to_cart(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        variant_id = request.POST.get("variant_id")
+
+        try:
+            with transaction.atomic():
+                
+                product = Product.objects.get(id=product_id)
+                user = request.user
+                
+                # if size not selected
+                if not variant_id:
+                    messages.error(request, "Please select a size")
+                    return redirect("wishlist")
+
+                # check if product is active
+                if not product.is_active:
+                    messages.error(request, "Product Is Currently Unavailble")
+                    return redirect('wishlist')
+
+                # --stock validation---
+                variant = Variant.objects.get(id=variant_id)
+                if int(variant.stock) == 0:
+                    messages.error(
+                        request,
+                        f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.",
+                    )
+                    return redirect("wishlist")
+
+                Cart.objects.create(user=user, variant_id=variant_id, quantity=1)
+                remove_wishlist_item(request.user, product_id)
+                messages.success(request, "Item Moved to Cart")
+                
         except Exception as e:
             print("Error on remove from wishlist: ",e)
             messages.error(request, "Something went wrong!")

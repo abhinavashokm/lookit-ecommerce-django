@@ -5,7 +5,7 @@ import uuid
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
-
+from . import models
 
 def generate_otp():
     return str(randint(000000, 999999))
@@ -42,4 +42,5 @@ def send_email_verification(user, new_email, request):
     )
     
 
-    
+def remove_wishlist_item(user, product_id):
+    models.Wishlist.objects.get(user=user, product_id=product_id).delete()
