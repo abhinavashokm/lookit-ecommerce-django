@@ -17,7 +17,8 @@ from .views import (
     profile_send_otp,
     change_user_email,
     verify_email,
-    wishlist
+    wishlist,
+    add_to_wishlist,
 )
 
 urlpatterns = [
@@ -39,6 +40,7 @@ urlpatterns = [
     path('verify-email/<uidb64>/<token>/', verify_email, name='verify_email'),
     
     path("wishlist/", wishlist, name="wishlist"),
+    path("wishlist/add-to-wishlist", add_to_wishlist, name="add-to-wishlist"),
     
     # password reset paths
     # 1.enter email and button for sent link

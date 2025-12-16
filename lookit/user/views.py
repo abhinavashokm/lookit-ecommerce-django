@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from .models import User, OTP, Address
+from .models import User, OTP, Address, Wishlist
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
@@ -21,6 +21,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.urls import reverse
 from django.db import transaction
 from .services import validate_referral_code, give_referral_reward
+from product.models import Product, Variant
 
 
 def user_login(request):
@@ -518,4 +519,39 @@ def verify_email(request, uidb64, token):
 
 @login_required
 def wishlist(request):
-    return render(request,"user/profile/wishlist.html")
+    items = None
+    try:
+        items = Wishlist.objects.filter(user=request.user)
+        
+    except Exception as e:
+        messages.error(request, "Something went wrong!")
+        return redirect('explore')
+    
+    return render(request,"user/profile/wishlist.html",{"items":items})
+
+
+@login_required
+def add_to_wishlist(request):
+    if request.method == "POST":
+        user = request.user
+        product_uuid = request.POST.get('product_uuid')
+        variant_id = request.POST.get('variant_id')
+        
+        try:
+            product = Product.objects.filter(uuid=product_uuid).first()
+            
+            #invalid uui
+            if not product:
+                print("product uuid is invalid or null, uuid = ",product_uuid)
+                messages.error(request, "Something went wrong!")
+                return redirect('explore')
+            
+            variant = Variant.objects.get(id=variant_id)
+            size = variant.size
+            Wishlist.objects.create(user=user, product = product, size=size)
+            messages.success(request, "Product added to wishlist")
+        except Exception as e:
+            print("Error: ",e)
+            messages.error(request,"Something went wrong!")
+        
+        return redirect('product-details', product_uuid=product_uuid)

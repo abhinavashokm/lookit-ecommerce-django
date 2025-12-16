@@ -5,6 +5,7 @@ from .utils import generate_referral_code
 from datetime import timedelta
 from django.utils import timezone
 from coupon.models import Coupon
+from product.models import Variant, Product
 
 
 # Creating custom user manager
@@ -128,3 +129,9 @@ class Address(models.Model):
             Address.objects.filter(user=self.user).exclude(id=self.id).update(
                 is_default=False
             )
+
+class Wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    size = models.CharField(max_length=10, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)

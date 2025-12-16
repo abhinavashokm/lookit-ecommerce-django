@@ -687,6 +687,12 @@ def product_details(request, product_uuid):
         )
         .first()
     )
+    
+    #--invalid uuid-------------------------------------
+    if not product:
+        print("product uuid is invalid or null, uuid = ",product_uuid)
+        messages.error(request, "Something went wrong!")
+        return redirect('explore')
 
     # ---manual ordering for sizes----
     size_order = Case(

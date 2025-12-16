@@ -395,8 +395,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .in-stock {
-    background-color: rgba(56, 161, 105, 0.1);
-    color: var(--success-color);
+    background-color: rgb(56 161 105 / 69%);
+    color: #434e48;
 }
 
 .in-stock::before {

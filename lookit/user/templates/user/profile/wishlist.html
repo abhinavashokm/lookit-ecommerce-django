@@ -22,9 +22,11 @@
         <div class="page-header">
             <h1 class="page-title">My Wishlist <span class="wishlist-count">(3 items)</span></h1>
             <div class="wishlist-actions">
+                <a href="{% url 'explore' %}">
                 <button class="btn btn-outline">
                     <i class="fas fa-arrow-left"></i> Continue Shopping
                 </button>
+                </a>
                 <button id="clearWishlistBtn" class="btn btn-danger">
                     <i class="far fa-trash-alt"></i> Clear Wishlist
                 </button>
@@ -32,19 +34,19 @@
         </div>
 
         <div class="wishlist-grid">
+            {% for item in items %}
             <!-- Wishlist Item 1 -->
             <div class="wishlist-card">
                 <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wireless Headphones">
+                    <img src="{{ item.product.image_url }}" alt="Wireless Headphones">
                     <span class="card-badge in-stock">In Stock</span>
                 </div>
                 <div class="card-content">
                     <div class="card-header">
-                        <h3 class="card-title">Wireless Bluetooth Headphones</h3>
-                        <div class="card-sku">SKU: WH-1000XM4</div>
+                        <h3 class="card-title">{{ item.product.name }}</h3>
                     </div>
                     <div class="card-price">
-                        $349.99
+                        ₹349.99
                     </div>
                     <div class="size-selection">
                         <label for="size-wh1000">Size:</label>
@@ -67,9 +69,20 @@
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <!-- Empty State (Hidden by default) -->
+            <div class="empty-state">
+                <i class="far fa-heart"></i>
+                <h3>Your wishlist is empty</h3>
+                <p>You haven't added any items to your wishlist yet. Start shopping to add your favorite items!</p>
+                <button class="btn btn-primary">
+                    <i class="fas fa-shopping-bag"></i> Shop Now
+                </button>
+            </div>
+            {% endfor %}
 
             <!-- Wishlist Item 2 -->
-            <div class="wishlist-card">
+            <!-- <div class="wishlist-card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Smart Watch">
                     <span class="card-badge in-stock">In Stock</span>
@@ -80,8 +93,8 @@
                         <div class="card-sku">SKU: SW-2000X</div>
                     </div>
                     <div class="card-price">
-                        <span class="old-price">$429.00</span>
-                        $399.00
+                        <span class="old-price">₹429.00</span>
+                        ₹399.00
                     </div>
                     <div class="size-selection">
                         <label for="size-sw2000">Case Size:</label>
@@ -103,10 +116,10 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </div> -->
 
             <!-- Wishlist Item 3 -->
-            <div class="wishlist-card">
+            <!-- <div class="wishlist-card">
                 <div class="card-image">
                     <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wireless Earbuds">
                     <span class="card-badge out-of-stock">Out of Stock</span>
@@ -117,7 +130,7 @@
                         <div class="card-sku">SKU: WEB-2023P</div>
                     </div>
                     <div class="card-price">
-                        $199.99
+                        ₹199.99
                     </div>
                     <div class="size-selection">
                         <label for="size-web2023">Size:</label>
@@ -138,18 +151,10 @@
                         </button>
                     </div>
                 </div>
-            </div>
+            </div> -->
+
         </div>
 
-        <!-- Empty State (Hidden by default) -->
-        <!-- <div class="empty-state">
-            <i class="far fa-heart"></i>
-            <h3>Your wishlist is empty</h3>
-            <p>You haven't added any items to your wishlist yet. Start shopping to add your favorite items!</p>
-            <button class="btn btn-primary">
-                <i class="fas fa-shopping-bag"></i> Shop Now
-            </button>
-        </div> -->
     </main>
 
 </div>

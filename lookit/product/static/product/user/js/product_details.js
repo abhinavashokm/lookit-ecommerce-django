@@ -198,3 +198,26 @@ form.appendChild(hidden);
 // Step 3: Continue form submission (resume normal behavior)
 form.submit();
 });
+
+//FOR ADDING VARIANT ID TO ADD TO WISHLIST REQUEST          
+document.getElementById("addToWishlist").addEventListener("submit", function (event) {
+// Step 1: Temporarily block submission
+event.preventDefault();
+
+if(selected_variant_id == null){
+    const size_container = document.getElementById('sizeOptions')
+    const first_size = size_container.firstElementChild;
+    selected_variant_id = first_size.value
+}
+
+// Step 2: Add a new field dynamically
+const form = event.target;
+const hidden = document.createElement("input");
+hidden.type = "hidden";
+hidden.name = "variant_id";
+hidden.value = selected_variant_id; // You can compute something dynamically here
+form.appendChild(hidden);
+
+// Step 3: Continue form submission (resume normal behavior)
+form.submit();
+});
