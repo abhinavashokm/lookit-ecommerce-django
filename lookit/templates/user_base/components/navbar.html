@@ -9,7 +9,7 @@
             <li><a class="{% if request.resolver_match.url_name == 'explore' and request.GET.category == 'kids' %}active_category{% endif %}" href="{% url 'explore' %}?category=kids">Kids</a></li>
         </ul>
         <div class="header-right">
-            <a href="">
+            <a href="{% url 'wishlist' %}">
                 <button class="icon-btn" title="Wishlist">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path

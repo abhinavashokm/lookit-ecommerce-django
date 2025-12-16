@@ -514,3 +514,8 @@ def verify_email(request, uidb64, token):
         messages.error(request, "Invalid or expired verification link.")
 
     return redirect("account-details")  # redirect to profile page
+
+
+@login_required
+def wishlist(request):
+    return render(request,"user/profile/wishlist.html")

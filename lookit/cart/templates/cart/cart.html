@@ -111,10 +111,12 @@
                     <span>Shipping</span>
                     <span>Free</span>
                 </div>
+                {% if cart_summary.offer_discount != 0 %}
                 <div class="summary-row">
                     <span>Offer Discount</span>
                     <span class="discount-amount">-₹{{ cart_summary.offer_discount }}</span>
                 </div>
+                {% endif %}
 
                 <!-- Applied Coupon Display -->
                  {% if applied_coupon %}

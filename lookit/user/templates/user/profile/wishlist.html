@@ -1,0 +1,161 @@
+{% extends 'user_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'user/css/account/wishlist.css' %}">
+<!--CSS for profile sidebar-->
+<link rel="stylesheet" href="{% static 'user/css/components/profile_sidebar.css' %}">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% endblock %}
+
+
+
+{% block content %}
+
+<!-- Main Content -->
+<div class="profile-container">
+
+    <!-- Sidebar -->
+    {% include 'user_base/components/profile_sidebar.html' %}
+
+    <!-- Wishlist Content -->
+    <main class="wishlist-content">
+        <div class="page-header">
+            <h1 class="page-title">My Wishlist <span class="wishlist-count">(3 items)</span></h1>
+            <div class="wishlist-actions">
+                <button class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
+                </button>
+                <button id="clearWishlistBtn" class="btn btn-danger">
+                    <i class="far fa-trash-alt"></i> Clear Wishlist
+                </button>
+            </div>
+        </div>
+
+        <div class="wishlist-grid">
+            <!-- Wishlist Item 1 -->
+            <div class="wishlist-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wireless Headphones">
+                    <span class="card-badge in-stock">In Stock</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="card-title">Wireless Bluetooth Headphones</h3>
+                        <div class="card-sku">SKU: WH-1000XM4</div>
+                    </div>
+                    <div class="card-price">
+                        $349.99
+                    </div>
+                    <div class="size-selection">
+                        <label for="size-wh1000">Size:</label>
+                        <select id="size-wh1000" class="size-dropdown">
+                            <option value="">Select Size</option>
+                            <option value="one-size">One Size</option>
+                            <option value="s">S</option>
+                            <option value="m">M</option>
+                            <option value="l">L</option>
+                        </select>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" disabled>
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                            <span class="tooltip">Please select a size</span>
+                        </button>
+                        <button class="remove-btn" title="Remove from wishlist">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wishlist Item 2 -->
+            <div class="wishlist-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Smart Watch">
+                    <span class="card-badge in-stock">In Stock</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="card-title">Smart Watch Series 6</h3>
+                        <div class="card-sku">SKU: SW-2000X</div>
+                    </div>
+                    <div class="card-price">
+                        <span class="old-price">$429.00</span>
+                        $399.00
+                    </div>
+                    <div class="size-selection">
+                        <label for="size-sw2000">Case Size:</label>
+                        <select id="size-sw2000" class="size-dropdown">
+                            <option value="">Select Size</option>
+                            <option value="38mm">38mm</option>
+                            <option value="40mm">40mm</option>
+                            <option value="42mm">42mm</option>
+                            <option value="44mm">44mm</option>
+                        </select>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" disabled>
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                            <span class="tooltip">Please select a size</span>
+                        </button>
+                        <button class="remove-btn" title="Remove from wishlist">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wishlist Item 3 -->
+            <div class="wishlist-card">
+                <div class="card-image">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Wireless Earbuds">
+                    <span class="card-badge out-of-stock">Out of Stock</span>
+                </div>
+                <div class="card-content">
+                    <div class="card-header">
+                        <h3 class="card-title">Wireless Earbuds Pro</h3>
+                        <div class="card-sku">SKU: WEB-2023P</div>
+                    </div>
+                    <div class="card-price">
+                        $199.99
+                    </div>
+                    <div class="size-selection">
+                        <label for="size-web2023">Size:</label>
+                        <select id="size-web2023" class="size-dropdown" disabled>
+                            <option value="">Select Size</option>
+                            <option value="one-size">One Size</option>
+                            <option value="s">S</option>
+                            <option value="m">M</option>
+                            <option value="l">L</option>
+                        </select>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn btn-primary" disabled>
+                            <i class="fas fa-shopping-cart"></i> Out of Stock
+                        </button>
+                        <button class="remove-btn" title="Remove from wishlist">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <!-- <div class="empty-state">
+            <i class="far fa-heart"></i>
+            <h3>Your wishlist is empty</h3>
+            <p>You haven't added any items to your wishlist yet. Start shopping to add your favorite items!</p>
+            <button class="btn btn-primary">
+                <i class="fas fa-shopping-bag"></i> Shop Now
+            </button>
+        </div> -->
+    </main>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'user/js/account/wishlist.js' %}"></script>
+{% endblock %}
