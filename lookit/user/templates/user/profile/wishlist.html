@@ -39,7 +39,7 @@
             <div class="wishlist-card">
                 <div class="card-image">
                     <img src="{{ item.product.image_url }}" alt="Wireless Headphones">
-                    <span class="card-badge in-stock">In Stock</span>
+                    <!-- <span class="card-badge in-stock">In Stock</span> -->
                 </div>
                 <div class="card-content">
                     <div class="card-header">
@@ -63,9 +63,15 @@
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                             <span class="tooltip">Please select a size</span>
                         </button>
-                        <button class="remove-btn" title="Remove from wishlist">
-                            <i class="far fa-trash-alt"></i>
-                        </button>
+
+                        <form action="{% url 'remove-from-wishlist' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <button type="submit" class="remove-btn" title="Remove from wishlist">
+                                <i class="far fa-trash-alt"></i>
+                            </button>
+                        </form>
+
                     </div>
                 </div>
             </div>

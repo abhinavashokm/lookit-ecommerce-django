@@ -156,6 +156,12 @@
          margin-right: 8px;
      }
 
+    .wishlist-icon-wrapper {
+         position: relative;
+         display: inline-block;
+         flex-shrink: 0;
+     }
+
      .cart-badge {
          position: absolute;
          top: -4px;

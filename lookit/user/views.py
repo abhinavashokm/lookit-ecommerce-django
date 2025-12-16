@@ -540,11 +540,16 @@ def add_to_wishlist(request):
         try:
             product = Product.objects.filter(uuid=product_uuid).first()
             
-            #invalid uui
+            #invalid uuid
             if not product:
                 print("product uuid is invalid or null, uuid = ",product_uuid)
                 messages.error(request, "Something went wrong!")
                 return redirect('explore')
+            
+            already_exist = Wishlist.objects.filter(user=request.user, product=product).exists()
+            if already_exist:
+                messages.error(request, "Product already exist in wishlist!")
+                return redirect('product-details', product_uuid=product_uuid)
             
             variant = Variant.objects.get(id=variant_id)
             size = variant.size
@@ -555,3 +560,16 @@ def add_to_wishlist(request):
             messages.error(request,"Something went wrong!")
         
         return redirect('product-details', product_uuid=product_uuid)
+    
+@login_required
+def remove_from_wishlist(request):
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        try:
+            Wishlist.objects.get(user=request.user, product_id=product_id).delete()
+            messages.success(request, "Item removed from wishlist")
+        except Exception as e:
+            print("Error on remove from wishlist: ",e)
+            messages.error(request, "Something went wrong!")
+
+    return redirect('wishlist')
