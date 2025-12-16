@@ -24,6 +24,9 @@ from django.db import transaction
 from .services import validate_referral_code, give_referral_reward
 from product.models import Product, Variant
 from cart.models import Cart
+from django.db.models import Subquery, OuterRef, Value, ExpressionWrapper, IntegerField, DecimalField, F, Max
+from django.db.models.functions import Round, Coalesce, Greatest
+from offer.models import Offer
 
 def user_login(request):
     if request.method == 'POST':
@@ -139,13 +142,15 @@ def otp_verification(request):
                             give_referral_reward(new_user, referrer=referred_by)
                         except Exception as e:
                             print("Error: ", e)
-                            # there is transaction.atomic() block inside give_referral_reward() method. 
+                            # there is transaction.atomic() block inside give_referral_reward() method.
                             # when any exception occured inside the function the outer transaction block also need to rollback.
                             # that's why i manually raised an exception when an exception occured inside the function.
                             raise  #  forces full rollback
 
                     login(request, auth_user)
-                    messages.success(request, "Your account is all set. Start exploring now!")
+                    messages.success(
+                        request, "Your account is all set. Start exploring now!"
+                    )
                     return redirect('index')
 
             except Exception as e:
@@ -522,13 +527,53 @@ def verify_email(request, uidb64, token):
 def wishlist(request):
     items = None
     try:
-        items = Wishlist.objects.filter(user=request.user, product__variant__stock__gt=0).prefetch_related('product__variant_set').distinct()
+        # sub queries for fetching offers
+        product_discount_sq = (
+            Offer.objects.filter(products=OuterRef('product__id'))
+            .values('products')
+            .annotate(max_discount=Max('discount'))
+            .values('max_discount')[:1]
+        )
+
+        category_discount_sq = (
+            Offer.objects.filter(style=OuterRef('product__style'))
+            .values('style')
+            .annotate(max_discount=Max('discount'))
+            .values('max_discount')[:1]
+        )
+        
+
+        items = (
+            Wishlist.objects.filter(user=request.user, product__variant__stock__gt=0)
+            .prefetch_related('product__variant_set')
+            .distinct()
+            .annotate(
+                product_discount=Coalesce(
+                    Subquery(product_discount_sq), Value(0), output_field=IntegerField()
+                ),
+                category_discount=Coalesce(
+                    Subquery(category_discount_sq), Value(0), output_field=IntegerField()
+                ),
+            )
+            .annotate(
+                offer_percentage=Greatest(F('product_discount'), F('category_discount'))
+            )
+            .annotate(
+                offer_price=ExpressionWrapper(
+                    Round(
+                        F('product__price') - (F('product__price') * F('offer_percentage') / Value(100)), 2
+                    ),
+                    output_field=DecimalField(max_digits=10, decimal_places=2),
+                )
+            )
+        )
 
     except Exception as e:
+        print("Error while loading wishlist: ",e)
         messages.error(request, "Something went wrong!")
         return redirect('explore')
-    
-    return render(request,"user/profile/wishlist.html",{"items":items})
+
+    return render(request, "user/profile/wishlist.html", {"items": items})
 
 
 @login_required
@@ -537,31 +582,34 @@ def add_to_wishlist(request):
         user = request.user
         product_uuid = request.POST.get('product_uuid')
         variant_id = request.POST.get('variant_id')
-        
+
         try:
             product = Product.objects.filter(uuid=product_uuid).first()
-            
-            #invalid uuid
+
+            # invalid uuid
             if not product:
-                print("product uuid is invalid or null, uuid = ",product_uuid)
+                print("product uuid is invalid or null, uuid = ", product_uuid)
                 messages.error(request, "Something went wrong!")
                 return redirect('explore')
-            
-            already_exist = Wishlist.objects.filter(user=request.user, product=product).exists()
+
+            already_exist = Wishlist.objects.filter(
+                user=request.user, product=product
+            ).exists()
             if already_exist:
                 messages.error(request, "Product already exist in wishlist!")
                 return redirect('product-details', product_uuid=product_uuid)
-            
+
             variant = Variant.objects.get(id=variant_id)
             size = variant.size
-            Wishlist.objects.create(user=user, product = product, size=size)
+            Wishlist.objects.create(user=user, product=product, size=size)
             messages.success(request, "Product added to wishlist")
         except Exception as e:
-            print("Error: ",e)
-            messages.error(request,"Something went wrong!")
-        
+            print("Error: ", e)
+            messages.error(request, "Something went wrong!")
+
         return redirect('product-details', product_uuid=product_uuid)
- 
+
+
 @require_POST
 @login_required
 def toggle_wishlist_ajax(request):
@@ -581,7 +629,6 @@ def toggle_wishlist_ajax(request):
         return JsonResponse({"status": "failed"})
 
 
-    
 @login_required
 def remove_from_wishlist(request):
     if request.method == "POST":
@@ -590,10 +637,11 @@ def remove_from_wishlist(request):
             remove_wishlist_item(request.user, product_id)
             messages.success(request, "Item removed from wishlist")
         except Exception as e:
-            print("Error on remove from wishlist: ",e)
+            print("Error on remove from wishlist: ", e)
             messages.error(request, "Something went wrong!")
 
     return redirect('wishlist')
+
 
 @login_required
 def wishilst_move_to_cart(request):
@@ -603,10 +651,10 @@ def wishilst_move_to_cart(request):
 
         try:
             with transaction.atomic():
-                
+
                 product = Product.objects.get(id=product_id)
                 user = request.user
-                
+
                 # if size not selected
                 if not variant_id:
                     messages.error(request, "Please select a size")
@@ -625,19 +673,21 @@ def wishilst_move_to_cart(request):
                         f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.",
                     )
                     return redirect("wishlist")
-                
-                #check if variant already exist
+
+                # check if variant already exist
                 already_exist = Cart.objects.filter(user=user, variant=variant).exists()
                 if already_exist:
-                    messages.error(request, f"Product with size {variant.size} is already in cart")
+                    messages.error(
+                        request, f"Product with size {variant.size} is already in cart"
+                    )
                     return redirect('wishlist')
 
                 Cart.objects.create(user=user, variant_id=variant_id, quantity=1)
                 remove_wishlist_item(request.user, product_id)
                 messages.success(request, "Item Moved to Cart")
-                
+
         except Exception as e:
-            print("Error on remove from wishlist: ",e)
+            print("Error on remove from wishlist: ", e)
             messages.error(request, "Something went wrong!")
 
     return redirect('wishlist')
@@ -649,7 +699,7 @@ def clear_wishlist(request):
         Wishlist.objects.filter(user=request.user).delete()
         messages.success(request, "Wishlist cleared")
     except Exception as e:
-        print("Error while clearing wishlist: ",e)
+        print("Error while clearing wishlist: ", e)
         messages.error(request, "Something went wrong!")
-        
+
     return redirect('wishlist')
