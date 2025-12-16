@@ -966,3 +966,35 @@
     margin-top: 3px;
     border: 1px solid #c8e6c9;
 }
+
+
+/* Enhanced Cart Item Title */
+.item-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Hover effect for better interactivity */
+.item-title:hover {
+  color: #9a4d72;
+  transition: color 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .item-title {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .item-title {
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+}

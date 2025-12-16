@@ -1,0 +1,173 @@
+{% extends 'admin_base/base.html' %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'order/css/admin/sales_report.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+{% endblock %}
+
+<!-- Main Content -->
+{% block content %}
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Breadcrumb Navigation -->
+    <nav class="breadcrumb">
+        <ol>
+            <li><a href="home.html">Home</a></li>
+            <li>Analytics</li>
+            <li>Sales Report</li>
+        </ol>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1 class="page-title">Sales Report</h1>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-row">
+            <div class="filter-group">
+                <label for="fromDate">FROM</label>
+                <input type="text" id="fromDate" class="date-picker" placeholder="Select start date">
+            </div>
+            <div class="filter-group">
+                <label for="toDate">TO</label>
+                <input type="text" id="toDate" class="date-picker" placeholder="Select end date">
+            </div>
+            <button class="btn btn-primary" style="margin-bottom: 4px; height: 32px; min-width: 100px; padding: 0 20px;">Filter</button>
+        </div>
+        <div class="date-range-buttons">
+            <button class="date-range-btn active"><span>Today</span></button>
+            <button class="date-range-btn"><span>This Week</span></button>
+            <button class="date-range-btn"><span>This Month</span></button>
+            <button class="date-range-btn"><span>This Year</span></button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <h3>TOTAL ORDER VALUE</h3>
+            <div class="stat-value">₹661,426</div>
+            <div class="stat-change">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+                12.5% from last period
+            </div>
+        </div>
+        <div class="stat-card">
+            <h3>REALIZED REVENUE</h3>
+            <div class="stat-value">₹195,675</div>
+            <div class="stat-change">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+                8.2% from last period
+            </div>
+        </div>
+        <div class="stat-card">
+            <h3>TOTAL DISCOUNTS</h3>
+            <div class="stat-value">₹53,275</div>
+            <div class="stat-change down">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 5px;">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+                3.1% from last period
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Report Button -->
+    <button class="btn btn-download" style="margin-bottom: 25px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Download Report (PDF)
+    </button>
+
+    <!-- Sales Table -->
+    <div class="table-container">
+        <div class="table-responsive">
+            <table class="sales-table">
+                <thead>
+                    <tr>
+                        <th>ORDER ID</th>
+                        <th>DATE</th>
+                        <th>CUSTOMER</th>
+                        <th>PAYMENT</th>
+                        <th>COUPON</th>
+                        <th>COUPON DEDUCTION</th>
+                        <th>DISCOUNT</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#ORD-001</td>
+                        <td>2023-11-15</td>
+                        <td>John Doe</td>
+                        <td>Credit Card</td>
+                        <td>SUMMER20</td>
+                        <td>20%</td>
+                        <td>₹1,200</td>
+                        <td>₹4,800</td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-002</td>
+                        <td>2023-11-16</td>
+                        <td>Jane Smith</td>
+                        <td>UPI</td>
+                        <td>-</td>
+                        <td>0%</td>
+                        <td>₹0</td>
+                        <td>₹8,750</td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-003</td>
+                        <td>2023-11-17</td>
+                        <td>Robert Johnson</td>
+                        <td>Net Banking</td>
+                        <td>WELCOME10</td>
+                        <td>10%</td>
+                        <td>₹550</td>
+                        <td>₹4,950</td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-004</td>
+                        <td>2023-11-18</td>
+                        <td>Emily Davis</td>
+                        <td>Credit Card</td>
+                        <td>FREESHIP</td>
+                        <td>Free Shipping</td>
+                        <td>₹0</td>
+                        <td>₹12,500</td>
+                    </tr>
+                    <tr>
+                        <td>#ORD-005</td>
+                        <td>2023-11-19</td>
+                        <td>Michael Wilson</td>
+                        <td>Debit Card</td>
+                        <td>-</td>
+                        <td>0%</td>
+                        <td>₹0</td>
+                        <td>₹6,200</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="{% static 'order/js/admin/sales_report.js' %}"></script>
+{% endblock %}

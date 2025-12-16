@@ -49,7 +49,7 @@
             </a></li>
 
         <li><a href="{% url 'admin-list-orders' %}" 
-            class="{% if '/order/admin/' in  request.path and 'order/admin/return-request/' not in  request.path %}active{% endif %}">
+            class="{% if '/order/admin/' in  request.path and 'order/admin/return-request/' not in  request.path and 'sales-report' not in request.path %}active{% endif %}">
                 <span class="icon">
                     <svg viewBox="0 0 24 24">
                         <circle cx="9" cy="21" r="1"></circle>
@@ -99,7 +99,8 @@
             <span>Offers</span>
         </a></li>
 
-        <li><a href="#">
+        <li><a href="{% url 'admin-sales-report' %}"
+            class="{% if 'admin/sales-report/' in  request.path %}active{% endif %}">
                 <span class="icon">
                     <svg viewBox="0 0 24 24">
                         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>

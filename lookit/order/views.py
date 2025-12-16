@@ -871,3 +871,9 @@ def admin_update_return_status(request, return_request_uuid):
             messages.error(request, "Invalid return status.")
 
     return redirect("admin-return-details", return_request_uuid=return_request_uuid)
+
+
+@admin_required
+def sales_report(request):
+    
+    return render(request, "order/admin/sales_report.html")

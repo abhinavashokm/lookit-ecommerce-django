@@ -18,6 +18,7 @@ from .views import (
     admin_update_return_status,
     download_invoice_pdf,
     payment_failure_page,
+    sales_report,
 )
 
 urlpatterns = [
@@ -42,4 +43,6 @@ urlpatterns = [
     path("track-return-request/<order_uuid>/", track_return_request, name="track_return_request"),
     path("admin/return-request/return-details/<return_request_uuid>/", admin_return_details, name="admin-return-details"),
     path("admin/return-request/update-return-status/<return_request_uuid>/", admin_update_return_status, name="admin-update-return-status"),
+    
+    path("admin/sales-report/", sales_report, name="admin-sales-report"),
 ]
