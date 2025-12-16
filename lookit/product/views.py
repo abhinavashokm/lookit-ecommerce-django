@@ -17,6 +17,8 @@ from django.db.models import (
     F,
     ExpressionWrapper,
     DecimalField,
+    BooleanField,
+    Exists,
 )
 from django.db.models.functions import Coalesce, Greatest, Round
 from decimal import Decimal
@@ -27,6 +29,7 @@ from .models import Style, Product, Variant, ProductImages
 from cart.models import Cart
 from offer.models import Offer
 from user.utils import remove_wishlist_item
+from user.models import Wishlist
 
 
 """ ============================================
@@ -598,6 +601,10 @@ def explore(request):
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
     )
+    
+    wishlist_exist_sq = (
+        Wishlist.objects.filter(user=request.user, product_id = OuterRef('id'))
+    )
 
     # fetch only products which are active and not out of stock
     products = (
@@ -620,6 +627,9 @@ def explore(request):
                 ),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
+        )
+        .annotate(
+            in_wishlist = Exists(wishlist_exist_sq)
         )
         .distinct()
     )

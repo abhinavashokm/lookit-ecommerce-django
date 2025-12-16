@@ -562,6 +562,26 @@ def add_to_wishlist(request):
         
         return redirect('product-details', product_uuid=product_uuid)
  
+@require_POST
+@login_required
+def toggle_wishlist_ajax(request):
+    data = json.loads(request.body)
+    product_id = data.get('product_id')
+    try:
+        wishlist_exists = Wishlist.objects.filter(product_id=product_id).exists()
+        if wishlist_exists:
+            Wishlist.objects.filter(product_id=product_id).delete()
+            return JsonResponse({"status": "removed"})
+        else:
+            product = Product.objects.get(id=product_id)
+            Wishlist.objects.create(user=request.user, product=product)
+            return JsonResponse({"status": "added"})
+    except Exception as e:
+        print("Error: ", e)
+        return JsonResponse({"status": "failed"})
+
+
+    
 @login_required
 def remove_from_wishlist(request):
     if request.method == "POST":
