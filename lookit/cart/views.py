@@ -17,7 +17,7 @@ import json
 from django.http import JsonResponse
 from django.db import transaction
 from product.models import Variant
-from coupon.utils import is_valid_coupon
+from coupon.utils import is_valid_coupon, coupon_eligibility_check
 from coupon.models import Coupon
 from .utils import calculate_cart_summary
 
@@ -150,6 +150,11 @@ def save_coupon(request):
         coupon_code = request.POST.get('coupon_code')
         # --check validity-------------------------
         valid_coupon = is_valid_coupon(coupon_code)
+        # --check if user already used the coupon
+        eligible = coupon_eligibility_check(coupon_code, request.user)
+        if not eligible:
+            messages.error(request, "You can only use a coupon once!")
+            return redirect('cart')
 
         if valid_coupon:
             coupon = Coupon.objects.get(code=coupon_code)
@@ -176,6 +181,11 @@ def apply_coupon(request):
 
         # --check validity-------------------------
         valid_coupon = is_valid_coupon(coupon_code)
+        # --check if user already used the coupon
+        eligible = coupon_eligibility_check(coupon_code, request.user)
+        if not eligible:
+            messages.error(request, "You can only use a coupon once!")
+            return redirect('cart')
 
         if valid_coupon:
             coupon = Coupon.objects.get(code=coupon_code)

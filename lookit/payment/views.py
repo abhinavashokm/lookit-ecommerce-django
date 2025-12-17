@@ -14,6 +14,7 @@ from order.utils import reduce_stock_for_order
 from django.contrib import messages
 from django.db import transaction
 from decimal import Decimal
+from coupon.utils import reduce_coupon_usage_limit, create_coupon_usage_record, clear_users_saved_coupon
 import json
 
 
@@ -99,16 +100,25 @@ def paymenthandler(request):
             
             # --handle stock count of the product---
             reduce_stock_for_order(order.id)
+            
+            #--reduce coupon usage limit if applied any---
+            order = Order.objects.get(id=order.id)
+            if order.coupon_applied:
+                reduce_coupon_usage_limit(order.coupon_applied.code)
+                create_coupon_usage_record(order.coupon_applied, request.user)
+                clear_users_saved_coupon(order.coupon_applied, request.user)
 
             return redirect('order-success', order_uuid=order.uuid)
         
         except razorpay.errors.SignatureVerificationError:
             # Update payment as failed
             Payment.objects.filter(razorpay_order_id=razorpay_order_id).update(status='Failed')
-            return redirect('order-failed', order_uuid=order.uuid)
+            return redirect('payment-failed', order_uuid=order.uuid)
         
         except Exception as e:
-            return HttpResponseBadRequest(str(e))
+            print("Error: ",e)
+            messages.error(request, "Something went wrong")
+            return redirect('payment-failed', order_uuid=order.uuid)
     else:
         return HttpResponseBadRequest("Invalid request method")
     

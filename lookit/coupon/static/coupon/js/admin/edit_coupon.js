@@ -15,13 +15,13 @@ $(document).ready(function () {
     });
 
     // Set today's date as min selectable date for start_date and end_date
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const todayStr = `${yyyy}-${mm}-${dd}`;
-    $('#startDate').attr('min', todayStr);
-    $('#endDate').attr('min', todayStr);
+    // const today = new Date();
+    // const yyyy = today.getFullYear();
+    // const mm = String(today.getMonth() + 1).padStart(2, '0');
+    // const dd = String(today.getDate()).padStart(2, '0');
+    // const todayStr = `${yyyy}-${mm}-${dd}`;
+    // $('#startDate').attr('min', todayStr);
+    // $('#endDate').attr('min', todayStr);
 
     // Custom rule: end date should be after start date
     $.validator.addMethod("endDateAfterStart", function (value, element) {

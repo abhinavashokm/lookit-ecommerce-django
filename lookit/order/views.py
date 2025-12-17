@@ -27,7 +27,7 @@ from cart.decorators import cart_not_empty_required
 from wallet.models import Wallet, WalletTransactions
 from cart.utils import calculate_cart_summary
 from decimal import Decimal
-
+from coupon.utils import reduce_coupon_usage_limit, create_coupon_usage_record, clear_users_saved_coupon, coupon_eligibility_check
 
 @login_required
 @cart_not_empty_required
@@ -211,6 +211,19 @@ def place_order(request, order_uuid):
 
                 # --handle stock count of the product---
                 reduce_stock_for_order(order_id)
+                
+                #--reduce coupon usage limit if applied any---
+                order = Order.objects.get(id=order_id)
+                if order.coupon_applied:
+                    #check if user already used the coupon
+                    eligible = coupon_eligibility_check(order.coupon_applied.code, request.user)
+                    if not eligible:
+                        messages.error(request, "You already used coupon once")
+                        return redirect('payment-page', order_id=order_id)
+                        
+                    reduce_coupon_usage_limit(order.coupon_applied.code)
+                    create_coupon_usage_record(order.coupon_applied, request.user)
+                    clear_users_saved_coupon(order.coupon_applied, request.user)
 
                 messages.success(request, "ORDER PLACED SUCCESSFULLY")
                 if payment_method == 'WALLET':

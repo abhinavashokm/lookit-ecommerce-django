@@ -201,10 +201,6 @@ def admin_edit_offer(request, offer_uuid):
         start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
 
-        if start_date < date.today():
-            messages.error(request, "Start date cannot be before today.")
-            return redirect('admin-edit-offer', offer_uuid=offer_uuid)
-
         if end_date and end_date < start_date:
             messages.error(request, "End date cannot be before start date.")
             return redirect('admin-edit-offer', offer_uuid=offer_uuid)

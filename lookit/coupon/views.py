@@ -5,7 +5,8 @@ from datetime import datetime, date
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 from .models import Coupon
-
+from coupon.utils import update_coupon_usage_remaining
+from django.db import transaction
 
 # Create your views here.
 @admin_required
@@ -172,10 +173,6 @@ def admin_edit_coupon(request, code):
         start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
 
-        if start_date < date.today():
-            messages.error(request, "Start date cannot be before today.")
-            return redirect('admin-edit-coupon', code = code)
-
         if end_date and end_date < start_date:
             messages.error(request, "End date cannot be before start date.")
             return redirect('admin-edit-coupon', code = code)
@@ -198,18 +195,24 @@ def admin_edit_coupon(request, code):
             is_active = True
         
         try:
-            Coupon.objects.filter(code=code).update(
-                discount_type=discount_type,
-                discount_value=discount_value,
-                min_purchase_amount=min_purchase_amount,
-                usage_limit=usage_limit,
-                status=status,
-                is_active=is_active,
-                start_date=start_date,
-                end_date=end_date,
-            )
-            messages.success(request, f"Coupon {code} Updated Successfully")
-            return redirect('admin-list-coupons')
+            with transaction.atomic():
+                
+                #function to handle coupon usage remaining count logic
+                update_coupon_usage_remaining(code, usage_limit)
+                
+                Coupon.objects.filter(code=code).update(
+                    discount_type=discount_type,
+                    discount_value=discount_value,
+                    min_purchase_amount=min_purchase_amount,
+                    usage_limit=usage_limit,
+                    status=status,
+                    is_active=is_active,
+                    start_date=start_date,
+                    end_date=end_date,
+                )
+
+                messages.success(request, f"Coupon {code} Updated Successfully")
+                return redirect('admin-list-coupons')
         except Exception as e:
             print("Error: ", e)
             messages.error(request, "Something went wrong")

@@ -31,3 +31,11 @@ class Coupon(models.Model):
         if not self.pk and not self.usage_remaining:
             self.usage_remaining = self.usage_limit  # set based on another field
         super().save(*args, **kwargs)
+        
+class CouponUsage(models.Model):
+    user = models.ForeignKey('user.User', on_delete=models.CASCADE)
+    coupon = models.ForeignKey(Coupon, on_delete=models.CASCADE)
+    used_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'coupon')  # prevents multiple uses by same user

@@ -219,14 +219,14 @@ startDateInput.addEventListener('change', function () {
 // ==========================================
 $(document).ready(function () {
 
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const todayStr = `${yyyy}-${mm}-${dd}`;
+    // const today = new Date();
+    // const yyyy = today.getFullYear();
+    // const mm = String(today.getMonth() + 1).padStart(2, '0');
+    // const dd = String(today.getDate()).padStart(2, '0');
+    // const todayStr = `${yyyy}-${mm}-${dd}`;
 
-    $('#startDate').attr('min', todayStr);
-    $('#endDate').attr('min', todayStr);
+    // $('#startDate').attr('min', todayStr);
+    // $('#endDate').attr('min', todayStr);
 
     // ==========================================
     // 🔹 CUSTOM VALIDATION RULES
