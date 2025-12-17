@@ -7,10 +7,12 @@ flatpickr(".date-picker", {
 
 // Date range button functionality
 const dateRangeBtns = document.querySelectorAll('.date-range-btn');
+const rangeTypeHiddenInput = document.getElementById('rangeInput')
 dateRangeBtns.forEach(btn => {
     btn.addEventListener('click', function() {
         dateRangeBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
+        rangeTypeHiddenInput.value = this.value
         
         // Here you would typically update the date range based on selection
         const range = this.textContent.trim();

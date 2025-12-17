@@ -74,7 +74,7 @@ class OrderItems(models.Model):
             MaxValueValidator(4)
         ]
     )
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2) #base price without tax
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2) #base price with tax
     sub_total = models.DecimalField(max_digits=10, decimal_places=2) #quantity x unit_price
     delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)

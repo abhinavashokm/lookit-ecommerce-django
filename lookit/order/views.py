@@ -7,6 +7,8 @@ from django.db.models import (
     Case,
     Min,
     IntegerField,
+    Sum,
+    Count,
 )
 from django.contrib import messages
 from django.db import transaction
@@ -48,8 +50,8 @@ def checkout(request):
             error = "Out of stock products in cart."
             break
         elif item.available_stock_count < item.quantity:
-            print("stock available: ",item.available_stock_count)
-            print("qunatity cart : ",item.quantity)
+            print("stock available: ", item.available_stock_count)
+            print("qunatity cart : ", item.quantity)
             error = "Requested quantity not available for some products."
             item.quantity = item.available_stock_count
             item.save()
@@ -110,7 +112,7 @@ def create_order(request):
                 sub_total=order_summary.get('sub_total'),
                 delivery_total=order_summary.get('delivery_fee'),
                 discount_total=order_summary.get('offer_discount'),
-                coupon_discount_amount = order_summary.get('coupon_discount'),
+                coupon_discount_amount=order_summary.get('coupon_discount'),
                 grand_total=order_summary.get('grand_total'),
             )
             for item in cart_items:
@@ -127,7 +129,7 @@ def create_order(request):
 
     except Exception as e:
         messages.error(request, e)
-        print("Error: ",e)
+        print("Error: ", e)
         return redirect('checkout')
 
     return redirect('payment-page', order_uuid=order.uuid)
@@ -139,13 +141,18 @@ def payment_page(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
     wallet = Wallet.objects.get(user=request.user)
     address = order.address
-    #estimated delivery date - after 7 days from today
+    # estimated delivery date - after 7 days from today
     today = timezone.now().date()
     estimated_delivery = today + timedelta(days=7)
     return render(
         request,
         "order/payment.html/",
-        {"order": order, "address": address, "wallet": wallet, "estimated_delivery":estimated_delivery },
+        {
+            "order": order,
+            "address": address,
+            "wallet": wallet,
+            "estimated_delivery": estimated_delivery,
+        },
     )
 
 
@@ -875,5 +882,38 @@ def admin_update_return_status(request, return_request_uuid):
 
 @admin_required
 def sales_report(request):
+    orders = (
+        OrderItems.objects.filter(order_status=OrderItems.OrderStatus.DELIVERED)
+        .order_by('-created_at')
+    )
     
-    return render(request, "order/admin/sales_report.html")
+
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+
+    if from_date and to_date:
+        orders = orders.filter(created_at__date__range=[from_date, to_date])
+
+    report_summary = orders.aggregate(total_order_count = Count('id'), total_order_value = Sum('sub_total'),total_discounts= Sum('discount_amount'), realized_revenue=Sum('total'))
+
+
+    # pagination
+    paginator = Paginator(orders, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # Preserve query params for pagination
+    query_params = request.GET.copy()
+    if 'page' in query_params:
+        query_params.pop('page')
+    preserved_query = query_params.urlencode()
+
+    return render(
+        request,
+        "order/admin/sales_report.html",
+        {
+            "page_obj": page_obj,
+            "preserved_query": preserved_query,
+            "report_summary": report_summary,
+        },
+    )

@@ -1,6 +1,6 @@
  <div class="pagination">
             {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}">
+            <a href="?page={{ page_obj.previous_page_number }}{% if preserved_query %}&{{ preserved_query }}{% endif %}">
                 <button class="pagination-btn">‹</button>
             </a>
             {% else %}
@@ -14,7 +14,7 @@
             {% if page_obj.number == number %}
                 <button class="pagination-btn active">{{ number }}</button>
             {% else %}
-                <a href="?page={{ number }}">
+                <a href="?page={{ number }}{% if preserved_query %}&{{ preserved_query }}{% endif %}">
                     <button class="pagination-btn">{{ number }}</button>
                 </a>
             {% endif %}
@@ -23,7 +23,7 @@
             {% if page_obj.number == number %}
                 <button class="pagination-btn active">{{ number }}</button>
             {% else %}
-                <a href="?page={{ number }}">
+                <a href="?page={{ number }}{% if preserved_query %}&{{ preserved_query }}{% endif %}">
                     <button class="pagination-btn">{{ number }}</button>
                 </a>
             {% endif %}
@@ -34,7 +34,7 @@
     {% endfor %}
 
             {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}">
+            <a href="?page={{ page_obj.next_page_number }}{% if preserved_query %}&{{ preserved_query }}{% endif %}">
                 <button class="pagination-btn">›</button>
             </a>
             {% else %}
