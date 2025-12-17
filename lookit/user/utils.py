@@ -43,4 +43,6 @@ def send_email_verification(user, new_email, request):
     
 
 def remove_wishlist_item(user, product_id):
-    models.Wishlist.objects.get(user=user, product_id=product_id).delete()
+    exist = models.Wishlist.objects.filter(user=user, product_id=product_id).exists()
+    if exist:
+        models.Wishlist.objects.get(user=user, product_id=product_id).delete()

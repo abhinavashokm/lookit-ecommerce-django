@@ -542,7 +542,6 @@ def wishlist(request):
             .values('max_discount')[:1]
         )
         
-
         items = (
             Wishlist.objects.filter(user=request.user, product__variant__stock__gt=0)
             .prefetch_related('product__variant_set')
@@ -616,9 +615,9 @@ def toggle_wishlist_ajax(request):
     data = json.loads(request.body)
     product_id = data.get('product_id')
     try:
-        wishlist_exists = Wishlist.objects.filter(product_id=product_id).exists()
+        wishlist_exists = Wishlist.objects.filter(user=request.user, product_id=product_id).exists()
         if wishlist_exists:
-            Wishlist.objects.filter(product_id=product_id).delete()
+            Wishlist.objects.filter(user=request.user, product_id=product_id).delete()
             return JsonResponse({"status": "removed"})
         else:
             product = Product.objects.get(id=product_id)

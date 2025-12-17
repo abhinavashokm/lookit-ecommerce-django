@@ -601,9 +601,12 @@ def explore(request):
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
     )
-    
+    user = None
+    if request.user.is_authenticated:
+        user = request.user
+        
     wishlist_exist_sq = (
-        Wishlist.objects.filter(user=request.user, product_id = OuterRef('id'))
+        Wishlist.objects.filter(user=user, product_id = OuterRef('id'))
     )
 
     # fetch only products which are active and not out of stock

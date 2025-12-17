@@ -122,7 +122,7 @@
                         <th>PAYMENT</th>
                         <th>COUPON</th>
                         <th>DISCOUNT</th>
-                        <th>TOTAL</th>
+                        <th>FINAL</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -135,7 +135,7 @@
                         <td>{% if order.order.payment_method == 'ONLINE_PAYMENT' %}ONLINE{% else %}{{ order.order.payment_method }}{% endif %}</td>
                         <td>{% if order.order.coupon_applied %}
                             {{ order.order.coupon_applied.code|default:'-' }} 
-                            <span class="coupon-deduction">(-₹1,200)</span></td>
+                            <span class="coupon-deduction">(-₹{{ order.coupon_discount_amount }})</span></td>
                             {% else %}
                             -
                             {% endif %}

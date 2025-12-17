@@ -100,7 +100,8 @@ def create_order(request):
     cart_items = summary.get('items')
     order_summary = summary.get('cart_summary')
     total_items = cart_items.count()
-
+    applied_coupon = summary.get('applied_coupon') if summary.get('applied_coupon') else None
+    print(applied_coupon)
     order = None
     try:
         with transaction.atomic():
@@ -108,14 +109,22 @@ def create_order(request):
             order = Order.objects.create(
                 user=user,
                 address=address,
-                total_items=total_items,
+                total_items=total_items, #number of products
                 sub_total=order_summary.get('sub_total'),
                 delivery_total=order_summary.get('delivery_fee'),
                 discount_total=order_summary.get('offer_discount'),
-                coupon_discount_amount=order_summary.get('coupon_discount'),
+                coupon_applied = applied_coupon,
+                coupon_discount_total=order_summary.get('coupon_discount'),
                 grand_total=order_summary.get('grand_total'),
             )
             for item in cart_items:
+                coupon_discount = None
+                if applied_coupon:
+                    # Calculate proportional coupon discount for each product
+                    price_after_discount = item.sub_total_per_product - item.discount_subtotal
+                    total_order_value = order_summary.get('sub_total') - order_summary.get('offer_discount')
+                    coupon_discount = Decimal((price_after_discount / total_order_value) * order_summary.get('coupon_discount'))
+
                 OrderItems.objects.create(
                     order=order,
                     variant=item.variant,
@@ -124,6 +133,7 @@ def create_order(request):
                     sub_total=item.sub_total_per_product,
                     delivery_fee=Decimal(0.00),
                     discount_amount=item.discount_subtotal,
+                    coupon_discount_amount=coupon_discount,
                     total=item.sub_total,  # final line total
                 )
 

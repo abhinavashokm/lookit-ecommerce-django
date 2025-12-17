@@ -25,8 +25,8 @@ class Order(models.Model):
     tax_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True) #sum of tax amount of all products
     delivery_total = models.DecimalField(max_digits=10, decimal_places=2) #total delivery amount
     
-    coupon_discount_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     coupon_applied = models.ForeignKey(Coupon, on_delete=models.SET_NULL, null=True, blank=True)
+    coupon_discount_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     
     grand_total = models.DecimalField(max_digits=10, decimal_places=2) #grand total
     
@@ -76,10 +76,14 @@ class OrderItems(models.Model):
     )
     unit_price = models.DecimalField(max_digits=10, decimal_places=2) #base price with tax
     sub_total = models.DecimalField(max_digits=10, decimal_places=2) #quantity x unit_price
-    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    delivery_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    
+    coupon_discount_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # final line total
+    
+    tax_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     
     order_status = models.CharField(max_length=30, choices=OrderStatus.choices, default=OrderStatus.INITIATED)
     cancel_reason = models.TextField(blank=True, null=True)
