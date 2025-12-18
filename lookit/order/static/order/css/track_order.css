@@ -773,3 +773,7 @@ Modal Styles (Danger Modal)
 .danger_modal-btn-confirm:hover {
     background: #dc2626;
 }
+
+.discount-price {
+    color: #28a745;
+}

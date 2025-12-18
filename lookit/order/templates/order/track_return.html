@@ -55,7 +55,7 @@
 
                 <div class="order-meta">
                     <p class="meta-label">Order ID</p>
-                    <p class="meta-value">{{ order.order_item_id }}</p>
+                    <p class="meta-value">{{ order.uuid }}</p>
                 </div>
             </div>
 
@@ -204,10 +204,10 @@
                             <span>₹{{ return_request.order_item.sub_total }}</span>
                         </div>
 
-                        <div class="price-row">
+                        <!-- <div class="price-row">
                             <span>Tax (GST/VAT)</span>
                             <span>₹{{ return_request.order_item.tax_amount }}</span>
-                        </div>
+                        </div> -->
 
                         <div class="price-row">
                             <span>Delivery Fee</span>
@@ -216,8 +216,15 @@
 
                         <div class="price-row">
                             <span>Discount Applied</span>
-                            <span>- ₹{{ return_request.order_item.discount_amount }}</span>
+                            <span class="discount-price">- ₹{{ return_request.order_item.discount_amount }}</span>
                         </div>
+
+                        {% if order.order.coupon_applied %}
+                        <div class="price-row">
+                            <span>Coupon <span class="discount-price" >({{ order.order.coupon_applied.code }})</span></span>
+                            <span class="discount-price">-₹{{ order.coupon_discount_amount }}</span>
+                        </div>
+                        {% endif %}
 
                         <div class="price-row total">
                             <span>Amount Paid</span>

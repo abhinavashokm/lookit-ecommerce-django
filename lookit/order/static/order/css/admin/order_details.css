@@ -1005,3 +1005,7 @@ textarea.form-control {
     background-color: #dc2626 !important;   /* main red */
     box-shadow: 0 0 0 3px #fecaca;           /* soft red halo */
 }
+
+.discount-price {
+    color: #28a745;
+}

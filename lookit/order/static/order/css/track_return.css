@@ -1055,3 +1055,7 @@ Modal Styles (Danger Modal)
     border-top: none;
     border-radius: 12px;
 }
+
+.discount-price {
+    color: #28a745;
+}

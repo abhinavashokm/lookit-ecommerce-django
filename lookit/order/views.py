@@ -28,6 +28,7 @@ from wallet.models import Wallet, WalletTransactions
 from cart.utils import calculate_cart_summary
 from decimal import Decimal
 from coupon.utils import reduce_coupon_usage_limit, create_coupon_usage_record, clear_users_saved_coupon, coupon_eligibility_check
+from wallet.utils import refund_to_wallet
 
 @login_required
 @cart_not_empty_required
@@ -101,7 +102,6 @@ def create_order(request):
     order_summary = summary.get('cart_summary')
     total_items = cart_items.count()
     applied_coupon = summary.get('applied_coupon') if summary.get('applied_coupon') else None
-    print(applied_coupon)
     order = None
     try:
         with transaction.atomic():
@@ -119,11 +119,13 @@ def create_order(request):
             )
             for item in cart_items:
                 coupon_discount = None
+                final_amount = item.sub_total
                 if applied_coupon:
                     # Calculate proportional coupon discount for each product
                     price_after_discount = item.sub_total_per_product - item.discount_subtotal
                     total_order_value = order_summary.get('sub_total') - order_summary.get('offer_discount')
                     coupon_discount = Decimal((price_after_discount / total_order_value) * order_summary.get('coupon_discount'))
+                    final_amount -= coupon_discount
 
                 OrderItems.objects.create(
                     order=order,
@@ -134,7 +136,7 @@ def create_order(request):
                     delivery_fee=Decimal(0.00),
                     discount_amount=item.discount_subtotal,
                     coupon_discount_amount=coupon_discount,
-                    total=item.sub_total,  # final line total
+                    total=final_amount,  # final line total (after deducted discount amount and coupon amount)
                 )
 
     except Exception as e:
@@ -518,7 +520,19 @@ def cancel_order(request, order_item_uuid):
                 variant.stock += 1
                 order_item.save()
                 variant.save()
-                messages.success(request, "Order Cancelled.")
+                
+                
+                
+                #refund money back to wallet instantly (except cod)
+                if order_item.order.payment_method != Order.PaymentMethod.COD:
+                    refund_amount = order_item.total
+                    refund_to_wallet(request.user, refund_amount)
+                    messages.success(request, "Order Cancelled.")
+                    messages.success(request, f"₹{refund_amount} has been credited to your wallet."
+)
+                else:
+                    messages.success(request, "Order Cancelled.")
+                
         else:
             messages.error(request, "Unauthorized Access")
     except Exception as e:
@@ -850,53 +864,64 @@ def admin_update_return_status(request, return_request_uuid):
         pickup_date = request.POST.get("pickup_date")
 
         if return_status in ReturnRequest.ReturnStatus.values:
-            return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
-            return_request.status = return_status
+            try:
+                return_request = ReturnRequest.objects.get(uuid=return_request_uuid)
+                return_request.status = return_status
 
-            # Set relevant timestamp based on new status
-            if return_status == ReturnRequest.ReturnStatus.APPROVED:
-                return_request.approved_at = timezone.now()
-                return_request.rejected_at = None
-                return_request.pickup_scheduled_on = None
-                return_request.pickup_scheduled_for = None
-                return_request.pickedup_at = None
-                return_request.refunded_at = None
-            elif return_status == ReturnRequest.ReturnStatus.REJECTED:
-                return_request.rejected_at = timezone.now()
-                return_request.approved_at = None
-                return_request.pickup_scheduled_on = None
-                return_request.pickup_scheduled_for = None
-                return_request.pickedup_at = None
-                return_request.refunded_at = None
-            elif return_status == ReturnRequest.ReturnStatus.PICKUP_SCHEDULED:
-                if pickup_date:
-                    return_request.pickup_scheduled_on = timezone.now()
-                    return_request.pickup_scheduled_for = pickup_date
+                # Set relevant timestamp based on new status
+                if return_status == ReturnRequest.ReturnStatus.APPROVED:
+                    return_request.approved_at = timezone.now()
+                    return_request.rejected_at = None
+                    return_request.pickup_scheduled_on = None
+                    return_request.pickup_scheduled_for = None
                     return_request.pickedup_at = None
                     return_request.refunded_at = None
-                else:
-                    messages.error(request, "Please Provide Pickup Date.")
-            elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
-                return_request.pickedup_at = timezone.now()
-                return_request.refunded_at = None
-                # --update order status ----------
-                order = return_request.order_item
-                order.order_status = order.OrderStatus.RETURNED
-                order.save()
-                # --handle stock------------------
-                quantity_returned = return_request.order_item.quantity
-                variant = return_request.variant
-                variant.stock += quantity_returned
-                variant.save()
-            elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
-                return_request.refunded_at = timezone.now()
-                # --update order status ----------
-                order = return_request.order_item
-                order.order_status = order.OrderStatus.REFUNDED
-                order.save()
+                elif return_status == ReturnRequest.ReturnStatus.REJECTED:
+                    return_request.rejected_at = timezone.now()
+                    return_request.approved_at = None
+                    return_request.pickup_scheduled_on = None
+                    return_request.pickup_scheduled_for = None
+                    return_request.pickedup_at = None
+                    return_request.refunded_at = None
+                elif return_status == ReturnRequest.ReturnStatus.PICKUP_SCHEDULED:
+                    if pickup_date:
+                        return_request.pickup_scheduled_on = timezone.now()
+                        return_request.pickup_scheduled_for = pickup_date
+                        return_request.pickedup_at = None
+                        return_request.refunded_at = None
+                    else:
+                        messages.error(request, "Please Provide Pickup Date.")
+                elif return_status == ReturnRequest.ReturnStatus.PICKED_UP:
+                    return_request.pickedup_at = timezone.now()
+                    return_request.refunded_at = None
+                    # --update order status ----------
+                    order = return_request.order_item
+                    order.order_status = order.OrderStatus.RETURNED
+                    order.save()
+                    # --handle stock------------------
+                    quantity_returned = return_request.order_item.quantity
+                    variant = return_request.variant
+                    variant.stock += quantity_returned
+                    variant.save()
+                elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
+                        order_item = return_request.order_item
+                        
+                        #refund money back to wallet instantly 
+                        refund_amount = order_item.total
+                        refund_to_wallet(order_item.order.user, refund_amount)
+                        messages.success(request, f"₹{refund_amount} has been credited to users wallet.")
+                        
+                        return_request.refunded_at = timezone.now()
+                        # --update order status ----------
+                        order_item.order_status = order_item.OrderStatus.REFUNDED
+                        order_item.save()
+                            
+                return_request.save()
+                messages.success(request, "Return status updated successfully.")    
+            except Exception as e:
+                print("Error : ", e)
+                messages.error(request, "Something went wrong")
 
-            return_request.save()
-            messages.success(request, "Return status updated successfully.")
         else:
             messages.error(request, "Invalid return status.")
 

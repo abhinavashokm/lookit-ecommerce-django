@@ -1281,3 +1281,7 @@ textarea.form-control {
 .timeline-item.rejected::after {
     background-color: #fecaca; /* soft red line */
 }
+
+.discount-price {
+    color: #28a745;
+}

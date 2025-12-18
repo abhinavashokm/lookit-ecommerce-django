@@ -107,10 +107,10 @@
             <span class="summary-label">Discount Applid</span>
             <span class="summary-value discount">-₹{{ order.discount_total }}</span>
         </div>
-        {% if order.coupon_discount_amount %}
+        {% if order.coupon_applied %}
         <div class="summary-row">
             <span class="summary-label">Coupon Applied</span>
-            <span class="summary-value discount">-₹{{ order.coupon_discount_amount }}</span>
+            <span class="summary-value discount">-₹{{ order.coupon_discount_total }}</span>
         </div>
         {% endif %}
         <div class="summary-row total">

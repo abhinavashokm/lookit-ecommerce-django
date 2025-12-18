@@ -17,7 +17,7 @@ from django.db.models import (
 from cart.models import Cart, CartAppliedCoupon
 from offer.models import Offer
 from django.db.models.functions import Coalesce, Greatest, Round
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 def calculate_cart_summary(user):
     """
@@ -113,7 +113,8 @@ def calculate_cart_summary(user):
     # --total discount applied-----------------------------------------------------------
     total_discount_amount = cart_items.aggregate(total=Coalesce(Sum('discount_subtotal'), Decimal(0.00)))['total']
 
-    grand_total = sub_total - total_discount_amount
+    grand_total = (Decimal(sub_total) - Decimal(total_discount_amount)) \
+    .quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
 
     # --fetch coupon discount details if applied-----------------------------------
     cart_applied_exist = CartAppliedCoupon.objects.filter(user=user).first()
@@ -125,6 +126,7 @@ def calculate_cart_summary(user):
             coupon_discount = applied_coupon.discount_value
         elif applied_coupon.discount_type == 'PERCENTAGE':
             coupon_discount = (grand_total * applied_coupon.discount_value) / 100
+            coupon_discount = Decimal(coupon_discount).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
         grand_total -= coupon_discount
 
     cart_summary = {

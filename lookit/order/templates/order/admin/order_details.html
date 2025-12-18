@@ -179,9 +179,21 @@
                                 <td>₹{{ order.delivery_fee }}</td>
                             </tr>
                             <tr>
+                                <td colspan="5" class="text-right">Discount</td>
+                                <td class="discount-price">-₹{{ order.discount_amount }}</td>
+                            </tr>
+
+                            {% if order.order.coupon_applied %}
+                            <tr>
+                                <td colspan="5" class="text-right">Coupon <span class="discount-price" >({{ order.order.coupon_applied.code }})</span></td>
+                                <td class="discount-price">-₹{{ order.coupon_discount_amount }}</td>
+                            </tr>
+                            {% endif %}
+
+                            <!-- <tr>
                                 <td colspan="5" class="text-right">Tax Amount</td>
                                 <td>₹{{ order.tax_amount }}</td>
-                            </tr>
+                            </tr> -->
                             <tr class="total-row">
                                 <td colspan="5" class="text-right"><strong>Total</strong></td>
                                 <td><strong>₹{{ order.total }}</strong></td>
