@@ -9,6 +9,7 @@ from django.db.models import (
     IntegerField,
     Sum,
     Count,
+    DecimalField,
 )
 from django.contrib import messages
 from django.db import transaction
@@ -27,8 +28,15 @@ from cart.decorators import cart_not_empty_required
 from wallet.models import Wallet, WalletTransactions
 from cart.utils import calculate_cart_summary
 from decimal import Decimal
-from coupon.utils import reduce_coupon_usage_limit, create_coupon_usage_record, clear_users_saved_coupon, coupon_eligibility_check
+from coupon.utils import (
+    reduce_coupon_usage_limit,
+    create_coupon_usage_record,
+    clear_users_saved_coupon,
+    coupon_eligibility_check,
+)
 from wallet.utils import refund_to_wallet
+from django.db.models.functions import Coalesce
+from order.utils import render_to_pdf
 
 @login_required
 @cart_not_empty_required
@@ -101,7 +109,9 @@ def create_order(request):
     cart_items = summary.get('items')
     order_summary = summary.get('cart_summary')
     total_items = cart_items.count()
-    applied_coupon = summary.get('applied_coupon') if summary.get('applied_coupon') else None
+    applied_coupon = (
+        summary.get('applied_coupon') if summary.get('applied_coupon') else None
+    )
     order = None
     try:
         with transaction.atomic():
@@ -109,11 +119,11 @@ def create_order(request):
             order = Order.objects.create(
                 user=user,
                 address=address,
-                total_items=total_items, #number of products
+                total_items=total_items,  # number of products
                 sub_total=order_summary.get('sub_total'),
                 delivery_total=order_summary.get('delivery_fee'),
                 discount_total=order_summary.get('offer_discount'),
-                coupon_applied = applied_coupon,
+                coupon_applied=applied_coupon,
                 coupon_discount_total=order_summary.get('coupon_discount'),
                 grand_total=order_summary.get('grand_total'),
             )
@@ -122,9 +132,16 @@ def create_order(request):
                 final_amount = item.sub_total
                 if applied_coupon:
                     # Calculate proportional coupon discount for each product
-                    price_after_discount = item.sub_total_per_product - item.discount_subtotal
-                    total_order_value = order_summary.get('sub_total') - order_summary.get('offer_discount')
-                    coupon_discount = Decimal((price_after_discount / total_order_value) * order_summary.get('coupon_discount'))
+                    price_after_discount = (
+                        item.sub_total_per_product - item.discount_subtotal
+                    )
+                    total_order_value = order_summary.get(
+                        'sub_total'
+                    ) - order_summary.get('offer_discount')
+                    coupon_discount = Decimal(
+                        (price_after_discount / total_order_value)
+                        * order_summary.get('coupon_discount')
+                    )
                     final_amount -= coupon_discount
 
                 OrderItems.objects.create(
@@ -213,16 +230,18 @@ def place_order(request, order_uuid):
 
                 # --handle stock count of the product---
                 reduce_stock_for_order(order_id)
-                
-                #--reduce coupon usage limit if applied any---
+
+                # --reduce coupon usage limit if applied any---
                 order = Order.objects.get(id=order_id)
                 if order.coupon_applied:
-                    #check if user already used the coupon
-                    eligible = coupon_eligibility_check(order.coupon_applied.code, request.user)
+                    # check if user already used the coupon
+                    eligible = coupon_eligibility_check(
+                        order.coupon_applied.code, request.user
+                    )
                     if not eligible:
                         messages.error(request, "You already used coupon once")
                         return redirect('payment-page', order_id=order_id)
-                        
+
                     reduce_coupon_usage_limit(order.coupon_applied.code)
                     create_coupon_usage_record(order.coupon_applied, request.user)
                     clear_users_saved_coupon(order.coupon_applied, request.user)
@@ -520,19 +539,18 @@ def cancel_order(request, order_item_uuid):
                 variant.stock += 1
                 order_item.save()
                 variant.save()
-                
-                
-                
-                #refund money back to wallet instantly (except cod)
+
+                # refund money back to wallet instantly (except cod)
                 if order_item.order.payment_method != Order.PaymentMethod.COD:
                     refund_amount = order_item.total
                     refund_to_wallet(request.user, refund_amount)
                     messages.success(request, "Order Cancelled.")
-                    messages.success(request, f"₹{refund_amount} has been credited to your wallet."
-)
+                    messages.success(
+                        request, f"₹{refund_amount} has been credited to your wallet."
+                    )
                 else:
                     messages.success(request, "Order Cancelled.")
-                
+
         else:
             messages.error(request, "Unauthorized Access")
     except Exception as e:
@@ -904,20 +922,22 @@ def admin_update_return_status(request, return_request_uuid):
                     variant.stock += quantity_returned
                     variant.save()
                 elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
-                        order_item = return_request.order_item
-                        
-                        #refund money back to wallet instantly 
-                        refund_amount = order_item.total
-                        refund_to_wallet(order_item.order.user, refund_amount)
-                        messages.success(request, f"₹{refund_amount} has been credited to users wallet.")
-                        
-                        return_request.refunded_at = timezone.now()
-                        # --update order status ----------
-                        order_item.order_status = order_item.OrderStatus.REFUNDED
-                        order_item.save()
-                            
+                    order_item = return_request.order_item
+
+                    # refund money back to wallet instantly
+                    refund_amount = order_item.total
+                    refund_to_wallet(order_item.order.user, refund_amount)
+                    messages.success(
+                        request, f"₹{refund_amount} has been credited to users wallet."
+                    )
+
+                    return_request.refunded_at = timezone.now()
+                    # --update order status ----------
+                    order_item.order_status = order_item.OrderStatus.REFUNDED
+                    order_item.save()
+
                 return_request.save()
-                messages.success(request, "Return status updated successfully.")    
+                messages.success(request, "Return status updated successfully.")
             except Exception as e:
                 print("Error : ", e)
                 messages.error(request, "Something went wrong")
@@ -930,11 +950,9 @@ def admin_update_return_status(request, return_request_uuid):
 
 @admin_required
 def sales_report(request):
-    orders = (
-        OrderItems.objects.filter(order_status=OrderItems.OrderStatus.DELIVERED)
-        .order_by('-created_at')
-    )
-    
+    orders = OrderItems.objects.filter(
+        order_status=OrderItems.OrderStatus.DELIVERED
+    ).order_by('-created_at')
 
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
@@ -942,8 +960,17 @@ def sales_report(request):
     if from_date and to_date:
         orders = orders.filter(created_at__date__range=[from_date, to_date])
 
-    report_summary = orders.aggregate(total_order_count = Count('id'), total_order_value = Sum('sub_total'),total_discounts= Sum('discount_amount'), realized_revenue=Sum('total'))
-
+    report_summary = orders.aggregate(
+        total_order_count=Count('id'),
+        total_order_value=Sum('sub_total'),
+        total_offer_discounts=Sum('discount_amount'),
+        total_coupon_discounts=Coalesce(Sum('coupon_discount_amount'), Decimal('0.00'), output_field=DecimalField(max_digits=10, decimal_places=2)),
+        realized_revenue=Sum('total'),
+    )
+    report_summary['total_discounts'] = (
+        report_summary['total_offer_discounts']
+        + report_summary['total_coupon_discounts']
+    )
 
     # pagination
     paginator = Paginator(orders, 5)
@@ -965,3 +992,47 @@ def sales_report(request):
             "report_summary": report_summary,
         },
     )
+
+
+
+def download_sales_report_pdf(request):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get("end_date")
+    print(start_date, end_date)
+    
+    sales = OrderItems.objects.filter(
+        order_status=OrderItems.OrderStatus.DELIVERED
+    ).order_by('-created_at')
+    today = timezone.now().date()
+    
+    if start_date and end_date:
+        sales = sales.filter(created_at__date__range=[start_date, end_date])
+    
+    report_summary = sales.aggregate(
+        total_order_count=Count('id'),
+        total_order_value=Sum('sub_total'),
+        total_offer_discounts=Sum('discount_amount'),
+        total_coupon_discounts=Coalesce(Sum('coupon_discount_amount'), Decimal('0.00'), output_field=DecimalField(max_digits=10, decimal_places=2)),
+        realized_revenue=Sum('total'),
+    )
+    report_summary['total_discounts'] = (
+        report_summary['total_offer_discounts']
+        + report_summary['total_coupon_discounts']
+    )
+
+    context = {
+        "sales": sales,
+        "report_summary": report_summary,
+        "generated_on": today,
+        "start_date":start_date,
+        "end_date":end_date,
+    }
+
+    pdf = render_to_pdf("order/admin/sales_report_exports/sales_report_pdf.html", context)
+
+    if not pdf:
+        return HttpResponse("Error generating PDF", status=500)
+
+    response = HttpResponse(pdf, content_type="application/pdf")
+    response["Content-Disposition"] = 'attachment; filename="sales_report.pdf"'
+    return response

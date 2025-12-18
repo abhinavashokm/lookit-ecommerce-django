@@ -43,13 +43,13 @@ dateRangeBtns.forEach(btn => {
 });
 
 // Set default date range to today
-document.addEventListener('DOMContentLoaded', function() {
-    const today = new Date();
-    const fromDate = document.getElementById('fromDate');
-    const toDate = document.getElementById('toDate');
+// document.addEventListener('DOMContentLoaded', function() {
+//     const today = new Date();
+//     const fromDate = document.getElementById('fromDate');
+//     const toDate = document.getElementById('toDate');
     
-    if (fromDate && toDate) {
-        fromDate._flatpickr.setDate(today, true);
-        toDate._flatpickr.setDate(today, true);
-    }
-});
+//     if (fromDate && toDate) {
+//         fromDate._flatpickr.setDate(today, true);
+//         toDate._flatpickr.setDate(today, true);
+//     }
+// });

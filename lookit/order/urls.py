@@ -19,6 +19,7 @@ from .views import (
     download_invoice_pdf,
     payment_failure_page,
     sales_report,
+    download_sales_report_pdf,
 )
 
 urlpatterns = [
@@ -45,4 +46,6 @@ urlpatterns = [
     path("admin/return-request/update-return-status/<return_request_uuid>/", admin_update_return_status, name="admin-update-return-status"),
     
     path("admin/sales-report/", sales_report, name="admin-sales-report"),
+    path("admin/reports/sales/pdf/", download_sales_report_pdf, name="sales-report-pdf"),
+
 ]
