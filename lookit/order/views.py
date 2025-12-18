@@ -37,6 +37,10 @@ from coupon.utils import (
 from wallet.utils import refund_to_wallet
 from django.db.models.functions import Coalesce
 from order.utils import render_to_pdf
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment, PatternFill
+from openpyxl.utils import get_column_letter
+from django.http import HttpResponse
 
 @login_required
 @cart_not_empty_required
@@ -1035,4 +1039,140 @@ def download_sales_report_pdf(request):
 
     response = HttpResponse(pdf, content_type="application/pdf")
     response["Content-Disposition"] = 'attachment; filename="sales_report.pdf"'
+    return response
+
+def export_sales_report_excel(request):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get("end_date")
+    
+    
+    sales = OrderItems.objects.filter(
+        order_status=OrderItems.OrderStatus.DELIVERED
+    ).order_by('-created_at')
+    
+    if start_date and end_date:
+        sales = sales.filter(created_at__date__range=[start_date, end_date])
+    
+    report_summary = sales.aggregate(
+        total_order_count=Count('id'),
+        total_order_value=Sum('sub_total'),
+        total_offer_discounts=Sum('discount_amount'),
+        total_coupon_discounts=Coalesce(Sum('coupon_discount_amount'), Decimal('0.00'), output_field=DecimalField(max_digits=10, decimal_places=2)),
+        realized_revenue=Sum('total'),
+    )
+    report_summary['total_discounts'] = (
+        report_summary['total_offer_discounts']
+        + report_summary['total_coupon_discounts']
+    )
+    
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Sales Report"
+
+    # ---------- Styles ----------
+    title_font = Font(size=16, bold=True)
+    header_font = Font(bold=True)
+    center_align = Alignment(horizontal="center")
+    right_align = Alignment(horizontal="right")
+
+    header_fill = PatternFill(
+        start_color="E2E8F0",
+        end_color="E2E8F0",
+        fill_type="solid"
+    )
+
+    # ---------- Title ----------
+    ws.merge_cells("A1:H1")
+    ws["A1"] = "LookIt - Sales Report"
+    ws["A1"].font = title_font
+    ws["A1"].alignment = center_align
+
+    ws.merge_cells("A2:H2")
+    ws["A2"] = f"Period: {start_date} - {end_date}"
+    ws["A2"].alignment = center_align
+
+    ws.append([])
+
+    # ---------- Summary ----------
+    summary_headers = [
+        "Total Orders",
+        "Total Value",
+        "Realized Revenue",
+        "Discounts",
+    ]
+
+    summary_values = [
+        report_summary.get('total_order_count'),
+        report_summary.get('total_order_value'),
+        report_summary.get('realized_revenue'),
+        report_summary.get('total_discounts'),
+    ]
+
+    ws.append(summary_headers)
+    ws.append(summary_values)
+
+    for col in range(1, 5):
+        ws.cell(row=4, column=col).font = header_font
+        ws.cell(row=4, column=col).fill = header_fill
+        ws.cell(row=4, column=col).alignment = center_align
+        ws.cell(row=5, column=col).alignment = center_align
+
+    ws.append([])
+
+    # ---------- Table Header ----------
+    headers = [
+        "Order ID",
+        "Date",
+        "Customer",
+        "Product",
+        "Payment",
+        "Coupon",
+        "Discount",
+        "Total",
+    ]
+
+    ws.append(headers)
+    header_row = ws.max_row
+
+    for col_num, header in enumerate(headers, 1):
+        cell = ws.cell(row=header_row, column=col_num)
+        cell.font = header_font
+        cell.fill = header_fill
+        cell.alignment = center_align
+
+    # ---------- Data Rows ----------
+    for item in sales:
+        ws.append([
+            item.uuid,
+            item.created_at.strftime("%d %b %Y"),
+            item.order.user.full_name,
+            item.product.name,
+            "Razorpay" if item.order.payment_method == "ONLINE_PAYMENT" else item.order.payment_method,
+            item.order.coupon_applied.code if item.order.coupon_applied else "-",
+            float(item.discount_amount or 0),
+            float(item.total),
+        ])
+
+    # ---------- Align Amount Columns ----------
+    for row in ws.iter_rows(min_row=header_row + 1):
+        row[6].alignment = right_align  # Discount
+        row[7].alignment = right_align  # Total
+
+    # ---------- Auto column width ----------
+    for col in ws.columns:
+        max_length = 0
+        col_letter = get_column_letter(col[0].column)
+        for cell in col:
+            if cell.value:
+                max_length = max(max_length, len(str(cell.value)))
+        ws.column_dimensions[col_letter].width = max_length + 3
+
+    # ---------- Response ----------
+    response = HttpResponse(
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+    response["Content-Disposition"] = 'attachment; filename="sales_report.xlsx"'
+
+    wb.save(response)
     return response

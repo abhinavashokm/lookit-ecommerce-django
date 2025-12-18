@@ -20,6 +20,7 @@ from .views import (
     payment_failure_page,
     sales_report,
     download_sales_report_pdf,
+    export_sales_report_excel,
 )
 
 urlpatterns = [
@@ -47,5 +48,6 @@ urlpatterns = [
     
     path("admin/sales-report/", sales_report, name="admin-sales-report"),
     path("admin/reports/sales/pdf/", download_sales_report_pdf, name="sales-report-pdf"),
+    path("admin/reports/sales/excel/", export_sales_report_excel, name="sales-report-excel")
 
 ]

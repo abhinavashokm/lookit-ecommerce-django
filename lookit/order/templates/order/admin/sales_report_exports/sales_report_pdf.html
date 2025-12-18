@@ -144,19 +144,19 @@
         <td>
             <div class="summary-title">Total Value</div>
             <div class="summary-value">
-                ₹{{ report_summary.total_order_value }}
+                Rs. {{ report_summary.total_order_value }}
             </div>
         </td>
         <td>
             <div class="summary-title">Realized Revenue</div>
             <div class="summary-value">
-                ₹{{ report_summary.realized_revenue }}
+                Rs. {{ report_summary.realized_revenue }}
             </div>
         </td>
         <td>
             <div class="summary-title">Discounts</div>
             <div class="summary-value">
-                ₹{{ report_summary.total_discounts }}
+                Rs. {{ report_summary.total_discounts }}
             </div>
         </td>
     </tr>
@@ -194,17 +194,17 @@
                 {% if order.order.coupon_applied %}
                     {{ order.order.coupon_applied.code }}
                     <div class="coupon-deduction">
-                        (-₹{{ order.coupon_discount_amount }})
+                        (-Rs. {{ order.coupon_discount_amount }})
                     </div>
                 {% else %}
                     -
                 {% endif %}
             </td>
             <td class="amount discount">
-                ₹{{ order.discount_amount|default:"0.00" }}
+                Rs. {{ order.discount_amount|default:"0.00" }}
             </td>
             <td class="amount">
-                ₹{{ order.total }}
+                Rs. {{ order.total }}
             </td>
         </tr>
         {% endfor %}
