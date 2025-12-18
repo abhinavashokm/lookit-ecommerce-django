@@ -77,3 +77,7 @@ def clear_users_saved_coupon(coupon, user):
     #remove from saved coupons
     user = User.objects.get(id=user.id)
     user.saved_coupons.remove(coupon)
+    
+def clear_users_applied_coupon(coupon, user):
+    #remove applied coupon
+    CartAppliedCoupon.objects.filter(coupon=coupon, user=user).delete()

@@ -16,6 +16,7 @@ from django.db import transaction
 from decimal import Decimal
 from coupon.utils import reduce_coupon_usage_limit, create_coupon_usage_record, clear_users_saved_coupon
 import json
+from cart.utils import calculate_cart_summary
 
 
 # Initialize Razorpay client
@@ -35,8 +36,11 @@ def create_razorpay_order(request):
     if order_id:
         order = Order.objects.get(id=order_id)
     
+    summary = calculate_cart_summary(request.user)
+    cart_summary = summary.get('cart_summary')
+    amount_in_rs = cart_summary.get('grand_total')
 
-    amount = 20000  # Rs. 200 in paise
+    amount = int(amount_in_rs) * 100   # Rs. 200 in paise
     currency = 'INR'
 
     # Create Razorpay order

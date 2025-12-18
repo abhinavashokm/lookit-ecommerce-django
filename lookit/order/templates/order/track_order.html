@@ -171,10 +171,12 @@
                             <span>Shipping</span>
                             <span>₹{{ order.delivery_fee }}</span>
                         </div>
+                        {% if order.discount_amount != 0 %}
                         <div class="price-row">
                             <span>Discount</span>
                             <span class="discount-price">-₹{{ order.discount_amount }}</span>
                         </div>
+                        {% endif %}
                         {% if order.order.coupon_applied %}
                         <div class="price-row">
                             <span>Coupon <span class="discount-price" >({{ order.order.coupon_applied.code }})</span></span>

@@ -529,14 +529,14 @@ def wishlist(request):
     try:
         # sub queries for fetching offers
         product_discount_sq = (
-            Offer.objects.filter(products=OuterRef('product__id'))
+            Offer.objects.filter(products=OuterRef('product__id'), is_active=True)
             .values('products')
             .annotate(max_discount=Max('discount'))
             .values('max_discount')[:1]
         )
 
         category_discount_sq = (
-            Offer.objects.filter(style=OuterRef('product__style'))
+            Offer.objects.filter(style=OuterRef('product__style'), is_active=True)
             .values('style')
             .annotate(max_discount=Max('discount'))
             .values('max_discount')[:1]

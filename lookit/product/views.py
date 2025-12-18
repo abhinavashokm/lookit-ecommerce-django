@@ -589,14 +589,14 @@ def admin_edit_category(request):
 def explore(request):
     # sub queries for fetching offers
     product_discount_sq = (
-        Offer.objects.filter(products=OuterRef('pk'))
+        Offer.objects.filter(products=OuterRef('pk'), is_active=True)
         .values('products')
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
     )
 
     category_discount_sq = (
-        Offer.objects.filter(style=OuterRef('style'))
+        Offer.objects.filter(style=OuterRef('style'), is_active=True)
         .values('style')
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
@@ -739,12 +739,12 @@ def product_details(request, product_uuid):
     )
     # --fetch offers---------------------
     max_product_offer = (
-        Offer.objects.filter(products=product)
+        Offer.objects.filter(products=product, is_active=True)
         .aggregate(maximum_offer=Max('discount'))
         .get('maximum_offer', '')
     )
     max_category_offer = (
-        Offer.objects.filter(style=product.style)
+        Offer.objects.filter(style=product.style, is_active=True)
         .aggregate(maximum_offer=Max('discount'))
         .get('maximum_offer', '')
     )

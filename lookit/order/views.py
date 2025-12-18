@@ -41,6 +41,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
+from coupon.utils import is_coupon_min_purchase_eligible, clear_users_applied_coupon
 
 @login_required
 @cart_not_empty_required
@@ -48,6 +49,15 @@ def checkout(request):
     summary = calculate_cart_summary(request.user)
     order_items = summary.get('items')
     price_summary = summary.get('cart_summary')
+    applied_coupon = summary.get('applied_coupon')
+    
+    if applied_coupon:
+        purchase_amount = price_summary.get('sub_total') - price_summary.get('offer_discount')
+        coupon_eligible = is_coupon_min_purchase_eligible(applied_coupon.code, purchase_amount)
+        if not coupon_eligible:
+            clear_users_applied_coupon(applied_coupon, request.user)
+            messages.error(request,f"This coupon requires a minimum purchase of ₹{applied_coupon.min_purchase_amount}.")
+            return redirect('cart')
 
     # --stock and availability validations--------------------
     for item in order_items:

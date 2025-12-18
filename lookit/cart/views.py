@@ -57,7 +57,7 @@ def remove_cart_item(request):
     if request.method == "POST":
         variant_id = request.POST.get("variant_id")
         try:
-            Cart.objects.get(variant_id=variant_id).delete()
+            Cart.objects.filter(variant_id=variant_id).delete()
             messages.success(request, "ITEM REMOVED FROM CART")
         except Exception as e:
             messages.error(request, e)
