@@ -674,7 +674,7 @@ def wishilst_move_to_cart(request):
     if request.method == "POST":
         product_id = request.POST.get("product_id")
         variant_id = request.POST.get("variant_id")
-
+        print(variant_id)
         try:
             with transaction.atomic():
 

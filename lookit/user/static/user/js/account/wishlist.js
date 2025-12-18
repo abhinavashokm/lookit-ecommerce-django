@@ -47,22 +47,29 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-//FOR ADDING VARIANT ID TO MOVE TO CART  REQUEST          
-document.getElementById("moveToCartForm").addEventListener("submit", function (event) {
-// Step 1: Temporarily block submission
-event.preventDefault();
 
-const sizeOptions = document.getElementById('sizeOptions')
+document.querySelectorAll('.wishlist-card').forEach(card => {
+    const form = card.querySelector('form[action*="move-to-cart"]');
+    const dropdown = card.querySelector('.size-dropdown');
 
+    if (!form || !dropdown) return;
 
-// Step 2: Add a new field dynamically
-const form = event.target;
-const hidden = document.createElement("input");
-hidden.type = "hidden";
-hidden.name = "variant_id";
-hidden.value = sizeOptions.value; // You can compute something dynamically here
-form.appendChild(hidden);
+    form.addEventListener('submit', function (event) {
+        if (!dropdown.value) {
+            event.preventDefault();
+            alert("Please select a size");
+            return;
+        }
 
-// Step 3: Continue form submission (resume normal behavior)
-form.submit();
+        // ensure only ONE hidden field exists
+        let hidden = form.querySelector('input[name="variant_id"]');
+        if (!hidden) {
+            hidden = document.createElement("input");
+            hidden.type = "hidden";
+            hidden.name = "variant_id";
+            form.appendChild(hidden);
+        }
+
+        hidden.value = dropdown.value;
+    });
 });

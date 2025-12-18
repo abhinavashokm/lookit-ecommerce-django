@@ -59,7 +59,7 @@
                     <div class="size-selection">
                         <label for="sizeOptions">Size:</label>
                         <select id="sizeOptions" class="size-dropdown">
-                            <option value="" selected disabled>Select Size</option>
+                            <option selected disabled>Select Size</option>
                             {% for variant in item.product.variant_set.all %}
                             {% if variant.stock != 0  %}
                             <option value="{{ variant.id }}">{{ variant.size }}</option>
