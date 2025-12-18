@@ -1,12 +1,22 @@
 from .models import Coupon, CouponUsage
 from user.models import User
 from cart.models import CartAppliedCoupon
+from django.utils import timezone
+from decimal import Decimal
 
 def is_valid_coupon(code):
     coupon = Coupon.objects.filter(code=code).first()
-    if coupon and coupon.status == 'ACTIVE':
-        return True
-    return False
+    today = timezone.now().date()
+    if not coupon:
+        return False
+    
+    if coupon.status != 'ACTIVE':
+        return False
+    
+    if coupon.start_date > today or coupon.end_date < today:
+        return False
+    
+    return True
 
 
 def reduce_coupon_usage_limit(code):
@@ -22,21 +32,21 @@ def update_coupon_usage_remaining(code, new_usage_limit):
     coupon = Coupon.objects.get(code=code)
     new_usage_limit = int(new_usage_limit)
     
-    # if usage limit not changed, do nothing
-    # -1 is for unlimited, so do nothing
-    print(coupon.usage_limit)
-    print(new_usage_limit)
-    if coupon.usage_limit != new_usage_limit and coupon.usage_limit != -1:
+    #-1 is for unlimited
+    if new_usage_limit == -1:
+        coupon.usage_remaining = -1
+    else:
         #we respect how much coupon already used
-        used_count = coupon.usage_limit - coupon.usage_remaining
-        new_usage_remaining = new_usage_limit - used_count
+        coupon_used_count = CouponUsage.objects.filter(coupon=coupon).count()
+        new_usage_remaining = new_usage_limit - coupon_used_count
 
         #usage reamining can't be negative value, so in those case set it to zero
         if new_usage_remaining > 0:
             coupon.usage_remaining = new_usage_remaining
         else:
             coupon.usage_remaining = 0
-        coupon.save()
+            
+    coupon.save()
 
 
 def create_coupon_usage_record(coupon, user):
@@ -49,6 +59,16 @@ def coupon_eligibility_check(coupon_code, user):
     if exists:
         return False
     return True
+
+def is_coupon_min_purchase_eligible(coupon_code, order_amount):
+    """function which return true if users cart have the required minimum purchase amount else return false"""
+    order_amount = Decimal(order_amount)
+    coupon = Coupon.objects.get(code=coupon_code)
+    required_min_purchase = coupon.min_purchase_amount
+    if order_amount < required_min_purchase:
+        return False
+    return True
+
 
 def clear_users_saved_coupon(coupon, user):
     """this function will remove the applied coupon from users savecoupons list and applied coupon"""

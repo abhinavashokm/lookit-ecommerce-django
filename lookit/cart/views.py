@@ -17,7 +17,7 @@ import json
 from django.http import JsonResponse
 from django.db import transaction
 from product.models import Variant
-from coupon.utils import is_valid_coupon, coupon_eligibility_check
+from coupon.utils import is_valid_coupon, coupon_eligibility_check, is_coupon_min_purchase_eligible
 from coupon.models import Coupon
 from .utils import calculate_cart_summary
 
@@ -150,6 +150,7 @@ def save_coupon(request):
         coupon_code = request.POST.get('coupon_code')
         # --check validity-------------------------
         valid_coupon = is_valid_coupon(coupon_code)
+        
         # --check if user already used the coupon
         eligible = coupon_eligibility_check(coupon_code, request.user)
         if not eligible:
@@ -170,6 +171,7 @@ def save_coupon(request):
 def apply_coupon(request):
     if request.method == "POST":
         coupon_code = request.POST.get('coupon_code')
+        cart_amount = request.POST.get('cart-total')
 
         # --check if user already applied another coupon
         applied_coupon_exist = CartAppliedCoupon.objects.filter(
@@ -181,10 +183,19 @@ def apply_coupon(request):
 
         # --check validity-------------------------
         valid_coupon = is_valid_coupon(coupon_code)
+        
         # --check if user already used the coupon
         eligible = coupon_eligibility_check(coupon_code, request.user)
+        # --check if users cart have min purchase amount required for coupon
+        coupon_meets_min_purchase = is_coupon_min_purchase_eligible(coupon_code, cart_amount)
+        
         if not eligible:
             messages.error(request, "You can only use a coupon once!")
+            return redirect('cart')
+        
+        if not coupon_meets_min_purchase:
+            coupon = Coupon.objects.get(code=coupon_code)
+            messages.error(request,f"This coupon requires a minimum purchase of ₹{coupon.min_purchase_amount}.")
             return redirect('cart')
 
         if valid_coupon:

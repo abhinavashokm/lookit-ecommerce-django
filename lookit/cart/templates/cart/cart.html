@@ -200,6 +200,7 @@
                             <form action="{% url 'apply-coupon' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ coupon.code }}" name="coupon_code" id="">
+                                <input type="hidden" name="cart-total" value="{{ cart_summary.grand_total }}">
                                 <button type="submit" class="apply-coupon-btn">Apply</button>
                             </form>
                         </div>
