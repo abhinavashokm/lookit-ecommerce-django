@@ -24,9 +24,19 @@ from django.db import transaction
 from .services import validate_referral_code, give_referral_reward
 from product.models import Product, Variant
 from cart.models import Cart
-from django.db.models import Subquery, OuterRef, Value, ExpressionWrapper, IntegerField, DecimalField, F, Max
+from django.db.models import (
+    Subquery,
+    OuterRef,
+    Value,
+    ExpressionWrapper,
+    IntegerField,
+    DecimalField,
+    F,
+    Max,
+)
 from django.db.models.functions import Round, Coalesce, Greatest
 from offer.models import Offer
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -528,20 +538,31 @@ def wishlist(request):
     items = None
     try:
         # sub queries for fetching offers
+        today = timezone.now().date()
         product_discount_sq = (
-            Offer.objects.filter(products=OuterRef('product__id'), is_active=True)
+            Offer.objects.filter(
+                products=OuterRef('product__id'),
+                is_active=True,
+                start_date__lte=today,
+                end_date__gte=today,
+            )
             .values('products')
             .annotate(max_discount=Max('discount'))
             .values('max_discount')[:1]
         )
 
         category_discount_sq = (
-            Offer.objects.filter(style=OuterRef('product__style'), is_active=True)
+            Offer.objects.filter(
+                style=OuterRef('product__style'),
+                is_active=True,
+                start_date__lte=today,
+                end_date__gte=today,
+            )
             .values('style')
             .annotate(max_discount=Max('discount'))
             .values('max_discount')[:1]
         )
-        
+
         items = (
             Wishlist.objects.filter(user=request.user, product__variant__stock__gt=0)
             .prefetch_related('product__variant_set')
@@ -551,7 +572,9 @@ def wishlist(request):
                     Subquery(product_discount_sq), Value(0), output_field=IntegerField()
                 ),
                 category_discount=Coalesce(
-                    Subquery(category_discount_sq), Value(0), output_field=IntegerField()
+                    Subquery(category_discount_sq),
+                    Value(0),
+                    output_field=IntegerField(),
                 ),
             )
             .annotate(
@@ -560,7 +583,9 @@ def wishlist(request):
             .annotate(
                 offer_price=ExpressionWrapper(
                     Round(
-                        F('product__price') - (F('product__price') * F('offer_percentage') / Value(100)), 2
+                        F('product__price')
+                        - (F('product__price') * F('offer_percentage') / Value(100)),
+                        2,
                     ),
                     output_field=DecimalField(max_digits=10, decimal_places=2),
                 )
@@ -568,7 +593,7 @@ def wishlist(request):
         )
 
     except Exception as e:
-        print("Error while loading wishlist: ",e)
+        print("Error while loading wishlist: ", e)
         messages.error(request, "Something went wrong!")
         return redirect('explore')
 
@@ -615,7 +640,9 @@ def toggle_wishlist_ajax(request):
     data = json.loads(request.body)
     product_id = data.get('product_id')
     try:
-        wishlist_exists = Wishlist.objects.filter(user=request.user, product_id=product_id).exists()
+        wishlist_exists = Wishlist.objects.filter(
+            user=request.user, product_id=product_id
+        ).exists()
         if wishlist_exists:
             Wishlist.objects.filter(user=request.user, product_id=product_id).delete()
             return JsonResponse({"status": "removed"})

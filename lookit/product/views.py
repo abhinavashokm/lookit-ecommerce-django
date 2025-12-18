@@ -30,6 +30,7 @@ from cart.models import Cart
 from offer.models import Offer
 from user.utils import remove_wishlist_item
 from user.models import Wishlist
+from django.utils import timezone
 
 
 """ ============================================
@@ -588,15 +589,27 @@ def admin_edit_category(request):
 
 def explore(request):
     # sub queries for fetching offers
+    today = timezone.now().date()
+
     product_discount_sq = (
-        Offer.objects.filter(products=OuterRef('pk'), is_active=True)
+        Offer.objects.filter(
+            products=OuterRef('pk'),
+            is_active=True,
+            start_date__lte=today,
+            end_date__gte=today,
+        )
         .values('products')
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
     )
 
     category_discount_sq = (
-        Offer.objects.filter(style=OuterRef('style'), is_active=True)
+        Offer.objects.filter(
+            style=OuterRef('style'),
+            is_active=True,
+            start_date__lte=today,
+            end_date__gte=today,
+        )
         .values('style')
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
@@ -604,10 +617,8 @@ def explore(request):
     user = None
     if request.user.is_authenticated:
         user = request.user
-        
-    wishlist_exist_sq = (
-        Wishlist.objects.filter(user=user, product_id = OuterRef('id'))
-    )
+
+    wishlist_exist_sq = Wishlist.objects.filter(user=user, product_id=OuterRef('id'))
 
     # fetch only products which are active and not out of stock
     products = (
@@ -631,9 +642,7 @@ def explore(request):
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
-        .annotate(
-            in_wishlist = Exists(wishlist_exist_sq)
-        )
+        .annotate(in_wishlist=Exists(wishlist_exist_sq))
         .distinct()
     )
 
@@ -701,10 +710,10 @@ def product_details(request, product_uuid):
         )
         .first()
     )
-    
-    #--invalid uuid-------------------------------------
+
+    # --invalid uuid-------------------------------------
     if not product:
-        print("product uuid is invalid or null, uuid = ",product_uuid)
+        print("product uuid is invalid or null, uuid = ", product_uuid)
         messages.error(request, "Something went wrong!")
         return redirect('explore')
 
@@ -738,13 +747,24 @@ def product_details(request, product_uuid):
         .exclude(id=product.id)
     )
     # --fetch offers---------------------
+    today = timezone.now().date()
     max_product_offer = (
-        Offer.objects.filter(products=product, is_active=True)
+        Offer.objects.filter(
+            products=product,
+            is_active=True,
+            start_date__lte=today,
+            end_date__gte=today,
+        )
         .aggregate(maximum_offer=Max('discount'))
         .get('maximum_offer', '')
     )
     max_category_offer = (
-        Offer.objects.filter(style=product.style, is_active=True)
+        Offer.objects.filter(
+            style=product.style,
+            is_active=True,
+            start_date__lte=today,
+            end_date__gte=today,
+        )
         .aggregate(maximum_offer=Max('discount'))
         .get('maximum_offer', '')
     )
@@ -841,9 +861,9 @@ def add_to_cart(request):
 
         try:
             Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
-            #--when product moved to cart remove from wishlist if it exist there--
+            # --when product moved to cart remove from wishlist if it exist there--
             remove_wishlist_item(user, product_id)
-            
+
             if stock_mismatch:
                 messages.success(request, stock_mismatch)
             else:

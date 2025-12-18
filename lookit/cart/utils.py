@@ -18,6 +18,8 @@ from cart.models import Cart, CartAppliedCoupon
 from offer.models import Offer
 from django.db.models.functions import Coalesce, Greatest, Round
 from decimal import Decimal, ROUND_HALF_UP
+from django.utils import timezone
+
 
 def calculate_cart_summary(user):
     """
@@ -25,15 +27,26 @@ def calculate_cart_summary(user):
     Handles product discounts, coupon discounts, and returns a summary dict.
     """
     # sub queries for fetching offers
+    today = timezone.now().date()
     product_discount_sq = (
-        Offer.objects.filter(products=OuterRef('variant__product__id'), is_active=True)
+        Offer.objects.filter(
+            products=OuterRef('variant__product__id'),
+            is_active=True,
+            start_date__lte=today,
+            end_date__gte=today,
+        )
         .values('products')
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
     )
 
     category_discount_sq = (
-        Offer.objects.filter(style=OuterRef('variant__product__style'), is_active=True)
+        Offer.objects.filter(
+            style=OuterRef('variant__product__style'),
+            is_active=True,
+            start_date__lte=today,
+            end_date__gte=today,
+        )
         .values('style')
         .annotate(max_discount=Max('discount'))
         .values('max_discount')[:1]
@@ -53,11 +66,11 @@ def calculate_cart_summary(user):
                 default=Value(False),
                 output_field=BooleanField(),
             ),
-            available_stock_count = F('variant__stock'),
+            available_stock_count=F('variant__stock'),
             is_product_active=F('variant__product__is_active'),
         )
         .order_by('-stock_available', '-is_product_active')
-        #fetch product discount and offer discount percentage for calculation
+        # fetch product discount and offer discount percentage for calculation
         .annotate(
             product_discount=Coalesce(
                 Subquery(product_discount_sq), Value(0), output_field=IntegerField()
@@ -66,11 +79,11 @@ def calculate_cart_summary(user):
                 Subquery(category_discount_sq), Value(0), output_field=IntegerField()
             ),
         )
-        #take biggest discount from product or category
+        # take biggest discount from product or category
         .annotate(
             offer_percentage=Greatest(F('product_discount'), F('category_discount'))
         )
-        #discount amount per item
+        # discount amount per item
         .annotate(
             discount_amount=ExpressionWrapper(
                 Round(
@@ -80,21 +93,21 @@ def calculate_cart_summary(user):
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
-        #total discount applied considering quantity
+        # total discount applied considering quantity
         .annotate(
-            discount_subtotal = ExpressionWrapper(
+            discount_subtotal=ExpressionWrapper(
                 (F('discount_amount') * F('quantity')),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
-        #price of item considering offer
+        # price of item considering offer
         .annotate(
             offer_price=ExpressionWrapper(
                 (F('variant__product__price') - F('discount_amount')),
                 output_field=DecimalField(max_digits=10, decimal_places=2),
             )
         )
-        #price of product considering quantity
+        # price of product considering quantity
         .annotate(
             sub_total=ExpressionWrapper(
                 (F('offer_price') * F('quantity')),
@@ -111,10 +124,13 @@ def calculate_cart_summary(user):
         or 0
     )
     # --total discount applied-----------------------------------------------------------
-    total_discount_amount = cart_items.aggregate(total=Coalesce(Sum('discount_subtotal'), Decimal(0.00)))['total']
+    total_discount_amount = cart_items.aggregate(
+        total=Coalesce(Sum('discount_subtotal'), Decimal(0.00))
+    )['total']
 
-    grand_total = (Decimal(sub_total) - Decimal(total_discount_amount)) \
-    .quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
+    grand_total = (Decimal(sub_total) - Decimal(total_discount_amount)).quantize(
+        Decimal("0.00"), rounding=ROUND_HALF_UP
+    )
 
     # --fetch coupon discount details if applied-----------------------------------
     cart_applied_exist = CartAppliedCoupon.objects.filter(user=user).first()
@@ -126,12 +142,14 @@ def calculate_cart_summary(user):
             coupon_discount = applied_coupon.discount_value
         elif applied_coupon.discount_type == 'PERCENTAGE':
             coupon_discount = (grand_total * applied_coupon.discount_value) / 100
-            coupon_discount = Decimal(coupon_discount).quantize(Decimal("0.00"), rounding=ROUND_HALF_UP)
+            coupon_discount = Decimal(coupon_discount).quantize(
+                Decimal("0.00"), rounding=ROUND_HALF_UP
+            )
         grand_total -= coupon_discount
 
     cart_summary = {
         "sub_total": sub_total,
-        "delivery_fee":Decimal(0.00),
+        "delivery_fee": Decimal(0.00),
         "offer_discount": total_discount_amount,
         "coupon_discount": coupon_discount,
         "grand_total": grand_total,
