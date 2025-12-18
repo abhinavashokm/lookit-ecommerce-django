@@ -42,11 +42,11 @@
                 </div>
             </form>
             <div class="date-range-buttons">
-                <button value="today" class="date-range-btn {% if request.GET.range == 'today' %} active {% endif %}"><span>Today</span></button>
+                <button class="date-range-btn {% if not request.GET.range %}active{% endif %}"><span>Today</span></button>
                 <button value="this-week" class="date-range-btn {% if request.GET.range == 'this-week' %} active {% endif %}"><span>This Week</span></button>
                 <button value="this-month" class="date-range-btn {% if request.GET.range == 'this-month' %} active {% endif %}"><span>This Month</span></button>
                 <button value="this-year" class="date-range-btn {% if request.GET.range == 'this-year' %} active {% endif %}"><span>This Year</span></button>
-                <button class="date-range-btn {% if not request.GET.range %}active{% endif %}"><span>Custom</span></button>
+                <button value="custom" class="date-range-btn {% if request.GET.range == 'custom' %} active {% endif %}"><span>Custom</span></button>
             </div>
       
     </div>
@@ -152,7 +152,7 @@
                         <td>{{ order.placed_at.date }}</td>
                         <td>{{ order.order.user.full_name }}</td>
                         <td>{{ order.product.name|truncatechars:25 }} ({{ order.quantity }})</td>
-                        <td>{% if order.order.payment_method == 'ONLINE_PAYMENT' %}ONLINE{% else %}{{ order.order.payment_method }}{% endif %}</td>
+                        <td>{% if order.order.payment_method == 'ONLINE_PAYMENT' %}Razorpay{% else %}{{ order.order.payment_method }}{% endif %}</td>
                         <td>{% if order.order.coupon_applied %}
                             {{ order.order.coupon_applied.code|default:'-' }} 
                             <span class="coupon-deduction">(-₹{{ order.coupon_discount_amount }})</span></td>

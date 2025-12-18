@@ -1,33 +1,53 @@
+let isProgrammaticDateChange = false;
 
-// Initialize date pickers
-flatpickr(".date-picker", {
-    dateFormat: "Y-m-d",
-    allowInput: true
-});
 
 // Date range button functionality
 const dateRangeBtns = document.querySelectorAll('.date-range-btn');
 const rangeTypeHiddenInput = document.getElementById('rangeInput')
+
+function activateCustomRange() {
+    dateRangeBtns.forEach(b => b.classList.remove('active'));
+
+    const customBtn = document.querySelector('.date-range-btn[value="custom"]');
+    if (customBtn) {
+        customBtn.classList.add('active');
+    }
+
+    rangeTypeHiddenInput.value = 'custom';
+}
+
+flatpickr(".date-picker", {
+    dateFormat: "Y-m-d",
+    allowInput: true,
+    onChange: function () {
+        if (isProgrammaticDateChange) return;
+
+        activateCustomRange();
+    }
+});
+
+
+
 dateRangeBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function () {
         dateRangeBtns.forEach(b => b.classList.remove('active'));
         this.classList.add('active');
-        rangeTypeHiddenInput.value = this.value
-        
-        // Here you would typically update the date range based on selection
+
+        rangeTypeHiddenInput.value = this.value;
+
         const range = this.textContent.trim();
-        console.log('Selected date range:', range);
-        
-        // Example: Update date inputs based on selection
         const today = new Date();
         const fromDate = document.getElementById('fromDate');
         const toDate = document.getElementById('toDate');
-        
+
+        isProgrammaticDateChange = true;
+
         if (range === 'Today') {
             fromDate._flatpickr.setDate(today, true);
             toDate._flatpickr.setDate(today, true);
         } else if (range === 'This Week') {
-            const firstDay = new Date(today.setDate(today.getDate() - today.getDay()));
+            const firstDay = new Date(today);
+            firstDay.setDate(today.getDate() - today.getDay());
             fromDate._flatpickr.setDate(firstDay, true);
             toDate._flatpickr.setDate(new Date(), true);
         } else if (range === 'This Month') {
@@ -39,17 +59,24 @@ dateRangeBtns.forEach(btn => {
             fromDate._flatpickr.setDate(firstDay, true);
             toDate._flatpickr.setDate(new Date(), true);
         }
+
+        isProgrammaticDateChange = false;
     });
 });
 
+
 // Set default date range to today
-// document.addEventListener('DOMContentLoaded', function() {
-//     const today = new Date();
-//     const fromDate = document.getElementById('fromDate');
-//     const toDate = document.getElementById('toDate');
-    
-//     if (fromDate && toDate) {
-//         fromDate._flatpickr.setDate(today, true);
-//         toDate._flatpickr.setDate(today, true);
-//     }
-// });
+document.addEventListener('DOMContentLoaded', function () {
+    const today = new Date();
+    const fromDate = document.getElementById('fromDate');
+    const toDate = document.getElementById('toDate');
+
+    if (fromDate?._flatpickr && !fromDate.value) {
+        fromDate._flatpickr.setDate(today, true);
+    }
+
+    if (toDate?._flatpickr && !toDate.value) {
+        toDate._flatpickr.setDate(today, true);
+    }
+});
+

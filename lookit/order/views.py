@@ -42,6 +42,9 @@ from openpyxl.styles import Font, Alignment, PatternFill
 from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 from coupon.utils import is_coupon_min_purchase_eligible, clear_users_applied_coupon
+from urllib.parse import urlencode
+from datetime import date, datetime
+
 
 @login_required
 @cart_not_empty_required
@@ -970,16 +973,38 @@ def sales_report(request):
 
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
+    
+    
 
     if from_date and to_date:
+        from_date = datetime.strptime(from_date, "%Y-%m-%d").date()
+        to_date = datetime.strptime(to_date, "%Y-%m-%d").date()
+
+        #from date need to be before start date
+        if from_date > to_date:
+            messages.error(
+                request,
+                "From date must be earlier than or equal to To date."
+            )
+            return redirect(request.path)
+        
         orders = orders.filter(created_at__date__range=[from_date, to_date])
+        
+    else:
+        #default filter today
+        params = {
+            'from_date': date.today().isoformat(),
+            'to_date': date.today().isoformat(),
+        }
+        return redirect(f"{request.path}?{urlencode(params)}")
+        
 
     report_summary = orders.aggregate(
         total_order_count=Count('id'),
-        total_order_value=Sum('sub_total'),
-        total_offer_discounts=Sum('discount_amount'),
-        total_coupon_discounts=Coalesce(Sum('coupon_discount_amount'), Decimal('0.00'), output_field=DecimalField(max_digits=10, decimal_places=2)),
-        realized_revenue=Sum('total'),
+        total_order_value=Coalesce(Sum('sub_total'), Value(Decimal('0.00')), output_field=DecimalField(max_digits=10, decimal_places=2)),
+        total_offer_discounts=Coalesce(Sum('discount_amount'), Value(Decimal('0.00')), output_field=DecimalField(max_digits=10, decimal_places=2)),
+        total_coupon_discounts=Coalesce(Sum('coupon_discount_amount'), Value(Decimal('0.00')), output_field=DecimalField(max_digits=10, decimal_places=2)),
+        realized_revenue=Coalesce(Sum('total'), Value(Decimal('0.00')), output_field=DecimalField(max_digits=10, decimal_places=2)),
     )
     report_summary['total_discounts'] = (
         report_summary['total_offer_discounts']
