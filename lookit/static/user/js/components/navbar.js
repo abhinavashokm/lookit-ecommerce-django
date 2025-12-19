@@ -34,3 +34,29 @@ if (mobileMenuBtn && mobileMenu) {
         });
     }
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const profileBtn = document.getElementById('profileDropdownBtn');
+    const dropdown = document.getElementById('profileDropdownMenu');
+
+    if (!profileBtn || !dropdown) return;
+
+    // Toggle dropdown on click
+    profileBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const isActive = dropdown.classList.toggle('active');
+        profileBtn.setAttribute('aria-expanded', isActive);
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function () {
+        dropdown.classList.remove('active');
+        profileBtn.setAttribute('aria-expanded', 'false');
+    });
+
+    // Prevent closing when clicking inside dropdown
+    dropdown.addEventListener('click', function (e) {
+        e.stopPropagation();
+    });
+});

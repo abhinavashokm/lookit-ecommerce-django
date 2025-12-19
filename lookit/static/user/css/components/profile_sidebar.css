@@ -17,9 +17,16 @@ body {
     height: fit-content;
     position: sticky;
     top: 100px;
-    display: flex;
+    display: none;
     flex-direction: column;
     border-right: 1px solid #e5e5e5;
+}
+
+/* ONLY SHOW SIDEBAR IN DESKTOP DEVICES */
+@media (min-width: 1000px){
+    .sidebar {
+        display: flex;
+    }
 }
 
 .sidebar-section {

@@ -20,7 +20,12 @@ SECRET_KEY = "django-insecure-nx@ivq@%5^)fwwnv06klo#(7z2%o^%_od@k=1+kk)+vfyf_7q$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'simplistic-pokier-melania.ngrok-free.dev']
+
+#for using tunneling
+CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.dev']
+
+
 
 # Set default user model
 AUTH_USER_MODEL = 'user.User'

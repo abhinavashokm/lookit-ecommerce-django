@@ -323,7 +323,7 @@
 
 
      /*FOR PROFILE ICON AFTER LOGIN*/
-     .profile-btn {
+     .profile-btn-desktop {
          background: none;
          border: none;
          cursor: pointer;
@@ -338,11 +338,11 @@
          overflow: hidden;
      }
 
-     .profile-btn:hover {
+     .profile-btn-desktop:hover {
          transform: scale(1.05);
      }
 
-     .profile-btn img {
+     .profile-btn-desktop img {
          width: 100%;
          height: 100%;
          object-fit: cover;
@@ -351,15 +351,303 @@
 
      @media (max-width: 768px) {
 
-         .profile-btn {
+         .profile-btn-desktop {
              width: 36px;
              height: 36px;
          }
      }
 
      @media (max-width: 480px) {
-         .profile-btn {
+         .profile-btn-desktop {
              width: 32px;
              height: 32px;
          }
      }
+
+
+
+
+/* Professional Profile Dropdown */
+.profile-dropdown-wrapper {
+    position: relative;
+}
+
+.profile-btn {
+    position: relative;
+    background: none;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.profile-btn:hover {
+    border-color: #B55E8A;
+    box-shadow: 0 0 0 3px rgba(181, 94, 138, 0.15);
+}
+
+.profile-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-chevron {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #B55E8A;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.profile-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    width: 280px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100;
+    border: 1px solid #f0f0f0;
+}
+
+.profile-dropdown-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* User Info Header */
+.dropdown-user-info {
+    padding: 1.5rem 1.25rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dropdown-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3px solid #f0f0f0;
+}
+
+.dropdown-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dropdown-avatar.placeholder {
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-avatar svg {
+    width: 32px;
+    height: 32px;
+}
+
+.dropdown-user-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.dropdown-username {
+    font-weight: 600;
+    color: #1a1a1a;
+    font-size: 1rem;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-email {
+    font-size: 0.85rem;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Links */
+.dropdown-links,
+.dropdown-footer {
+    padding: 0.5rem 0;
+}
+
+.dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1.25rem;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.dropdown-link:hover {
+    background-color: #f9f5f7;
+    color: #B55E8A;
+    padding-left: 1.5rem;
+}
+
+.dropdown-link i {
+    width: 20px;
+    text-align: center;
+    color: #777;
+    font-size: 1.1rem;
+    transition: color 0.2s;
+}
+
+.dropdown-link:hover i {
+    color: #B55E8A;
+}
+
+.dropdown-link.logout {
+    color: #d32f2f;
+}
+
+.dropdown-link.logout:hover {
+    background-color: rgba(211, 47, 47, 0.08);
+    color: #d32f2f;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: #e5e5e5;
+    margin: 0.5rem 0;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .profile-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .profile-dropdown-menu {
+        right: -12px;
+        width: 270px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-dropdown-menu {
+        width: calc(100vw - 40px);
+        right: auto;
+        left: 50%;
+        transform: translateY(-12px) translateX(-50%);
+    }
+    
+    .profile-dropdown-menu.active {
+        transform: translateY(0) translateX(-50%);
+    }
+}
+
+/* Mobile Adjustments - Fix Overflow on Small Screens */
+@media (max-width: 768px) {
+    .profile-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .profile-dropdown-menu {
+        right: -12px; /* Slight offset for breathing room */
+        width: 270px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .profile-dropdown-menu {
+        /* Full-width with safe margins, centered horizontally */
+        left: 50%;
+        right: auto;
+        width: calc(100vw - 40px); /* Takes almost full screen width, with 20px margin on each side */
+        max-width: 300px; /* Optional: caps it for slightly larger small screens */
+        transform: translateX(-50%) translateY(-12px); /* Center horizontally, keep open animation */
+    }
+
+    .profile-dropdown-menu.active {
+        transform: translateX(-92%) translateY(0); /* Smooth open animation, stays centered */
+    }
+
+    /* Optional: Slightly smaller text/avatar for very small screens */
+    .dropdown-user-info {
+        padding: 1.25rem 1rem 0.75rem;
+    }
+
+    .dropdown-avatar {
+        width: 48px;
+        height: 48px;
+    }
+
+    .dropdown-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.93rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-dropdown-menu::before {
+        content: '';
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-bottom: 10px solid white;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+    }
+}
+
+.desktop-profile-icon, .mobile-profile-icon {
+    display: none;
+}
+
+@media (max-width: 999px){
+    .mobile-profile-icon {
+        display: block;
+    }
+}
+
+@media (min-width: 1000px){
+    .desktop-profile-icon {
+        display: block;
+    }
+}
