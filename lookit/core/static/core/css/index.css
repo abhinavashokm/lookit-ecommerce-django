@@ -28,7 +28,7 @@
      font-size: 3.5rem;
      margin-bottom: 1rem;
      font-weight: 700;
-     color: #201d1d;
+     color: #8a1e55;
  }
 
  .hero p {
@@ -169,6 +169,14 @@
      font-size: 0.85rem;
      margin-bottom: 0.8rem;
      line-height: 1.4;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;       /* limits to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4em;           /* adjust line height as needed */
+    max-height: calc(1.4em * 3);  /* ensures consistent height */
  }
 
  .product-price {
@@ -455,3 +463,62 @@
          padding: 1.5rem;
      }
  }
+
+
+ /* ==============================
+   PRODUCT CARD PRICE UPGRADE
+============================== */
+.price-stack {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.35rem;
+}
+
+/* Primary price */
+.price-current {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1f2937; /* neutral dark gray */
+    letter-spacing: -0.01em;
+}
+
+/* Old price */
+.price-old {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #9ca3af;
+    text-decoration: line-through;
+}
+@media (max-width: 480px) {
+    .price-stack {
+        flex-direction: row;
+        gap: 0.3rem;
+    }
+
+    .price-current {
+        font-size: 0.9rem;
+    }
+
+    .price-old {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .price-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0em;
+    }
+
+    .price-current {
+        font-size: 0.9rem;
+    }
+
+    .price-old {
+        font-size: 0.7rem;
+    }
+}
+
