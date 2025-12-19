@@ -17,6 +17,20 @@ class Product(models.Model):
         WOMEN = 'WOMEN', 'Women'
         KIDS = 'KIDS', 'Kids'
         UNISEX = 'UNISEX', 'Unisex'
+        
+    class BaseColor(models.TextChoices):
+        WHITE = "white", "White"
+        BLACK = "black", "Black"
+        BEIGE = "beige", "Beige"
+        GREEN = "green", "Green"
+        BLUE = "blue", "Blue"
+        RED = "red", "Red"
+        ORANGE = "orange", "Orange"
+        GREY = "grey", "Grey"
+        YELLOW = "yellow", "Yellow"
+        BROWN = "brown", "Brown"
+        PURPLE = "purple", "Purple"
+        PINK = "pink", "Pink"
 
     uuid = models.CharField(max_length=20, blank=True)
     name = models.CharField(max_length=100)
@@ -36,7 +50,7 @@ class Product(models.Model):
         max_length=10, choices=Category.choices, default=Category.UNISEX
     )
     style = models.ForeignKey(Style, on_delete=models.PROTECT, blank=True, null=True)
-    base_color = models.CharField(max_length=20, blank=True)
+    base_color = models.CharField(max_length=20, choices=BaseColor.choices, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -54,8 +68,16 @@ class Product(models.Model):
         
         
 class Variant(models.Model): 
+    class Size(models.TextChoices):
+        XS = "XS", "XS"
+        S = "S", "S"
+        M = "M", "M"
+        L = "L", "L"
+        XL = "XL", "XL"
+        XXL = "XXL", "XXL"
+        XXXL = "XXXL", "XXXL"
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    size = models.CharField(max_length=10)
+    size = models.CharField(max_length=10, choices=Size.choices)
     stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

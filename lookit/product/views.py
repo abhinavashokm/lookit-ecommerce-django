@@ -17,7 +17,6 @@ from django.db.models import (
     F,
     ExpressionWrapper,
     DecimalField,
-    BooleanField,
     Exists,
 )
 from django.db.models.functions import Coalesce, Greatest, Round
@@ -90,8 +89,6 @@ def admin_list_products(request):
 @admin_required
 def admin_add_product(request):
     if request.method == "POST":
-        print("call is here")
-        print(request.POST)
         # ---retrive-all-post-data-------------------
         name = request.POST.get('name', '').strip()
         description = request.POST.get('description', '').strip()
@@ -224,7 +221,8 @@ def admin_add_product(request):
 
     # ---redner-add-product-page------------------------------------------------
     styles = Style.objects.all()
-    return render(request, "product/admin/add_product.html", {"styles": styles})
+    color_choices = Product.BaseColor.choices
+    return render(request, "product/admin/add_product.html", {"styles": styles, "color_choices":color_choices})
 
 
 @admin_required
@@ -435,10 +433,11 @@ def admin_manage_stocks(request, product_uuid):
         return redirect('admin-manage-stocks', product_uuid=product_uuid)
 
     variants = Variant.objects.filter(product=product).order_by('-updated_at')
+    size_choices = Variant.Size.choices
     return render(
         request,
         "product/admin/manage_stocks.html",
-        {'product': product, 'variants': variants},
+        {'product': product, 'variants': variants, 'size_choices': size_choices},
     )
 
 
@@ -695,8 +694,10 @@ def explore(request):
     page = request.GET.get('page')
     page_obj = paginator.get_page(page)
 
+    color_choices = Product.BaseColor.choices
+    size_choices = Variant.Size.choices
     return render(
-        request, "product/user/explore.html", {"page_obj": page_obj, "styles": styles}
+        request, "product/user/explore.html", {"page_obj": page_obj, "styles": styles, "color_choices":color_choices, "size_choices":size_choices}
     )
 
 

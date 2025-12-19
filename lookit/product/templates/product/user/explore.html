@@ -59,12 +59,9 @@
                 <label for="color">Color</label>
                 <select id="color" name="color" class="filter-select">
                     <option value="">All Colors</option>
-                    <option value="black" {% if request.GET.color == 'black' %}selected{% endif %}>Black</option>
-                    <option value="white" {% if request.GET.color == 'white' %}selected{% endif %}>White</option>
-                    <option value="red" {% if request.GET.color == 'red' %}selected{% endif %}>Red</option>
-                    <option value="blue" {% if request.GET.color == 'blue' %}selected{% endif %}>Blue</option>
-                    <option value="green" {% if request.GET.color == 'green' %}selected{% endif %}>Green</option>
-                    <option value="gray" {% if request.GET.color == 'gray' %}selected{% endif %}>Gray</option>
+                    {% for value, label in color_choices %}
+                    <option value="{{ value }}" {% if request.GET.color == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -73,12 +70,9 @@
                 <label for="size">Size</label>
                 <select id="size" name="size" class="filter-select">
                     <option value="">All Sizes</option>
-                    <option value="xs" {% if request.GET.size == 'xs' %}selected{% endif %}>XS</option>
-                    <option value="s" {% if request.GET.size == 's' %}selected{% endif %}>S</option>
-                    <option value="m" {% if request.GET.size == 'm' %}selected{% endif %}>M</option>
-                    <option value="l" {% if request.GET.size == 'l' %}selected{% endif %}>L</option>
-                    <option value="xl" {% if request.GET.size == 'xl' %}selected{% endif %}>XL</option>
-                    <option value="xxl" {% if request.GET.size == 'xxl' %}selected{% endif %}>XXL</option>
+                    {% for value, label in size_choices %}
+                    <option value="{{ value }}" {% if request.GET.size == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
                 </select>
             </div>
 
@@ -342,6 +336,35 @@
                 </div>
             </div>
             </a>
+            
+            {% empty %}
+            <div class="empty-state">
+                <div class="empty-illustration">
+                    <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#ddd"/>
+                        <circle cx="12" cy="8" r="6" fill="white"/>
+                        <circle cx="9" cy="7" r="1" fill="#999"/>
+                        <circle cx="15" cy="7" r="1" fill="#999"/>
+                        <path d="M8 11c.5 1 1.5 2 4 2s3.5-1 4-2" stroke="#999" stroke-width="1.5" fill="none"/>
+                    </svg>
+                    <div class="empty-hanger">
+                        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M50 10 C40 10, 40 20, 50 20 C60 20, 60 10, 50 10 M50 20 L50 30 L20 60 L80 60 L50 30 L50 20" fill="none" stroke="#B55E8A" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+                <h3 class="empty-title">No products found</h3>
+                <p class="empty-message">
+                    {% if request.GET|length > 1 %}
+                        Try adjusting your filters or search term — we might have something perfect hiding!
+                    {% else %}
+                        Looks like we're fresh out of stock right now. Check back soon for new arrivals!
+                    {% endif %}
+                </p>
+                <a href="{% url 'explore' %}">
+                    <button class="empty-clear-btn">Clear all filters</button>
+                </a>
+            </div>
             {% endfor %}
 
         </div>

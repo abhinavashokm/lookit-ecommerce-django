@@ -49,18 +49,9 @@
                         <label for="colorBase">Color Base</label>
                         <select id="colorBase" name="base_color">
                             <option value="" disabled selected>Name for filtering</option>
-                            <option value="white">White</option>
-                            <option value="black">Black</option>
-                            <option value="beige">Beige</option>
-                            <option value="green">Green</option>
-                            <option value="blue">Blue</option>
-                            <option value="red">Red</option>
-                            <option value="orange">Orange</option>
-                            <option value="grey">Grey</option>
-                            <option value="yellow">Yellow</option>
-                            <option value="brown">Brown</option>
-                            <option value="purple">Purple</option>
-                            <option value="pink">Pink</option>
+                            {% for value, label in color_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
                         </select>
                     </div>
 

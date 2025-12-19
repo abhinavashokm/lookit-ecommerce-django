@@ -152,13 +152,9 @@
                     <label for="newSizeSelect">Select Size</label>
                     <select name="size" id="newSizeSelect" required>
                         <option value="" disabled selected>Select Size</option>
-                        <option value="XS">XS</option>
-                        <option value="S">S</option>
-                        <option value="M">M</option>
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="XXL">XXL</option>
-                        <option value="XXXL">XXXL</option>
+                        {% for value, label in size_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="modal-form-group">

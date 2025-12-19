@@ -3,10 +3,11 @@
      position: relative;
      height: 400px;
      /* background: linear-gradient(135deg, #B55E8A 0%, #9a4d72 100%); */
-     background-image: url("https://res.cloudinary.com/dklqkknqz/image/upload/v1764237475/Gemini_Generated_Image_6okrao6okrao6okr_tsmq0r.png");
+     background-image: url("https://c0.wallpaperflare.com/preview/685/877/292/boutique-close-up-clothes-clothes-hanger.jpg");
      background-repeat: no-repeat;
      /* shows image once */
      background-size: cover;
+     background-position: center;
      /* fill container, crop if needed */
      display: flex;
      align-items: center;
@@ -27,7 +28,7 @@
      font-size: 3.5rem;
      margin-bottom: 1rem;
      font-weight: 700;
-     color: #b55e6d;
+     color: #201d1d;
  }
 
  .hero p {
@@ -39,7 +40,7 @@
 
  .shop-now-btn {
      background-color: white;
-     color: #B55E8A;
+     color: #7b3f5e;
      padding: 1rem 2.5rem;
      border: none;
      border-radius: 30px;
