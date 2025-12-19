@@ -313,7 +313,7 @@
                     <h3 class="product-title">{{ product.name }}</h3>
                         <div class="product-price">
                             <div class="price-stack">
-                                {% if product.offer_price != product.price %}
+                                {% if product.offer_price and product.offer_price != product.price %}
                                     <span class="price-current">₹{{ product.offer_price }}</span>
                                     <span class="price-old">₹{{ product.price }}</span>
                                 {% else %}

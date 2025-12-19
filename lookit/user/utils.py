@@ -5,6 +5,7 @@ import uuid
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.db.models import OuterRef, Exists
 from . import models
 
 def generate_otp():
@@ -46,3 +47,10 @@ def remove_wishlist_item(user, product_id):
     exist = models.Wishlist.objects.filter(user=user, product_id=product_id).exists()
     if exist:
         models.Wishlist.objects.get(user=user, product_id=product_id).delete()
+        
+def annotate_wishlist_products(user, products_set):
+    """add in_wishlist = True if product is on users wishlist"""
+    wishlist_exist_sq = models.Wishlist.objects.filter(user=user, product_id=OuterRef('id'))
+    annotated_product_set = products_set.annotate(in_wishlist=Exists(wishlist_exist_sq))
+    return annotated_product_set
+    

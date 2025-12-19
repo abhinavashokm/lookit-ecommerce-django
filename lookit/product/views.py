@@ -12,14 +12,8 @@ from django.db.models import (
     Value,
     IntegerField,
     Max,
-    OuterRef,
-    Subquery,
-    F,
-    ExpressionWrapper,
-    DecimalField,
-    Exists,
 )
-from django.db.models.functions import Coalesce, Greatest, Round
+from django.db.models.functions import Coalesce
 from decimal import Decimal
 from django.db import transaction
 from core.decorators import admin_required
@@ -28,8 +22,10 @@ from .models import Style, Product, Variant, ProductImages
 from cart.models import Cart
 from offer.models import Offer
 from user.utils import remove_wishlist_item
-from user.models import Wishlist
 from django.utils import timezone
+
+from offer.utiils import annotate_offers
+from user.utils import annotate_wishlist_products
 
 
 """ ============================================
@@ -585,66 +581,17 @@ def admin_edit_category(request):
     USER SIDE
 ============================================ """
 
-
 def explore(request):
-    # sub queries for fetching offers
-    today = timezone.now().date()
-
-    product_discount_sq = (
-        Offer.objects.filter(
-            products=OuterRef('pk'),
-            is_active=True,
-            start_date__lte=today,
-            end_date__gte=today,
-        )
-        .values('products')
-        .annotate(max_discount=Max('discount'))
-        .values('max_discount')[:1]
-    )
-
-    category_discount_sq = (
-        Offer.objects.filter(
-            style=OuterRef('style'),
-            is_active=True,
-            start_date__lte=today,
-            end_date__gte=today,
-        )
-        .values('style')
-        .annotate(max_discount=Max('discount'))
-        .values('max_discount')[:1]
-    )
     user = None
     if request.user.is_authenticated:
         user = request.user
 
-    wishlist_exist_sq = Wishlist.objects.filter(user=user, product_id=OuterRef('id'))
-
     # fetch only products which are active and not out of stock
     products = (
         Product.objects.filter(is_active=True, variant__stock__gt=0)
-        .annotate(
-            product_discount=Coalesce(
-                Subquery(product_discount_sq), Value(0), output_field=IntegerField()
-            ),
-            category_discount=Coalesce(
-                Subquery(category_discount_sq), Value(0), output_field=IntegerField()
-            ),
-        )
-        .annotate(
-            offer_percentage=Greatest(F('product_discount'), F('category_discount'))
-        )
-        .annotate(
-            offer_price=ExpressionWrapper(
-                Round(
-                    F('price') - (F('price') * F('offer_percentage') / Value(100)), 2
-                ),
-                output_field=DecimalField(max_digits=10, decimal_places=2),
-            )
-        )
-        .annotate(in_wishlist=Exists(wishlist_exist_sq))
         .distinct()
     )
-
+    
     # fetch only styles with minimum one product with minimum one stock
     styles = Style.objects.filter(product__variant__stock__gt=0).distinct()
 
@@ -689,6 +636,12 @@ def explore(request):
         products = products.filter(base_color=color)
     if size:
         products = products.filter(variant__size=size.upper())
+        
+    #annotate offer price to each product
+    products = annotate_offers(products)
+    
+    #annotate in_wishlist status True, if product is on wishlist
+    products = annotate_wishlist_products(user, products)
 
     paginator = Paginator(products, 12)
     page = request.GET.get('page')
