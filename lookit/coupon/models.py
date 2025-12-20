@@ -19,7 +19,6 @@ class Coupon(models.Model):
     min_purchase_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     usage_limit = models.IntegerField(default=-1) # -1 is for unlimited
     usage_remaining = models.IntegerField(default=0)
-    status = models.CharField(max_length=50, default=CouponStatus.INACTIVE, choices=CouponStatus.choices)
     is_active = models.BooleanField(default=False)
     start_date = models.DateField()
     end_date = models.DateField()

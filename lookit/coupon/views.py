@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from .models import Coupon
 from coupon.utils import update_coupon_usage_remaining
 from django.db import transaction
+from .utils import annotate_coupon_status
 
 # Create your views here.
 @admin_required
@@ -15,7 +16,7 @@ def admin_list_coupon(request):
     
     search = request.GET.get('search')
     discount_type = request.GET.get('discount_type','').upper()
-    status = request.GET.get('status','').upper()
+    status = request.GET.get('status','')
     
     #--search filter-------------------------------------
     if search:
@@ -24,6 +25,10 @@ def admin_list_coupon(request):
     #--other filters----------------------------------------
     if discount_type:
         coupons = coupons.filter(discount_type=discount_type)
+        
+    #find and annotate status field to each coupon
+    coupons = annotate_coupon_status(coupons)
+    print("status = ",status)
     if status:
         coupons = coupons.filter(status=status)
     
@@ -99,10 +104,8 @@ def admin_add_coupon(request):
             usage_limit = -1 #(-1 for unlimited)
             
         if not status:
-            status = Coupon.CouponStatus.INACTIVE
             is_active = False
         else:
-            status = Coupon.CouponStatus.ACTIVE
             is_active = True
         
         try:
@@ -112,7 +115,6 @@ def admin_add_coupon(request):
                 discount_value=discount_value,
                 min_purchase_amount=min_purchase_amount,
                 usage_limit=usage_limit,
-                status=status,
                 is_active=is_active,
                 start_date=start_date,
                 end_date=end_date,
@@ -188,10 +190,8 @@ def admin_edit_coupon(request, code):
             usage_limit = -1 #(-1 for unlimited)
             
         if not status:
-            status = Coupon.CouponStatus.INACTIVE
             is_active = False
         else:
-            status = Coupon.CouponStatus.ACTIVE
             is_active = True
         
         try:
@@ -205,7 +205,6 @@ def admin_edit_coupon(request, code):
                     discount_value=discount_value,
                     min_purchase_amount=min_purchase_amount,
                     usage_limit=usage_limit,
-                    status=status,
                     is_active=is_active,
                     start_date=start_date,
                     end_date=end_date,

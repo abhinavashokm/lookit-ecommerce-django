@@ -83,7 +83,7 @@
 
                     <div class="filter-group">
                         <select name="discount_type" class="filter-select">
-                            <option value="">Discount Type</option>
+                            <option value="" disabled selected>Discount Type</option>
                             <option value="FLAT" {% if request.GET.discount_type == 'FLAT' %}selected{% endif %}>Flat</option>
                             <option value="PERCENTAGE" {% if request.GET.discount_type == 'PERCENTAGE' %}selected{% endif %}>Percentage</option>
                         </select>
@@ -91,11 +91,12 @@
 
                     <div class="filter-group">
                         <select name="status" class="filter-select">
-                            <option value="">Coupon Status</option>
-                            <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active</option>
-                            <!-- <option value="EXPIRED" {% if request.GET.status == 'EXPIRED' %}selected{% endif %}>Expired</option>
-                            <option value="LIMIT_REACHED" {% if request.GET.status == 'LIMIT_REACHED' %}selected{% endif %}>Limit Reached</option> -->
-                            <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>Inactive</option>
+                            <option value="" disabled selected>Coupon Status</option>
+                            <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="upcoming" {% if request.GET.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                            <option value="expired" {% if request.GET.status == 'expired' %}selected{% endif %}>Expired</option>
+                            <option value="maxed" {% if request.GET.status == 'maxed' %}selected{% endif %}>Maxed</option>
+                            <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
                         </select>
                     </div>
 
@@ -163,7 +164,6 @@
                         <span class="coupon-status-badge status-{{ coupon.status|lower }}">
                             {{ coupon.status|title }}
                         </span>
-                        <!-- <span class="coupon-status-badge status-active">Active</span> -->
                     </td>
                     <td>
                         <a href="{% url 'admin-edit-coupon' coupon.code %}">

@@ -3,6 +3,7 @@ from user.models import User
 from cart.models import CartAppliedCoupon
 from django.utils import timezone
 from decimal import Decimal
+from django.db.models import Case, When, Value, CharField, F, Q
 
 def is_valid_coupon(code):
     coupon = Coupon.objects.filter(code=code).first()
@@ -81,3 +82,18 @@ def clear_users_saved_coupon(coupon, user):
 def clear_users_applied_coupon(coupon, user):
     #remove applied coupon
     CartAppliedCoupon.objects.filter(coupon=coupon, user=user).delete()
+    
+    
+def annotate_coupon_status(coupon_set):
+    """function to find and annotate coupon status to each coupon in the query set"""
+    today = timezone.now().date()
+    
+    status_annotated_coupon_set = coupon_set.annotate(status=Case(
+        When(is_active=False, then=Value('inactive')),
+        When(start_date__gt=today, then=Value('upcoming')),
+        When(end_date__lt=today, then=Value('expired')),
+        When(Q(usage_limit=F('usage_remaining')) & ~Q(usage_limit=Value(-1)), then=Value('maxed')),
+        default=Value('active'),
+        output_field=CharField()
+    ))
+    return status_annotated_coupon_set

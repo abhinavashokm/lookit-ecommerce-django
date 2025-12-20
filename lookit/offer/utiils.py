@@ -75,7 +75,7 @@ def annotate_offers(product_query_set):
 
 
 def annotate_offer_status(offer_set):
-    
+    """function to find and annotate offer status to each offer in the query set"""
     today = timezone.now().date()
     
     status_annotated_offer_set = offer_set.annotate(status=Case(
