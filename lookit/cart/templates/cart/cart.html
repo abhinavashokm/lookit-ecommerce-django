@@ -90,10 +90,9 @@
             {% endfor %}
 
             <!-- Continue Shopping Button -->
-            <div style="margin: 20px 0 10px; text-align: left;">
-                <a href="{% url 'explore' %}"
-                    style="display: inline-flex; align-items: center; padding: 8px 18px; background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%); color: white; text-decoration: none; border-radius: 8px; border: none; font-weight: 600; transition: all 0.3s ease; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                    <i class="fas fa-arrow-left" style="margin-right: 6px; font-size: 0.8em;"></i> Continue Shopping
+            <div class="continue-shopping-wrapper">
+                <a href="{% url 'explore' %}" class="continue-shopping-btn">
+                    <i class="fas fa-arrow-left"></i> Continue Shopping
                 </a>
             </div>
 

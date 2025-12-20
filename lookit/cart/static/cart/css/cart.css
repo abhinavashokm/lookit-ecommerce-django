@@ -17,7 +17,7 @@
 }
 
 .page-title i {
-    color: #9a4d72;
+    color: #4f3843;
 }
 
 .cart-container {
@@ -26,13 +26,21 @@
     align-items: flex-start;
 }
 
+
 .cart-items {
     flex: 2;
+    width: 100%;
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    min-height: 28.3rem;
+    
+}
+
+@media (min-width: 993px) {
+    .cart-items{
+        min-height: 28.3rem;
+    }
 }
 
 .cart-item {
@@ -290,6 +298,7 @@
 @media (max-width: 992px) {
     .cart-container {
         flex-direction: column;
+        align-items: center;
     }
 
     .right-sidebar {
@@ -308,23 +317,10 @@
         padding: 1rem 5%;
     }
 
-    .nav-links {
-        display: none;
-    }
-
     .search-input {
         width: 200px;
     }
 
-    .cart-item {
-        flex-direction: column;
-    }
-
-    .item-image {
-        width: 100%;
-        height: auto;
-        max-height: 200px;
-    }
 
     .item-price {
         margin: 1rem 0 0;
@@ -998,4 +994,133 @@
     font-size: 0.9rem;
     line-height: 1.3;
   }
+}
+
+
+/* REMOVE or COMMENT OUT this existing rule */
+@media (max-width: 768px) {
+    /* .cart-item {
+        flex-direction: column;   <-- REMOVE THIS
+    } */
+
+    /* OLD image styles - replace with new ones below */
+    /*
+    .item-image {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+    }
+    */
+}
+
+/* NEW RESPONSIVE CART ITEM FOR MOBILE (keeps row layout) */
+@media (max-width: 768px) {
+    .cart-item {
+        flex-direction: row;        /* Explicitly keep row */
+        flex-wrap: wrap;            /* Allow wrapping if needed on very small screens */
+        gap: 1rem;
+        padding: 1rem 0;
+        align-items: flex-start;
+    }
+
+    .item-image {
+        flex-shrink: 0;             /* Prevent image from shrinking too much */
+        width: 90px;                /* Smaller fixed width on mobile */
+        height: 110px;              /* Maintain aspect ratio */
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .item-details {
+        flex: 1;
+        min-width: 0;               /* Allows text to truncate if needed */
+    }
+
+    .item-title {
+        font-size: 0.95rem;
+        margin-bottom: 0.4rem;
+    }
+
+    .item-size {
+        font-size: 0.85rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .item-actions {
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    .quantity-selector {
+        font-size: 0.9rem;
+    }
+
+    .quantity-btn {
+        padding: 0.3rem 0.6rem;
+    }
+
+    .quantity {
+        padding: 0.3rem 0.8rem;
+    }
+
+    .remove-btn {
+        font-size: 0.85rem;
+    }
+
+    /* Price block moves below details on very small screens, but stays in row */
+    .item-price-block {
+        margin-left: auto;
+        margin-top: 0.5rem;
+        text-align: right;
+        align-self: flex-start;
+    }
+
+    /* On very small screens (e.g. <480px), allow price to take full width below */
+    @media (max-width: 480px) {
+        .cart-item {
+            position: relative;
+        }
+
+        .item-price-block {
+            margin-left: 0;
+            margin-top: 1rem;
+            width: 100%;
+            text-align: left;
+            align-self: flex-start;
+        }
+
+        /* Optional: make image a bit larger on tiny screens if desired */
+        .item-image {
+            width: 100px;
+            height: 120px;
+        }
+    }
+}
+.continue-shopping-wrapper {
+    margin: 20px 0 10px;
+    text-align: left;
+}
+
+.continue-shopping-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 18px;
+    background: linear-gradient(135deg, #2e7d72 0%, #1b5e20 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.continue-shopping-btn i {
+    margin-right: 6px;
+    font-size: 0.8em;
+}
+
+.continue-shopping-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
