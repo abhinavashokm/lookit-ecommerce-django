@@ -185,7 +185,7 @@ def create_order(request):
 @cart_not_empty_required
 def payment_page(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
-    wallet = Wallet.objects.get_or_create(user=request.user)
+    wallet, created = Wallet.objects.get_or_create(user=request.user)
     address = order.address
     # estimated delivery date - after 7 days from today
     today = timezone.now().date()

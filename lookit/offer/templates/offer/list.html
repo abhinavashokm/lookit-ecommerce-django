@@ -91,8 +91,10 @@
                     <div class="filter-group">
                         <select name="status" class="filter-select">
                             <option value="">Offer Status</option>
-                            <option value="ACTIVE" {% if request.GET.status == 'ACTIVE' %}selected{% endif %}>Active</option>
-                            <option value="INACTIVE" {% if request.GET.status == 'INACTIVE' %}selected{% endif %}>Inactive</option>
+                            <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                            <option value="upcoming" {% if request.GET.status == 'upcoming' %}selected{% endif %}>Upcoming</option>
+                            <option value="ended" {% if request.GET.status == 'ended' %}selected{% endif %}>Ended</option>
+                            <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
                         </select>
                     </div>
 
@@ -168,11 +170,7 @@
                     <td class="col-date">{{ offer.end_date|date:'d M Y' }}</td>
 
                     <td>
-                        {% if offer.is_active %}
-                        <span class="coupon-status-badge status-active">Active</span>
-                        {% else %}
-                        <span class="coupon-status-badge status-active">Inactive</span>
-                        {% endif %}
+                        <span class="coupon-status-badge status-{{ offer.status }}">{{ offer.status }}</span>
                     </td>
                     <td>
                         <a href="{% url 'admin-edit-offer' offer.uuid %}">

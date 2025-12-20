@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Wallet, WalletTransactions
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Case, DecimalField, When, F, Value
+from django.db.models.functions import Coalesce
 
 
 # Create your views here.
@@ -13,22 +14,30 @@ def wallet(request):
         '-created_at'
     )
     transaction_summary = transactions.aggregate(
-        total_credit=Sum(
-            Case(
-                When(transaction_type='credit', then=F('amount')),
-                default=Value(0),
-                output_field=DecimalField(),
-            )
+        total_credit=Coalesce(
+            Sum(
+                Case(
+                    When(transaction_type='credit', then=F('amount')),
+                    default=Value(0),
+                    output_field=DecimalField(),
+                )
+            ),
+            Value(0),
+            output_field=DecimalField(max_digits=10, decimal_places=2),
         ),
-        total_debit=Sum(
-            Case(
-                When(transaction_type='debit', then=F('amount')),
-                default=Value(0),
-                output_field=DecimalField(),
-            )
-        )
+        total_debit=Coalesce(
+            Sum(
+                Case(
+                    When(transaction_type='debit', then=F('amount')),
+                    default=Value(0),
+                    output_field=DecimalField(),
+                )
+            ),
+            Value(0),
+            output_field=DecimalField(max_digits=10, decimal_places=2),
+        ),
     )
-
+    print(transaction_summary['total_credit'])
     return render(
         request,
         "wallet/wallet.html",
@@ -38,6 +47,7 @@ def wallet(request):
             'summary': transaction_summary,
         },
     )
+
 
 def wallet_payment(request):
     if request.method == 'POST':

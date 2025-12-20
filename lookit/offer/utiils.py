@@ -8,9 +8,13 @@ from django.db.models import (
     ExpressionWrapper,
     F,
     DecimalField,
+    Case,
+    When,
+    CharField,
 )
 from django.db.models.functions import Round, Coalesce, Greatest
 from .models import Offer
+from django.utils import timezone
 
 
 def annotate_offers(product_query_set):
@@ -68,3 +72,17 @@ def annotate_offers(product_query_set):
         )
     )
     return offer_annotated_products_set
+
+
+def annotate_offer_status(offer_set):
+    
+    today = timezone.now().date()
+    
+    status_annotated_offer_set = offer_set.annotate(status=Case(
+        When(is_active=False, then=Value('inactive')),
+        When(start_date__gt=today, then=Value('upcoming')),
+        When(end_date__lt=today, then=Value('ended')),
+        default=Value('active'),
+        output_field=CharField()
+    ))
+    return status_annotated_offer_set

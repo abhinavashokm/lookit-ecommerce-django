@@ -880,12 +880,15 @@ COUPON CODE BADGE
 STATUS BADGES
 ========================= */
 .coupon-status-badge {
+    display: inline-block;      /* Ensures consistent block behavior */
+    min-width: 80px;            /* Set a minimum width so shorter texts don't shrink the badge */
     padding: 6px 12px;
     border-radius: 999px;
     font-size: 0.7rem;
     font-weight: 700;
+    text-align: center;         /* Centers the text inside the badge */
+    letter-spacing: 0.5px;
 }
-
 /* 🟢 coupon active */
 .status-active {
     background: #d1fae5;
@@ -898,13 +901,14 @@ STATUS BADGES
     color: #374151;
 }
 
-/* 🟨 Coupon Expired */
-.status-expired  {
-    background: #fef3c7;
-    color: #92400e;
+/* 🔵 Upcoming */
+.status-upcoming {
+    background: #dbeafe;     
+    color: #4338ca;            
 }
+
 /* 🔴 coupon limit reached */
-.status-limit_reached {
+.status-ended {
     background: #fee2e2;
     color: #991b1b;
 }

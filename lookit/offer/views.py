@@ -7,6 +7,7 @@ from offer.models import Offer
 from django.db.models import Count
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from .utiils import annotate_offer_status
 
 
 # Create your views here.
@@ -28,13 +29,14 @@ def admin_list_offers(request):
     #--scope filter-----------------------
     if scope:
         offers = offers.filter(scope=scope)
-        
+         
+    #annotate offer status (active, upcoming, limit reached, inactive)
+    offers = annotate_offer_status(offers)
+    
     #--status filter----------------------------
-    if status == 'ACTIVE':
-        offers = offers.filter(is_active = True)
-    elif status == 'INACTIVE':
-        offers = offers.filter(is_active = False)
-        
+    if status:
+        offers = offers.filter(status=status)
+
     # --create pagination object-----
     paginator = Paginator(offers, 5)
     page_number = request.GET.get('page')
