@@ -71,20 +71,47 @@
 
             </div>
   
-            
             <!-- Cash on Delivery -->
             <div id="cod" class="tab-content">
-                <p>Pay in cash when your order is delivered.</p>
-                <div class="cod-message">
-                    <p>You will pay ₹{{ order.grand_total }} at the time of delivery.</p>
-                    <p>COD orders may require OTP confirmation.</p>
+
+                <!-- COD Info Banner -->
+                <div class="cod-banner">
+                    <div class="cod-badge">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Pay with Cash on Delivery</span>
+                    </div>
+
+                    <p class="cod-desc">
+                        Prefer paying in cash? No problem — choose Cash on Delivery and pay directly when your package arrives.  
+                        Please note: for security reasons, COD is available only for orders up to <strong>₹1000</strong>.
+                    </p>
                 </div>
+
+                <!-- COD Message -->
+                <div class="cod-message">
+                    <ul>
+                        <li><i class="fas fa-box-open"></i> Pay in cash when your order is delivered.</li>
+                        <li><i class="fas fa-mobile-alt"></i> OTP verification may be required for order confirmation.</li>
+                        <li><i class="fas fa-info-circle"></i> COD unavailable for orders above ₹1000 — please select Online Payment or Wallet.</li>
+                    </ul>
+                </div>
+
+                <!-- COD Button -->
                 <form action="{% url 'place-order' order.uuid %}" method="post">
                     {% csrf_token %}
+                    {% if order.grand_total > 1000 %}
+                    <p class="cod-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        COD is available only for orders up to ₹1000.
+                    </p>
+                    {% endif %}
                     <input type="hidden" name="payment_method" value="COD">
-                    <button class="btn-pay">Place Order</button>
+                    <button class="cod-pay-btn btn-pay" {% if order.grand_total >= 1000 %}disabled{% endif %}>
+                        <i class="fas fa-money-bill-wave"></i> Place Order with Cash on Delivery
+                    </button>
                 </form>
             </div>
+
             
             <!-- Wallet -->
             <div id="wallet" class="tab-content">
@@ -114,23 +141,25 @@
                     </div>
                 </div>
 
+                {% if wallet.balance >= order.grand_total %}
                 <!-- Wallet Payment Breakdown -->
                 <div class="wallet-breakdown">
                     <div class="wallet-row">
-                        <span>Order Total</span>
-                        <span>₹{{ order.grand_total }}</span>
+                        <span>Wallet Balance</span>
+                        <span>₹{{ wallet.balance }}</span>
                     </div>
 
                     <div class="wallet-row">
-                        <span>Wallet Deduction</span>
-                        <span>- ₹{{ order.grand_total }}</span>
+                        <span>Order Total</span>
+                        <span style="color: red;">- ₹{{ order.grand_total }}</span>
                     </div>
 
                     <div class="wallet-row total">
                         <span>Balance After Payment</span>
-                        <span>₹{{ wallet.balance|floatformat:2 }}</span>
+                        <span>₹{{ wallet_balance_after_payment|floatformat:2 }}</span>
                     </div>
                 </div>
+                {% endif %}
 
                 <!-- Wallet Trust Points -->
                 <ul class="wallet-trust-points">

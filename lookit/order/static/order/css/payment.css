@@ -597,3 +597,78 @@
 .discount-price {
     color: #28a745;
 }
+
+
+/* ==============================
+   CASH ON DELIVERY STYLING
+============================== */
+
+.cod-banner {
+    background: linear-gradient(135deg, rgba(154, 77, 114, 0.08), rgba(154, 77, 114, 0.02));
+    border: 1px solid rgba(154, 77, 114, 0.2);
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.cod-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(154, 77, 114, 0.1);
+    color: #9a4d72;
+    padding: 0.4rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.cod-desc {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+}
+
+/* COD Details */
+.cod-message ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.cod-message li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: #333;
+    margin-bottom: 0.6rem;
+}
+
+.cod-message i {
+    color: #28a745;
+}
+
+/* COD Warning */
+.cod-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    border: 1px solid #ffeeba;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cod-warning i {
+    color: #d39e00;
+}
+
+.cod-pay-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}

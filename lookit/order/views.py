@@ -186,6 +186,8 @@ def create_order(request):
 def payment_page(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
     wallet, created = Wallet.objects.get_or_create(user=request.user)
+    wallet_balance_after_payment = wallet.balance - order.grand_total
+    
     address = order.address
     # estimated delivery date - after 7 days from today
     today = timezone.now().date()
@@ -197,6 +199,7 @@ def payment_page(request, order_uuid):
             "order": order,
             "address": address,
             "wallet": wallet,
+            "wallet_balance_after_payment": wallet_balance_after_payment,
             "estimated_delivery": estimated_delivery,
         },
     )
@@ -239,6 +242,13 @@ def place_order(request, order_uuid):
                         placed_at=timezone.now(),
                     )
                 elif payment_method == 'COD':
+                    
+                    #only orders less than or equal to 1000rs can be placed with cod
+                    amount = order.grand_total
+                    if amount > 1000:
+                        messages.error(request, "COD is available only for orders up to ₹1000.")
+                        return redirect('payment-page', order_uuid=order_uuid)
+                    
                     OrderItems.objects.filter(order_id=order_id).update(
                         order_status=OrderItems.OrderStatus.PLACED,
                         payment_status=OrderItems.PaymentStatus.COD,
@@ -257,7 +267,7 @@ def place_order(request, order_uuid):
                     )
                     if not eligible:
                         messages.error(request, "You already used coupon once")
-                        return redirect('payment-page', order_id=order_id)
+                        return redirect('payment-page', order_uuid=order_uuid)
 
                     reduce_coupon_usage_limit(order.coupon_applied.code)
                     create_coupon_usage_record(order.coupon_applied, request.user)
