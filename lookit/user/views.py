@@ -550,7 +550,6 @@ def add_to_wishlist(request):
     if request.method == "POST":
         user = request.user
         product_uuid = request.POST.get('product_uuid')
-        variant_id = request.POST.get('variant_id')
 
         try:
             product = Product.objects.filter(uuid=product_uuid).first()
@@ -568,9 +567,7 @@ def add_to_wishlist(request):
                 messages.error(request, "Product already exist in wishlist!")
                 return redirect('product-details', product_uuid=product_uuid)
 
-            variant = Variant.objects.get(id=variant_id)
-            size = variant.size
-            Wishlist.objects.create(user=user, product=product, size=size)
+            Wishlist.objects.create(user=user, product=product)
             messages.success(request, "Product added to wishlist")
         except Exception as e:
             print("Error: ", e)

@@ -112,7 +112,7 @@
         <div class="content-header">
             <h1 class="content-title">
                 Explore our collection
-                <span class="title-badge">All</span>
+                <span class="title-badge">{{ request.GET.category|default:'All' }}</span>
             </h1>
 
             <!--SEARCH SECTION-->
@@ -189,40 +189,37 @@
             </svg>
         </button>
 
+
         <!-- Filter Sidebar (Mobile - appears after toggle) -->
-        <aside class="filter-sidebar" id="mobileFilterSidebar">
+        <aside class="filter-sidebar {% if request.GET.style or request.GET.color or request.GET.size or request.GET.price_min and request.GET.price_min != '0' or request.GET.price_max and request.GET.price_max != '5000' %} expanded {% endif %}" id="mobileFilterSidebar">
             <h2 class="filter-title">Filter By</h2>
 
-            <form action="{url 'explore'}" method="get" id="mobileFilterForm">
+            <form action="{% url 'explore' %}" method="get" id="mobileFilterForm">
 
                 <!-- hidden inputs to preserve other query params -->
                 <input type="hidden" name="category" value="{{ request.GET.category }}">
                 <input type="hidden" name="sort_price" value="{{ request.GET.sort_price }}">
                 <input type="hidden" name="sort_name" value="{{ request.GET.sort_name }}">
-                <input type="hidden" name="style" value="{{ request.GET.style }}">
-                <input type="hidden" name="color" value="{{ request.GET.color }}">
-                <input type="hidden" name="size" value="{{ request.GET.size }}">
-                <input type="hidden" name="priceMin" value="{{ request.GET.priceMin }}">
-                <input type="hidden" name="priceMax" value="{{ request.GET.priceMax }}">
+                <input type="hidden" name="search" value="{{ request.GET.search }}">
 
                 <!-- Category Filter -->
                 <div class="filter-group">
-                        <label for="categoryMobile">Category</label>
-                        <select id="categoryMobile" name="category" class="filter-select">
-                            <option value="" >All Categories</option>
-                            <option value="men">Men</option>
-                            <option value="women">Women</option>
-                            <option value="kids">Kids</option>
-                        </select>
+                    <label for="categoryMobile">Category</label>
+                    <select id="categoryMobile" name="category" class="filter-select">
+                        <option value="">All Categories</option>
+                        <option value="men" {% if request.GET.category == 'men' %}selected{% endif %}>Men</option>
+                        <option value="women" {% if request.GET.category == 'women' %}selected{% endif %}>Women</option>
+                        <option value="kids" {% if request.GET.category == 'kids' %}selected{% endif %}>Kids</option>
+                    </select>
                 </div>
 
                 <!-- Styles Filter -->
                 <div class="filter-group">
                     <label for="styles">Styles</label>
                     <div class="searchable-dropdown" id="stylesDropdownMobile">
-                        <input type="text" class="searchable-dropdown-input" id="stylesInputMobile" name="style"
-                            placeholder="All Styles" readonly>
-                        <input type="hidden" id="stylesValueMobile" name="style" value="">
+                        <input type="text" class="searchable-dropdown-input" id="stylesInputMobile"
+                            placeholder="All Styles" value="{{ request.GET.style }}" readonly>
+                        <input type="hidden" id="stylesValueMobile" name="style" value="{{ request.GET.style }}">
                         <svg class="searchable-dropdown-arrow" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path fill="#333" d="M6 9L1 4h10z" />
                         </svg>
@@ -230,12 +227,12 @@
                             <div class="searchable-dropdown-search">
                                 <input type="text" placeholder="Search styles..." id="stylesSearchMobile">
                             </div>
-                            <div class="searchable-dropdown-option" data-value="" data-text="All Styles">All Styles
+                            <div class="searchable-dropdown-option" data-value="" data-text="All Styles">All Styles</div>
+                            {% for style in styles %}
+                            <div class="searchable-dropdown-option" data-value="{{ style.name }}" data-text="{{ style.name }}">
+                                {{ style.name }}
                             </div>
-                            <div class="searchable-dropdown-option" data-value="polo" data-text="Polo">Polo</div>
-                            <div class="searchable-dropdown-option" data-value="oversized" data-text="Oversized">
-                                Oversized</div>
-                            <div class="searchable-dropdown-option" data-value="plain" data-text="Plain">Plain</div>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>
@@ -245,12 +242,9 @@
                     <label for="color">Color</label>
                     <select id="color" name="color" class="filter-select">
                         <option value="">All Colors</option>
-                        <option value="black">Black</option>
-                        <option value="white">White</option>
-                        <option value="red">Red</option>
-                        <option value="blue">Blue</option>
-                        <option value="green">Green</option>
-                        <option value="gray">Gray</option>
+                        {% for value, label in color_choices %}
+                        <option value="{{ value }}" {% if request.GET.color == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -259,12 +253,9 @@
                     <label for="size">Size</label>
                     <select id="size" name="size" class="filter-select">
                         <option value="">All Sizes</option>
-                        <option value="xs">XS</option>
-                        <option value="s">S</option>
-                        <option value="m">M</option>
-                        <option value="l">L</option>
-                        <option value="xl">XL</option>
-                        <option value="xxl">XXL</option>
+                        {% for value, label in size_choices %}
+                        <option value="{{ value }}" {% if request.GET.size == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -274,29 +265,30 @@
                     <div class="price-range-container">
                         <div class="price-range-wrapper">
                             <div class="price-range-active" id="priceRangeActiveMobile"></div>
-                            <input type="range" id="priceRangeMinMobile" name="priceMin"
-                                class="price-range-slider price-range-slider-min" min="0" max="5000" value="500"
-                                step="100">
-                            <input type="range" id="priceRangeMaxMobile" name="priceMax"
-                                class="price-range-slider price-range-slider-max" min="0" max="5000" value="2500"
-                                step="100">
+                            <input type="range" id="priceRangeMinMobile" name="price_min"
+                                class="price-range-slider price-range-slider-min" min="0" max="5000"
+                                value="{% if request.GET.price_min %}{{ request.GET.price_min }}{% else %}0{% endif %}" step="100">
+                            <input type="range" id="priceRangeMaxMobile" name="price_max"
+                                class="price-range-slider price-range-slider-max" min="0" max="5000"
+                                value="{% if request.GET.price_max %}{{ request.GET.price_max }}{% else %}5000{% endif %}" step="100">
                         </div>
                         <div class="price-display">
-                            <span id="priceMinDisplayMobile">₹500</span>
-                            <span id="priceMaxDisplayMobile">₹2500</span>
+                            <span id="priceMinDisplayMobile">₹{{ request.GET.price_min|default:'0' }}</span>
+                            <span id="priceMaxDisplayMobile">₹{{ request.GET.price_max|default:'5000' }}</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Filter Buttons -->
                 <div class="filter-buttons">
-                    <a href="{% url 'explore' %}">
+                    <a href="{% url 'explore' %}?category={{ request.GET.category }}">
                         <button type="button" class="clear-btn">Clear All</button>
                     </a>
                     <button type="submit" class="apply-btn">Apply Filters</button>
                 </div>
             </form>
         </aside>
+
 
         <div class="product-grid">
 
@@ -321,6 +313,8 @@
                                 {% endif %}
                             </div>
 
+                            {% if request.user.is_authenticated %}
+                            <!--show toggle wishlist add/remove btn only for logined users-->
                             <button class="wishlist-btn {% if product.in_wishlist %}active{% endif %}" data-product-id="{{ product.id }}" onclick="toggleWishlist(event, this)">
                                 <svg class="heart-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -331,6 +325,7 @@
                                         c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                                 </svg>
                             </button>
+                            {% endif %}
                         </div>
 
                 </div>
