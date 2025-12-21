@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
 from core.decorators import admin_required
-from .utils import get_top_selling_products
+from .utils import get_top_selling_products, get_top_selling_styles
 
 
 def admin_login(request):
@@ -36,7 +36,8 @@ def admin_login(request):
 @admin_required
 def admin_dashboard(request):
     top_selling_products = get_top_selling_products()
-    return render(request, "staff/dashboard.html", {"top_selling_products":top_selling_products})
+    top_selling_styles = get_top_selling_styles()
+    return render(request, "staff/dashboard.html", {"top_selling_products":top_selling_products, "top_selling_styles": top_selling_styles})
 
 
 def admin_logout(request):

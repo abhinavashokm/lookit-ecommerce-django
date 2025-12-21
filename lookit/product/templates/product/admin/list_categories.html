@@ -19,7 +19,7 @@
 
     <!-- Search Section -->
     <div class="search-section">
-        <form method="GET" action="{% url 'admin-search-categories' %}" id="searchForm" class="search-form">
+        <form method="GET" id="searchForm" class="search-form">
             <div class="search-container">
                 <div class="search-bar">
                     <input type="text" name="search" placeholder="Search by style name" id="searchInput"
@@ -60,6 +60,7 @@
                 <tr>
                     <th>Style ID</th>
                     <th>Style Name</th>
+                    <th>Products</th>
                     <th>Added Date</th>
                     <th>Last Updated</th>
                     <th>Status</th>
@@ -71,6 +72,7 @@
                 <tr>
                     <td class="style-id">STY-{{ style.id|stringformat:'04d' }}</td>
                     <td class="style-name">{{ style.name }}</td>
+                    <td class="added-date">{{ style.product_count }}</td>
                     <td class="added-date">{{ style.created_at.date }}</td>
                     <td class="added-date">{{ style.updated_at.date }}</td>
                     <td>

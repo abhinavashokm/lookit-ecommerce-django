@@ -513,8 +513,13 @@ def admin_toggle_product_active(request, product_uuid):
 
 @admin_required
 def admin_list_categories(request):
-    styles = Style.objects.all()
-
+    styles = Style.objects.all().annotate(product_count=Coalesce(Count('product'), Value(0))).order_by('-product_count').distinct()
+    
+    #search functionality
+    search_key = request.GET.get('search', '')
+    if search_key:
+        styles = styles.filter(name__icontains=search_key)
+    
     # pagination
     paginator = Paginator(styles, 5)
     page_number = request.GET.get('page')
@@ -536,14 +541,6 @@ def admin_add_style(request):
         messages.success(request, f"CREATED NEW STYLE - {style.name}")
     return redirect('admin-category-management')
 
-
-@admin_required
-def admin_search_categories(request):
-    search_key = request.GET.get('search', '')
-    search_result = Style.objects.filter(name__icontains=search_key)
-    return render(
-        request, 'product/admin/list_categories.html', {"page_obj": search_result}
-    )
 
 
 @admin_required
