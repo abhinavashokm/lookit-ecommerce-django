@@ -491,3 +491,21 @@ td {
         padding: 15px;
     }
 }
+
+/* CHART JS CSS*/
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 260px;
+    width: 100%;
+    padding: 10px;
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

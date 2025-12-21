@@ -20,7 +20,7 @@
     <!-- Wishlist Content -->
     <main class="wishlist-content">
         <div class="page-header">
-            <h1 class="page-title">My Wishlist <span class="wishlist-count">(3 items)</span></h1>
+            <h1 class="page-title">My Wishlist <span class="wishlist-count">({{ wishlist_products|length }} items)</span></h1>
             <div class="wishlist-actions">
                 <a href="{% url 'explore' %}">
                 <button class="btn btn-outline">
@@ -72,7 +72,7 @@
 
                         <form action="{% url 'move-to-cart' %}" method="post" id="moveToCartForm">
                             {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
                             <button type="submit" class="btn btn-primary" disabled>
                                 <i class="fas fa-shopping-cart"></i> Move to Cart
                                 <span class="tooltip">Please select a size</span>
@@ -81,7 +81,7 @@
 
                         <form action="{% url 'remove-from-wishlist' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{ item.product.id }}">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
                             <button type="submit" class="remove-btn" title="Remove from wishlist">
                                 <i class="far fa-trash-alt"></i>
                             </button>

@@ -11,7 +11,7 @@ def is_valid_coupon(code):
     if not coupon:
         return False
     
-    if coupon.status != 'ACTIVE':
+    if not coupon.is_active:
         return False
     
     if coupon.start_date > today or coupon.end_date < today:

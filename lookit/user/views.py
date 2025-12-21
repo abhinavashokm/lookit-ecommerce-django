@@ -617,6 +617,7 @@ def wishilst_move_to_cart(request):
         product_id = request.POST.get("product_id")
         variant_id = request.POST.get("variant_id")
         print(variant_id)
+        print(product_id)
         try:
             with transaction.atomic():
 
@@ -655,7 +656,7 @@ def wishilst_move_to_cart(request):
                 messages.success(request, "Item Moved to Cart")
 
         except Exception as e:
-            print("Error on remove from wishlist: ", e)
+            print("Error on move to cart from wishlist: ", e)
             messages.error(request, "Something went wrong!")
 
     return redirect('wishlist')

@@ -68,9 +68,28 @@
                 </button>
             </div>
 
+
+
+
             <!-- Content Grid -->
             <div class="content-grid">
-                <!-- Sales Overview -->
+
+                <!-- Sales Performance Chart -->
+                <div class="card full-width">
+                    <div class="card-header">
+                        <div>
+                        <div class="card-title">Sales Performance</div>
+                        <div class="card-subtitle">This Month</div>
+                        </div>
+                        <div class="value" style="font-size: 1.5rem;">₹25,450</div>
+                    </div>
+
+                    <div class="chart-wrapper">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+
+                 <!-- Sales Overview -->
                 <div class="card">
                     <div class="card-header">
                         <div>
@@ -256,9 +275,12 @@
                     </table>
                 </div>
             </div>
+
         </main>
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <script src="{% static 'staff/js/dashboard.js' %}"></script>
 {% endblock %}

@@ -27,3 +27,70 @@ function toggleKPICards() {
         toggleBtn.classList.remove('active');
     }
 }
+
+
+//CHART JS SCRIPT
+document.addEventListener("DOMContentLoaded", function () {
+  const ctx = document.getElementById('salesChart');
+  if (!ctx) {
+    console.error("Canvas element #salesChart not found!");
+    return;
+  }
+
+  // Sample data for demo (positive values only)
+  const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+  const dataValues = [12000, 18500, 15500, 20500]; // Replace with real values later
+
+  const data = {
+    labels: labels,
+    datasets: [{
+      label: 'Revenue (₹)',
+      data: dataValues,
+      borderColor: '#6366f1',
+      backgroundColor: 'rgba(99, 102, 241, 0.6)',
+      borderWidth: 2,
+      borderRadius: 8,
+      borderSkipped: false,
+      barThickness: 40,
+    }]
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: '#f3f4f6' },
+          ticks: { color: '#6b7280', stepSize: 5000 },
+        },
+        x: {
+          ticks: { color: '#6b7280' },
+          grid: { display: false },
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: '#1f2937',
+          titleColor: '#fff',
+          bodyColor: '#d1d5db',
+          borderColor: '#4f46e5',
+          borderWidth: 1,
+        }
+      },
+      animation: {
+        duration: 1200,
+        easing: 'easeOutQuart',
+      }
+    }
+  };
+
+  new Chart(ctx, config);
+});

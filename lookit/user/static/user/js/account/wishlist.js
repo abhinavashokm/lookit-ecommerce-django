@@ -19,34 +19,6 @@ document.querySelectorAll('.size-dropdown').forEach(dropdown => {
     });
 });
 
-// Update wishlist count
-function updateWishlistCount() {
-    const items = document.querySelectorAll('.wishlist-table tbody tr');
-    const countElements = document.querySelectorAll('.wishlist-count');
-    countElements.forEach(el => {
-        el.textContent = `(${items.length})`;
-    });
-}
-
-
-// Update wishlist count to work with the current HTML structure
-function updateWishlistCount() {
-    const items = document.querySelectorAll('.wishlist-card');
-    const countElements = document.querySelectorAll('.wishlist-count');
-    const itemText = items.length === 1 ? 'item' : 'items';
-    countElements.forEach(el => {
-        el.textContent = `(${items.length} ${itemText})`;
-    });
-}
-
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    updateWishlistCount();
-    checkIfEmpty();
-});
-
-
 
 document.querySelectorAll('.wishlist-card').forEach(card => {
     const form = card.querySelector('form[action*="move-to-cart"]');
