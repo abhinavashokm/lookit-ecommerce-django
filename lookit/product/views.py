@@ -47,7 +47,7 @@ def admin_list_products(request):
     price_range = request.GET.get('price')
 
     if search:
-        products = products.filter(name__icontains=search)
+        products = products.filter(Q(name__icontains=search) | Q(uuid__icontains=search))
 
     if style:
         products = products.filter(style__name=style)

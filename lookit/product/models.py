@@ -76,7 +76,7 @@ class Variant(models.Model):
         XL = "XL", "XL"
         XXL = "XXL", "XXL"
         XXXL = "XXXL", "XXXL"
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, related_name='variant')
     size = models.CharField(max_length=10, choices=Size.choices)
     stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
