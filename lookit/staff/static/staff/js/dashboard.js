@@ -38,8 +38,9 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Sample data for demo (positive values only)
-  const labels = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-  const dataValues = [12000, 18500, 15500, 20500]; // Replace with real values later
+  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+   const dataValues = [12000, 14500, 13200, 17500, 19800, 21000, 23000, 22500, 19000, 24000, 25000, 27000];
 
   const data = {
     labels: labels,

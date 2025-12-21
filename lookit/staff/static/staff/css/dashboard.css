@@ -492,20 +492,178 @@ td {
     }
 }
 
-/* CHART JS CSS*/
+/* ===========================
+   CHART.JS Dashboard Styles
+   =========================== */
 
 .full-width {
     grid-column: 1 / -1;
+    overflow-x: visible;
+    /* allow inner scroll to expand */
 }
 
+/* Scrollable container for mobile */
+.chart-scroll {
+    overflow-x: scroll; /* always show scrollbar if overflow exists */
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* smooth iOS scroll */
+    width: 100%;
+    display: block;
+      scrollbar-gutter: stable; /* prevents layout shift when scrollbar appears */
+}
+
+.overview-card {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+/* Chart area styling */
 .chart-wrapper {
     position: relative;
+    min-width: 900px;
+    /* ensure horizontal scroll space */
     height: 260px;
-    width: 100%;
     padding: 10px;
 }
 
+/* Responsive canvas */
 .chart-wrapper canvas {
     width: 100% !important;
     height: 100% !important;
+}
+
+/* Scrollbar styling */
+.chart-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.chart-scroll::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 3px;
+}
+
+.chart-scroll::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Optional media query: only scrollable on smaller screens */
+@media (max-width: 768px) {
+    .chart-wrapper {
+        min-width: 600px;
+        /* slightly narrower for mobile */
+    }
+}
+
+
+/* Tooltip for Top-Selling-Categories bars */
+.category-bar-container {
+  position: relative;
+  overflow: visible;            /* let tooltip show outside the rounded track */
+}
+
+/* the tooltip bubble */
+.category-bar-container::after {
+  content: attr(data-sold);
+  position: absolute;
+  top: -34px;
+  left: 0;
+  background: #1f2937;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* little arrow under the tooltip */
+.category-bar-container::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #1f2937 transparent transparent transparent;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* reveal on hover */
+.category-bar-container:hover::after,
+.category-bar-container:hover::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+/* ===============================
+   Top Selling Products Table
+   =============================== */
+
+.top-products-table th,
+.top-products-table td {
+  text-align: left;
+  vertical-align: middle;
+}
+
+.top-products-table th {
+  font-weight: 600;
+  color: #6b7280;
+}
+
+/* Product Column (Image + Name + ID) */
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.product-details {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.product-id {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* Revenue Highlight */
+.revenue-value {
+  color: #10b981; /* Emerald green */
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.revenue-value::before {
+  content: "▲ ";
+  font-size: 0.7rem;
+  color: #10b981;
+  vertical-align: middle;
 }
