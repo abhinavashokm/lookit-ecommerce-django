@@ -61,9 +61,6 @@ def get_top_selling_styles():
         )
     )
 
-    for i in top_selling_styles:
-        print(i.sale_percentage)
-
     return top_selling_styles
 
 
@@ -73,7 +70,11 @@ def get_top_selling_brands():
             variant__orders__order_status=OrderItems.OrderStatus.DELIVERED
         )
         .values('brand')
-        .annotate(sale_count=Coalesce(Count('variant__orders'), Value(0), output_field=IntegerField() ))
+        .annotate(
+            sale_count=Coalesce(
+                Count('variant__orders'), Value(0), output_field=IntegerField()
+            )
+        )
         .order_by('-sale_count')
     )
 
@@ -85,7 +86,7 @@ def get_top_selling_brands():
     base_for_calculation = (
         top_selling_brands[0].get('sale_count') or 1
     )  # prevent divide by zero
-    
+
     # annotate percentage for each style (for graph representation)
     top_selling_brands = top_selling_brands.annotate(
         sale_percentage=ExpressionWrapper(
@@ -94,3 +95,35 @@ def get_top_selling_brands():
     )
 
     return top_selling_brands
+
+
+from django.db.models import Sum, DecimalField
+from django.db.models.functions import Coalesce, ExtractMonth, ExtractYear
+
+def get_sales_performance():
+    sales_performance = (
+        OrderItems.objects
+        .filter(order_status=OrderItems.OrderStatus.DELIVERED)
+        .exclude(placed_at=None)
+        .annotate(
+            month=ExtractMonth('placed_at'),
+            year=ExtractYear('placed_at')
+        )
+        .values('year', 'month')
+        .annotate(
+            total_sales=Coalesce(
+                Sum('total'),
+                0,
+                output_field=DecimalField(max_digits=10, decimal_places=2),
+            )
+        )
+        .order_by('year', 'month')
+    )
+    
+    dataValues = [0] * 12
+    for record in sales_performance:
+        print(f"{record['month']:02d}-{record['year']}: ₹{record['total_sales']}")
+        dataValues[record['month']-1] = float(record['total_sales'])
+    
+    return dataValues
+

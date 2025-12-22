@@ -1,213 +1,198 @@
 {% extends 'admin_base/base.html' %}
 {% load static %}
 {% block styles %}
-<link rel="stylesheet" href="{% static 'staff/css/dashboard.css' %}">
+  <link rel="stylesheet" href="{% static 'staff/css/dashboard.css' %}" />
 {% endblock %}
 
 <!-- Main Content -->
 {% block content %}
-<main class="main-content">
+  <main class="main-content">
     <!-- Dashboard Header -->
     <div class="dashboard-header">
-        <h1>Dashboard</h1>
-        <select class="time-filter">
-            <option>Last Week</option>
-            <option>Last Month</option>
-            <option>Last Quarter</option>
-            <option>Last Year</option>
-        </select>
+      <h1>Dashboard</h1>
+      <select class="time-filter">
+        <option>Last Week</option>
+        <option>Last Month</option>
+        <option>Last Quarter</option>
+        <option>Last Year</option>
+      </select>
     </div>
 
     <!-- KPI Cards -->
     <div class="kpi-grid">
-        <div class="kpi-card">
-            <h3>Total Sales</h3>
-            <div class="value">$25,450</div>
-            <div class="change positive">+12%</div>
-        </div>
-        <div class="kpi-card">
-            <h3>Total Orders</h3>
-            <div class="value">1,235</div>
-            <div class="change positive">+8%</div>
-        </div>
-        <div class="kpi-card">
-            <h3>Avg Order Value</h3>
-            <div class="value">₹1980</div>
-            <div class="change positive">+5%</div>
-        </div>
-        <div class="kpi-card">
-            <h3>New Users</h3>
-            <div class="value">345</div>
-            <div class="change positive">+5%</div>
-        </div>
-        <div class="kpi-card hidden-mobile">
-            <h3>Active Users</h3>
-            <div class="value">25</div>
-            <div class="change neutral">—</div>
-        </div>
-        <div class="kpi-card hidden-mobile">
-            <h3>Active Offers</h3>
-            <div class="value">4 active</div>
-            <div class="change neutral">—</div>
-        </div>
-        <div class="kpi-card hidden-mobile">
-            <h3>Pending Orders</h3>
-            <div class="value">25</div>
-            <div class="change negative">-2%</div>
-        </div>
-        <div class="kpi-card hidden-mobile">
-            <h3>Active Coupons</h3>
-            <div class="value">6 active</div>
-            <div class="change neutral">—</div>
-        </div>
+      <div class="kpi-card">
+        <h3>Total Sales</h3>
+        <div class="value">$25,450</div>
+        <div class="change positive">+12%</div>
+      </div>
+      <div class="kpi-card">
+        <h3>Total Orders</h3>
+        <div class="value">1,235</div>
+        <div class="change positive">+8%</div>
+      </div>
+      <div class="kpi-card">
+        <h3>Avg Order Value</h3>
+        <div class="value">₹1980</div>
+        <div class="change positive">+5%</div>
+      </div>
+      <div class="kpi-card">
+        <h3>New Users</h3>
+        <div class="value">345</div>
+        <div class="change positive">+5%</div>
+      </div>
+      <div class="kpi-card hidden-mobile">
+        <h3>Active Users</h3>
+        <div class="value">25</div>
+        <div class="change neutral">—</div>
+      </div>
+      <div class="kpi-card hidden-mobile">
+        <h3>Active Offers</h3>
+        <div class="value">4 active</div>
+        <div class="change neutral">—</div>
+      </div>
+      <div class="kpi-card hidden-mobile">
+        <h3>Pending Orders</h3>
+        <div class="value">25</div>
+        <div class="change negative">-2%</div>
+      </div>
+      <div class="kpi-card hidden-mobile">
+        <h3>Active Coupons</h3>
+        <div class="value">6 active</div>
+        <div class="change neutral">—</div>
+      </div>
     </div>
     <div class="kpi-toggle-container">
-        <button class="kpi-toggle-btn" id="kpiToggle" onclick="toggleKPICards()">
-            <span>▼</span>
-            <span id="toggleText">Show More</span>
-        </button>
+      <button class="kpi-toggle-btn" id="kpiToggle" onclick="toggleKPICards()">
+        <span>▼</span>
+        <span id="toggleText">Show More</span>
+      </button>
     </div>
 
-
-        <!-- Second Row - Vertical Stack -->
+    <!-- Second Row - Vertical Stack -->
     <div style="display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px;">
-        <!-- Quick Actions -->
-        <div class="card">
-            <div class="card-header">
-                <div class="card-title">Quick Actions</div>
-            </div>
-            <div class="quick-actions">
-                <a href="{% url 'admin-add-product' %}">
-                    <button class="btn btn-primary">Add New Product</button>
-                </a>
-                <a href="{% url 'admin-add-offer' %}">
-                    <button class="btn btn-secondary">Create Offer</button>
-                </a>
-                <a href="{% url 'admin-add-coupon' %}">
-                    <button class="btn btn-secondary">Create Coupon</button>
-                </a>
-            </div>
+      <!-- Quick Actions -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Quick Actions</div>
         </div>
+        <div class="quick-actions">
+          <a href="{% url 'admin-add-product' %}"><button class="btn btn-primary">Add New Product</button></a>
+          <a href="{% url 'admin-add-offer' %}"><button class="btn btn-secondary">Create Offer</button></a>
+          <a href="{% url 'admin-add-coupon' %}"><button class="btn btn-secondary">Create Coupon</button></a>
+        </div>
+      </div>
     </div>
-
-
 
     <!-- Content Grid -->
     <div class="content-grid">
-
-        <!-- Sales Performance Chart -->
-        <div class="chart-scroll full-width">
-            <div class="card overview-card">
-                <div class="card-header">
-                    <div>
-                        <div class="card-title">Sales Performance</div>
-                        <div class="card-subtitle">This Month</div>
-                    </div>
-                    <div class="value" style="font-size: 1.5rem;">₹25,450</div>
-                </div>
-
-                <div class="chart-wrapper">
-                    <canvas id="salesChart"></canvas>
-                </div>
+      <!-- Sales Performance Chart -->
+      <div class="chart-scroll full-width">
+        <div class="card overview-card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Sales Performance</div>
+              <div class="card-subtitle">This Month</div>
             </div>
+            <div class="value" style="font-size: 1.5rem;">₹25,450</div>
+          </div>
+
+          <div class="chart-wrapper">
+            <canvas id="salesChart"></canvas>
+          </div>
         </div>
+      </div>
 
-        <!-- Top Selling Brand -->
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <div class="card-title">Top Selling Brands</div>
-                    <div class="card-subtitle">This Month +5%</div>
-                </div>
-                <div class="value" style="font-size: 1.5rem;">25%</div>
-            </div>
-            <div class="category-bars">
-
-                {% for brand in top_selling_brands %}
-                <div class="category-item">
-                    <div class="category-label">
-                        {{ brand.brand }}
-                    </div>
-                    <div class="category-bar-container" data-sold="{{ brand.sale_count }} sold">
-                        <div class="category-bar" style="width: {{ brand.sale_percentage }}%;"></div>
-                    </div>
-                </div>
-                {% endfor %}
-
-            </div>
-        </div>        
-
-        <!-- Top Selling Categories -->
-        <div class="card">
-            <div class="card-header">
-                <div>
-                    <div class="card-title">Top Selling Categories</div>
-                    <div class="card-subtitle">This Month +5%</div>
-                </div>
-                <div class="value" style="font-size: 1.5rem;">25%</div>
-            </div>
-            <div class="category-bars">
-
-                {% for style in top_selling_styles %}
-                <div class="category-item">
-                    <div class="category-label">{{ style.name }}</div>
-                    <div class="category-bar-container" data-sold="{{ style.sale_count }} sold">
-                        <div class="category-bar" style="width:{{ style.sale_percentage }}%;"></div>
-                    </div>
-                </div>
-                {% endfor %}
-
-            </div>
+      <!-- Top Selling Brand -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Top Selling Brands</div>
+            <div class="card-subtitle">This Month (sales count)</div>
+          </div>
+          <div class="value" style="font-size: 1.5rem;">25%</div>
         </div>
+        <div class="category-bars">
+          {% for brand in top_selling_brands %}
+            <div class="category-item">
+              <div class="category-label">{{ brand.brand }}</div>
+              <div class="category-bar-container" data-sold="{{ brand.sale_count }} sold">
+                <div class="category-bar" style="width: {{ brand.sale_percentage }}%;"></div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
 
-
-
+      <!-- Top Selling Categories -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Top Selling Categories</div>
+            <div class="card-subtitle">This Month +5%</div>
+          </div>
+          <div class="value" style="font-size: 1.5rem;">25%</div>
+        </div>
+        <div class="category-bars">
+          {% for style in top_selling_styles %}
+            <div class="category-item">
+              <div class="category-label">{{ style.name }}</div>
+              <div class="category-bar-container" data-sold="{{ style.sale_count }} sold">
+                <div class="category-bar" style="width:{{ style.sale_percentage }}%;"></div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
     </div>
 
-<!-- Top Selling Products -->
-<div class="card" style="margin-top: 20px;">
-  <div class="card-header">
-    <div class="card-title">Top Selling Products</div>
-  </div>
+    <!-- Top Selling Products -->
+    <div class="card" style="margin-top: 20px;">
+      <div class="card-header">
+        <div class="card-title">Top Selling Products</div>
+      </div>
 
-  <div class="table-container">
-    <table class="top-products-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Product</th>
-          <th>Total Units Sold</th>
-          <th>Gross revenue</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in top_selling_products %}
-        <tr>
-          <td>{{ forloop.counter }}</td>
-          <td class="product-info">
-            <img src="{{ product.image_url }}" alt="T-shirt" class="product-thumb">
-            <div class="product-details">
-              <div class="product-name">{{ product.name }}</div>
-              <div class="product-id">#{{ product.uuid }}</div>
-            </div>
-          </td>
-          <td>{{ product.units_sold }}</td>
-          <td><span class="revenue-value">₹{{ product.total_revenue }}</span></td>
-        </tr>
-        {% endfor %}
-        
-      </tbody>
-    </table>
-  </div>
-</div>
-
-
-
-</main>
+      <div class="table-container">
+        <table class="top-products-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Product</th>
+              <th>Total Units Sold</th>
+              <th>Gross revenue</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in top_selling_products %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="product-info">
+                  <img src="{{ product.image_url }}" alt="T-shirt" class="product-thumb" />
+                  <div class="product-details">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-id">#{{ product.uuid }}</div>
+                  </div>
+                </td>
+                <td>{{ product.units_sold }}</td>
+                <td>
+                  <span class="revenue-value">₹{{ product.total_revenue }}</span>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
 {% endblock %}
 
 {% block scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    // Sample data for demo (positive values only)
+    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    
+    const dataValues = {{ sales_performance_values }}
+  </script>
 
-<script src="{% static 'staff/js/dashboard.js' %}"></script>
+  <script src="{% static 'staff/js/dashboard.js' %}"></script>
 {% endblock %}

@@ -730,7 +730,7 @@ def track_return_request(request, order_uuid):
 @admin_required
 def admin_list_orders(request):
     order_items = OrderItems.objects.exclude(order_status='INITIATED').order_by(
-        '-created_at'
+        '-placed_at'
     )
 
     search = request.GET.get('search')
@@ -979,7 +979,7 @@ def admin_update_return_status(request, return_request_uuid):
 def sales_report(request):
     orders = OrderItems.objects.filter(
         order_status=OrderItems.OrderStatus.DELIVERED
-    ).order_by('-created_at')
+    ).order_by('-placed_at')
 
     from_date = request.GET.get('from_date')
     to_date = request.GET.get('to_date')
@@ -998,7 +998,7 @@ def sales_report(request):
             )
             return redirect(request.path)
         
-        orders = orders.filter(created_at__date__range=[from_date, to_date])
+        orders = orders.filter(placed_at__date__range=[from_date, to_date])
         
     else:
         #default filter today

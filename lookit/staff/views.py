@@ -7,7 +7,12 @@ from datetime import date, timedelta
 from django.core.paginator import Paginator
 from django.contrib import messages
 from core.decorators import admin_required
-from .utils import get_top_selling_products, get_top_selling_styles, get_top_selling_brands
+from .utils import (
+    get_top_selling_products,
+    get_top_selling_styles,
+    get_top_selling_brands,
+    get_sales_performance,
+)
 
 
 def admin_login(request):
@@ -38,7 +43,17 @@ def admin_dashboard(request):
     top_selling_products = get_top_selling_products()
     top_selling_styles = get_top_selling_styles()
     top_selling_brands = get_top_selling_brands()
-    return render(request, "staff/dashboard.html", {"top_selling_products":top_selling_products, "top_selling_styles": top_selling_styles,  "top_selling_brands":top_selling_brands})
+    sales_performance_values = get_sales_performance()
+    return render(
+        request,
+        "staff/dashboard.html",
+        {
+            "top_selling_products": top_selling_products,
+            "top_selling_styles": top_selling_styles,
+            "top_selling_brands": top_selling_brands,
+            "sales_performance_values":sales_performance_values,
+        },
+    )
 
 
 def admin_logout(request):
@@ -49,6 +64,7 @@ def admin_logout(request):
 """ ============================================
     USER MANAGEMENT
 ============================================ """
+
 
 @admin_required
 def admin_user_management(request):
@@ -99,15 +115,18 @@ def admin_user_management(request):
 
     return render(request, "staff/user/list.html", {'page_obj': page_obj})
 
+
 @admin_required
 def admin_view_user(request, user_id):
     user_data = User.objects.get(id=user_id)
     return render(request, "staff/user/view_user.html", {"user": user_data})
 
+
 @admin_required
 def admin_edit_user(request, user_id):
     user = User.objects.get(id=user_id)
-    return render(request, "staff/user/edit.html",{"user":user})
+    return render(request, "staff/user/edit.html", {"user": user})
+
 
 @admin_required
 def admin_block_user_toggle(request, user_id):
@@ -117,13 +136,15 @@ def admin_block_user_toggle(request, user_id):
     if user_data.is_active:
         messages.success(request, f"UNBLOCKED USER")
     else:
-       messages.success(request, f"BLOCKED USER") 
-        
+        messages.success(request, f"BLOCKED USER")
+
     return redirect('admin-view-user', user_id=user_id)
+
 
 @admin_required
 def admin_add_staff(request):
     return render(request, "staff/user/add_staff.html")
+
 
 @admin_required
 def admin_view_staff(request, staff_id):

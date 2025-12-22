@@ -175,7 +175,7 @@
                         </span>
                     </td>
                     <td class="order-date">
-                        {{ order.created_at.date }}
+                        {{ order.placed_at.date }}
                     </td>
                     <td>
                         <a href="{% url 'admin-order-details' order.uuid %}">

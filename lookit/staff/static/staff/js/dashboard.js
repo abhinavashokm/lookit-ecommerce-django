@@ -37,11 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // Sample data for demo (positive values only)
-  const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-   const dataValues = [12000, 14500, 13200, 17500, 19800, 21000, 23000, 22500, 19000, 24000, 25000, 27000];
-
   const data = {
     labels: labels,
     datasets: [{
@@ -65,8 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
       scales: {
         y: {
           beginAtZero: true,
+          max: 50000, // 👈 set upper limit
           grid: { color: '#f3f4f6' },
-          ticks: { color: '#6b7280', stepSize: 5000 },
+          ticks: { color: '#6b7280', stepSize: 10000 },
         },
         x: {
           ticks: { color: '#6b7280' },
