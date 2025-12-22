@@ -77,9 +77,15 @@
                 <div class="card-title">Quick Actions</div>
             </div>
             <div class="quick-actions">
-                <button class="btn btn-primary">Add New Product</button>
-                <button class="btn btn-secondary">Create Offer</button>
-                <button class="btn btn-secondary">Create Coupon</button>
+                <a href="{% url 'admin-add-product' %}">
+                    <button class="btn btn-primary">Add New Product</button>
+                </a>
+                <a href="{% url 'admin-add-offer' %}">
+                    <button class="btn btn-secondary">Create Offer</button>
+                </a>
+                <a href="{% url 'admin-add-coupon' %}">
+                    <button class="btn btn-secondary">Create Coupon</button>
+                </a>
             </div>
         </div>
     </div>
@@ -116,68 +122,18 @@
                 <div class="value" style="font-size: 1.5rem;">25%</div>
             </div>
             <div class="category-bars">
+
+                {% for brand in top_selling_brands %}
                 <div class="category-item">
                     <div class="category-label">
-                        T-shirts
+                        {{ brand.brand }}
                     </div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 85%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Hoodies</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 70%;"></div>
+                    <div class="category-bar-container" data-sold="{{ brand.sale_count }} sold">
+                        <div class="category-bar" style="width: {{ brand.sale_percentage }}%;"></div>
                     </div>
                 </div>
-                <div class="category-item">
-                    <div class="category-label">Sweatshirts</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 60%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Tank Tops</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 45%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Hoodies</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 70%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Sweatshirts</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 60%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Tank Tops</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 45%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Tank Tops</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 45%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Tank Tops</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 45%;"></div>
-                    </div>
-                </div>
-                <div class="category-item">
-                    <div class="category-label">Tank Tops</div>
-                    <div class="category-bar-container" data-sold="850 sold">
-                        <div class="category-bar" style="width: 45%;"></div>
-                    </div>
-                </div>
+                {% endfor %}
+
             </div>
         </div>        
 
