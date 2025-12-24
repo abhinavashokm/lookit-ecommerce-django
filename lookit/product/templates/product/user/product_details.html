@@ -280,97 +280,62 @@
     <h2 class="section-heading">Customer Reviews</h2>
     <div class="reviews-header">
         <div class="overall-rating">
-            <div class="rating-number">4.7</div>
+            <div class="rating-number">{{ rating_summary.average }}</div>
             <div class="rating-stars">★★★★☆</div>
-            <div class="rating-count">85 reviews</div>
+            <div class="rating-count">{{ rating_summary.total_reviews }} reviews</div>
         </div>
         <div class="rating-breakdown">
+            {% for key, value in rating_summary.breakdown.items %}
             <div class="breakdown-item">
-                <span class="breakdown-label">5 ★</span>
+                <span class="breakdown-label">{{ key }} ★</span>
                 <div class="breakdown-bar">
-                    <div class="breakdown-fill" style="width: 50%;"></div>
+                    <div class="breakdown-fill" style="width: {{ value }}%;"></div>
                 </div>
-                <span class="breakdown-percent">50%</span>
+                <span class="breakdown-percent">{{ value }}%</span>
             </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">4 ★</span>
-                <div class="breakdown-bar">
-                    <div class="breakdown-fill" style="width: 30%;"></div>
-                </div>
-                <span class="breakdown-percent">30%</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">3 ★</span>
-                <div class="breakdown-bar">
-                    <div class="breakdown-fill" style="width: 10%;"></div>
-                </div>
-                <span class="breakdown-percent">10%</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">2 ★</span>
-                <div class="breakdown-bar">
-                    <div class="breakdown-fill" style="width: 7%;"></div>
-                </div>
-                <span class="breakdown-percent">7%</span>
-            </div>
-            <div class="breakdown-item">
-                <span class="breakdown-label">1 ★</span>
-                <div class="breakdown-bar">
-                    <div class="breakdown-fill" style="width: 3%;"></div>
-                </div>
-                <span class="breakdown-percent">3%</span>
-            </div>
+            {% endfor %}
+
         </div>
     </div>
 
     <div class="review-list">
-        <div class="review-item">
-            <div class="review-header">
-                <div class="review-avatar">EH</div>
-                <div class="review-info">
-                    <div class="review-name">Ethan Harper</div>
-                    <div class="review-date">1 month ago</div>
-                </div>
-                <div class="review-stars">★★★★★</div>
-            </div>
-            <p class="review-text">
-                The abstract design is even more striking in person. The tee is comfortable and fits well. I've received
-                many compliments on it!
-            </p>
-            <div class="review-actions">
-                <div class="review-action" onclick="toggleLike(this)">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
-                    </svg>
-                    <span class="like-count">20</span>
-                </div>
-            </div>
-        </div>
 
+        {% for review in reviews %}
         <div class="review-item">
             <div class="review-header">
-                <div class="review-avatar">OB</div>
+                <img src="{{ review.user.profile_img_url }}" alt="" class="review-avatar">
                 <div class="review-info">
-                    <div class="review-name">Olivia Bennett</div>
-                    <div class="review-date">2 months ago</div>
+                    <div class="review-name">{{ review.user.full_name }}</div>
+                    <div class="review-date">{{ review.created_at|timesince }} ago</div>
                 </div>
-                <div class="review-stars">★★★★☆</div>
+                <div class="review-stars">
+                    {% for _ in "12345" %}
+                        {% if forloop.counter <= review.rating %}
+                            ★
+                        {% else %}
+                            ☆
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
             </div>
             <p class="review-text">
-                Love the unique design of this t-shirt. The material is soft and the fit is just right. It's a great
-                addition to my wardrobe.
+                {{ review.review }}
             </p>
-            <div class="review-actions">
-                <div class="review-action" onclick="toggleLike(this)">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z" />
-                    </svg>
-                    <span class="like-count">15</span>
-                </div>
-            </div>
         </div>
+        {% empty %}
+                <!-- Empty state -->
+        <div class="no-reviews">
+            <div class="no-reviews-icon">⭐</div>
+
+            <h3>No reviews yet</h3>
+            <p>
+                Be the first to share your thoughts about this product.
+                Your review helps other customers make better choices.
+            </p>
+        </div>
+        {% endfor %}
+
     </div>
 </div>
 
@@ -389,7 +354,7 @@
                 {% endif %}
                 <div class="related-info">
                     <div class="related-name">Graphic Print Tee</div>
-                    <div class="related-price">$39.99</div>
+                    <div class="related-price">₹39.99</div>
                 </div>
             </div>
         </a>

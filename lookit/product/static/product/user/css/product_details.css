@@ -1721,3 +1721,32 @@
     border-color: #B55E8A;
     color: #B55E8A;
 }
+
+
+.no-reviews {
+    text-align: center;
+    padding: 2.5rem 1rem;
+    background-color: #f9fafb;
+    border: 1px dashed #d1d5db;
+    border-radius: 8px;
+    color: #6b7280;
+}
+
+.no-reviews-icon {
+    font-size: 2.2rem;
+    margin-bottom: 0.6rem;
+}
+
+.no-reviews h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    color: #111827;
+}
+
+.no-reviews p {
+    font-size: 0.9rem;
+    max-width: 360px;
+    margin: 0 auto;
+    line-height: 1.5;
+}

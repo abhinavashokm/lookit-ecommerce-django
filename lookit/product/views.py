@@ -26,6 +26,7 @@ from django.utils import timezone
 
 from offer.utiils import annotate_offers
 from user.utils import annotate_wishlist_products
+from .utils import fetch_all_reviews, get_rating_summary
 
 
 """ ============================================
@@ -745,6 +746,11 @@ def product_details(request, product_uuid):
             'price': offer_price,
             'category_offer': category_offer,
         }
+    #--rating summary-----
+    rating_summary = get_rating_summary(product.id)    
+    
+    #---fetch all review--------------------------------------------
+    reviews = fetch_all_reviews(product.id)
 
     return render(
         request,
@@ -755,6 +761,8 @@ def product_details(request, product_uuid):
             'additional_product_images': product_images,
             'variants': variants,
             "related_products": related_products,
+            "reviews": reviews,
+            "rating_summary":rating_summary,
         },
     )
 
