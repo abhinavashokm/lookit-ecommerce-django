@@ -24,6 +24,7 @@ from .views import (
     write_review,
 )
 
+#urls of order app
 urlpatterns = [
     path("checkout/", checkout, name="checkout"),
     path("create-order/", create_order, name="create_order"),
@@ -50,6 +51,6 @@ urlpatterns = [
     
     path("admin/sales-report/", sales_report, name="admin-sales-report"),
     path("admin/reports/sales/pdf/", download_sales_report_pdf, name="sales-report-pdf"),
-    path("admin/reports/sales/excel/", export_sales_report_excel, name="sales-report-excel")
+    path("admin/reports/sales/excel/", export_sales_report_excel, name="sales-report-excel"),
 
 ]
