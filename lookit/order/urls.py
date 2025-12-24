@@ -21,6 +21,7 @@ from .views import (
     sales_report,
     download_sales_report_pdf,
     export_sales_report_excel,
+    write_review,
 )
 
 urlpatterns = [
@@ -33,6 +34,7 @@ urlpatterns = [
     path("my-orders/", my_orders, name="my-orders"),
     path("track-order/<order_uuid>/", track_order, name="track-order"),
     path('invoice/<order_uuid>/', download_invoice_pdf, name='invoice'),
+    path("write_review/", write_review, name="write-review"),
     
     path("admin/list-orders/", admin_list_orders, name="admin-list-orders"),
     path("admin/order-details/<order_item_uuid>/", admin_order_details, name="admin-order-details"),

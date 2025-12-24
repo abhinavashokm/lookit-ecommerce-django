@@ -31,6 +31,7 @@ function toggleKPICards() {
 
 //CHART JS SCRIPT
 document.addEventListener("DOMContentLoaded", function () {
+  console.log(labels)
   const ctx = document.getElementById('salesChart');
   if (!ctx) {
     console.error("Canvas element #salesChart not found!");

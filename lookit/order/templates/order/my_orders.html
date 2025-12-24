@@ -84,6 +84,11 @@
                     <a href="{% url 'track-order' item.uuid %}">
                         <button class="btn btn-track">{% if item.return_request or item.order_status == 'CANCELLED' %}Order Details{% else %}Track Order{% endif %}</button>
                     </a>
+                    {% if item.order_status == 'DELIVERED' %}
+                    <a href="{% url 'write-review' %}">
+                        <button class="btn btn-review">Write a review</button>
+                    </a>
+                    {% endif %}
                     {% if item.return_request %}
                     <a href="{% url 'track_return_request' item.uuid %}">
                         <button class="btn btn-return-track">Track Return</button>

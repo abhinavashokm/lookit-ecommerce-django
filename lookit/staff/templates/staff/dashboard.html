@@ -10,62 +10,57 @@
     <!-- Dashboard Header -->
     <div class="dashboard-header">
       <h1>Dashboard</h1>
-      <select class="time-filter">
-        <option>Last Week</option>
-        <option>Last Month</option>
-        <option>Last Quarter</option>
-        <option>Last Year</option>
-      </select>
+
+      <form id="filter-form" method="GET" action="">
+        <select class="time-filter" name="time_range" onchange="document.getElementById('filter-form').submit();">
+          <option value="week" {% if request.GET.time_range == 'week' %}selected{% endif %}>Last 7 Days</option>
+          <option value="month" {% if request.GET.time_range == 'month' %}selected{% endif %}>Month to Date</option>
+          <option value="year" {% if request.GET.time_range == 'year' %}selected{% endif %}>Year to Date</option>
+        </select>
+      </form>
+
     </div>
+    <div style="
+      display: inline-block;
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-family: system-ui, sans-serif;
+      font-size: 14px;
+      background: #f9f9f9;
+      margin-bottom: 15px;
+    ">
+      <span style="color: #666;">Period:</span>
+      <strong>{{ start_date }}</strong>
+      <span style="color: #999;">→</span>
+      <strong>{{ end_date }}</strong>
+    </div>
+
+
+
 
     <!-- KPI Cards -->
     <div class="kpi-grid">
       <div class="kpi-card">
         <h3>Total Sales</h3>
-        <div class="value">$25,450</div>
-        <div class="change positive">+12%</div>
+        <div class="value">₹{{ dashboard_summary.total_sales  }}</div>
+        {% comment %} <div class="change positive">+12%</div> {% endcomment %}
       </div>
       <div class="kpi-card">
         <h3>Total Orders</h3>
-        <div class="value">1,235</div>
-        <div class="change positive">+8%</div>
-      </div>
-      <div class="kpi-card">
-        <h3>Avg Order Value</h3>
-        <div class="value">₹1980</div>
-        <div class="change positive">+5%</div>
-      </div>
-      <div class="kpi-card">
-        <h3>New Users</h3>
-        <div class="value">345</div>
-        <div class="change positive">+5%</div>
-      </div>
-      <div class="kpi-card hidden-mobile">
-        <h3>Active Users</h3>
-        <div class="value">25</div>
-        <div class="change neutral">—</div>
+        <div class="value">{{ dashboard_summary.total_orders  }}</div>
+        <!-- <div class="change positive">+8%</div> -->
       </div>
       <div class="kpi-card hidden-mobile">
         <h3>Active Offers</h3>
-        <div class="value">4 active</div>
-        <div class="change neutral">—</div>
+        <div class="value">{{ dashboard_summary.active_offers }} active</div>
+        {% comment %} <div class="change neutral">—</div> {% endcomment %}
       </div>
-      <div class="kpi-card hidden-mobile">
-        <h3>Pending Orders</h3>
-        <div class="value">25</div>
-        <div class="change negative">-2%</div>
+      <div class="kpi-card">
+        <h3>New Users</h3>
+        <div class="value">{{ dashboard_summary.users_count }}</div>
+        {% comment %} <div class="change positive">+5%</div> {% endcomment %}
       </div>
-      <div class="kpi-card hidden-mobile">
-        <h3>Active Coupons</h3>
-        <div class="value">6 active</div>
-        <div class="change neutral">—</div>
-      </div>
-    </div>
-    <div class="kpi-toggle-container">
-      <button class="kpi-toggle-btn" id="kpiToggle" onclick="toggleKPICards()">
-        <span>▼</span>
-        <span id="toggleText">Show More</span>
-      </button>
     </div>
 
     <!-- Second Row - Vertical Stack -->
@@ -182,6 +177,8 @@
         </table>
       </div>
     </div>
+    {{ sales_performance_labels|json_script:"labels-data" }}
+    {{ sales_performance_values|json_script:"values-data" }}
   </main>
 {% endblock %}
 
@@ -189,9 +186,13 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script>
     // Sample data for demo (positive values only)
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    
-    const dataValues = {{ sales_performance_values }}
+    //const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+    const labels = JSON.parse(
+        document.getElementById('labels-data').textContent
+    );
+    const dataValues = JSON.parse(
+        document.getElementById('values-data').textContent
+    );
   </script>
 
   <script src="{% static 'staff/js/dashboard.js' %}"></script>

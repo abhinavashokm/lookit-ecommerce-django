@@ -340,6 +340,33 @@
     background-color: #853d62;
 }
 
+.btn-review {
+    background-color: #eaf7f0;
+    color: #1f8f5f;
+    border: 1px solid #1f8f5f;
+    padding: 0.55rem 1.1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.15s ease;
+}
+
+.btn-review:hover {
+    background-color: #1f8f5f;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(31, 143, 95, 0.25);
+    transform: translateY(-1px);
+}
+
+.btn-review:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(31, 143, 95, 0.2);
+}
+
 /* New button for Track Return */
 .btn-return-track {
     background-color: #5a7a9a; /* blue-purple tone to differentiate */

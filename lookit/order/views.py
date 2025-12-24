@@ -720,6 +720,10 @@ def track_return_request(request, order_uuid):
             "return_request": return_request,
         },
     )
+    
+@login_required
+def write_review(request):
+    return render(request, "order/write_review.html")
 
 
 """

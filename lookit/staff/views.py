@@ -12,6 +12,8 @@ from .utils import (
     get_top_selling_styles,
     get_top_selling_brands,
     get_sales_performance,
+    get_dashboard_summary,
+    get_start_date_for_filter,
 )
 
 
@@ -40,10 +42,18 @@ def admin_login(request):
 
 @admin_required
 def admin_dashboard(request):
-    top_selling_products = get_top_selling_products()
-    top_selling_styles = get_top_selling_styles()
-    top_selling_brands = get_top_selling_brands()
-    sales_performance_values = get_sales_performance()
+    time_range = request.GET.get('time_range')
+    if not time_range:
+        time_range = 'week'
+    
+    top_selling_products = get_top_selling_products(time_range)
+    top_selling_styles = get_top_selling_styles(time_range)
+    top_selling_brands = get_top_selling_brands(time_range)
+    sales_performance = get_sales_performance(time_range)
+    dashboard_summary = get_dashboard_summary(time_range)
+    start_date = get_start_date_for_filter(time_range)
+    end_date = date.today()
+    print(sales_performance.get('data_labels'))
     return render(
         request,
         "staff/dashboard.html",
@@ -51,7 +61,11 @@ def admin_dashboard(request):
             "top_selling_products": top_selling_products,
             "top_selling_styles": top_selling_styles,
             "top_selling_brands": top_selling_brands,
-            "sales_performance_values":sales_performance_values,
+            "sales_performance_values":sales_performance.get('data_values'),
+            "sales_performance_labels":sales_performance.get('data_labels'),
+            "dashboard_summary": dashboard_summary,
+            "start_date":start_date,
+            "end_date":end_date,
         },
     )
 
