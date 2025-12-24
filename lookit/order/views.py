@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.db import transaction
 from cart.models import Cart
 from user.models import Address
-from .models import Order, OrderItems, ReturnRequest
+from .models import Order, OrderItems, ReturnRequest, Review
 from product.models import Variant
 from django.db.models import Q
 from django.core.paginator import Paginator
@@ -44,6 +44,7 @@ from django.http import HttpResponse
 from coupon.utils import is_coupon_min_purchase_eligible, clear_users_applied_coupon
 from urllib.parse import urlencode
 from datetime import date, datetime
+from .utils import annotate_review_eligibility
 
 
 @login_required
@@ -336,7 +337,10 @@ def my_orders(request):
     search = request.GET.get('search')
     if search:
         orders = orders.filter(items__variant__product__name__icontains=search)
-
+        
+    #annotate a field for determining whether to show write a review btn
+    orders = annotate_review_eligibility(request.user, orders)
+    
     return render(request, "order/my_orders.html", {"orders": orders})
 
 
@@ -720,10 +724,25 @@ def track_return_request(request, order_uuid):
             "return_request": return_request,
         },
     )
-    
+     
 @login_required
-def write_review(request):
-    return render(request, "order/write_review.html")
+def write_review(request, order_uuid):
+    order = OrderItems.objects.get(uuid=order_uuid)
+
+    if request.method == "POST":
+        rating = request.POST.get('rating')
+        review = request.POST.get('review')
+        print(rating, review)
+        try:
+            Review.objects.create(product=order.product, user=request.user, rating=rating, review=review)
+            messages.success(request, "Review submitted")
+            return redirect('my-orders')
+        except Exception as e:
+            print("Error on creating review: ",e)
+            messages.error(request, "Something went wrong")
+            return redirect('write-review', order_uuid=order_uuid)
+        
+    return render(request, "order/write_review.html",{"order":order})
 
 
 """

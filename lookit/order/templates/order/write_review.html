@@ -18,19 +18,20 @@
         <h2>Product Details</h2>
         <div class="product-summary">
             <div class="product-image">
-                <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Classic Cotton Tee">
+                <img src="{{ order.product.image_url }}" alt="Classic Cotton Tee">
             </div>
             <div class="product-details">
-                <h3>Classic Cotton T-Shirt</h3>
+                <h3>{{ order.product.name }}</h3>
                 <div class="product-meta">
-                    <span>Color: Navy Blue</span> • <span>Size: M</span>
+                    • <span>Size: {{ order.variant.size }}</span>
                 </div>
-                <span class="product-price">₹29.99</span>
-                <span class="order-id">Order #LO12345678</span>
+                <span class="product-price">₹{{ order.total  }}</span>
+                <span class="order-id">Order #{{ order.uuid }}</span>
             </div>
         </div>
 
-        <form id="reviewForm">
+        <form id="reviewForm" method="post">
+            {% csrf_token %}
             <div class="form-group">
                 <label for="rating">Overall Rating *</label>
                 <div class="rating">
@@ -49,7 +50,7 @@
 
             <div class="form-group">
                 <label for="reviewText">Your Review *</label>
-                <textarea id="reviewText" class="form-control" placeholder="Share your experience with this product. What did you like or dislike?" required></textarea>
+                <textarea id="reviewText" name="review" class="form-control" placeholder="Share your experience with this product. What did you like or dislike?" required></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block">Submit Review</button>
