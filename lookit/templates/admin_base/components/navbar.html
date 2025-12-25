@@ -5,7 +5,6 @@
         <div class="navbar-title">Lookit Admin</div>
     </div>
     <div class="navbar-right">
-        <input type="text" class="navbar-search" placeholder="Search...">
         <div class="navbar-user" id="navbarUser" onclick="toggleUserDropdown(event)">
             {% if request.user.profile_img_url %}
             <img src="{{ request.user.profile_img_url }}" alt="" class="user-avatar">

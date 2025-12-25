@@ -53,7 +53,7 @@ def admin_dashboard(request):
     dashboard_summary = get_dashboard_summary(time_range)
     start_date = get_start_date_for_filter(time_range)
     end_date = date.today()
-    print(sales_performance.get('data_labels'))
+    
     return render(
         request,
         "staff/dashboard.html",

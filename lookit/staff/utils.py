@@ -13,7 +13,7 @@ from django.db.models import (
     Value,
 )
 from django.db.models.functions import Coalesce
-from django.db.models import Sum, DecimalField
+from django.db.models import Sum, DecimalField, DurationField
 from django.db.models.functions import (
     Coalesce,
     ExtractMonth,
@@ -143,10 +143,12 @@ def get_top_selling_brands(filter):
 
 
 def get_dashboard_summary(filter):
+    start_date = get_start_date_for_filter(filter)
     summary = {}
 
     order_summary = OrderItems.objects.filter(
-        order_status=OrderItems.OrderStatus.DELIVERED
+        order_status=OrderItems.OrderStatus.DELIVERED,
+        placed_at__date__gte=start_date,#including today
     ).aggregate(
         total_sales=Coalesce(
             Sum('total'),
@@ -162,7 +164,7 @@ def get_dashboard_summary(filter):
     summary['total_sales'] = order_summary.get('total_sales')
     summary['total_orders'] = order_summary.get('total_orders')
     summary['active_offers'] = status_annotated_offers.filter(status='active').count()
-    summary['users_count'] = User.objects.all().count()
+    summary['users_count'] = User.objects.filter(created_at__date__gte=start_date).count()
 
     return summary
 
@@ -181,8 +183,7 @@ def get_sales_performance(filter):
                 placed_at__date__gte=start_date,
             )
             .annotate(
-                month=ExtractMonth('placed_at'),
-                year=ExtractYear('placed_at'),
+                month=ExtractMonth('placed_at')
             )
             .values('month')
             .annotate(
@@ -210,7 +211,7 @@ def get_sales_performance(filter):
             'December',
         ]
         for record in sales_performance:
-            # print(f"{record['month']:02d}-{record['year']}: ₹{record['total_sales']}")
+            #store corresponding sale value in dict with month order. januvary in 0 th position and december in 11th position
             data_values[record['month'] - 1] = float(record['total_sales'])
             
     elif filter == 'month':
@@ -256,13 +257,13 @@ def get_sales_performance(filter):
                 placed_at__date__gte=today - timezone.timedelta(days=7),
             )
             .annotate(
-                day=TruncDate('placed_at'),
-                day_number=ExpressionWrapper(
+                diff=ExpressionWrapper(
                     today - TruncDate('placed_at'),
-                    output_field=IntegerField(),
+                    output_field=DurationField(),
                 ),
+                day_number=ExtractDay('diff'),
             )
-            .values('day', 'day_number')
+            .values('day_number')
             .annotate(
                 total_sales=Coalesce(
                     Sum('total'),
@@ -274,17 +275,20 @@ def get_sales_performance(filter):
         )
         data_values = [0] * 7
         data_labels = [
-            'Day-1',
-            'Day-2',
-            'Day-3',
-            'Day-4',
-            'Day-5',
-            'Day-6',
-            'Day-7',
+            '7 days ago',
+            '6 days ago',
+            '5 days ago',
+            '4 days ago',
+            '3 days ago',
+            '2 days ago',
+            '1 day ago',
         ]
-        # for record in last_7_days_sales:
+
+        for record in last_7_days_sales:
             # print(f"{record['month']:02d}-{record['year']}: ₹{record['total_sales']}")
-            # data_values[record['day_number'] - 1] = float(record['total_sales'])
+
+            print(" = ", record['day_number'], record['total_sales'])
+            data_values[7 - record['day_number']] = float(record['total_sales'])
             
     
     return {"data_values":data_values, "data_labels":data_labels}

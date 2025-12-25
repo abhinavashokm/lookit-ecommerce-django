@@ -86,9 +86,9 @@
           <div class="card-header">
             <div>
               <div class="card-title">Sales Performance</div>
-              <div class="card-subtitle">This Month</div>
+              <div class="card-subtitle">This {{request.GET.time_range|default:'week'  }}</div>
             </div>
-            <div class="value" style="font-size: 1.5rem;">₹25,450</div>
+            <div class="value" style="font-size: 1.5rem;">₹{{ dashboard_summary.total_sales  }}</div>
           </div>
 
           <div class="chart-wrapper">

@@ -105,7 +105,7 @@ def paymenthandler(request):
             # --handle stock count of the product---
             reduce_stock_for_order(order.id)
             
-            #--reduce coupon usage limit if applied any---
+            #--reduce coupon usage limit if applied any------
             order = Order.objects.get(id=order.id)
             if order.coupon_applied:
                 reduce_coupon_usage_limit(order.coupon_applied.code)
