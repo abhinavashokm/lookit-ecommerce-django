@@ -53,12 +53,21 @@ function submitQuantity(cartId, variantId, quantity, csrfToken, quantityElement)
             }else{
                 cartSummary = data.cart_summary
                 quantityElement.textContent = data.new_quantity;
-                document.getElementById('sub_total').innerText = cartSummary.sub_total
-                document.getElementById('tax_amount').innerText = cartSummary.tax
-                document.getElementById('total_amount').innerText = cartSummary.grand_total
+                document.getElementById('sub_total').innerText = "₹"+cartSummary.sub_total
+                document.getElementById('total_amount').innerText = "₹"+cartSummary.grand_total
+                const totalDiscount = document.getElementById('cartTotalDiscount')
+                if(totalDiscount){
+                    totalDiscount.innerText = "-₹"+cartSummary.offer_discount
+                }
+                const couponDiscount = document.getElementById('appliedCouponDiscount')
+                if(totalDiscount){
+                    couponDiscount.innerText = cartSummary.coupon_discount
+                }
                 //update subtotal of each product
-                Object.values(data.cart_items).forEach(value => {
-                    document.getElementById('product_summary'+value.id).innerText = value.quantity+"x = ₹"+value.sub_total_per_product
+                Object.values(data.cart_items).forEach(item => {
+                    // console.log(item)
+                    document.getElementById("cartItemQuantity"+item.id).innerText = item.quantity+"× "
+                    document.getElementById('subTotalProduct'+item.id).innerText = "₹"+item.sub_total
                 });     
             }
             

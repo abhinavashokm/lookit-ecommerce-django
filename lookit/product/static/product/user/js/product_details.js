@@ -176,9 +176,7 @@ function selectSize(btn, variant_id) {
     // Select all elements with the class 'user-input'
     const inputs = document.querySelectorAll('.variant_id_field');
     // Loop through each input and set the value
-    console.log("hello")
     inputs.forEach(input => {
-        console.log("hi", selected_variant_id, input.value)
         input.value = selected_variant_id;
     });
 }

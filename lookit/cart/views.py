@@ -99,38 +99,32 @@ def update_quantity(request):
             messages.error(request, "Something went wrong!")
 
     # ---fetch updated cart summary----
+    cart_record = calculate_cart_summary(request.user)
+    cart_items = cart_record['items']
     cart_items = (
-        Cart.objects.filter(user=request.user)
-        .select_related('variant')
+        cart_items
         .annotate(
-            sub_total_per_product=ExpressionWrapper(
-                F('variant__product__price') * F('quantity'),
-                output_field=DecimalField(max_digits=10, decimal_places=2),
-            ),
-            stock_available=Case(
-                When(variant__stock__gt=0, then=Value(True)),
-                default=Value(False),
-                output_field=BooleanField(),
-            ),
-            is_product_active=F('variant__product__is_active'),
             unit_price=F('variant__product__price'),
         )
     )
     # cart price summary
-    sub_total = (
-        cart_items.filter(is_product_active=True, stock_available=True).aggregate(
-            sub_total=Sum(F('variant__product__price') * F('quantity'))
-        )['sub_total']
-        or 0
-    )
-    tax = sub_total * Decimal(0.05)
-    # ROUND_HALF_UP -> ROUNDING METHOD USED - less than 0.5 then reduce, greater than or equal to 0.5 then increase(BANKERS STYLE)
-    tax = tax.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+    cart_summary = cart_record['cart_summary']
+    
 
-    cart_summary = {"sub_total": sub_total, "tax": tax, "grand_total": sub_total + tax}
+    # sub_total = (
+    #     cart_items.filter(is_product_active=True, stock_available=True).aggregate(
+    #         sub_total=Sum(F('variant__product__price') * F('quantity'))
+    #     )['sub_total']
+    #     or 0
+    # )
+    # tax = sub_total * Decimal(0.05)
+    # # ROUND_HALF_UP -> ROUNDING METHOD USED - less than 0.5 then reduce, greater than or equal to 0.5 then increase(BANKERS STYLE)
+    # tax = tax.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+
+    # cart_summary = {"sub_total": sub_total, "tax": tax, "grand_total": sub_total + tax}
 
     cart_items = list(
-        cart_items.values('id', 'quantity', 'unit_price', 'sub_total_per_product')
+        cart_items.values('id', 'quantity', 'unit_price', 'sub_total')
     )
 
     return JsonResponse(
