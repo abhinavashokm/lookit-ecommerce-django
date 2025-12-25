@@ -14,6 +14,7 @@ from .utils import (
     get_sales_performance,
     get_dashboard_summary,
     get_start_date_for_filter,
+    annotate_order_count_per_user,
 )
 
 
@@ -121,6 +122,9 @@ def admin_user_management(request):
         users = users.filter(
             Q(full_name__icontains=search_key) | Q(email__icontains=search_key)
         )
+    
+    #annotate total order count for each user
+    users = annotate_order_count_per_user(users)
 
     # pagination
     paginator = Paginator(users, 6)

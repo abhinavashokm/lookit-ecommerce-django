@@ -292,3 +292,8 @@ def get_sales_performance(filter):
             
     
     return {"data_values":data_values, "data_labels":data_labels}
+
+def annotate_order_count_per_user(user_qs):
+    return user_qs.annotate(
+        total_orders = Count('order__items')
+    )

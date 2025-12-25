@@ -148,7 +148,7 @@
 
                     </td>
                     <td class="user-email">{{ user.email }}</td>
-                    <td class="user-orders">12</td>
+                    <td class="user-orders">{{ user.total_orders }}</td>
                     <td class="user-date">{{ user.created_at.date }}</td>
                     <td>
                         {%if user.is_active %}
