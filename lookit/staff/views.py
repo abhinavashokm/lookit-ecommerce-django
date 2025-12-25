@@ -83,14 +83,13 @@ def admin_logout(request):
 
 @admin_required
 def admin_user_management(request):
-    users = User.objects.all()
+    users = User.objects.exclude(is_staff=True)
 
     search_key = request.GET.get('search', '').strip()
     role = request.GET.get('role', '').strip()
     status = request.GET.get('status', '').strip()
     date_filter = request.GET.get('date', '').strip()
 
-    users = User.objects.all()
 
     if role:
         is_staff = True if role == 'staff' else False

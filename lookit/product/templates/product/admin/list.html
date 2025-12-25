@@ -3,6 +3,7 @@
 {% block styles %}
 <link rel="stylesheet" href="{% static 'product/admin/css/list.css' %}">
 <link rel="stylesheet" href="{% static 'admin/css/components/pagination.css' %}">
+<link rel="stylesheet" href="{% static 'admin/css/components/table_empty_state.css' %}">
 {% endblock %}
 
 <!-- Main Content -->
@@ -195,6 +196,8 @@
                         </a>
                     </td>
                 </tr>
+                {% empty %}
+                {% include 'admin_base/components/table_empty_state.html' %}
                 {% endfor %}
 
             </tbody>

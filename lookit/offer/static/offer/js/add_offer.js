@@ -71,7 +71,7 @@ function toggleProductSelection(productId) {
     const searchTerm = productSearchInput.value.toLowerCase();
     const filtered = availableProducts.filter(p =>
         p.name.toLowerCase().includes(searchTerm) ||
-        p.id.toLowerCase().includes(searchTerm)
+        String(p.id).includes(searchTerm)
     );
     renderDropdownOptions(filtered);
 
@@ -115,7 +115,7 @@ window.removeTag = function (id, event) {
     const searchTerm = productSearchInput.value.toLowerCase();
     const filtered = availableProducts.filter(p =>
         p.name.toLowerCase().includes(searchTerm) ||
-        p.id.toLowerCase().includes(searchTerm)
+        String(p.id).includes(searchTerm)
     );
     renderDropdownOptions(filtered);
 
@@ -128,7 +128,7 @@ productSearchInput.addEventListener('focus', () => {
     const searchTerm = productSearchInput.value.toLowerCase();
     const filtered = availableProducts.filter(p =>
         p.name.toLowerCase().includes(searchTerm) ||
-        p.id.toLowerCase().includes(searchTerm)
+        String(p.id).includes(searchTerm)
     );
     renderDropdownOptions(filtered);
 });
@@ -147,7 +147,7 @@ productSearchInput.addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     const filtered = availableProducts.filter(p =>
         p.name.toLowerCase().includes(term) ||
-        p.id.toLowerCase().includes(term)
+        String(p.id).includes(term)
     );
     renderDropdownOptions(filtered);
     dropdownOptions.classList.add('show');

@@ -72,9 +72,9 @@
         </div>
         <div class="section-actions">
             {% if user.is_active %}
-            <a href="{% url 'admin-edit-user' user.id %}">
+            <!-- <a href="{% url 'admin-edit-user' user.id %}">
                 <button class="btn btn-edit">Edit Info</button>
-            </a>
+            </a> -->
             <button class="btn btn-block" onclick="blockUser()">Block User</button>
 
             {% else %}
