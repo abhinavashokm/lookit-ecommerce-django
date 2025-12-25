@@ -162,6 +162,7 @@
                             <span class="info-label"><i class="fas fa-comment"></i> Your Comments</span>
                             <span class="info-value">“{{ return_request.comments }}”</span>
                         </div>
+                        {% if return_request.product_image1 %}
                         <div class="info-item">
                             <span class="info-label"><i class="fas fa-images"></i> Uploaded Images</span>
                             <div class="return-images">
@@ -179,6 +180,7 @@
                             
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
 

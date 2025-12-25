@@ -2,9 +2,7 @@ from .models import OrderItems, Review
 from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from django.db.models import Exists, OuterRef, BooleanField, Case, When, Value, Prefetch
+from django.db.models import Exists, OuterRef, BooleanField, Case, When, Value, Q, F
 
 
 def reduce_stock_for_order(order_id):
@@ -28,16 +26,26 @@ def render_to_pdf(template_src, context_dict):
 
 
 def annotate_review_eligibility(user, orders_qs):
+    """
+    1] A user can give review for a product only once
+    2] A user can only review product while it's status is delivered
+    """
     reviewed_sq = Review.objects.filter(
         user=user,
         product=OuterRef('variant__product')
     )
 
-    items_qs = OrderItems.objects.annotate(
-        review_eligible=Exists(reviewed_sq)
+    annotated_orders_qs = orders_qs.annotate(
+        reviewed=Exists(reviewed_sq)
+    ).annotate(
+        review_eligible=Case(
+            When(
+                Q(order_status='DELIVERED') & ~F('reviewed'),
+                then=Value(True)
+            ),
+            default=Value(False),
+            output_field=BooleanField()
+        )
     )
 
-    return orders_qs.prefetch_related(
-        Prefetch('items', queryset=items_qs)
-    )
-
+    return annotated_orders_qs

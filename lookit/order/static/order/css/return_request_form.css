@@ -76,6 +76,10 @@
     margin-bottom: 2rem;
 }
 
+.return-card h2{
+    margin-bottom: 1rem;
+}
+
 .order-summary {
     display: flex;
     gap: 2rem;

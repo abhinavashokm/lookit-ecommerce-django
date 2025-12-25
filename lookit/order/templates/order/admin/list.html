@@ -168,7 +168,7 @@
                     <td class="total-amount">₹{{ order.total }}</td>
                     <td class="payment_method">{% if order.order.payment_method == 'ONLINE_PAYMENT' %}ONLINE{% else %}{{ order.order.payment_method }}{% endif %}</td>
                     <td class="payment_status">
-                        <span class="status-badge status-active">{{ order.payment_status }}</span>
+                        <span {% if order.payment_status == 'PAID' %}style="color: #065f46;"{% endif %} class="status-badge status-active">{{ order.payment_status }}</span>
                     </td>
                     <td class="order-status">
                         <span class="status-badge status-{{ order.order_status|lower|slugify }}">

@@ -29,7 +29,7 @@ from django.utils import timezone
 today = date.today()
 
 # Last 7 days (excluding today)
-last_7_days = today - timedelta(days=7)
+last_7_days = today - timedelta(days=6)
 
 # Month to date (start of this month)
 month_to_date = today.replace(day=1)
@@ -253,8 +253,8 @@ def get_sales_performance(filter):
         last_7_days_sales = (
             OrderItems.objects.filter(
                 order_status=OrderItems.OrderStatus.DELIVERED,
-                placed_at__date__lt=today,
-                placed_at__date__gte=today - timezone.timedelta(days=7),
+                placed_at__date__lte=today,
+                placed_at__date__gt=today - timezone.timedelta(days=7),
             )
             .annotate(
                 diff=ExpressionWrapper(
@@ -275,20 +275,20 @@ def get_sales_performance(filter):
         )
         data_values = [0] * 7
         data_labels = [
-            '7 days ago',
             '6 days ago',
             '5 days ago',
             '4 days ago',
             '3 days ago',
             '2 days ago',
             '1 day ago',
+            'Today'
         ]
 
         for record in last_7_days_sales:
             # print(f"{record['month']:02d}-{record['year']}: ₹{record['total_sales']}")
 
             print(" = ", record['day_number'], record['total_sales'])
-            data_values[7 - record['day_number']] = float(record['total_sales'])
+            data_values[6 - record['day_number']] = float(record['total_sales'])
             
     
     return {"data_values":data_values, "data_labels":data_labels}

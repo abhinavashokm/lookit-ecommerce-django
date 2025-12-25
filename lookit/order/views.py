@@ -319,29 +319,26 @@ def payment_failure_page(request, order_uuid):
 @login_required
 def my_orders(request):
     orders = (
-        Order.objects.filter(user=request.user)
-        .exclude(items__order_status='INITIATED')
-        .prefetch_related('items')
+        OrderItems.objects.filter(order__user=request.user)
+        .exclude(order_status='INITIATED')
         .annotate(
-            status_priority=Min(
-                Case(
-                    When(items__order_status='OUT_FOR_DELIVERY', then=Value(1)),
-                    When(items__order_status='SHIPPED', then=Value(2)),
-                    When(items__order_status='PLACED', then=Value(3)),
-                    When(items__order_status='DELIVERED', then=Value(4)),
-                    When(items__order_status='RETURNED', then=Value(5)),
-                    When(items__order_status='CANCELLED', then=Value(6)),
+            status_priority=Case(
+                    When(order_status='OUT_FOR_DELIVERY', then=Value(1)),
+                    When(order_status='SHIPPED', then=Value(2)),
+                    When(order_status='PLACED', then=Value(3)),
+                    When(order_status='DELIVERED', then=Value(4)),
+                    When(order_status='RETURNED', then=Value(5)),
+                    When(order_status='CANCELLED', then=Value(6)),
                     default=Value(7),
                     output_field=IntegerField(),
                 )
-            )
         )
         .order_by('status_priority', '-created_at')
     )
     # --search functionality----------
     search = request.GET.get('search')
     if search:
-        orders = orders.filter(items__variant__product__name__icontains=search)
+        orders = orders.filter(variant__product__name__icontains=search)
         
     #annotate a field for determining whether to show write a review btn
     orders = annotate_review_eligibility(request.user, orders)
@@ -484,8 +481,8 @@ def download_invoice_pdf(request, order_uuid):
         [
             order_item.product.name,
             str(order_item.quantity),
-            f"₹{order_item.unit_price}",
-            f"₹{order_item.sub_total}",
+            f"Rs {order_item.unit_price}",
+            f"Rs {order_item.sub_total}",
         ]
     )
 
@@ -515,10 +512,9 @@ def download_invoice_pdf(request, order_uuid):
     elements.append(Paragraph("<b>Payment Summary</b>", section_title))
 
     totals_data = [
-        ["Subtotal:", f"₹{order_item.sub_total}"],
-        ["Tax:", f"₹{order_item.tax_amount}"],
-        ["Delivery Fee:", f"₹{order_item.delivery_fee}"],
-        ["Grand Total:", f"₹{order_item.total}"],
+        ["Subtotal:", f"Rs {order_item.sub_total}"],
+        ["Delivery Fee:", f"Rs {order_item.delivery_fee}"],
+        ["Grand Total:", f"Rs {order_item.total}"],
     ]
 
     totals_table = Table(totals_data, colWidths=[150, 120])

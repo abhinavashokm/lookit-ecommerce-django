@@ -35,11 +35,11 @@
                         </div>
                         <div class="info-item">
                             <span class="info-label">Order ID</span>
-                            <span class="info-value">#ORD-{{ order.id|stringformat:'04d'  }}</span>
+                            <span class="info-value">#{{ order.uuid }}</span>
                         </div>
                         <div class="info-item">
                             <span class="info-label">Date</span>
-                            <span class="info-value">{{ order.created_at.date }}</span>
+                            <span class="info-value">{{ order.placed_at.date }}</span>
                         </div>
                         <div class="info-item status-row">
                             <span class="info-label">Status</span>
@@ -78,8 +78,14 @@
             <div class="card-body">
                 <div class="customer-info">
                     <div class="customer-avatar">
-                        <img src="{% if customer.profile_img_url %}{{ customer.profile_img_url }}{% else %}https://ui-avatars.com/api/?name=Amelia+Bennett&background=6366f1&color=fff&size=160{% endif %}"
-                            alt="{{ cusomer.full_name }}">
+                        {% if customer.profile_img_url %}
+                        <img src="{{ customer.profile_img_url }}"
+                                                    alt="{{ cusomer.full_name }}">
+                        {% else %}
+                        <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740&q=80"
+                                                    alt="{{ cusomer.full_name }}">
+                        {% endif %}
+                        
                     </div>
                     <div class="customer-details">
                         <div>
@@ -218,10 +224,10 @@
                             <span class="info-label">Method</span>
                             <span class="info-value">{{ order.order.payment_method }}</span>
                         </div>
-                        <div class="info-item">
+                        <!-- <div class="info-item">
                             <span class="info-label">Transaction ID</span>
                             <span class="info-value">TXN123456789</span>
-                        </div>
+                        </div> -->
                         <div class="info-item status-row">
                             <span class="info-label">Status</span>
                             <span class="status-badge status-delivered">{% if order.payment_status == 'COD' %}Cash On Delivery{% else %}{{ order.payment_status }}{% endif %}</span>

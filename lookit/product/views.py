@@ -775,8 +775,10 @@ def add_to_cart(request):
         user = request.user
         product_id = request.POST.get('product_id')
         variant_id = request.POST.get('variant_id')
-        qunatity = request.POST.get('quantity')
+        quantity = request.POST.get('quantity')
         product = Product.objects.get(id=product_id)
+
+        print("product quantity: ", quantity)
 
         # restrict if not authenticated
         if not user.is_authenticated:
@@ -796,7 +798,7 @@ def add_to_cart(request):
         # if product already in cart increase quantity
         variant_in_cart = Cart.objects.filter(user=user, variant_id=variant_id).first()
         if variant_in_cart:
-            variant_in_cart.quantity += int(qunatity)
+            variant_in_cart.quantity += int(quantity)
             if variant_in_cart.quantity > 4:
                 variant_in_cart.quantity = 4
                 msg = "Product already in cart — maximum 4 quantity allowed."
@@ -817,12 +819,12 @@ def add_to_cart(request):
                 f"{variant.product.name} ( Size-{variant.size} ) Is Currently Out Of Stock.",
             )
             return redirect('product-details', product_uuid=product.uuid)
-        elif int(variant.stock) < int(qunatity):
+        elif int(variant.stock) < int(quantity):
             stock_mismatch = f"Product Added to Cart. (note: only {variant.stock} stocks are available.)"
-            qunatity = variant.stock
+            quantity = variant.stock
 
         try:
-            Cart.objects.create(user=user, variant_id=variant_id, quantity=qunatity)
+            Cart.objects.create(user=user, variant_id=variant_id, quantity=quantity)
             # --when product moved to cart remove from wishlist if it exist there--
             remove_wishlist_item(user, product_id)
 

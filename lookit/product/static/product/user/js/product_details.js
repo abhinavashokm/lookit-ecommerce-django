@@ -145,12 +145,18 @@ function toggleLike(button) {
 function increaseQuantity() {
     const quantityInput = document.getElementById('quantityInput');
     const quantityInputForForm = document.getElementById('hiddenQuantityInput')
+    const quantityInputForFormMobile = document.getElementById('hiddenQuantityInputMobile')
 
     let currentValue = parseInt(quantityInput.value);
     if (currentValue < 4) {
         let new_quantity = currentValue + 1;
         quantityInput.value = new_quantity
         quantityInputForForm.value = new_quantity
+        if(quantityInputForFormMobile){
+            quantityInputForFormMobile.value = new_quantity
+        }
+        console.log(new_quantity)
+        console.log(quantityInput.value)
     }
 }
 
@@ -158,12 +164,16 @@ function increaseQuantity() {
 function decreaseQuantity() {
     const quantityInput = document.getElementById('quantityInput');
     const quantityInputForForm = document.getElementById('hiddenQuantityInput')
+    const quantityInputForFormMobile = document.getElementById('hiddenQuantityInputMobile')
 
     let currentValue = parseInt(quantityInput.value);
     if (currentValue > 1) {
         new_quantity = currentValue - 1;
         quantityInput.value = new_quantity
         quantityInputForForm.value = new_quantity
+        if(quantityInputForFormMobile){
+            quantityInputForFormMobile.value = new_quantity
+        }
     }
 }
 

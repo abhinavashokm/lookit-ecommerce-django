@@ -42,22 +42,8 @@
     </div>
 
     <div class="cart-items">
-        {% if not orders %}
-        <!-- No Orders Card -->
-        <div class="no-orders-card">
-            <div class="no-orders-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9a4d72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <path d="M16 10a4 4 0 0 1-8 0"></path>
-                </svg>
-            </div>
-            <h3>No Orders Yet</h3>
-            <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
-        </div>
-        {% endif %}
-        {% for order in orders %}
-        {% for item in order.items.all %}
+
+        {% for item in orders %}
         <div class="cart-item {% if item.order_status == 'CANCELLED' %}order-cancelled{% elif item.return_request.status == 'PICKED_UP' %}order-returned {% elif item.return_request.status == 'REFUNDED'  %}order-refunded{% elif item.return_request.status %}return-requested{% endif %}">
 
             <!--banner for return or cancel-->
@@ -70,25 +56,31 @@
             {% elif item.return_request.status %}
                 <div class="order-badge returned-badge">Return Pending</div>
             {% endif %}
-
+            <a href="{% url 'product-details' item.product.uuid %}">
             <img src="{{ item.product.image_url }}" alt="Product" class="item-image">
+            </a>
             <div class="item-details">
                 <h3 class="item-title">{{ item.product.name }}</h3>
                 <p class="item-sku">ID: {{ item.uuid }}</p>
                 <p class="item-size">Size: M</p>
                 <p class="item-color">Ordered at: {{ item.created_at.date }}</p>
                 <div class="item-actions">
-                    <a href="{% url 'product-details' item.product.uuid %}">
+                    <!-- <a href="{% url 'product-details' item.product.uuid %}">
                         <button class="btn btn-view">View Product</button>
-                    </a>
+                    </a> -->
                     <a href="{% url 'track-order' item.uuid %}">
-                        <button class="btn btn-track">{% if item.return_request or item.order_status == 'CANCELLED' %}Order Details{% else %}Track Order{% endif %}</button>
+                        <button class="btn btn-track">{% if item.return_request or item.order_status == 'CANCELLED' or item.order_status == 'DELIVERED' %}Order Details{% else %}Track Order{% endif %}</button>
                     </a>
-                    {% if item.order_status == 'DELIVERED' %}
+                    {% if item.review_eligible and not item.return_request %}
                     <a href="{% url 'write-review' item.uuid %}">
                         <button class="btn btn-review">Write a review</button>
                     </a>
+                    {% elif item.reviewed and not item.return_request %}
+                    <button class="btn btn-review btn-reviewed" disabled>
+                        ✓ Review completed
+                    </button>
                     {% endif %}
+
                     {% if item.return_request %}
                     <a href="{% url 'track_return_request' item.uuid %}">
                         <button class="btn btn-return-track">Track Return</button>
@@ -134,7 +126,19 @@
                 <div class="item-price">₹{{ item.total }}</div>
             </div>
         </div>
-        {% endfor %}
+        {% empty %}
+        <!-- No Orders Card -->
+        <div class="no-orders-card">
+            <div class="no-orders-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#9a4d72" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </div>
+            <h3>No Orders Yet</h3>
+            <p>You haven't placed any orders yet. Start shopping to see your orders here!</p>
+        </div>
         {% endfor %}
 
     </div>

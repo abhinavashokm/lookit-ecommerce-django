@@ -40,7 +40,13 @@
             {% if request.user.is_authenticated %}
                 <!--PROFILE BUTTON FOR DESKTOP DEVICES (ABOVE WIDTH 1000PX)-->
                 <a class="desktop-profile-icon" href="{% url 'account-details' %}">
+                    {% if request.user.profile_img_url %}
                     <img class="profile-btn-desktop" ti tle="User Profile" src="{{ request.user.profile_img_url }}" alt="">
+                    {% else %}
+                    <svg class="profile-btn" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#B55E8A" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    {% endif %}
                 </a>
 
                 <!--PROFILE BUTTON FOR MOBILE DEVICES (BELOW WIDTH 1000PX)-->

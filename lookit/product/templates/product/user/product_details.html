@@ -77,7 +77,6 @@
                 <form action="{% url 'add-to-wishlist' %}" method="post" class="cart-form" id="addToWishlist">
                     {% csrf_token %}
                     <input name="product_uuid" type="hidden" value="{{ product.uuid }}">
-                    <input type="hidden" name="quantity" value="1" id="hiddenQuantityInput">
                     <button type="submit" class="btn-wishlist">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path
@@ -185,7 +184,6 @@
                     <form action="{% url 'add-to-wishlist' %}" method="post" class="cart-form" id="addToWishlist">
                         {% csrf_token %}
                         <input name="product_uuid" type="hidden" value="{{ product.uuid }}">
-                        <input type="hidden" name="quantity" value="1" id="hiddenQuantityInput">
                         <button type="submit" class="btn-wishlist">
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -198,7 +196,7 @@
                     <form action="{% url 'add-to-cart' %}" method="post" class="cart-form" id="addToCartMobile">
                         {% csrf_token %}
                         <input name="product_id" type="hidden" value="{{ product.id }}">
-                        <input type="hidden" name="quantity" value="1" id="hiddenQuantityInput">
+                        <input type="hidden" name="quantity" value="1" id="hiddenQuantityInputMobile">
                         <input class="variant_id_field" type="hidden" name="variant_id" value="{{ variants.0.id }}">
                         <button class="btn-cart">
                             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

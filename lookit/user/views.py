@@ -120,9 +120,13 @@ def otp_verification(request):
         if otp_record and otp_record.is_valid():
             try:
                 with transaction.atomic():
-                    # --finally create user-------------
+                    #--fetch referral details
                     referrer_id = request.session['signup_data'].get('referred_by')
-                    referred_by = User.objects.get(id=referrer_id)
+                    referred_by = None
+                    if referrer_id:
+                        referred_by = User.objects.get(id=referrer_id)
+
+                     # --finally create user-------------
                     new_user = User.objects.create_user(
                         email=request.session['signup_data'].get('email'),
                         password=raw_password,
@@ -153,7 +157,7 @@ def otp_verification(request):
                     return redirect('index')
 
             except Exception as e:
-                print("Error : ", e)
+                print("Error on otp verification: ", e)
                 messages.error(request, "Something went wrong!")
         else:
             messages.error(request, "Incorrect OTP. Please try again.")

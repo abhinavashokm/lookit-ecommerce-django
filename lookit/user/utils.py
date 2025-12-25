@@ -8,8 +8,9 @@ from django.utils.encoding import force_bytes
 from django.db.models import OuterRef, Exists
 from . import models
 
+
 def generate_otp():
-    return str(randint(000000, 999999))
+    return f"{randint(0, 999999):06d}"
 
 
 def send_otp_email(email, otp):

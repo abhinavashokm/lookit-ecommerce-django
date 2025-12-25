@@ -60,7 +60,7 @@ function submitQuantity(cartId, variantId, quantity, csrfToken, quantityElement)
                     totalDiscount.innerText = "-₹"+cartSummary.offer_discount
                 }
                 const couponDiscount = document.getElementById('appliedCouponDiscount')
-                if(totalDiscount){
+                if(couponDiscount){
                     couponDiscount.innerText = cartSummary.coupon_discount
                 }
                 //update subtotal of each product
