@@ -148,6 +148,8 @@ def create_order(request):
             for item in cart_items:
                 coupon_discount = None
                 final_amount = item.sub_total
+                delivery_fee = Decimal(50.00)
+                
                 if applied_coupon:
                     # Calculate proportional coupon discount for each product
                     price_after_discount = (
@@ -161,6 +163,9 @@ def create_order(request):
                         * order_summary.get('coupon_discount')
                     )
                     final_amount -= coupon_discount
+                    
+                #add delivery charge
+                final_amount += delivery_fee
 
                 OrderItems.objects.create(
                     order=order,
@@ -168,7 +173,7 @@ def create_order(request):
                     quantity=item.quantity,
                     unit_price=item.variant.product.price,
                     sub_total=item.sub_total_per_product,
-                    delivery_fee=Decimal(0.00),
+                    delivery_fee=delivery_fee,
                     discount_amount=item.discount_subtotal,
                     coupon_discount_amount=coupon_discount,
                     total=final_amount,  # final line total (after deducted discount amount and coupon amount)

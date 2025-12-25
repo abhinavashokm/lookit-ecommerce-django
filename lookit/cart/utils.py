@@ -146,10 +146,16 @@ def calculate_cart_summary(user):
                 Decimal("0.00"), rounding=ROUND_HALF_UP
             )
         grand_total -= coupon_discount
+    
+    #---Add 50rs per item as shipping fee to grand total after offer and coupon discounts are applied--
+    cart_items_count = cart_items.count()
+    delivery_fee_per_item = Decimal(50.00)
+    delivery_fee_total = cart_items_count * delivery_fee_per_item
+    grand_total += delivery_fee_total
 
     cart_summary = {
         "sub_total": sub_total,
-        "delivery_fee": Decimal(0.00),
+        "delivery_fee": delivery_fee_total,
         "offer_discount": total_discount_amount,
         "coupon_discount": coupon_discount,
         "grand_total": grand_total,

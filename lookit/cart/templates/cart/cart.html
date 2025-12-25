@@ -106,10 +106,6 @@
                     <span>Subtotal</span>
                     <span id="sub_total">₹{{ cart_summary.sub_total }}</span>
                 </div>
-                <div class="summary-row">
-                    <span>Shipping</span>
-                    <span>Free</span>
-                </div>
                 {% if cart_summary.offer_discount != 0 %}
                 <div class="summary-row">
                     <span>Offer Discount</span>
@@ -124,7 +120,14 @@
                     <span>Coupon Discount</span>
                     <span class="discount-amount">-₹<span id="appliedCouponDiscount">{{ cart_summary.coupon_discount }}</span></span>
                 </div>
+                {% endif %}
 
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span id="sub_total">+₹{{ cart_summary.delivery_fee }}</span>
+                </div>
+
+                {% if applied_coupon %}
                 <div id="appliedCouponBox" class="applied-coupon-box">
                     <div class="applied-coupon-content">
                         <div class="applied-coupon-left">

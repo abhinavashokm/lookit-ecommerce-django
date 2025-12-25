@@ -99,20 +99,22 @@
             <span class="summary-label">Subtotal ({{ order.total_items }} item)</span>
             <span class="summary-value">₹{{ order.sub_total }}</span>
         </div>
-        <div class="summary-row">
-            <span class="summary-label">Shipping Fee</span>
-            <span class="summary-value {% if order.delivery_total == 0 %}discount{% endif %}">{% if order.delivery_total == 0 %}Free{% else %}{{ order.delivery_fee }}{% endif %}</span>
-        </div>
+        {% if order.discount_total and order.discount_total != 0 %}
         <div class="summary-row">
             <span class="summary-label">Discount Applid</span>
             <span class="summary-value discount">-₹{{ order.discount_total }}</span>
         </div>
+        {% endif %}
         {% if order.coupon_applied %}
         <div class="summary-row">
             <span class="summary-label">Coupon Applied</span>
             <span class="summary-value discount">-₹{{ order.coupon_discount_total }}</span>
         </div>
         {% endif %}
+        <div class="summary-row">
+            <span class="summary-label">Shipping Fee</span>
+            <span class="summary-value">+₹{{ order.delivery_total }}</span>
+        </div>
         <div class="summary-row total">
             <span class="summary-label">Total</span>
             <span class="summary-value">₹{{ order.grand_total }}</span>

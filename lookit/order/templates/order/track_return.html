@@ -211,13 +211,15 @@
 
                         <div class="price-row">
                             <span>Delivery Fee</span>
-                            <span>- ₹{{ return_request.order_item.delivery_fee }}</span>
+                            <span>+ ₹{{ return_request.order_item.delivery_fee }}</span>
                         </div>
 
+                        {% if return_request.order_item.discount_amount and return_request.order_item.discount_amount != 0 %}
                         <div class="price-row">
                             <span>Discount Applied</span>
                             <span class="discount-price">- ₹{{ return_request.order_item.discount_amount }}</span>
                         </div>
+                        {% endif %}
 
                         {% if order.order.coupon_applied %}
                         <div class="price-row">
