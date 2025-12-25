@@ -34,7 +34,11 @@
                 <span class="role-badge">User</span>
             </div>
         </div>
+        {% if user.profile_img_url %}
+        <img src="{{ user.profile_img_url }}" class="user-avatar-large" alt="">
+        {% else %}
         <div class="user-avatar-large">👤</div>
+        {% endif %}
     </div>
 
     <!-- Contact Information -->
@@ -107,7 +111,7 @@
     </div>
 
     <!-- Recent Orders -->
-    <div class="section-card">
+    <!-- <div class="section-card">
         <h2 class="section-title">Recent Orders</h2>
         <div class="table-container">
             <table>
@@ -156,10 +160,10 @@
         <div class="table-footer">
             <button class="btn-view-all" onclick="viewAllOrders()">View All</button>
         </div>
-    </div>
+    </div> -->
 
     <!-- User Wallet -->
-    <div class="section-card">
+    <!-- <div class="section-card">
         <h2 class="section-title">User Wallet</h2>
         <div class="wallet-content">
             <div class="wallet-balance">
@@ -193,10 +197,10 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Recent Transactions -->
-    <div class="section-card">
+    <!-- <div class="section-card">
         <h2 class="section-title">Recent Transactions</h2>
         <div class="table-container">
             <table>
@@ -237,7 +241,7 @@
         <div class="table-footer">
             <button class="btn-view-all" onclick="viewAllTransactions()">View All</button>
         </div>
-    </div>
+    </div> -->
 
     <!-- Activity and Account Controls -->
     <div class="section-card">

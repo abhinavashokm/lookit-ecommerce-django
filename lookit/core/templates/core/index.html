@@ -26,6 +26,11 @@
         <a style="text-decoration: none;" href="{% url 'product-details' product.uuid %}">
             <div class="product-card">
                 <!-- <div class="product-image" style="background: linear-gradient(135deg, #f5e6d3, #e8d5c0);"></div> -->
+                {% if product.offer_price and product.offer_price != product.price %}
+                    <span class="discount-badge subtle">
+                        -{{ product.offer_percentage }}%
+                    </span>
+                {% endif %}
                 <img class="product-image" src="{{ product.image_url }}" alt="">
                 <div class="product-info">
                     <h3 class="product-title">{{ product.name }}</h3>
@@ -61,6 +66,11 @@
         {% for product in new_arrivals %}
         <a style="text-decoration: none;" href="{% url 'product-details' product.uuid %}">
             <div class="product-card">
+                {% if product.offer_price and product.offer_price != product.price %}
+                    <span class="discount-badge subtle">
+                        -{{ product.offer_percentage }}%
+                    </span>
+                {% endif %}
                 {% if product.image_url != ' ' %}
                 <img class="product-image" src="{{ product.image_url }}" alt="">
                 {% else %}

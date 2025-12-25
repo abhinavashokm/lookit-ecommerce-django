@@ -514,6 +514,7 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+    position: relative;
 }
 
 .product-image::before {
@@ -573,18 +574,19 @@
     color: #333;
     margin-bottom: 0.5rem;
     height: calc(1.4em * 2); */
-    /* 2 lines worth of space */
-    /* overflow: hidden;
+/* 2 lines worth of space */
+/* overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2; */
-    /* limit to 2 visible lines */
-    /* -webkit-box-orient: vertical;
+/* limit to 2 visible lines */
+/* -webkit-box-orient: vertical;
 } */
 
 .product-title {
     font-size: 0.9rem;
     font-weight: 500;
-    color: #374151; /* neutral gray */
+    color: #374151;
+    /* neutral gray */
     line-height: 1.35;
     margin-bottom: 0.35rem;
 
@@ -877,7 +879,8 @@
 .price-current {
     font-size: 0.95rem;
     font-weight: 600;
-    color: #1f2937; /* neutral dark gray */
+    color: #1f2937;
+    /* neutral dark gray */
     letter-spacing: -0.01em;
 }
 
@@ -888,6 +891,7 @@
     color: #9ca3af;
     text-decoration: line-through;
 }
+
 @media (max-width: 480px) {
     .price-stack {
         flex-direction: row;
@@ -929,7 +933,8 @@
 }
 
 .empty-state {
-    grid-column: 1 / -1; /* Span full width of the grid */
+    grid-column: 1 / -1;
+    /* Span full width of the grid */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -998,8 +1003,36 @@
         width: 140px;
         height: 140px;
     }
+
     .empty-title {
         font-size: 1.3rem;
     }
 }
-    
+
+/* Ensure the badge is always visible */
+.product-card .discount-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #1f2937;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.45rem;
+    border-radius: 6px;
+    letter-spacing: 0.02em;
+    z-index: 3;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.discount-badge.subtle {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #1f2937;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Ensure the parent card can contain the absolute badge */
+.product-card {
+    position: relative; /* This is required for absolute positioning to work */
+    overflow: hidden;
+}
