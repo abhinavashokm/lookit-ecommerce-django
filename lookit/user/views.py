@@ -528,7 +528,7 @@ def wishlist(request):
     try:
         items = (
             Wishlist.objects.filter(user=request.user, product__variant__stock__gt=0)
-            .prefetch_related('product__variant_set')
+            .prefetch_related('product__variant')
             .distinct()
         )
         

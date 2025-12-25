@@ -60,7 +60,7 @@
                         <label for="sizeOptions">Size:</label>
                         <select id="sizeOptions" class="size-dropdown">
                             <option selected disabled>Select Size</option>
-                            {% for variant in product.variant_set.all %}
+                            {% for variant in product.variant.all %}
                             {% if variant.stock != 0  %}
                             <option value="{{ variant.id }}">{{ variant.size }}</option>
                             {% endif %}

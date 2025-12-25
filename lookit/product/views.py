@@ -698,6 +698,9 @@ def product_details(request, product_uuid):
         .distinct()
         .exclude(id=product.id)
     )
+    #---annotate offer price to each related product----
+    related_products = annotate_offers(related_products)
+    
     # --fetch offers---------------------
     today = timezone.now().date()
     max_product_offer = (
