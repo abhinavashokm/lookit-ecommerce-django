@@ -62,12 +62,16 @@
                 <span class="contact-value">{{ user.dob | default:'not provided' }}</span>
             </div>
             <div class="contact-item">
-                <span class="contact-label">Address</span>
-                <span class="contact-value">123 Elm Street, Anytown, USA</span>
+                <span class="contact-label">Default Address</span>
+                {% if default_address %}
+                <span class="contact-value">{{ default_address.address_line }}, {{ default_address.city }}, {{ default_address.state }}</span>
+                {% else %}
+                <span class="contact-value">No address created</span>
+                {% endif %}
             </div>
             <div class="contact-item">
                 <span class="contact-label">Joined Date</span>
-                <span class="contact-value">2023-11-20</span>
+                <span class="contact-value">{{ user.created_at.date }}</span>
             </div>
         </div>
         <div class="section-actions">
@@ -84,7 +88,7 @@
     </div>
 
     <!-- Referral Information -->
-    <div class="section-card">
+    <!-- <div class="section-card">
         <h2 class="section-title">Referral Information</h2>
         <div class="contact-grid">
             <div class="contact-item">
@@ -108,7 +112,7 @@
                 <span class="contact-value">john_doe456</span>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Recent Orders -->
     <!-- <div class="section-card">
@@ -244,7 +248,7 @@
     </div> -->
 
     <!-- Activity and Account Controls -->
-    <div class="section-card">
+    <!-- <div class="section-card">
         <h2 class="section-title">Activity and Other Info</h2>
         <div class="activity-grid">
             <div class="activity-item">
@@ -264,7 +268,7 @@
                 <span class="activity-value">$750</span>
             </div>
         </div>
-    </div>
+    </div> -->
 </main>
 <!-- Block User Confirmation Modal -->
 <div class="modal-overlay" id="blockModal">

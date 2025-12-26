@@ -16,6 +16,7 @@ from .utils import (
     get_start_date_for_filter,
     annotate_order_count_per_user,
 )
+from user.utils import get_default_address
 
 
 def admin_login(request):
@@ -83,7 +84,7 @@ def admin_logout(request):
 
 @admin_required
 def admin_user_management(request):
-    users = User.objects.exclude(is_staff=True)
+    users = User.objects.exclude(is_staff=True).order_by('-created_at')
 
     search_key = request.GET.get('search', '').strip()
     role = request.GET.get('role', '').strip()
@@ -136,7 +137,8 @@ def admin_user_management(request):
 @admin_required
 def admin_view_user(request, user_id):
     user_data = User.objects.get(id=user_id)
-    return render(request, "staff/user/view_user.html", {"user": user_data})
+    default_address = get_default_address(user_id)
+    return render(request, "staff/user/view_user.html", {"user": user_data, "default_address": default_address})
 
 
 @admin_required

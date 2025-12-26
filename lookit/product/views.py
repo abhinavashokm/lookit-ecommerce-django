@@ -224,8 +224,10 @@ def admin_add_product(request):
 
 @admin_required
 def admin_edit_product(request, product_uuid):
+    method = request.POST.get('_method', '').upper()
+
     product = Product.objects.get(uuid=product_uuid)
-    if request.method == 'POST':
+    if request.method == 'POST' and method == 'PUT':
         # ---retrive-all-data
         name = request.POST.get('name', '').strip()
         description = request.POST.get('description', '').strip()
@@ -564,7 +566,9 @@ def admin_restore_category(request, style_id):
 
 @admin_required
 def admin_edit_category(request):
-    if request.method == "POST":
+    method = request.POST.get('_method', '').upper()
+
+    if request.method == "POST" and method == 'PUT':
         style_id = request.POST.get('style_id')
         style_name = request.POST.get('style_name').strip()
 

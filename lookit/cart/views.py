@@ -143,7 +143,7 @@ def save_coupon(request):
     if request.method == 'POST':
         coupon_code = request.POST.get('coupon_code')
         # --check validity-------------------------
-        valid_coupon = is_valid_coupon(coupon_code)
+        valid_coupon, reason = is_valid_coupon(coupon_code)
         
         # --check if user already used the coupon
         eligible = coupon_eligibility_check(coupon_code, request.user)
@@ -156,7 +156,7 @@ def save_coupon(request):
             request.user.saved_coupons.add(coupon)
             messages.success(request, 'New Coupon Saved Successfully')
         else:
-            messages.error(request, "Invalid coupon code!")
+            messages.error(request, reason)
 
     return redirect('cart')
 
@@ -176,10 +176,11 @@ def apply_coupon(request):
             return redirect('cart')
 
         # --check validity-------------------------
-        valid_coupon = is_valid_coupon(coupon_code)
+        valid_coupon, reason = is_valid_coupon(coupon_code)
         
         # --check if user already used the coupon
         eligible = coupon_eligibility_check(coupon_code, request.user)
+
         # --check if users cart have min purchase amount required for coupon
         coupon_meets_min_purchase = is_coupon_min_purchase_eligible(coupon_code, cart_amount)
         
@@ -204,7 +205,7 @@ def apply_coupon(request):
                 messages.error(request, "Something went wrong!")
 
         else:
-            messages.error(request, "Coupon Limit Expired!")
+            messages.error(request, reason)
 
     return redirect('cart')
 

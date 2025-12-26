@@ -31,6 +31,14 @@ def user_login(request):
     if request.method == 'POST':
         email = request.POST.get('email').strip().lower()
         password = request.POST.get('password')
+
+        #check if blocked
+        user_obj = User.objects.filter(email=email).first()
+        if user_obj and not user_obj.is_active:
+            messages.error(request, "You are blocked by admin")
+            return redirect('user-login')
+
+
         user = authenticate(request, email=email, password=password)
         if user:
             # create session
@@ -190,7 +198,9 @@ def account_details(request):
 
 @login_required
 def edit_profile(request):
-    if request.method == "POST":
+    method = request.POST.get('_method', '').upper()
+
+    if request.method == "POST" and method == 'PUT':
         try:
             full_name = request.POST.get('full_name').strip()
             phone = request.POST.get('phone').strip()

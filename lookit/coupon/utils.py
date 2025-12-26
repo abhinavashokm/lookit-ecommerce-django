@@ -5,19 +5,62 @@ from django.utils import timezone
 from decimal import Decimal
 from django.db.models import Case, When, Value, CharField, F, Q
 
-def is_valid_coupon(code):
-    coupon = Coupon.objects.filter(code=code).first()
+# def is_valid_coupon(code):
+#     coupon = Coupon.objects.filter(code=code).first()
+#     today = timezone.now().date()
+#     if not coupon:
+#         return False
+    
+#     if not coupon.is_active:
+#         return False
+    
+#     if coupon.start_date > today or coupon.end_date < today:
+#         return False
+    
+#     # unlimited usage
+#     if coupon.usage_limit == -1:
+#         return True
+
+#     # usage limit reached
+#     if coupon.usage_remaining <= 0:
+#         return False
+    
+#     return True
+
+def is_valid_coupon(coupon):
+    """
+    Returns (True, None) if coupon can be used
+    Returns (False, reason) if not usable
+    """
+    coupon = Coupon.objects.filter(code=coupon).first()
     today = timezone.now().date()
+
+    #invalid coupon code
     if not coupon:
-        return False
-    
+        return False, "Invalid Coupon Code"
+
+    # inactive flag
     if not coupon.is_active:
-        return False
-    
-    if coupon.start_date > today or coupon.end_date < today:
-        return False
-    
-    return True
+        return False, "Coupon is inactive"
+
+    # date window check
+    if coupon.start_date and coupon.start_date > today:
+        return False, "Coupon not started yet"
+
+    if coupon.end_date and coupon.end_date < today:
+        return False, "Coupon expired"
+
+    # unlimited usage
+    if coupon.usage_limit == -1:
+        return True, None
+
+    # usage limit reached
+    if coupon.usage_remaining <= 0:
+        return False, "Coupon usage limit reached"
+
+    return True, None
+
+
 
 
 def reduce_coupon_usage_limit(code):
@@ -92,7 +135,7 @@ def annotate_coupon_status(coupon_set):
         When(is_active=False, then=Value('inactive')),
         When(start_date__gt=today, then=Value('upcoming')),
         When(end_date__lt=today, then=Value('expired')),
-        When(Q(usage_limit=F('usage_remaining')) & ~Q(usage_limit=Value(-1)), then=Value('maxed')),
+        When(Q(usage_remaining=Value(0)) & ~Q(usage_limit=Value(-1)), then=Value('maxed')),
         default=Value('active'),
         output_field=CharField()
     ))

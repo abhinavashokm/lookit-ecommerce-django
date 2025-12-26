@@ -25,6 +25,8 @@
     <div class="form-container">
         <form id="couponForm" action="{% url 'admin-edit-coupon' coupon.code %}" method="POST">
             {% csrf_token %}
+            <input type="hidden" name="_method" value="PUT">
+            
             <div class="form-row">
                 <div class="form-col">
                     <div class="form-group">

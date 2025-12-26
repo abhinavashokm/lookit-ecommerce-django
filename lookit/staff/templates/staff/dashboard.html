@@ -102,9 +102,9 @@
         <div class="card-header">
           <div>
             <div class="card-title">Top Selling Brands</div>
-            <div class="card-subtitle">This Month (sales count)</div>
+            <div class="card-subtitle">This {{request.GET.time_range|default:'week'  }} (sales count)</div>
           </div>
-          <div class="value" style="font-size: 1.5rem;">25%</div>
+          <!-- <div class="value" style="font-size: 1.5rem;">25%</div> -->
         </div>
         <div class="category-bars">
           {% for brand in top_selling_brands %}
@@ -123,9 +123,9 @@
         <div class="card-header">
           <div>
             <div class="card-title">Top Selling Categories</div>
-            <div class="card-subtitle">This Month +5%</div>
+            <div class="card-subtitle">This {{request.GET.time_range|default:'week'  }} (sales count)</div>
           </div>
-          <div class="value" style="font-size: 1.5rem;">25%</div>
+          <!-- <div class="value" style="font-size: 1.5rem;">25%</div> -->
         </div>
         <div class="category-bars">
           {% for style in top_selling_styles %}

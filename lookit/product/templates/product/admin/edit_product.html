@@ -43,6 +43,7 @@
 
         <form action="{% url 'admin-edit-product' product.uuid %}"  method="post" enctype="multipart/form-data"  id="editProductForm">
             {% csrf_token %}
+             <input type="hidden" name="_method" value="PUT">
             <!-- Basic Information -->
             <div class="form-section">
                 <h2 class="section-title">Basic Information</h2>

@@ -13,12 +13,10 @@ from django.db.models import (
     Value,
 )
 from django.db.models.functions import Coalesce
-from django.db.models import Sum, DecimalField, DurationField
+from django.db.models import Sum, DecimalField, DurationField, Q
 from django.db.models.functions import (
     Coalesce,
     ExtractMonth,
-    ExtractYear,
-    ExtractWeek,
     TruncDate,
     ExtractDay,
     Ceil,
@@ -293,7 +291,15 @@ def get_sales_performance(filter):
     
     return {"data_values":data_values, "data_labels":data_labels}
 
+
+
 def annotate_order_count_per_user(user_qs):
     return user_qs.annotate(
-        total_orders = Count('order__items')
+        total_orders=Count(
+            'order__items',
+            filter=Q(
+                order__items__order_status=OrderItems.OrderStatus.DELIVERED
+            ),
+            distinct=True
+        )
     )

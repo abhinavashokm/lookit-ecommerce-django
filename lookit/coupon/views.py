@@ -131,8 +131,9 @@ def admin_add_coupon(request):
 
 @admin_required
 def admin_edit_coupon(request, code):
+    method = request.POST.get('_method', '').upper()
     
-    if request.method == 'POST':
+    if request.method == 'POST' and method == "PUT":
         code = request.POST.get('code', '').strip().upper()
         discount_type = request.POST.get('discount_type', '').strip()
         discount_value = request.POST.get('discount_value', '').strip()

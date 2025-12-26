@@ -33,6 +33,8 @@
 
             <form action="{% url 'edit-profile' %}" method="post" enctype="multipart/form-data" id="edit-profile-form" class="edit-profile-form">
                 {% csrf_token %}
+                <!--For semantics: put request-->
+                <input type="hidden" name="_method" value="PUT">
 
                 <div class="profile-picture-section">
 

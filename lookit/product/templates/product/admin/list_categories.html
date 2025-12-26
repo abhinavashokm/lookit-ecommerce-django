@@ -146,6 +146,8 @@
                     <div class="modal">
                         <form action="{% url 'admin-edit-category' %}" method="post">
                             {% csrf_token %}
+                            <input type="hidden" name="_method" value="PUT">
+                            
                             <div class="modal-header">
                                 <h2 class="modal-title">Edit Style Category</h2>
                             </div>

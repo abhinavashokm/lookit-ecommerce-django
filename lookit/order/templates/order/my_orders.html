@@ -75,7 +75,7 @@
                     <a href="{% url 'write-review' item.uuid %}">
                         <button class="btn btn-review">Write a review</button>
                     </a>
-                    {% elif item.reviewed and not item.return_request %}
+                    {% elif item.reviewed and not item.return_request and item.order_status == 'DELIVERED' %}
                     <button class="btn btn-review btn-reviewed" disabled>
                         ✓ Review completed
                     </button>

@@ -54,4 +54,11 @@ def annotate_wishlist_products(user, products_set):
     wishlist_exist_sq = models.Wishlist.objects.filter(user=user, product_id=OuterRef('id'))
     annotated_product_set = products_set.annotate(in_wishlist=Exists(wishlist_exist_sq))
     return annotated_product_set
-    
+
+def get_default_address(user):  
+    default_address = (
+        models.Address.objects
+        .filter(user=user, is_default=True, is_active=True)
+        .first()
+    )
+    return default_address

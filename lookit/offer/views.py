@@ -159,9 +159,10 @@ def admin_add_offer(request):
 
 
 def admin_edit_offer(request, offer_uuid):
+    method = request.POST.get('_method', '').upper()
     offer = Offer.objects.get(uuid=offer_uuid)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and method == 'PUT':
         name = request.POST.get('name', '').strip()
         scope = request.POST.get('scope', '').strip()
 

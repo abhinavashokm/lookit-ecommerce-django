@@ -280,7 +280,12 @@
     <div class="reviews-header">
         <div class="overall-rating">
             <div class="rating-number">{{ rating_summary.average }}</div>
-            <div class="rating-stars">★★★★☆</div>
+            <div class="rating-stars">
+                <!-- ★★★★☆ -->
+                {% for _ in "12345" %}
+                    {% if forloop.counter <= rating_summary.average %}★{% else %}☆{% endif %} 
+                {% endfor %}
+            </div>
             <div class="rating-count">{{ rating_summary.total_reviews }} reviews</div>
         </div>
         <div class="rating-breakdown">
