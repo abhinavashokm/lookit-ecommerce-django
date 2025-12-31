@@ -22,7 +22,8 @@ DEBUG = True
 
 SITE_ID = 1
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'simplistic-pokier-melania.ngrok-free.dev', '3.26.194.155', 'lookit.abhinavashokm.site']
+#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'simplistic-pokier-melania.ngrok-free.dev', '3.26.194.155', 'lookit.abhinavashokm.site']
+ALLOWED_HOSTS = ["*"] #temporary 
 
 #for using tunneling
 CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.dev']
