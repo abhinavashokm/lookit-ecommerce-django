@@ -1664,7 +1664,7 @@
 
 /* Main price */
 .price-current {
-    font-size: 2.4rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #1a1a1a;
     letter-spacing: -0.02em;
@@ -1772,14 +1772,14 @@
     gap: 0.35rem;
 }
 
-.price-current {
+.price-stack .price-current {
     font-size: 0.95rem;
     font-weight: 600;
     color: #1f2937;
     letter-spacing: -0.01em;
 }
 
-.price-old {
+.price-stack .price-old {
     font-size: 0.75rem;
     font-weight: 500;
     color: #9ca3af;

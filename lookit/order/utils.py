@@ -6,14 +6,11 @@ from django.db.models import Exists, OuterRef, BooleanField, Case, When, Value, 
 
 
 def reduce_stock_for_order(order_id):
-    print("call is on stock management")
     order_items = OrderItems.objects.filter(order_id=order_id)
     for item in order_items:
-        print("stock before: ",item.variant.stock)
         item.variant.stock -= item.quantity
-        print("stock after: ",item.variant.stock)
         item.variant.save()
-        print("stock after 2: ",item.variant.stock)
+
 
 
 def render_to_pdf(template_src, context_dict):
