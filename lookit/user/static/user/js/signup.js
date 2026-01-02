@@ -4,6 +4,10 @@ $.validator.addMethod("letterswithspaces", function (value, element) {
     return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
 }, "Only letters and spaces allowed");
 
+$.validator.addMethod("notOnlySpaces", function (value, element) {
+    return this.optional(element) || value.trim().length > 0;
+}, "Name cannot be only spaces");
+
 $.validator.addMethod("strongPassword", function (value) {
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(value);
 }, "Password must contain uppercase, lowercase, and a number");
@@ -16,6 +20,7 @@ $(document).ready(function () {
             full_name: {
                 required: true,
                 letterswithspaces: true,
+                notOnlySpaces: true,
                 minlength: 2,
                 maxlength: 50,
             },
@@ -72,7 +77,7 @@ $(document).ready(function () {
         },
         success: function (label, element) {
             // Remove error styling when field is valid
-            $(element).removeClass('error');
+            label.remove();
         }
     });
 });

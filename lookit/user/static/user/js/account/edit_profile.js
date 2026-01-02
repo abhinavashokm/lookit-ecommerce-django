@@ -146,198 +146,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 
-
-// // OTP Verification Functionality
-// document.addEventListener('DOMContentLoaded', function () {
-//     const otpModal = document.getElementById('otpModal');
-//     const otpInputs = document.querySelectorAll('.otp-input');
-//     const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-//     const resendOtpBtn = document.getElementById('resendOtp');
-//     const countdownElement = document.getElementById('countdown');
-//     const closeModalBtns = document.querySelectorAll('.close-modal');
-//     const saveChangesBtn = document.querySelector('.save-changes-btn');
-
-//     let countdown = 30;
-//     let countdownInterval;
-
-//     // Start the countdown timer
-//     function startCountdown() {
-//         countdown = 30;
-//         countdownElement.textContent = countdown;
-//         resendOtpBtn.disabled = true;
-
-//         clearInterval(countdownInterval);
-//         countdownInterval = setInterval(() => {
-//             countdown--;
-//             countdownElement.textContent = countdown;
-
-//             if (countdown <= 0) {
-//                 clearInterval(countdownInterval);
-//                 resendOtpBtn.disabled = false;
-//             }
-//         }, 1000);
-//     }
-
-//     // Handle OTP input
-//     otpInputs.forEach((input, index) => {
-//         // Focus on the first input when modal opens
-//         if (index === 0) {
-//             input.focus();
-//         }
-
-//         // Move to next input on number input
-//         input.addEventListener('input', (e) => {
-//             if (e.target.value && index < otpInputs.length - 1) {
-//                 otpInputs[index + 1].focus();
-//             }
-//         });
-
-//         // Handle backspace
-//         input.addEventListener('keydown', (e) => {
-//             if (e.key === 'Backspace' && !e.target.value && index > 0) {
-//                 otpInputs[index - 1].focus();
-//             }
-//         });
-//     });
-
-//     // Verify OTP
-//     verifyOtpBtn.addEventListener('click', () => {
-//         const otp = Array.from(otpInputs).map(input => input.value).join('');
-
-//         if (otp.length !== 6) {
-//             alert('Please enter a valid 6-digit OTP');
-//             return;
-//         }
-
-//         // Here you would verify the OTP with your backend
-//         console.log('Verifying OTP:', otp);
-
-//         // Simulate API call
-//         verifyOtpBtn.disabled = true;
-//         verifyOtpBtn.textContent = 'Verifying...';
-
-//         // In a real application, you would verify the OTP with your backend here
-//         // For this example, we'll simulate a successful verification
-//         setTimeout(() => {
-//             // Simulate successful verification
-//             alert('Email verified successfully! Your changes have been saved.');
-//             otpModal.classList.remove('active');
-//             document.body.style.overflow = '';
-//             resetOtpForm();
-
-//             // Submit the form with the stored form data
-//             if (editProfileForm && formData) {
-//                 // In a real application, you would send the form data to your server
-//                 console.log('Submitting form with data:', Object.fromEntries(formData));
-//                 // Uncomment the line below to actually submit the form
-//                 // editProfileForm.submit();
-
-//                 // For demo purposes, show the form data in the console
-//                 const formDataObj = {};
-//                 formData.forEach((value, key) => {
-//                     formDataObj[key] = value;
-//                 });
-//                 console.log('Form data:', formDataObj);
-
-//                 // Show success message
-//                 alert('Profile updated successfully!');
-//             }
-//         }, 1500);
-//     });
-
-//     // Resend OTP
-//     resendOtpBtn.addEventListener('click', () => {
-//         // Here you would typically resend the OTP via your backend
-//         console.log('Resending OTP...');
-//         startCountdown();
-//         alert('A new verification code has been sent to your email.');
-//     });
-
-//     // Close modal
-//     closeModalBtns.forEach(btn => {
-//         btn.addEventListener('click', function (e) {
-//             if (e.target === this || e.target.classList.contains('close-modal')) {
-//                 otpModal.classList.remove('active');
-//                 document.body.style.overflow = '';
-//                 resetOtpForm();
-//             }
-//         });
-//     });
-
-//     // Reset OTP form
-//     function resetOtpForm() {
-//         otpInputs.forEach(input => {
-//             input.value = '';
-//         });
-//         if (otpInputs.length > 0) {
-//             otpInputs[0].focus();
-//         }
-//         verifyOtpBtn.disabled = false;
-//         verifyOtpBtn.textContent = 'Verify & Save Changes';
-//         clearInterval(countdownInterval);
-//         resendOtpBtn.disabled = true;
-//         countdownElement.textContent = '30';
-//     }
-
-//     // Show OTP modal when save changes is clicked
-//     const editProfileForm = document.querySelector('.edit-profile-form');
-//     let formData = null;
-
-// });
-
-
-// document.addEventListener("DOMContentLoaded", function () {
-
-//     const form = document.getElementById("edit-profile-form");
-//     const emailField = document.getElementById("email");
-//     const originalEmail = document.getElementById("originalEmail").value;
-
-//     form.addEventListener("submit", function (e) {
-//         if (emailField.value.trim() !== originalEmail.trim()) {
-//             e.preventDefault(); // Stop form submit
-
-//             $.ajax({
-//                 url: url,   // your Django URL
-//                 type: "POST",
-//                 data: {
-//                     email: emailField.value.trim(),
-//                     csrfmiddlewaretoken: document.querySelector("[name=csrfmiddlewaretoken]").value
-//                 },
-//                 success: function (response) {
-//                     if (response.success) {
-//                         console.log("OTP sent!");
-//                         // Step 1: Send AJAX to request OTP
-//                         openOTPModel(emailField.value.trim());
-//                     } else {
-//                         showErrorToast(response.error || "Failed to send OTP");
-//                     }
-//                 },
-//                 error: function (xhr) {
-//                     // showErrorToast("Something went wrong!");
-//                 }
-//             });
-
-            
-//         }
-//         // else → allow normal submit
-//     });
-// });
-
-
-// function openOTPModel(newEmail) {
-//     otpModel = document.getElementById("otpModal")
-//     otpModal.classList.add('active')
-//     document.body.style.overflow = 'hidden';
-//     // document.getElementById("otpSendForm").value = newEmail
-//     // document.getElementById("otpSendForm").submit();
-
-// }
-
-// function closeOTPModel() {
-//     otpModel = document.getElementById("otpModal")
-//     otpModal.classList.remove('active')
-//     document.body.style.overflow = 'auto';
-// }
 // Email Change Modal Functionality
 document.addEventListener('DOMContentLoaded', function() {
     // Email change modal elements
@@ -535,3 +343,149 @@ function showToast(selector) {
         }, 300);
     }, 3000);
 }
+
+
+//JQUERY FORM VALIDATION
+$.validator.addMethod("letterswithspaces", function (value, element) {
+    return this.optional(element) || /^[A-Za-z\s]+$/.test(value);
+}, "Only letters and spaces allowed");
+
+$.validator.addMethod("notOnlySpaces", function (value, element) {
+    return this.optional(element) || value.trim().length > 0;
+}, "Name cannot be only spaces");
+
+$.validator.addMethod("strongPassword", function (value) {
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(value);
+}, "Password must contain uppercase, lowercase, and a number");
+
+$.validator.addMethod("phone", function (value, element) {
+    return this.optional(element) || /^[0-9]{10}$/.test(value);
+}, "Enter a valid 10-digit phone number");
+
+$.validator.addMethod("notFutureDate", function (value) {
+    return !value || new Date(value) <= new Date();
+}, "Date of birth cannot be in the future");
+
+$.validator.addMethod("minAge", function (value, element, min) {
+    if (!value) return true;
+
+    const dob = new Date(value);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+    }
+
+    return age >= min;
+}, "You must be at least {0} years old");
+
+$.validator.addMethod("maxAge", function (value, element, max) {
+    if (!value) return true;
+
+    const dob = new Date(value);
+    const today = new Date();
+
+    let age = today.getFullYear() - dob.getFullYear();
+    return age <= max;
+}, "Please enter a valid date of birth");
+
+
+document.addEventListener("DOMContentLoaded", function () {
+const dobInput = document.querySelector('input[name="dob"]');
+if (!dobInput) return;
+
+const today = new Date().toISOString().split("T")[0];
+dobInput.setAttribute("max", today);
+});
+
+
+$(document).ready(function () {
+
+    $("#edit-profile-form").validate({
+        rules: {
+            full_name: {
+                required: true,
+                letterswithspaces: true,
+                notOnlySpaces:true,
+                minlength: 2,
+                maxlength: 50,
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            phone: {
+                phone: true
+            },
+            dob: {
+                notFutureDate: true,
+                    minAge: 5,
+                    maxAge: 130,
+            }
+        },
+        messages: {
+            full_name: {
+                required: "Full name is required",
+                minlength: "Name must be at least 2 characters",
+                maxlength: "Name can only contain max 50 characters",
+                letterswithspaces: "Name can only contain letters and spaces"
+            },
+            email: {
+                required: "Email is required",
+                email: "Please enter a valid email"
+            },
+            phone: {
+                phone: "Enter valid phone number"
+            }
+        },
+        onkeyup: true,
+        errorClass: "error",
+        errorElement: "label",
+        errorPlacement: function (error, element) {
+            error.insertAfter(element);
+        }
+    });
+
+        $("#changePasswordForm").validate({
+        rules: {
+            current_password: {
+                required: true,
+            },
+            new_password: {
+                required: true,
+                minlength: 8,
+                strongPassword: true
+            },
+            confirm_new_password: {
+                required: true,
+                equalTo: "#newPassword"
+            }
+        },
+        messages: {
+            current_password: {
+                required: "Password is required",
+            },
+            new_password: {
+                required: "Password is required",
+                minlength: "Password must be at least 8 characters",
+            },
+            confirm_new_password: {
+                required: "Password is required",
+                equalTo: "Passwords do not match"
+            }
+        },
+        onkeyup: true,
+        errorClass: "error",
+        errorElement: "label",
+        errorPlacement: function (error, element) {
+            error.insertAfter(element.closest('.password-input'));
+        }
+    });
+})
+
+
+
+
