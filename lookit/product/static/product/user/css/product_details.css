@@ -1089,19 +1089,20 @@
     .product-main {
         flex-direction: column;
         gap: 2rem;
+        align-items: center;
     }
 
     .product-images {
         flex: 1;
+        width: 100%;
+        max-width: 670px;
     }
 
     .product-images-wrapper {
         flex-direction: row;
     }
 
-    .thumbnail-images {
-        flex-direction: row;
-    }
+
 
     .main-image {
         height: 450px;
@@ -1135,6 +1136,10 @@
         display: block;
         order: 0;
         flex-shrink: 0;
+    }
+
+    .thumbnail-images {
+        flex-direction: row;
     }
 
     .logo {

@@ -396,10 +396,9 @@
 
 
 /* Responsive Styles */
-@media (max-width: 1024px) {
+@media (max-width: 999px) {
     .profile-container {
-        flex-direction: column;
-        gap: 2rem;
+        display: block;
     }
 
     .sidebar {

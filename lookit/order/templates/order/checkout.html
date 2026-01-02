@@ -2,6 +2,7 @@
 {% load static %}
 {% block styles %}
 <link rel="stylesheet" href="{% static 'order/css/checkout.css' %}">
+<link rel="stylesheet" href="{% static 'user/css/components/address_modal.css' %}">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 {% endblock %}
 
@@ -86,7 +87,7 @@
                         <div class="address-type">{{ address.type|upper }}</div>
                         <div class="address-actions">
 
-                            <button onclick="openEditModal('{{ address.id }}')" class="edit-address edit-address-btn" data-address-id="1">
+                            <button onclick="openEditAddressModal('{{ address.id }}')" class="edit-address edit-address-btn" data-address-id="1">
                                 <i class="far fa-edit"></i> Edit
                             </button>
 
@@ -103,128 +104,12 @@
                 </div>
 
                 <!-- Edit Address Modal -->
-                <div class="modal" id="editAddressModal{{ address.id }}">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h3><i class="fas fa-map-marker-alt"></i> Edit Address</h3>
-                            <button class="close-modal" onclick="closeEditModal()" id="close-edit-modal{{ address.id }}" aria-label="Close modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
+                {% include 'user_base/components/edit_address_modal.html' %}
 
-                            <form action="{% url 'edit-address' %}" method="post" id="addressForm{{address.id}}">
-                                {% csrf_token %}
-                                <input type="hidden" name="address_id" value="{{ address.id }}">
-                                <div class="form-section">
-                                    <h4 class="section-title">Contact Information</h4>
-                                    <div class="form-grid">
-
-                                        <div class="form-group">
-                                            <label for="fullName">Full Name <span class="required">*</span></label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-user"></i>
-                                                <input type="text" name="full_name" value="{{ address.full_name }}" id="fullName" required>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label for="phone">Phone Number <span class="required">*</span></label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-phone"></i>
-                                                <input type="tel" name="phone" value="{{ address.phone }}"  id="phone" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="altPhone">Alternative Phone</label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-phone-alt"></i>
-                                                <input type="tel" name="second_phone" value="{{ address.second_phone }}"  id="altPhone">
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                                <div class="form-section">
-                                    <h4 class="section-title">Address Details</h4>
-                                    <div class="form-grid">
-
-                                        <div class="form-group full-width">
-                                            <label for="address">Address Line <span class="required">*</span></label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-map-marked-alt"></i>
-                                                <input type="text" name="address_line" value="{{ address.address_line }}"  id="address" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="city">City <span class="required">*</span></label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-city"></i>
-                                                <input type="text" name="city" value="{{ address.city }}"  id="city" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="state">State <span class="required">*</span></label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-flag"></i>
-                                                <input type="text" name="state" value="{{ address.state }}"  id="state" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="zipCode">PIN Code <span class="required">*</span></label>
-                                            <div class="input-with-icon">
-                                                <i class="fas fa-mail-bulk"></i>
-                                                <input type="text" name="pincode" value="{{ address.pincode }}"  id="zipCode" required>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="addressType">Address Type <span class="required">*</span></label>
-                                            <div class="select-wrapper">
-                                                <i class="fas fa-tag"></i>
-
-                                                <select name="type" id="addressType" required>
-                                                    <option value="" disabled selected>Select address type</option>
-                                                    <option value="home" {% if address.type == 'home' %}selected{% endif %}>Home</option>
-                                                    <option value="work" {% if address.type == 'work' %}selected{% endif %}>Work</option>
-                                                    <option value="other" {% if address.type == 'other' %}selected{% endif %}>Other</option>
-                                                </select>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="form-section">
-                                    <div class="form-options">
-                                        <label class="checkbox-container">
-                                            <input name="is_default" value="True" type="checkbox" id="defaultAddress" {% if address.is_default %}checked{% endif %}>
-                                            <span class="checkmark"></span>
-                                            Set as default shipping address
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="form-actions">
-                                    <button onclick="closeEditModal()" type="button" class="btn btn-outline" id="btn-edit-outline{{ address.id }}">
-                                        <i class="fas fa-times"></i> Cancel 
-                                    </button>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="fas fa-save"></i> Save Address
-                                    </button>
-                                </div>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
                 {% endfor %}
 
             </div>
-            <button class="add-address-btn">
+            <button onclick="openAddAddressModal()" class="add-address-btn">
                 <i class="fas fa-plus"></i> Add New Address
             </button>
         </div>
@@ -273,127 +158,16 @@
 </div>
 
 <!-- Add Address Modal -->
-<div class="modal" id="addAddressModal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3><i class="fas fa-map-marker-alt"></i> Add New Address</h3>
-            <button class="close-modal" id="closeAddModel" aria-label="Close modal">&times;</button>
-        </div>
-        <div class="modal-body">
-
-            <form action="{% url 'add-address' %}" method="post" id="addressForm">
-                {% csrf_token %}
-                <div class="form-section">
-                    <h4 class="section-title">Contact Information</h4>
-                    <div class="form-grid">
-
-                        <div class="form-group">
-                            <label for="fullName">Full Name <span class="required">*</span></label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-user"></i>
-                                <input type="text" name="full_name" id="fullName" placeholder="full name" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Phone Number <span class="required">*</span></label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-phone"></i>
-                                <input type="tel" name="phone" placeholder="primary number" id="phone" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="altPhone">Alternative Phone (Optional)</label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-phone-alt"></i>
-                                <input type="tel" name="second_phone" placeholder="alternative phone number" id="altPhone">
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h4 class="section-title">Address Details</h4>
-                    <div class="form-grid">
-
-                        <div class="form-group full-width">
-                            <label for="address">Address Line <span class="required">*</span></label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-map-marked-alt"></i>
-                                <input type="text" name="address_line" placeholder="address line" id="address" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="city">City <span class="required">*</span></label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-city"></i>
-                                <input type="text" name="city" placeholder="city" id="city" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="state">State <span class="required">*</span></label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-flag"></i>
-                                <input type="text" name="state" id="state" placeholder="state" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="zipCode">PIN Code <span class="required">*</span></label>
-                            <div class="input-with-icon">
-                                <i class="fas fa-mail-bulk"></i>
-                                <input type="text" name="pincode" id="zipCode" placeholder="pincode" required>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="addressType">Address Type <span class="required">*</span></label>
-                            <div class="select-wrapper">
-                                <i class="fas fa-tag"></i>
-
-                                <select name="type" id="addressType" required>
-                                    <option value="" disabled selected>Select address type</option>
-                                    <option value="home">Home</option>
-                                    <option value="work">Work</option>
-                                    <option value="other">Other</option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <div class="form-options">
-                        <label class="checkbox-container">
-                            <input name="is_default" value="True" type="checkbox" id="defaultAddress">
-                            <span class="checkmark"></span>
-                            Set as default shipping address
-                        </label>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" id="btn-outline" class="btn btn-outline">
-                        <i class="fas fa-times"></i> Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Address
-                    </button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
-
+ {% include 'user_base/components/add_address_modal.html' %}
 
 {% endblock %}
 
 {% block scripts %}
+<!--FOR JQUERY FORM VALIDATION-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+<script src="{% static 'user/js/components/add_address_modal.js' %}"></script>
+<script src="{% static 'user/js/components/edit_address_modal.js' %}"></script>
 <script src="{% static 'order/js/checkout.js' %}"></script>
 {% endblock %}

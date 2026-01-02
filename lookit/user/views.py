@@ -303,7 +303,6 @@ def profile_send_otp(request):
 
 @login_required
 def add_address(request):
-    request_from = None
     if request.method == "POST":
         user = request.user
         full_name = request.POST.get('full_name')
@@ -314,7 +313,6 @@ def add_address(request):
         pincode = request.POST.get('pincode')
         type = request.POST.get('type')
 
-        request_from = request.POST.get('page_from')
 
         # ---optional_fields-----------------------
         is_default = request.POST.get('is_default')
@@ -339,15 +337,15 @@ def add_address(request):
         except Exception as e:
             print(e)
             messages.error(request, e)
-    # if request is from address book redirect to address book
-    if request_from == 'address_book':
+        # redirect to the page where the call came from
+        next_url = request.POST.get("next")
+        if next_url:
+            return redirect(next_url)
         return redirect('address-book')
-    return redirect('checkout')
 
 
 @login_required
 def edit_address(request):
-    request_from = None
     if request.method == "POST":
         user = request.user
         address_id = request.POST.get('address_id')
@@ -359,15 +357,12 @@ def edit_address(request):
         pincode = request.POST.get('pincode')
         address_type = request.POST.get('type')
 
-        request_from = request.POST.get('page_from')
-
         # ---optional_fields-----------------------
         is_default = request.POST.get('is_default')
         if not is_default:
             is_default = False
         second_phone = request.POST.get('second_phone')
 
-        print(request.POST)
         try:
             Address.objects.filter(id=address_id).update(
                 user=user,
@@ -392,10 +387,12 @@ def edit_address(request):
             print(e)
             messages.error(request, e)
 
-    # if request is from address book redirect to address book
-    if request_from == 'address_book':
+        # redirect to the page where the call came from
+        next_url = request.POST.get("next")
+        if next_url:
+            print(next_url)
+            return redirect(next_url)
         return redirect('address-book')
-    return redirect('checkout')
 
 
 @login_required
