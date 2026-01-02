@@ -34,7 +34,7 @@ $(document).ready(function () {
         },
         success: function (label, element) {
             // Remove error styling when field is valid
-            $(element).removeClass('error');
+            label.remove();
         }
     });
 });

@@ -15,8 +15,9 @@
       <form id="filter-form" method="GET" action="">
         <select class="time-filter" name="time_range" onchange="document.getElementById('filter-form').submit();">
           <option value="week" {% if request.GET.time_range == 'week' %}selected{% endif %}>Last 7 Days</option>
-          <option value="month" {% if request.GET.time_range == 'month' %}selected{% endif %}>Month to Date</option>
-          <option value="year" {% if request.GET.time_range == 'year' %}selected{% endif %}>Year to Date</option>
+          <option value="month" {% if request.GET.time_range == 'month' %}selected{% endif %}>This Month</option>
+          <option value="year" {% if request.GET.time_range == 'year' %}selected{% endif %}>This Year</option>
+          <option value="last_5_years" {% if request.GET.time_range == 'last_5_years' %}selected{% endif %}>Last 5 Years</option>
         </select>
       </form>
 
@@ -214,6 +215,15 @@
     const dataValues = JSON.parse(
         document.getElementById('values-data').textContent
     );
+    let upper_limit
+    let step
+    {% if request.GET.time_range == 'last_5_years' %}
+      upper_limit = 150000
+      step = 25000
+    {% else %}
+      upper_limit = 50000
+      step = 10000
+    {% endif %}
   </script>
 
   <script src="{% static 'staff/js/dashboard.js' %}"></script>

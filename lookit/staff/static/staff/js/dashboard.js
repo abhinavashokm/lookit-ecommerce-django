@@ -61,9 +61,9 @@ document.addEventListener("DOMContentLoaded", function () {
       scales: {
         y: {
           beginAtZero: true,
-          max: 50000, // 👈 set upper limit
+          max: upper_limit, // 👈 set upper limit
           grid: { color: '#f3f4f6' },
-          ticks: { color: '#6b7280', stepSize: 10000 },
+          ticks: { color: '#6b7280', stepSize: step },
         },
         x: {
           ticks: { color: '#6b7280' },

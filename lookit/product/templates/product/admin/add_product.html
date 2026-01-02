@@ -69,7 +69,7 @@
                             <option value="men">Men</option>
                             <option value="women">Women</option>
                             <option value="kids">Kids</option>
-                            <option value="unisex">Unisex</option>
+                            <!-- <option value="unisex">Unisex</option> -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -310,9 +310,16 @@
             errorElement: "label",
 
             errorPlacement: function (error, element) {
-                if (element.attr("type") === "file") {
+                // Select2 dropdown
+                if (element.hasClass("select2-hidden-accessible")) {
+                    error.insertAfter(element.next(".select2"));
+                }
+                // File inputs
+                else if (element.attr("type") === "file") {
                     error.appendTo(element.closest(".form-group"));
-                } else {
+                }
+                // Normal inputs
+                else {
                     error.insertAfter(element);
                 }
             },

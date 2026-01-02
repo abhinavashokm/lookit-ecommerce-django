@@ -19,6 +19,7 @@ from django.db.models.functions import (
     ExtractMonth,
     TruncDate,
     ExtractDay,
+    ExtractYear,
     Ceil,
 )
 from datetime import date, timedelta
@@ -35,6 +36,12 @@ month_to_date = today.replace(day=1)
 # Year to date (start of this year)
 year_to_date = today.replace(month=1, day=1)
 
+#january 1 - 4 years ago
+jan_1_five_years_ago = today.replace(
+    year=today.year - 4,
+    month=1,
+    day=1
+)
 
 def get_start_date_for_filter(filter):
     start_date = None
@@ -44,6 +51,8 @@ def get_start_date_for_filter(filter):
         start_date = month_to_date
     elif filter == 'year':
         start_date = year_to_date
+    elif filter == 'last_5_years':
+        start_date = jan_1_five_years_ago
     else:
         return None
     return start_date
@@ -287,7 +296,37 @@ def get_sales_performance(filter):
 
             print(" = ", record['day_number'], record['total_sales'])
             data_values[6 - record['day_number']] = float(record['total_sales'])
-            
+    elif filter == 'last_5_years':
+        sales_performance = (
+            OrderItems.objects.filter(
+                order_status=OrderItems.OrderStatus.DELIVERED,
+                placed_at__date__gte=start_date,
+            )
+            .annotate(
+                year=ExtractYear('placed_at')
+            )
+            .values('year')
+            .annotate(
+                total_sales=Coalesce(
+                    Sum('total'),
+                    0,
+                    output_field=DecimalField(max_digits=10, decimal_places=2),
+                )
+            )
+            .order_by('year')
+        )
+        data_values = [0] * 5
+        this_year = today.year
+        data_labels = [
+            this_year-4,
+            this_year-3,
+            this_year-2,
+            this_year-1,
+            this_year,
+        ]
+        for index, record in enumerate(sales_performance):
+            #store corresponding sale value in dict with month order. januvary in 0 th position and december in 11th position
+            data_values[4-index] = float(record['total_sales'])
     
     return {"data_values":data_values, "data_labels":data_labels}
 
