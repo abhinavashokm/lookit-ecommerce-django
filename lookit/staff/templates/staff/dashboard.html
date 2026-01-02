@@ -2,6 +2,7 @@
 {% load static %}
 {% block styles %}
   <link rel="stylesheet" href="{% static 'staff/css/dashboard.css' %}" />
+  <link rel="stylesheet" href="{% static 'admin/css/components/table_empty_state.css' %}">
 {% endblock %}
 
 <!-- Main Content -->
@@ -91,9 +92,19 @@
             <div class="value" style="font-size: 1.5rem;">₹{{ dashboard_summary.total_sales  }}</div>
           </div>
 
+          {% if dashboard_summary.total_sales != 0 %}
           <div class="chart-wrapper">
             <canvas id="salesChart"></canvas>
           </div>
+          {% else %}
+            <!-- Empty State Overlay -->
+          <div id="chart-empty-state" class="chart-empty-state">
+            <div class="empty-title">No sales data</div>
+            <div class="empty-subtitle">
+              There were no sales recorded in this period
+            </div>
+          </div>
+          {% endif %}
         </div>
       </div>
 
@@ -114,6 +125,10 @@
                 <div class="category-bar" style="width: {{ brand.sale_percentage }}%;"></div>
               </div>
             </div>
+          {% empty %}
+            <div class="empty-state">
+              No sales data for this period
+          </div>
           {% endfor %}
         </div>
       </div>
@@ -135,6 +150,10 @@
                 <div class="category-bar" style="width:{{ style.sale_percentage }}%;"></div>
               </div>
             </div>
+          {% empty %}
+            <div class="empty-state">
+              No sales data for this period
+          </div>
           {% endfor %}
         </div>
       </div>
@@ -172,6 +191,8 @@
                   <span class="revenue-value">₹{{ product.total_revenue }}</span>
                 </td>
               </tr>
+            {% empty %}
+                {% include 'admin_base/components/table_empty_state.html' with  message='No sales in this period' %}
             {% endfor %}
           </tbody>
         </table>

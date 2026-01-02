@@ -1,5 +1,7 @@
 from order.models import Review
-from django.db.models import Count, Avg
+from django.db.models import Count, Avg, Sum
+from .models import Product
+from order.models import OrderItems
 
 def get_rating_summary(product):
     qs = Review.objects.filter(product=product)
@@ -41,3 +43,16 @@ def get_rating_summary(product):
 def fetch_all_reviews(product_id):
     reviews =  Review.objects.filter(product_id=product_id).order_by("-created_at")
     return reviews
+
+
+def get_top_sellers():
+    top_sellers = (
+        Product.objects.filter(
+            variant__orders__order_status=OrderItems.OrderStatus.DELIVERED,
+        )
+        .annotate(
+            units_sold=Count('variant__orders'),
+        )
+        .order_by('-units_sold')[:8]
+    )
+    return top_sellers

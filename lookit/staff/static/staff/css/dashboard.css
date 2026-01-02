@@ -656,3 +656,40 @@ td {
   color: #10b981;
   vertical-align: middle;
 }
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1px dashed #e5e7eb;
+  border-radius: 10px;
+}
+
+
+.chart-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #f9fafb;
+  border-radius: 10px;
+  color: #6b7280;
+  text-align: center;
+  pointer-events: none;
+  padding: 3rem 0;
+}
+
+.chart-empty-state .empty-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 6px;
+}
+
+.chart-empty-state .empty-subtitle {
+  font-size: 0.85rem;
+  max-width: 260px;
+  line-height: 1.4;
+}

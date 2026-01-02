@@ -168,7 +168,6 @@
      color: #666;
      font-size: 0.85rem;
      margin-bottom: 0.8rem;
-     line-height: 1.4;
 
     display: -webkit-box;
     -webkit-line-clamp: 3;       /* limits to 3 lines */
@@ -176,7 +175,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1.4em;           /* adjust line height as needed */
-    max-height: calc(1.4em * 3);  /* ensures consistent height */
+    height: calc(1.4em * 3);  /* ensures consistent height */
  }
 
  .product-price {
