@@ -24,7 +24,7 @@ from datetime import date, timedelta
 from cloudinary.uploader import upload
 from core.decorators import admin_required
 from .utils import reduce_stock_for_order
-from cart.decorators import cart_not_empty_required
+from cart.decorators import validate_cart
 from wallet.models import Wallet, WalletTransactions
 from cart.utils import calculate_cart_summary
 from decimal import Decimal
@@ -48,7 +48,7 @@ from .utils import annotate_review_eligibility
 
 
 @login_required
-@cart_not_empty_required
+@validate_cart
 def checkout(request):
     summary = calculate_cart_summary(request.user)
     order_items = summary.get('items')
@@ -106,7 +106,7 @@ def checkout(request):
 
 @login_required
 @require_POST
-@cart_not_empty_required
+@validate_cart
 def create_order(request):
     user = request.user
     address_id = request.POST.get('address_id')
@@ -188,7 +188,7 @@ def create_order(request):
 
 
 @login_required
-@cart_not_empty_required
+@validate_cart
 def payment_page(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
     wallet, created = Wallet.objects.get_or_create(user=request.user)
@@ -212,7 +212,7 @@ def payment_page(request, order_uuid):
 
 
 @login_required
-@cart_not_empty_required
+@validate_cart
 def place_order(request, order_uuid):
     order = Order.objects.get(uuid=order_uuid)
     order_id = order.id
@@ -287,7 +287,7 @@ def place_order(request, order_uuid):
 
         except Exception as e:
             messages.error(request, e)
-            return redirect('payment-page', order_id=order_id)
+            return redirect('payment-page', order_uuid=order_uuid)
 
         # ---redirect to order success page---------------
         return redirect('order-success', order_uuid=order_uuid)

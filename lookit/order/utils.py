@@ -1,4 +1,5 @@
 from .models import OrderItems, Review
+from product.models import Variant
 from io import BytesIO
 from django.template.loader import get_template
 from xhtml2pdf import pisa
@@ -6,12 +7,20 @@ from django.db.models import Exists, OuterRef, BooleanField, Case, When, Value, 
 
 
 def reduce_stock_for_order(order_id):
-    order_items = OrderItems.objects.filter(order_id=order_id)
+    order_items = OrderItems.objects.select_for_update().filter(order_id=order_id)
     for item in order_items:
-        item.variant.stock -= item.quantity
-        item.variant.save()
-
-
+        updated = (
+            Variant.objects.filter(id=item.variant.id, stock__gte = item.quantity).update(stock=F('stock') - item.quantity)
+        )
+        if not updated:
+            raise ValueError(f"{item.variant.product.name} is out of stock")
+        
+def check_stock_and_availability_for_order(order):
+    for item in order.items.select_related("variant"):
+        if item.variant.stock < item.quantity or not item.product.is_active:
+            raise ValueError(
+                f"{item.variant.product.name} is out of stock or unavailable"
+            )
 
 def render_to_pdf(template_src, context_dict):
     template = get_template(template_src)

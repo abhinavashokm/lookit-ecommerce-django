@@ -55,8 +55,8 @@ function createPaymentAjax() {
     }).then(response => response.json())
         .then(data => {
             console.log("ajax request success")
-            if (data.cart_empty) {
-                console.log("cart is empty")
+            if (data.failed) {
+                console.log("Failed")
                 location.reload();
             } else {
                 var options = {

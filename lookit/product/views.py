@@ -782,8 +782,6 @@ def add_to_cart(request):
         quantity = request.POST.get('quantity')
         product = Product.objects.get(id=product_id)
 
-        print("product quantity: ", quantity)
-
         # restrict if not authenticated
         if not user.is_authenticated:
             messages.error(request, f"PLEASE LOGIN TO USE CART")
