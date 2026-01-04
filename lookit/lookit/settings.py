@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-import cloudinary_storage, cloudinary
+import cloudinary
 
 
 load_dotenv()  # reads .env file
@@ -18,16 +18,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-nx@ivq@%5^)fwwnv06klo#(7z2%o^%_od@k=1+kk)+vfyf_7q$"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 SITE_ID = 1
 
-#ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'simplistic-pokier-melania.ngrok-free.dev', '3.26.194.155', 'lookit.abhinavashokm.site']
-ALLOWED_HOSTS = ["*"] #temporary 
+ALLOWED_HOSTS = [
+    'lookit.abhinavashokm.site',
+    'www.lookit.abhinavashokm.site',
+    '3.26.194.155',  # server IP
+    'localhost',  # for local development
+    '127.0.0.1',  # for local development #for ngrok testing
+    'simplistic-pokier-melania.ngrok-free.dev' 
+]
 
 #for using tunneling
 CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.dev']
-
 
 
 # Set default user model
@@ -229,3 +234,15 @@ RAZOR_KEY_ID = os.getenv('RAZORPAY_API_KEY')
 RAZOR_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
+
+
+# Security settings for production
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_HSTS_SECONDS = 31536000  # 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
