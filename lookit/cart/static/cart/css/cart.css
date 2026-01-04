@@ -50,10 +50,6 @@
     border-bottom: 1px solid #eee;
 }
 
-.cart-item:last-child {
-    border-bottom: none;
-}
-
 .item-image {
     width: 100px;
     height: 120px;
@@ -313,14 +309,6 @@
 }
 
 @media (max-width: 768px) {
-    header {
-        padding: 1rem 5%;
-    }
-
-    .search-input {
-        width: 200px;
-    }
-
 
     .item-price {
         margin: 1rem 0 0;
@@ -436,13 +424,6 @@
 }
 
 @media (max-width: 480px) {
-    .search-container {
-        display: none;
-    }
-
-    .header-right {
-        gap: 1rem;
-    }
 
     .page-title {
         font-size: 1.5rem;

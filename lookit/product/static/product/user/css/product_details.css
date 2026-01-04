@@ -102,7 +102,8 @@
 
 .main-image {
     width: 100%;
-    height: 600px;
+    /* height: 600px; */
+    aspect-ratio: 250 / 237;
     border: 1px solid #f0f0f0;
     border-radius: 12px;
     overflow: hidden;
@@ -1075,16 +1076,7 @@
 /* ============================================
            RESPONSIVE DESIGN
            ============================================ */
-@media (max-width: 1200px) {
-    header {
-        padding: 1rem 6%;
-    }
-}
-
 @media (max-width: 992px) {
-    header {
-        padding: 1rem 5%;
-    }
 
     .product-main {
         flex-direction: column;
@@ -1104,9 +1096,9 @@
 
 
 
-    .main-image {
+    /* .main-image {
         height: 450px;
-    }
+    } */
 
     .related-grid {
         grid-template-columns: repeat(3, 1fr);
@@ -1119,57 +1111,8 @@
 }
 
 @media (max-width: 768px) {
-    header {
-        padding: 0.75rem 4%;
-    }
-
-    nav {
-        flex-wrap: nowrap;
-        position: relative;
-    }
-
-    .nav-links {
-        display: none;
-    }
-
-    .mobile-menu-btn {
-        display: block;
-        order: 0;
-        flex-shrink: 0;
-    }
-
     .thumbnail-images {
         flex-direction: row;
-    }
-
-    .logo {
-        order: 1;
-        flex: 1;
-        margin-left: 0.5rem;
-        font-size: 1.5rem;
-    }
-
-    .header-right {
-        order: 2;
-        gap: 0.4rem;
-        flex-shrink: 0;
-        margin-left: auto;
-    }
-
-    .icon-btn {
-        width: 36px;
-        height: 36px;
-        padding: 0.3rem;
-    }
-
-    .icon-btn svg {
-        width: 18px;
-        height: 18px;
-    }
-
-    .login-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.85rem;
     }
 
     .breadcrumb {
@@ -1229,10 +1172,10 @@
         width: 100%;
     }
 
-    .main-image {
+    /* .main-image {
         height: 400px;
         width: 100%;
-    }
+    } */
 
     .action-buttons-left {
         display: none;
@@ -1477,14 +1420,6 @@
 }
 
 @media (max-width: 480px) {
-    header {
-        padding: 0.6rem 3%;
-    }
-
-    .logo {
-        font-size: 1.3rem;
-    }
-
     .breadcrumb {
         padding: 0.4rem 3%;
         font-size: 0.8rem;
@@ -1510,9 +1445,9 @@
         gap: 1.5rem;
     }
 
-    .main-image {
+    /* .main-image {
         height: 350px;
-    }
+    } */
 
     .thumbnail {
         width: 60px;

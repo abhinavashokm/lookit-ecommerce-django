@@ -507,7 +507,8 @@
 
 .product-image {
     width: 100%;
-    height: 250px;
+    aspect-ratio: 250 / 237;
+    /* height: 250px; */
     background-color: #f0f0f0;
     display: flex;
     align-items: center;
@@ -649,6 +650,10 @@
         flex-direction: column;
     }
 
+    .product-card {
+        margin-bottom: 12px;
+    }
+
     .filter-sidebar {
         display: none;
     }
@@ -759,9 +764,9 @@
         gap: 1rem;
     }
 
-    .product-image {
+    /* .product-image {
         height: 200px;
-    }
+    } */
 }
 
 @media (max-width: 480px) {
@@ -847,9 +852,9 @@
         gap: 0.8rem;
     }
 
-    .product-image {
+    /* .product-image {
         height: 180px;
-    }
+    } */
 
     .product-info {
         padding: 0.8rem;
