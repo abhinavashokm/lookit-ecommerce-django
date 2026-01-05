@@ -49,7 +49,10 @@ def get_top_sellers():
     top_sellers = (
         Product.objects.filter(
             variant__orders__order_status=OrderItems.OrderStatus.DELIVERED,
+            is_active=True,
+            variant__stock__gt=0
         )
+        .distinct()
         .annotate(
             units_sold=Count('variant__orders'),
         )
