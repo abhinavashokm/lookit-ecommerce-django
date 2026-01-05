@@ -69,7 +69,7 @@ def checkout(request):
         if not item.product.is_active:
             error = "Product Is Unavailable"
             break
-        elif item.quantity < 1 or item.quantity > 4:
+        elif item.quantity < 1 or item.quantity > 5:
             # --min and max quantity validation. min 1 and max 4.
             error = "Cart Quantity Need to be alteast 1 and atmost 4"
             break
