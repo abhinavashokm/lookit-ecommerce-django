@@ -83,7 +83,7 @@
 
                     <p class="cod-desc">
                         Prefer paying in cash? No problem — choose Cash on Delivery and pay directly when your package arrives.  
-                        Please note: for security reasons, COD is available only for orders up to <strong>₹1000</strong>.
+                        Please note: for security reasons, COD is available only for orders up to <strong>₹{{ cod_min_order_amount }}</strong>.
                     </p>
                 </div>
 
@@ -92,21 +92,21 @@
                     <ul>
                         <li><i class="fas fa-box-open"></i> Pay in cash when your order is delivered.</li>
                         <li><i class="fas fa-mobile-alt"></i> OTP verification may be required for order confirmation.</li>
-                        <li><i class="fas fa-info-circle"></i> COD unavailable for orders above ₹1000 — please select Online Payment or Wallet.</li>
+                        <li><i class="fas fa-info-circle"></i> COD unavailable for orders above ₹{{ cod_min_order_amount }} — please select Online Payment or Wallet.</li>
                     </ul>
                 </div>
 
                 <!-- COD Button -->
                 <form action="{% url 'place-order' order.uuid %}" method="post">
                     {% csrf_token %}
-                    {% if order.grand_total > 1000 %}
+                    {% if order.grand_total > cod_min_order_amount %}
                     <p class="cod-warning">
                         <i class="fas fa-exclamation-triangle"></i>
-                        COD is available only for orders up to ₹1000.
+                        COD is available only for orders up to ₹{{ cod_min_order_amount }}.
                     </p>
                     {% endif %}
                     <input type="hidden" name="payment_method" value="COD">
-                    <button class="cod-pay-btn btn-pay" {% if order.grand_total >= 1000 %}disabled{% endif %}>
+                    <button class="cod-pay-btn btn-pay" {% if order.grand_total >= cod_min_order_amount %}disabled{% endif %}>
                         <i class="fas fa-money-bill-wave"></i> Place Order with Cash on Delivery
                     </button>
                 </form>

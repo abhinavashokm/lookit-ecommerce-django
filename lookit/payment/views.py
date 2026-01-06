@@ -44,7 +44,7 @@ def create_razorpay_order(request):
         cart_summary = summary.get('cart_summary')
         amount_in_rs = cart_summary.get('grand_total')
 
-        amount = int(amount_in_rs) * 100   # Rs. 200 in paise
+        amount = int(amount_in_rs * 100)    # Rs. 200 in paise
         currency = 'INR'
 
         # Create Razorpay order

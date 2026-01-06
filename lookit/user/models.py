@@ -5,7 +5,8 @@ from .utils import generate_referral_code
 from datetime import timedelta
 from django.utils import timezone
 from coupon.models import Coupon
-from product.models import Variant, Product
+from product.models import Product
+from django.conf import settings
 
 
 # Creating custom user manager
@@ -99,7 +100,7 @@ class OTP(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def is_valid(self):
-        return timezone.now() < self.created_at + timedelta(minutes=2)
+        return timezone.now() < self.created_at + timedelta(minutes=settings.OTP_EXPIRY_TIME)
 
 
 class Address(models.Model):

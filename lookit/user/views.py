@@ -25,6 +25,7 @@ from .services import validate_referral_code, give_referral_reward
 from product.models import Product, Variant
 from cart.models import Cart
 from offer.utiils import annotate_offers
+from django.conf import settings
 
 
 def user_login(request):
@@ -112,9 +113,9 @@ def send_otp(request):
     send_otp_email(email, otp)
     OTP.objects.create(email=email, code=otp)
 
-    expiry_time = timezone.now() + timedelta(minutes=1)
+    otp_resend_cooldown = timezone.now() + timedelta(minutes=settings.RESEND_OTP_AFTER)
     # Store expiry in session so it survives page reload
-    request.session["otp_expires_at"] = expiry_time.timestamp()
+    request.session["otp_resend_cooldown"] = otp_resend_cooldown.timestamp()
     return redirect('signup-otp')
 
 
@@ -174,9 +175,9 @@ def otp_verification(request):
     if request.user.is_authenticated:
         return redirect('index')
 
-    expiry_time = request.session["otp_expires_at"]
+    otp_resend_cooldown = request.session["otp_resend_cooldown"]
     return render(
-        request, "user/otp_verification.html", {"otp_expires_at": expiry_time}
+        request, "user/otp_verification.html", {"otp_resend_cooldown": otp_resend_cooldown}
     )
 
 

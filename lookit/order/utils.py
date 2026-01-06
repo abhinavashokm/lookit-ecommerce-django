@@ -15,6 +15,14 @@ def reduce_stock_for_order(order_id):
         if not updated:
             raise ValueError(f"{item.variant.product.name} is out of stock")
         
+def restock_inventory(order_item_uuid):
+    """function to add stock back to product on cancel and return"""
+    order_item = OrderItems.objects.get(uuid = order_item_uuid)
+    updated = Variant.objects.filter(id=order_item.variant.id).update(stock = F('stock') + order_item.quantity)
+    if updated != 1:
+        raise RuntimeError("Failed to restock inventory")
+
+        
 def check_stock_and_availability_for_order(order):
     for item in order.items.select_related("variant"):
         if item.variant.stock < item.quantity or not item.product.is_active:

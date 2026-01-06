@@ -115,19 +115,19 @@
 
   <script>
     //for otp timer to persist page reload
-    const expires_at = parseFloat("{{ otp_expires_at|floatformat:0 }}"); //server timestamp
+    const otp_resend_cooldown = parseFloat("{{ otp_resend_cooldown|floatformat:0 }}"); //server timestamp
 
     // Save expiry locally so it persists across reloads
-    localStorage.setItem("otp_expires_at", expires_at)
+    localStorage.setItem("otp_resend_at", otp_resend_cooldown)
   </script>
 
   <!-- Resend OTP Timer -->
   <script>
       (function () {
-         const expiry_time = parseFloat(localStorage.getItem("otp_expires_at"));
+         const resent_time = parseFloat(localStorage.getItem("otp_resend_at"));
         const current_time = Date.now() / 1000; // convert ms → seconds
 
-        let timeLeft = Math.floor(expiry_time - current_time); //remaining seconds
+        let timeLeft = Math.floor(resent_time - current_time); //remaining seconds
         const timerDisplay = document.getElementById('timer-display');
         const resendTimer = document.getElementById('resend-timer');
         const resendLink = document.getElementById('resend-link');

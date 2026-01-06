@@ -269,8 +269,12 @@
 
 {% block scripts %}
 <script>
+
+    const MAX_CART_QUANTITY = Number({{ max_quantity }});
+
     //for updating quantity using ajax
     url = "{% url 'update-quantity' %}"
+
 </script>
 <script src="{% static 'cart/js/cart.js' %}"></script>
 {% endblock %}

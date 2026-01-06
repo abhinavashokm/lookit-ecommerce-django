@@ -10,6 +10,7 @@ from product.models import Variant
 from coupon.utils import is_valid_coupon, coupon_eligibility_check, is_coupon_min_purchase_eligible
 from coupon.models import Coupon
 from .utils import calculate_cart_summary
+from django.conf import settings
 
 @login_required
 def cart(request):
@@ -38,6 +39,7 @@ def cart(request):
             "checkout_block": checkout_block,
             "saved_coupons": saved_coupons,
             "applied_coupon": applied_coupon,
+            "max_quantity": settings.MAX_CART_QUANTITY
         },
     )
 

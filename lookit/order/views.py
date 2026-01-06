@@ -5,7 +5,6 @@ from django.db.models import (
     Value,
     When,
     Case,
-    Min,
     IntegerField,
     Sum,
     Count,
@@ -44,7 +43,8 @@ from django.http import HttpResponse
 from coupon.utils import is_coupon_min_purchase_eligible, clear_users_applied_coupon
 from urllib.parse import urlencode
 from datetime import date, datetime
-from .utils import annotate_review_eligibility
+from .utils import annotate_review_eligibility, restock_inventory
+from django.conf import settings
 
 
 @login_required
@@ -69,9 +69,9 @@ def checkout(request):
         if not item.product.is_active:
             error = "Product Is Unavailable"
             break
-        elif item.quantity < 1 or item.quantity > 5:
-            # --min and max quantity validation. min 1 and max 4.
-            error = "Cart Quantity Need to be alteast 1 and atmost 4"
+        elif item.quantity < 1 or item.quantity > settings.MAX_CART_QUANTITY:
+            # --min and max quantity validation.
+            error = f"Cart Quantity Need to be alteast 1 and atmost {settings.MAX_CART_QUANTITY}"
             break
         elif item.available_stock_count == 0:
             error = "Out of stock products in cart."
@@ -207,6 +207,7 @@ def payment_page(request, order_uuid):
             "wallet": wallet,
             "wallet_balance_after_payment": wallet_balance_after_payment,
             "estimated_delivery": estimated_delivery,
+            "cod_min_order_amount": settings.COD_MIN_ORDER_AMOUNT
         },
     )
 
@@ -236,6 +237,7 @@ def place_order(request, order_uuid):
                     # ---create wallet transaction--------------------
                     WalletTransactions.objects.create(
                         wallet=wallet,
+                        order=order,
                         amount=amount,
                         transaction_type=WalletTransactions.TransactionType.DEBIT,
                         label="Paid on Shopping",
@@ -249,10 +251,10 @@ def place_order(request, order_uuid):
                     )
                 elif payment_method == 'COD':
                     
-                    #only orders less than or equal to 1000rs can be placed with cod
+                    #only orders less than or equal to cod_max_amount_limit can be placed with cod
                     amount = order.grand_total
-                    if amount > 1000:
-                        messages.error(request, "COD is available only for orders up to ₹1000.")
+                    if amount > settings.COD_MIN_ORDER_AMOUNT:
+                        messages.error(request, f"COD is available only for orders up to ₹{settings.COD_MIN_ORDER_AMOUNT}.")
                         return redirect('payment-page', order_uuid=order_uuid)
                     
                     OrderItems.objects.filter(order_id=order_id).update(
@@ -511,11 +513,36 @@ def download_invoice_pdf(request, order_uuid):
     # -------------------------------------------
     elements.append(Paragraph("<b>Payment Summary</b>", section_title))
 
-    totals_data = [
-        ["Subtotal:", f"Rs {order_item.sub_total}"],
-        ["Delivery Fee:", f"Rs {order_item.delivery_fee}"],
-        ["Grand Total:", f"Rs {order_item.total}"],
-    ]
+    totals_data = []
+
+    # Subtotal (always)
+    totals_data.append(
+        ["Subtotal:", f"Rs {order_item.sub_total}"]
+    )
+
+    # Product discount (only if applied)
+    if order_item.discount_amount > 0:
+        totals_data.append(
+            ["Product Discount:", f"-Rs {order_item.discount_amount}"]
+        )
+
+    # Coupon discount (only if applied)
+    coupon = order_item.order.coupon_applied
+    if coupon and order_item.coupon_discount_amount > 0:
+        totals_data.append(
+            [f"Coupon Discount ({coupon.code}):", f"-Rs {order_item.coupon_discount_amount}"]
+        )
+
+    # Delivery fee (always)
+    totals_data.append(
+        ["Delivery Fee:", f"Rs {order_item.delivery_fee}"]
+    )
+
+    # Grand total (always last)
+    totals_data.append(
+        ["Grand Total:", f"Rs {order_item.total}"]
+    )
+
 
     totals_table = Table(totals_data, colWidths=[150, 120])
     totals_table.setStyle(
@@ -562,20 +589,18 @@ def download_invoice_pdf(request, order_uuid):
 def cancel_order(request, order_item_uuid):
     try:
         order_item = OrderItems.objects.get(uuid=order_item_uuid)
-        variant = Variant.objects.get(id=order_item.variant.id)
 
         if order_item.order.user == request.user:
             with transaction.atomic():
                 order_item.order_status = 'CANCELLED'
                 order_item.cancelled_at = timezone.now()
-                variant.stock += 1
                 order_item.save()
-                variant.save()
+                restock_inventory(order_item_uuid)
 
                 # refund money back to wallet instantly (except cod)
                 if order_item.order.payment_method != Order.PaymentMethod.COD:
                     refund_amount = order_item.total
-                    refund_to_wallet(request.user, refund_amount)
+                    refund_to_wallet(request.user, refund_amount, order_item)
                     messages.success(request, "Order Cancelled.")
                     messages.success(
                         request, f"₹{refund_amount} has been credited to your wallet."
@@ -586,7 +611,8 @@ def cancel_order(request, order_item_uuid):
         else:
             messages.error(request, "Unauthorized Access")
     except Exception as e:
-        messages.error(request, e)
+        print("Error on cacellation: ",e)
+        messages.error(request, "Something went wrong!")
     return redirect('track-order', order_uuid=order_item_uuid)
 
 
@@ -968,16 +994,14 @@ def admin_update_return_status(request, return_request_uuid):
                     order.order_status = order.OrderStatus.RETURNED
                     order.save()
                     # --handle stock------------------
-                    quantity_returned = return_request.order_item.quantity
-                    variant = return_request.variant
-                    variant.stock += quantity_returned
-                    variant.save()
+                    restock_inventory(return_request.order_item.uuid)
+
                 elif return_status == ReturnRequest.ReturnStatus.REFUNDED:
                     order_item = return_request.order_item
 
                     # refund money back to wallet instantly
                     refund_amount = order_item.total
-                    refund_to_wallet(order_item.order.user, refund_amount)
+                    refund_to_wallet(order_item.order.user, refund_amount, order_item)
                     messages.success(
                         request, f"₹{refund_amount} has been credited to users wallet."
                     )

@@ -2,6 +2,7 @@ from django.db import models
 from user.models import User
 from django.utils import timezone
 from django.utils.timezone import localtime
+from order.models import OrderItems, Order
 
 # Create your models here.
 class Wallet(models.Model):
@@ -24,6 +25,8 @@ class WalletTransactions(models.Model):
         REFUND = 'refund'
         
     wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True, blank=True) #only for payment using wallet transaction on order
+    order_item = models.ForeignKey(OrderItems, on_delete=models.CASCADE, null=True, blank=True) #only for transaction related to order refund
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_type = models.CharField(max_length=30, choices=TransactionType.choices) #credit or debit
     label = models.CharField(max_length=100) 

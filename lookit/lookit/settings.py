@@ -3,7 +3,6 @@ import os
 from dotenv import load_dotenv
 import cloudinary
 
-
 load_dotenv()  # reads .env file
 
 
@@ -246,3 +245,9 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 # SECURE_HSTS_SECONDS = 31536000  # 1 year
 # SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 # SECURE_HSTS_PRELOAD = True
+
+#bussiness logic configurations
+MAX_CART_QUANTITY = 4
+COD_MIN_ORDER_AMOUNT = 1000 
+OTP_EXPIRY_TIME = 2 #in minutes
+RESEND_OTP_AFTER = 1 #in minutes

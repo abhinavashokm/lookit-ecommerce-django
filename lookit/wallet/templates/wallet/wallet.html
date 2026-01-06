@@ -86,6 +86,16 @@
                         <div class="transaction-meta">
                             <span class="transaction-date">{{ transaction.formatted_created_at }}</span>
                             <span class="transaction-type">{{ transaction.transaction_type }}</span>
+                            {% if  transaction.order_item %}
+                            <span class="transaction-order-id">
+                                    Order Item ID: {{ transaction.order_item.uuid }}
+                            </span>
+                            {% elif transaction.order %}
+                            <span class="transaction-order-id">
+                                Order ID: {{ transaction.order.uuid }}
+                            </span>
+                            {% endif %}
+                            
                         </div>
                     </div>
                     {% if transaction.transaction_type == 'credit' %}

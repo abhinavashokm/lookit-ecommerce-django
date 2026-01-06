@@ -17,8 +17,8 @@ function updateQuantity(btn, cartId, variantId, csrfToken){
         const quantityElement = btn.parentElement.querySelector('.quantity');
         let quantity = parseInt(quantityElement.textContent);
         let new_quantity = null
-
-        if (btn.textContent === '+' && quantity < 5) {
+        
+        if (btn.textContent === '+' && quantity < MAX_CART_QUANTITY) {
             new_quantity = quantity + 1
         } else if (btn.textContent === '-' && quantity > 1) {
             new_quantity = quantity - 1

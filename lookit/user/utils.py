@@ -7,6 +7,7 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.db.models import OuterRef, Exists
 from . import models
+from django.conf import settings
 
 
 def generate_otp():
@@ -15,13 +16,22 @@ def generate_otp():
 
 def send_otp_email(email, otp):
     subject = "Your LookIt Signup OTP"
-    message = (
-        f"Your OTP for LookIt signup is: {otp}\n\nDo not share this code with anyone."
-    )
+
+    otp_message = f"""
+    Verification Code: {otp}
+
+    Use this One-Time Password to complete your sign-in or account verification.
+    This OTP is valid for { settings.OTP_EXPIRY_TIME } minutes, after which it will expire automatically for your protection.
+
+    For your safety, never share this code with anyone. Our team will never ask you for your OTP.
+
+    If you did not attempt to sign in or create an account, please ignore this message.
+    """
+
     from_email = settings.EMAIL_HOST_USER
     recipient_list = [email]
     print("sent otp ", otp)
-    send_mail(subject, message, from_email, recipient_list)
+    send_mail(subject, otp_message, from_email, recipient_list)
 
 
 def generate_referral_code():

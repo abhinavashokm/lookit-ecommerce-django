@@ -1158,3 +1158,10 @@
         max-width: 360px;
     }
 }
+
+.transaction-order-id {
+    font-size: 0.75rem;
+    color: #9aa0a6;
+    font-weight: 500;
+    white-space: nowrap;
+}
