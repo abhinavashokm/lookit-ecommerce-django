@@ -1,16 +1,6 @@
 /* ============================================
            MAIN CONTENT STYLES
 ============================================ */
-.profile-container {
-    max-width: 1400px;
-    margin: 2rem auto;
-    margin-top: 1rem !important;
-    padding: 0 3%;
-    display: flex;
-    gap: 0;
-    align-items: flex-start;
-    min-height: calc(100vh - 78.6px);
-}
 
 /* Main Content */
 .main-content {
