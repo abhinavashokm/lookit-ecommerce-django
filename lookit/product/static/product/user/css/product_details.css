@@ -1839,6 +1839,10 @@
         box-shadow: 0 4px 12px rgba(181, 94, 138, 0.15);
     }
 
+    .size-btn.active {
+        color: white;
+    }
+
     .action-buttons-left .btn-wishlist:hover {
         border-color: #B55E8A;
         color: #B55E8A;
